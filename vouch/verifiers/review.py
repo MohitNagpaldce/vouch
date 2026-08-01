@@ -95,7 +95,8 @@ class GeminiProvider(Provider):
     family = "google/gemini"
 
     def __init__(self, model: str | None = None):
-        self.model = model or os.environ.get("VOUCH_GEMINI_MODEL", "gemini-pro-latest")
+        # flash has free-tier quota for new users; pro requires paid billing
+        self.model = model or os.environ.get("VOUCH_GEMINI_MODEL", "gemini-flash-latest")
         self.key = os.environ.get("GEMINI_API_KEY", "") or os.environ.get("GOOGLE_API_KEY", "")
 
     def available(self) -> bool:
