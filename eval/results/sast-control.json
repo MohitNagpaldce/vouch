@@ -1,0 +1,360 @@
+{
+  "summary": {
+    "samples": 39,
+    "ran": 34,
+    "flagged": 3
+  },
+  "records": [
+    {
+      "repo": "encode/httpx",
+      "sha": "0eed6a37340ba9d073da69574409be0d817ecae7",
+      "kind": "control_good",
+      "status": "no impl files",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "19b863af408123783d5f9916e71688b32ba558c8",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 9
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "1c9b852783f065db1b495b587c1c986246355198",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": true,
+      "findings_on_changed_lines": 1,
+      "findings_total": 5
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "9673a3555c39dfc7b91b0da19cf0a28e357692bc",
+      "kind": "control_good",
+      "status": "no impl files",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "a0282569d5f74bb6ef7a8f5e88ac37257acbe6f2",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "abe0799d70b5c31341d28a23c7ff0d796a792854",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "e1afbfa7b45d1ce717a7d9588c6c8114ee0a091b",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 1
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "e95111ac07d31817ff9189379dc052c5d867bfe5",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": true,
+      "findings_on_changed_lines": 5,
+      "findings_total": 12
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "03e2fee8a99f08976aef0d38cb3fa372a94c928a",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 2
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "06d030811da54f0c336a59c85818fe26313e1dda",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 7
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "34723d12b1e5abe1459813ce0596535da53b55d8",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 12
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "54102a439da9da4a2c84cd893b12020865b9afd3",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "61cf523ec891b1d34962fd000de94836cd6015e4",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "a3277513d7340d8a0e29076fe2769a8837f756ae",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 5
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "cb37854c9b43d9fd3c99a3a830f4580517c1b32e",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "d5cddb9e1c433a5fd65739d98d8415dd62d276f7",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 6
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "3e9f4e254b5757d80218c0d8077bd44465365489",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 2
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "532347d6adf1da64259f1af91860d5fa27bac9f1",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 3
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "633449a36c959d25577799eb3da76005a803d5cd",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 2
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "6fca662c841797a2006999c699a6738b20af1d4e",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 1
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "a293b99b219c13ea94b33a2470a545e07c73b804",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 1
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "c0f42a0978d804237d7bd540f81dcdbc1643ea7f",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "daf1510a4bda652ac2cfca03ec5567b03ddf8bf1",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "psf/black",
+      "sha": "226cbf0226ee3bc26972357ba54c36409e9a84ae",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 1
+    },
+    {
+      "repo": "psf/black",
+      "sha": "436e12f2904e68acb57a059b1c44f1e0321e2d3f",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": true,
+      "findings_on_changed_lines": 10,
+      "findings_total": 10
+    },
+    {
+      "repo": "psf/black",
+      "sha": "6c3f8181854160f3db354f6f6ef3315ef05db8e7",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 21
+    },
+    {
+      "repo": "psf/black",
+      "sha": "92f20d7f8493f9d0f27531f68b776fb435d53d2e",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "psf/black",
+      "sha": "a4b5c085a30f32fddce46ed50f3378ef32c43d5d",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 14
+    },
+    {
+      "repo": "psf/black",
+      "sha": "be35b1ed2d1f9453090bb29ac24abe997815ff70",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 1
+    },
+    {
+      "repo": "psf/black",
+      "sha": "cae7ae3a4d32dc51e0752d4a4e885a7792a0286d",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 4
+    },
+    {
+      "repo": "psf/black",
+      "sha": "de806405d2934b629d67e2a6317ad7e826765a20",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 13
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "1dbaddd75e04365a822cf4bcf05f332a5f845ed6",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 3
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "28b706da83fed39a04c05c84b032fbdf35a542e2",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "672e66ba5fa94f6d55638067f9476cc1da396650",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "7b68c124d549853a1045cbeb5a16461799279780",
+      "kind": "control_good",
+      "status": "bandit parse failure (exit 0)",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "820dfb0495ef379f140ad3c78c30e0a16c7e9fa8",
+      "kind": "control_good",
+      "status": "bandit parse failure (exit 1)",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "8339b60fd5bbe0ef9dae1764b3964f515364a54f",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "b79dea97fd0d24bc1dbe52366565361c08675512",
+      "kind": "control_good",
+      "status": "ok",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "f40bd0f7074ccda6be66c77f39442770d7669af0",
+      "kind": "control_good",
+      "status": "bandit parse failure (exit 0)",
+      "flagged": false,
+      "findings_on_changed_lines": 0,
+      "findings_total": 0
+    }
+  ]
+}
