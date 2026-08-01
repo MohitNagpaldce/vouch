@@ -3,7 +3,7 @@
     "samples": 55,
     "replayed_ok": 55,
     "env_ok": 0,
-    "flagged_any": 44,
+    "flagged_any": 19,
     "per_verifier": {
       "deps": {
         "ran": 55,
@@ -12,10 +12,10 @@
         "error": 0
       },
       "review": {
-        "ran": 55,
-        "flagged": 44,
+        "ran": 24,
+        "flagged": 19,
         "skip": 0,
-        "error": 0
+        "error": 31
       }
     }
   },
@@ -780,19 +780,14 @@
           }
         },
         "review": {
-          "verdict": "pass",
+          "verdict": "error",
           "findings": 0,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 0
-          }
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "pass",
-      "seconds": 0.7,
+      "overall": "error",
+      "seconds": 45.8,
       "env": "not needed",
       "exit_code": 0
     },
@@ -812,19 +807,14 @@
           }
         },
         "review": {
-          "verdict": "pass",
+          "verdict": "error",
           "findings": 0,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 0
-          }
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "pass",
-      "seconds": 0.8,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
       "exit_code": 0
     },
@@ -844,19 +834,14 @@
           }
         },
         "review": {
-          "verdict": "warn",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "warn",
-      "seconds": 1.0,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
       "exit_code": 0
     },
@@ -876,21 +861,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 2,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 2
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.7,
+      "overall": "error",
+      "seconds": 46.0,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -908,21 +888,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.2,
+      "overall": "error",
+      "seconds": 46.0,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -940,19 +915,14 @@
           }
         },
         "review": {
-          "verdict": "pass",
+          "verdict": "error",
           "findings": 0,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 0
-          }
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "pass",
-      "seconds": 1.0,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
       "exit_code": 0
     },
@@ -972,21 +942,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.2,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1004,21 +969,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 7.7,
+      "overall": "error",
+      "seconds": 45.8,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1036,21 +996,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 2,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 2
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.5,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1068,19 +1023,14 @@
           }
         },
         "review": {
-          "verdict": "warn",
-          "findings": 2,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 2
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "warn",
-      "seconds": 1.3,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
       "exit_code": 0
     },
@@ -1100,21 +1050,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.2,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1132,21 +1077,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 2,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 2
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.4,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1164,21 +1104,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 2,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 2
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.8,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1196,21 +1131,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.2,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1228,21 +1158,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 2,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 2
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.4,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1260,21 +1185,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.5,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1292,21 +1212,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 2,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 2
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.5,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1324,19 +1239,14 @@
           }
         },
         "review": {
-          "verdict": "pass",
+          "verdict": "error",
           "findings": 0,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 0
-          }
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "pass",
-      "seconds": 0.8,
+      "overall": "error",
+      "seconds": 46.0,
       "env": "not needed",
       "exit_code": 0
     },
@@ -1356,21 +1266,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.1,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1388,21 +1293,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 3,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 3
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 2.2,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "psf/requests",
@@ -1420,21 +1320,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 2,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 2
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.5,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "pydantic/pydantic",
@@ -1452,19 +1347,14 @@
           }
         },
         "review": {
-          "verdict": "pass",
+          "verdict": "error",
           "findings": 0,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 0
-          }
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "pass",
-      "seconds": 0.8,
+      "overall": "error",
+      "seconds": 46.0,
       "env": "not needed",
       "exit_code": 0
     },
@@ -1484,21 +1374,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.3,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "pydantic/pydantic",
@@ -1516,19 +1401,14 @@
           }
         },
         "review": {
-          "verdict": "pass",
+          "verdict": "error",
           "findings": 0,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 0
-          }
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "pass",
-      "seconds": 0.9,
+      "overall": "error",
+      "seconds": 46.0,
       "env": "not needed",
       "exit_code": 0
     },
@@ -1548,21 +1428,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.2,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "pydantic/pydantic",
@@ -1580,21 +1455,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.2,
+      "overall": "error",
+      "seconds": 46.1,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "pydantic/pydantic",
@@ -1612,21 +1482,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 2,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 2
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.6,
+      "overall": "error",
+      "seconds": 46.1,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "pydantic/pydantic",
@@ -1644,21 +1509,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.4,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "pydantic/pydantic",
@@ -1676,21 +1536,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.2,
+      "overall": "error",
+      "seconds": 46.0,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     },
     {
       "repo": "pydantic/pydantic",
@@ -1708,19 +1563,14 @@
           }
         },
         "review": {
-          "verdict": "warn",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "warn",
-      "seconds": 1.2,
+      "overall": "error",
+      "seconds": 45.8,
       "env": "not needed",
       "exit_code": 0
     },
@@ -1740,21 +1590,16 @@
           }
         },
         "review": {
-          "verdict": "block",
-          "findings": 1,
-          "note": "",
-          "metrics": {
-            "reviewer": "google/gemini",
-            "reviewer_model": "gemini-flash-lite-latest",
-            "independent_of_author": true,
-            "findings": 1
-          }
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
         }
       },
-      "overall": "block",
-      "seconds": 1.2,
+      "overall": "error",
+      "seconds": 45.9,
       "env": "not needed",
-      "exit_code": 1
+      "exit_code": 0
     }
   ]
 }

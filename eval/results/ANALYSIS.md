@@ -52,6 +52,43 @@ Replay evaluation of environment-sensitive verifiers must be era-aware.
 
 \* all 25 skips = "diff adds/changes no test files" — see headline 1.
 
+## Run 2 — cross-model review arm (2026-08-01)
+
+Reviewer: Gemini (`gemini-flash-latest` on 24 bad samples, `gemini-flash-lite-latest`
+on 31 bad + all 39 control samples; free-tier daily quotas forced the split, and
+`reviewer_model` is recorded per sample). Adversarial review prompt, JSON findings,
+warn/block severities. Raw data: `review.json` (bad arm), `review-control.json`
+(control arm), `review-flash-partial.json` (flash-only snapshot).
+
+**Design:** 55 known-bad diffs (run 1 corpus) vs. 39 presumed-good control commits
+(same repos, merged ≥ 1 year ago, never reverted, not fixes/reverts themselves,
+same size/language filters).
+
+| arm | flagged | rate |
+|---|---|---|
+| known-bad (n=55) | 44 | **80% sensitivity** |
+| presumed-good control (n=39) | 21 | **54% false-positive rate** |
+
+Model-consistent subsets agree: flash flagged 19/24 bad (79%); lite flagged 25/31
+bad (81%) and 21/39 good (54%) — so the lite-vs-lite comparison is 81% TPR at 54%
+FPR (Youden's J ≈ 0.27). Counting only `block`-severity findings barely changes
+the picture (46% of good commits still blocked).
+
+**Reading:** an LLM prompted to attack a diff attacks almost everything. The
+discrimination signal is real (80% vs 54%, ~27 points) but far too weak to gate
+on alone — deployed at 54% FPR, developers would disable it within a week. This
+is the first controlled sensitivity/specificity measurement we know of for the
+"adversarial cross-model review" pattern that several commercial review agents
+sell, and it quantifies why Vouch's design composes execution-grounded verifiers
+(mutation, tautology) with review instead of trusting review alone.
+
+**Caveats:** single reviewer family so far (GPT joins when the OpenAI account is
+funded — the cross-family comparison is the point of the experiment design);
+"presumed good" labels are survival-based (aged ≥ 1 year unreverted), which is
+noisy — some flagged controls may contain genuine latent defects; finding-level
+validity (does the review text describe a *real* defect in the reverted change?)
+is not yet judged, only diff-level flagging.
+
 ## Implications for the evaluation design
 
 1. Add an era-matched environment builder (pyenv + dated pip constraints) —
