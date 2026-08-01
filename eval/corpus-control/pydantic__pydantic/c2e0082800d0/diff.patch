@@ -1,0 +1,71 @@
+diff --git a/changes/995-dgasmith.md b/changes/995-dgasmith.md
+new file mode 100644
+index 000000000..654f322ae
+--- /dev/null
++++ b/changes/995-dgasmith.md
+@@ -0,0 +1 @@
++Adds ByteSize conversion to another unit.
+diff --git a/docs/examples/types_bytesize.py b/docs/examples/types_bytesize.py
+index 3581f3194..98a290a22 100644
+--- a/docs/examples/types_bytesize.py
++++ b/docs/examples/types_bytesize.py
+@@ -10,3 +10,4 @@ m = MyModel(size='50 PB')
+ print(m.size.human_readable())
+ print(m.size.human_readable(decimal=True))
+ 
++print(m.size.to('TiB'))
+diff --git a/pydantic/types.py b/pydantic/types.py
+index fa77514bc..a5d031def 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -675,3 +675,12 @@ class ByteSize(int):
+             num /= divisor
+ 
+         return f'{num:0.1f}{final_unit}'
++
++    def to(self, unit: str) -> float:
++
++        try:
++            unit_div = BYTE_SIZES[unit.lower()]
++        except KeyError:
++            raise errors.InvalidByteSizeUnit(unit=unit)
++
++        return self / unit_div
+diff --git a/tests/test_types.py b/tests/test_types.py
+index 22797f34d..885a2e078 100644
+--- a/tests/test_types.py
++++ b/tests/test_types.py
+@@ -43,6 +43,7 @@ from pydantic import (
+     conlist,
+     constr,
+     create_model,
++    errors,
+     validator,
+ )
+ 
+@@ -1866,6 +1867,17 @@ def test_bytesize_conversions(input_value, output, human_bin, human_dec):
+     assert m.size.human_readable(decimal=True) == human_dec
+ 
+ 
++def test_bytesize_to():
++    class Model(BaseModel):
++        size: ByteSize
++
++    m = Model(size='1GiB')
++
++    assert m.size.to('MiB') == pytest.approx(1024)
++    assert m.size.to('MB') == pytest.approx(1073.741824)
++    assert m.size.to('TiB') == pytest.approx(0.0009765625)
++
++
+ def test_bytesize_raises():
+     class Model(BaseModel):
+         size: ByteSize
+@@ -1879,3 +1891,7 @@ def test_bytesize_raises():
+     # 1Gi is not a valid unit unlike 1G
+     with pytest.raises(ValidationError, match='byte unit'):
+         Model(size='1Gi')
++
++    m = Model(size='1MB')
++    with pytest.raises(errors.InvalidByteSizeUnit, match='byte unit'):
++        m.size.to('bad_unit')

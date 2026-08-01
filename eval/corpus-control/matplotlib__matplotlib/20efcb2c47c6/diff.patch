@@ -1,0 +1,26 @@
+diff --git a/lib/matplotlib/contour.py b/lib/matplotlib/contour.py
+index 6aab5222b7..2f8c934e70 100644
+--- a/lib/matplotlib/contour.py
++++ b/lib/matplotlib/contour.py
+@@ -1600,7 +1600,7 @@ levels : int or array-like, optional
+ 
+     If an int *n*, use `~matplotlib.ticker.MaxNLocator`, which tries
+     to automatically choose no more than *n+1* "nice" contour levels
+-    between *vmin* and *vmax*.
++    between minimum and maximum numeric values of *Z*.
+ 
+     If array-like, draw contour lines at the specified levels.
+     The values must be in increasing order.
+diff --git a/lib/matplotlib/tri/tricontour.py b/lib/matplotlib/tri/tricontour.py
+index df3b44d941..ee9d85030c 100644
+--- a/lib/matplotlib/tri/tricontour.py
++++ b/lib/matplotlib/tri/tricontour.py
+@@ -114,7 +114,7 @@ levels : int or array-like, optional
+ 
+     If an int *n*, use `~matplotlib.ticker.MaxNLocator`, which tries to
+     automatically choose no more than *n+1* "nice" contour levels between
+-    *vmin* and *vmax*.
++    between minimum and maximum numeric values of *Z*.
+ 
+     If array-like, draw contour lines at the specified levels.  The values must
+     be in increasing order.

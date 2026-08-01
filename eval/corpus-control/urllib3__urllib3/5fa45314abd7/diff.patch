@@ -1,0 +1,254 @@
+diff --git a/dev-requirements.txt b/dev-requirements.txt
+index 18837f99..18dce0cb 100644
+--- a/dev-requirements.txt
++++ b/dev-requirements.txt
+@@ -9,6 +9,7 @@ pytest==4.6.6
+ pytest-timeout==1.3.3
+ flaky==3.6.1
+ trustme==0.5.3
++cryptography==2.8
+ 
+ # https://github.com/GoogleCloudPlatform/python-repo-tools/issues/23
+ pylint<2.0;python_version<="2.7"
+diff --git a/dummyserver/certs/server.combined.pem b/dummyserver/certs/server.combined.pem
+deleted file mode 100644
+index 96c8ce0d..00000000
+--- a/dummyserver/certs/server.combined.pem
++++ /dev/null
+@@ -1,36 +0,0 @@
+------BEGIN CERTIFICATE-----
+-MIIDczCCAtygAwIBAgIBATANBgkqhkiG9w0BAQUFADCBgTELMAkGA1UEBhMCRkkx
+-DjAMBgNVBAgMBWR1bW15MQ4wDAYDVQQHDAVkdW1teTEOMAwGA1UECgwFZHVtbXkx
+-DjAMBgNVBAsMBWR1bW15MREwDwYDVQQDDAhTbmFrZU9pbDEfMB0GCSqGSIb3DQEJ
+-ARYQZHVtbXlAdGVzdC5sb2NhbDAeFw0xMTEyMjIwNzU4NDBaFw0yMTEyMTgwNzU4
+-NDBaMGExCzAJBgNVBAYTAkZJMQ4wDAYDVQQIDAVkdW1teTEOMAwGA1UEBwwFZHVt
+-bXkxDjAMBgNVBAoMBWR1bW15MQ4wDAYDVQQLDAVkdW1teTESMBAGA1UEAwwJbG9j
+-YWxob3N0MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDXe3FqmCWvP8XPxqtT
+-+0bfL1Tvzvebi46k0WIcUV8bP3vyYiSRXG9ALmyzZH4GHY9UVs4OEDkCMDOBSezB
+-0y9ai/9doTNcaictdEBu8nfdXKoTtzrn+VX4UPrkH5hm7NQ1fTQuj1MR7yBCmYqN
+-3Q2Q+Efuujyx0FwBzAuy1aKYuwIDAQABo4IBGDCCARQwCQYDVR0TBAIwADAdBgNV
+-HQ4EFgQUG+dK5Uos08QUwAWofDb3a8YcYlIwgbYGA1UdIwSBrjCBq4AUGXd/I2Ji
+-QllF+3Wdx3NyBLszCi2hgYekgYQwgYExCzAJBgNVBAYTAkZJMQ4wDAYDVQQIDAVk
+-dW1teTEOMAwGA1UEBwwFZHVtbXkxDjAMBgNVBAoMBWR1bW15MQ4wDAYDVQQLDAVk
+-dW1teTERMA8GA1UEAwwIU25ha2VPaWwxHzAdBgkqhkiG9w0BCQEWEGR1bW15QHRl
+-c3QubG9jYWyCCQCz67HKL+G/4zAJBgNVHRIEAjAAMCQGA1UdEQQdMBuBDnJvb3RA
+-bG9jYWxob3N0gglsb2NhbGhvc3QwDQYJKoZIhvcNAQEFBQADgYEAgcW6X1ZUyufm
+-TFEqEAdpKXdL0rxDwcsM/qqqsXbkz17otH6ujPhBEagzdKtgeNKfy0aXz6rWZugk
+-lF0IqyC4mcI+vvfgGR5Iy4KdXMrIX98MbrvGJBfbdKhGW2b84wDV42DIDiD2ZGGe
+-6YZQQIo9LxjuOTf9jsvf+PIkbI4H0To=
+------END CERTIFICATE-----
+------BEGIN RSA PRIVATE KEY-----
+-MIICXgIBAAKBgQDXe3FqmCWvP8XPxqtT+0bfL1Tvzvebi46k0WIcUV8bP3vyYiSR
+-XG9ALmyzZH4GHY9UVs4OEDkCMDOBSezB0y9ai/9doTNcaictdEBu8nfdXKoTtzrn
+-+VX4UPrkH5hm7NQ1fTQuj1MR7yBCmYqN3Q2Q+Efuujyx0FwBzAuy1aKYuwIDAQAB
+-AoGBANOGBM6bbhq7ImYU4qf8+RQrdVg2tc9Fzo+yTnn30sF/rx8/AiCDOV4qdGAh
+-HKjKKaGj2H/rotqoEFcxBy05LrgJXxydBP72e9PYhNgKOcSmCQu4yALIPEXfKuIM
+-zgAErHVJ2l79fif3D4hzNyz+u5E1A9n3FG9cgaJSiYP8IG2RAkEA82GZ8rBkSGQQ
+-ZQ3oFuzPAAL21lbj8D0p76fsCpvS7427DtZDOjhOIKZmaeykpv+qSzRraqEqjDRi
+-S4kjQvwh6QJBAOKniZ+NDo2lSpbOFk+XlmABK1DormVpj8KebHEZYok1lRI+WiX9
+-Nnoe9YLgix7++6H5SBBCcTB4HvM+5A4BuwMCQQChcX/eZbXP81iQwB3Rfzp8xnqY
+-icDf7qKvz9Ma4myU7Y5E9EpaB1mD/P14jDpYcMW050vNyqTfpiwB8TFL0NZpAkEA
+-02jkFH9UyMgZV6qo4tqI98l/ZrtyF8OrxSNSEPhVkZf6EQc5vN9/lc8Uv1vESEgb
+-3AwRrKDcxRH2BHtv6qSwkwJAGjqnkIcEkA75r1e55/EF2chcZW1+tpwKupE8CtAH
+-VXGd5DVwt4cYWkLUj2gF2fJbV97uu2MAg5CFDb+vQ6p5eA==
+------END RSA PRIVATE KEY-----
+diff --git a/dummyserver/certs/server_password.key b/dummyserver/certs/server_password.key
+deleted file mode 100644
+index d15c205b..00000000
+--- a/dummyserver/certs/server_password.key
++++ /dev/null
+@@ -1,18 +0,0 @@
+------BEGIN RSA PRIVATE KEY-----
+-Proc-Type: 4,ENCRYPTED
+-DEK-Info: AES-256-CBC,D1BAE8F8B899FD9C2367B4CCF40917CF
+-
+-emTIXrQCcOcHtknXXZwK9X4qS8WcT6ozH2TTTDOcz9+G6CnszwvnsLCnO3eiLVbI
+-NXiFib7ulQksoHQd2MPC9pjWm1a8vadMYOWgx8jnYkgVE+l1ICGgZVACg55/E6Xj
+-qC4hZijQnKhPPyzdebeos2IIk7B3op4kHYJQGpwisAuSmT06c2x/jsmFr+2UMSq5
+-Xf+kWuQlHUPcDct6uLJJ4zhFljcxFvk3cgMZIJaqyWCX7+gDCOi2gWrP2l1osllc
+-q0egNUdg3RVrbxgxFn4XdHpmTNbIc3NTTR+xYuqHun8UbJrss1Ed25rrK0QzuV0l
+-vyKLj1MSOV9VRCujF58I9whDZSwt07Aozmm1JC9F8kyMhbL9C4gmwEKHIQ5N5I+V
+-mZKKAbJyQ2B1Oza/yZUnJG6hUyKTVbbCW57OltTDr4KlUzYUJJzTVyMy14AVv3zU
+-GzKX5m3AzWMjykpmHjYNcI/zMQem0OQB2U9Pqyyh2GzItnHpnkqb7RDJSIYiOToc
+-jA65NhS4sIZWWzwsRRaE2sq1rlssQFkzM3gIHi2C+tJD3PvmYRKW+6fLLNCqikMk
+-w4OvHc8U/hIY2YnGAzjE7bbCrkQduhCwBL7bK08HYrluQv6dgVJLA9TtC4jYLYeo
+-1uXDNGcY943fwU5h/YwQbvVQ5oo9oHBJuLgUzXlPjc+va4gw0JSG59GgXaTMVTjw
+-wybmcNlaFZbK0XrveX3ykJimnuDK29yY4nWSzPFRxvaaWaRAL4IgEXvKCiQhg8NE
+-snV2L3uQgJNv6RmE+c4HzQQ71iZuZ+iJglzt/iG4pO88zxjLLfT4qwfPAlEdxRmN
+------END RSA PRIVATE KEY-----
+diff --git a/dummyserver/server.py b/dummyserver/server.py
+index 5a6e6983..37dd78fc 100755
+--- a/dummyserver/server.py
++++ b/dummyserver/server.py
+@@ -37,12 +37,10 @@ CLIENT_INTERMEDIATE_PEM = "client_intermediate.pem"
+ CLIENT_NO_INTERMEDIATE_PEM = "client_no_intermediate.pem"
+ CLIENT_INTERMEDIATE_KEY = "client_intermediate.key"
+ CLIENT_CERT = os.path.join(CERTS_PATH, CLIENT_INTERMEDIATE_PEM)
+-PASSWORD_KEYFILE = os.path.join(CERTS_PATH, "server_password.key")
+ PASSWORD_CLIENT_KEYFILE = os.path.join(CERTS_PATH, "client_password.key")
+ DEFAULT_CA = os.path.join(CERTS_PATH, "cacert.pem")
+ DEFAULT_CA_KEY = os.path.join(CERTS_PATH, "cacert.key")
+ DEFAULT_CA_BAD = os.path.join(CERTS_PATH, "client_bad.pem")
+-COMBINED_CERT_AND_KEY = os.path.join(CERTS_PATH, "server.combined.pem")
+ 
+ 
+ def _has_ipv6(host):
+diff --git a/test/with_dummyserver/test_socketlevel.py b/test/with_dummyserver/test_socketlevel.py
+index 74ec5363..abfd0cfb 100644
+--- a/test/with_dummyserver/test_socketlevel.py
++++ b/test/with_dummyserver/test_socketlevel.py
+@@ -17,13 +17,7 @@ from urllib3.util.retry import Retry
+ from urllib3._collections import HTTPHeaderDict
+ 
+ from dummyserver.testcase import SocketDummyServerTestCase, consume_socket
+-from dummyserver.server import (
+-    DEFAULT_CERTS,
+-    DEFAULT_CA,
+-    COMBINED_CERT_AND_KEY,
+-    PASSWORD_KEYFILE,
+-    get_unreachable_address,
+-)
++from dummyserver.server import DEFAULT_CERTS, DEFAULT_CA, get_unreachable_address
+ 
+ from .. import onlyPy3, LogRecorder
+ 
+@@ -36,13 +30,19 @@ except ImportError:
+ 
+ 
+ from collections import OrderedDict
++import os.path
+ from threading import Event
+ import select
+ import socket
++import shutil
+ import ssl
++import tempfile
+ import mock
+ 
++from cryptography.hazmat.backends import default_backend
++from cryptography.hazmat.primitives import serialization
+ import pytest
++import trustme
+ 
+ from test import (
+     fails_on_travis_gce,
+@@ -110,6 +110,40 @@ class TestClientCerts(SocketDummyServerTestCase):
+     Tests for client certificate support.
+     """
+ 
++    @classmethod
++    def _encrypt_key(cls, private_key_pem, password):
++        private_key = serialization.load_pem_private_key(
++            private_key_pem.bytes(), password=None, backend=default_backend()
++        )
++        encrypted_key = private_key.private_bytes(
++            serialization.Encoding.PEM,
++            serialization.PrivateFormat.TraditionalOpenSSL,
++            serialization.BestAvailableEncryption(password),
++        )
++        return trustme.Blob(encrypted_key)
++
++    @classmethod
++    def setup_class(cls):
++        cls.tmpdir = tempfile.mkdtemp()
++        ca = trustme.CA()
++        cert = ca.issue_cert(u"localhost")
++        encrypted_key = cls._encrypt_key(cert.private_key_pem, b"letmein")
++
++        cls.ca_path = os.path.join(cls.tmpdir, "ca.pem")
++        cls.cert_combined_path = os.path.join(cls.tmpdir, "server.combined.pem")
++        cls.cert_path = os.path.join(cls.tmpdir, "server.pem")
++        cls.key_path = os.path.join(cls.tmpdir, "key.pem")
++        cls.password_key_path = os.path.join(cls.tmpdir, "password_key.pem")
++
++        ca.cert_pem.write_to_path(cls.ca_path)
++        cert.private_key_and_cert_chain_pem.write_to_path(cls.cert_combined_path)
++        cert.cert_chain_pems[0].write_to_path(cls.cert_path)
++        cert.private_key_pem.write_to_path(cls.key_path)
++        encrypted_key.write_to_path(cls.password_key_path)
++
++    def teardown_class(cls):
++        shutil.rmtree(cls.tmpdir)
++
+     def _wrap_in_ssl(self, sock):
+         """
+         Given a single socket, wraps it in TLS.
+@@ -118,9 +152,9 @@ class TestClientCerts(SocketDummyServerTestCase):
+             sock,
+             ssl_version=ssl.PROTOCOL_SSLv23,
+             cert_reqs=ssl.CERT_REQUIRED,
+-            ca_certs=DEFAULT_CA,
+-            certfile=DEFAULT_CERTS["certfile"],
+-            keyfile=DEFAULT_CERTS["keyfile"],
++            ca_certs=self.ca_path,
++            certfile=self.cert_path,
++            keyfile=self.key_path,
+             server_side=True,
+         )
+ 
+@@ -158,10 +192,10 @@ class TestClientCerts(SocketDummyServerTestCase):
+         with HTTPSConnectionPool(
+             self.host,
+             self.port,
+-            cert_file=DEFAULT_CERTS["certfile"],
+-            key_file=DEFAULT_CERTS["keyfile"],
++            cert_file=self.cert_path,
++            key_file=self.key_path,
+             cert_reqs="REQUIRED",
+-            ca_certs=DEFAULT_CA,
++            ca_certs=self.ca_path,
+         ) as pool:
+             pool.request("GET", "/", retries=0)
+             done_receiving.set()
+@@ -202,9 +236,9 @@ class TestClientCerts(SocketDummyServerTestCase):
+         with HTTPSConnectionPool(
+             self.host,
+             self.port,
+-            cert_file=COMBINED_CERT_AND_KEY,
++            cert_file=self.cert_combined_path,
+             cert_reqs="REQUIRED",
+-            ca_certs=DEFAULT_CA,
++            ca_certs=self.ca_path,
+         ) as pool:
+             pool.request("GET", "/", retries=0)
+             done_receiving.set()
+@@ -230,7 +264,7 @@ class TestClientCerts(SocketDummyServerTestCase):
+ 
+         self._start_server(socket_handler)
+         with HTTPSConnectionPool(
+-            self.host, self.port, cert_reqs="REQUIRED", ca_certs=DEFAULT_CA
++            self.host, self.port, cert_reqs="REQUIRED", ca_certs=self.ca_path
+         ) as pool:
+             with pytest.raises(MaxRetryError):
+                 pool.request("GET", "/", retries=0)
+@@ -277,9 +311,7 @@ class TestClientCerts(SocketDummyServerTestCase):
+         self._start_server(socket_handler)
+         ssl_context = ssl_.SSLContext(ssl_.PROTOCOL_SSLv23)
+         ssl_context.load_cert_chain(
+-            certfile=DEFAULT_CERTS["certfile"],
+-            keyfile=PASSWORD_KEYFILE,
+-            password=password,
++            certfile=self.cert_path, keyfile=self.password_key_path, password=password
+         )
+ 
+         with HTTPSConnectionPool(
+@@ -287,7 +319,7 @@ class TestClientCerts(SocketDummyServerTestCase):
+             self.port,
+             ssl_context=ssl_context,
+             cert_reqs="REQUIRED",
+-            ca_certs=DEFAULT_CA,
++            ca_certs=self.ca_path,
+         ) as pool:
+             pool.request("GET", "/", retries=0)
+             done_receiving.set()
+@@ -308,8 +340,8 @@ class TestClientCerts(SocketDummyServerTestCase):
+ 
+         with pytest.raises(expected_error):
+             context.load_cert_chain(
+-                certfile=DEFAULT_CERTS["certfile"],
+-                keyfile=PASSWORD_KEYFILE,
++                certfile=self.cert_path,
++                keyfile=self.password_key_path,
+                 password=b"letmei",
+             )
+ 

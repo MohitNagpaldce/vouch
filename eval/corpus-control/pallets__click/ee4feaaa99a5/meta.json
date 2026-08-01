@@ -1,0 +1,17 @@
+{
+  "repo": "pallets/click",
+  "sha": "ee4feaaa99a50831fb52963a08e16c9d3e70aacd",
+  "kind": "control_good",
+  "subject": "expand patterns in Windows args",
+  "evidence_subject": "expand patterns in Windows args",
+  "author": "David Lord",
+  "date": "2021-04-01T11:04:52-07:00",
+  "impl_files": [
+    "src/click/core.py",
+    "src/click/utils.py"
+  ],
+  "test_files": [
+    "tests/test_utils.py"
+  ],
+  "diff_lines": 137
+}

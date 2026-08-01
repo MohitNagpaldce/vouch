@@ -1,0 +1,181 @@
+diff --git a/CHANGES b/CHANGES
+index cc43aa5..31a5bb8 100644
+--- a/CHANGES
++++ b/CHANGES
+@@ -25,8 +25,10 @@ Version 2.10
+ - The ``random`` filter is no longer incorrectly constant folded and will
+   produce a new random choice each time the template is rendered. (`#478`_)
+ - Add a ``unique`` filter. (`#469`_)
++- Add ``min`` and ``max`` filters. (`#475`_)
+ 
+ .. _#469: https://github.com/pallets/jinja/pull/469
++.. _#475: https://github.com/pallets/jinja/pull/475
+ .. _#478: https://github.com/pallets/jinja/pull/478
+ 
+ Version 2.9.6
+diff --git a/jinja2/filters.py b/jinja2/filters.py
+index cdd1277..cb37728 100644
+--- a/jinja2/filters.py
++++ b/jinja2/filters.py
+@@ -279,25 +279,11 @@ def do_unique(environment, value, case_sensitive=False, attribute=None):
+         {{ ['foo', 'bar', 'foobar', 'FooBar']|unique }}
+             -> ['foo', 'bar', 'foobar']
+ 
+-    This filter complements the `groupby` filter, which sorts and groups an
+-    iterable by a certain attribute. The `unique` filter groups the items
+-    from the iterable by themselves instead and always returns a flat list of
+-    unique items. That can be useful for example when you need to concatenate
+-    that items:
++    The unique items are yielded in the same order as their first occurrence in
++    the iterable passed to the filter.
+ 
+-    .. sourcecode:: jinja
+-
+-        {{ ['foo', 'bar', 'foobar', 'FooBar']|unique|join(',') }}
+-            -> foo,bar,foobar
+-
+-    Also note that the resulting list contains the items in the same order
+-    as their first occurrence in the iterable passed to the filter. If sorting
+-    is needed you can still chain the `unique` and `sort` filter:
+-
+-    .. sourcecode:: jinja
+-
+-        {{ ['foo', 'bar', 'foobar', 'FooBar']|unique|sort }}
+-            -> ['bar', 'foo', 'foobar']
++    :param case_sensitive: Treat upper and lower case strings as distinct.
++    :param attribute: Filter objects with unique values for this attribute.
+     """
+     getter = make_attrgetter(
+         environment, attribute,
+@@ -313,19 +299,23 @@ def do_unique(environment, value, case_sensitive=False, attribute=None):
+             yield item
+ 
+ 
+-def _min_or_max(func, value, environment, attribute, case_sensitive):
++def _min_or_max(environment, value, func, case_sensitive, attribute):
+     it = iter(value)
++
+     try:
+         first = next(it)
+     except StopIteration:
+-        return environment.undefined('No aggregated item, sequence was empty')
++        return environment.undefined('No aggregated item, sequence was empty.')
+ 
+-    key_func = make_attrgetter(environment, attribute, not case_sensitive)
++    key_func = make_attrgetter(
++        environment, attribute,
++        ignore_case if not case_sensitive else None
++    )
+     return func(chain([first], it), key=key_func)
+ 
+ 
+ @environmentfilter
+-def do_min(environment, value, attribute=None, case_sensitive=False):
++def do_min(environment, value, case_sensitive=False, attribute=None):
+     """Return the smallest item from the sequence.
+ 
+     .. sourcecode:: jinja
+@@ -333,33 +323,25 @@ def do_min(environment, value, attribute=None, case_sensitive=False):
+         {{ [1, 2, 3]|min }}
+             -> 1
+ 
+-    It is also possible to get the item providing the smallest value for a
+-    certain attribute:
+-
+-    .. sourcecode:: jinja
+-
+-        {{ users|min('last_login') }}
++    :param case_sensitive: Treat upper and lower case strings as distinct.
++    :param attribute: Get the object with the max value of this attribute.
+     """
+-    return _min_or_max(min, value, environment, attribute, case_sensitive)
++    return _min_or_max(environment, value, min, case_sensitive, attribute)
+ 
+ 
+ @environmentfilter
+-def do_max(environment, value, attribute=None, case_sensitive=False):
+-    """Return the largest item from the sequence.
++def do_max(environment, value, case_sensitive=False, attribute=None):
++    """Return the smallest item from the sequence.
+ 
+     .. sourcecode:: jinja
+ 
+         {{ [1, 2, 3]|max }}
+             -> 3
+ 
+-    It is also possible to get the item providing the largest value for a
+-    certain attribute:
+-
+-    .. sourcecode:: jinja
+-
+-        {{ users|max('last_login') }}
++    :param case_sensitive: Treat upper and lower case strings as distinct.
++    :param attribute: Get the object with the max value of this attribute.
+     """
+-    return _min_or_max(max, value, environment, attribute, case_sensitive)
++    return _min_or_max(environment, value, max, case_sensitive, attribute)
+ 
+ 
+ def do_default(value, default_value=u'', boolean=False):
+diff --git a/tests/test_filters.py b/tests/test_filters.py
+index 9c4504a..84e77d9 100644
+--- a/tests/test_filters.py
++++ b/tests/test_filters.py
+@@ -391,30 +391,6 @@ class TestFilter(object):
+         tmpl = env.from_string('''{{ items|sort(attribute='value')|join }}''')
+         assert tmpl.render(items=map(Magic, [3, 2, 4, 1])) == '1234'
+ 
+-    def test_min1(self, env):
+-        tmpl = env.from_string('{{ ["a", "B"]|min }}')
+-        assert tmpl.render() == 'a'
+-
+-    def test_min2(self, env):
+-        tmpl = env.from_string('{{ []|min }}')
+-        assert tmpl.render() == ''
+-
+-    def test_min3(self, env):
+-        tmpl = env.from_string('{{ items|min("value") }}')
+-        assert tmpl.render(items=map(Magic, [5, 1, 9])) == '1'
+-
+-    def test_max1(self, env):
+-        tmpl = env.from_string('{{ ["a", "B"]|max }}')
+-        assert tmpl.render() == 'B'
+-
+-    def test_max2(self, env):
+-        tmpl = env.from_string('{{ []|max }}')
+-        assert tmpl.render() == ''
+-
+-    def test_max3(self, env):
+-        tmpl = env.from_string('{{ items|max("value") }}')
+-        assert tmpl.render(items=map(Magic, [5, 9, 1])) == '9'
+-
+     def test_unique(self, env):
+         t = env.from_string('{{ "".join(["b", "A", "a", "b"]|unique) }}')
+         assert t.render() == "bA"
+@@ -427,6 +403,26 @@ class TestFilter(object):
+         t = env.from_string("{{ items|unique(attribute='value')|join }}")
+         assert t.render(items=map(Magic, [3, 2, 4, 1, 2])) == '3241'
+ 
++    @pytest.mark.parametrize('source,expect', (
++        ('{{ ["a", "B"]|min }}', 'a'),
++        ('{{ ["a", "B"]|min(case_sensitive=true) }}', 'B'),
++        ('{{ []|min }}', ''),
++        ('{{ ["a", "B"]|max }}', 'B'),
++        ('{{ ["a", "B"]|max(case_sensitive=true) }}', 'a'),
++        ('{{ []|max }}', ''),
++    ))
++    def test_min_max(self, env, source, expect):
++        t = env.from_string(source)
++        assert t.render() == expect
++
++    @pytest.mark.parametrize('name,expect', (
++        ('min', '1'),
++        ('max', '9'),
++    ))
++    def test_min_max_attribute(self, env, name, expect):
++        t = env.from_string('{{ items|' + name + '(attribute="value") }}')
++        assert t.render(items=map(Magic, [5, 1, 9])) == expect
++
+     def test_groupby(self, env):
+         tmpl = env.from_string('''
+         {%- for grouper, list in [{'foo': 1, 'bar': 2},

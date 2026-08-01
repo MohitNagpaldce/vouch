@@ -1,0 +1,16 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "c35601189219888191b72fc7c256221d04540a5f",
+  "kind": "control_good",
+  "subject": "Fix Json strategy serialization failure (#4005)",
+  "evidence_subject": "Fix Json strategy serialization failure (#4005)",
+  "author": "SergioSim",
+  "date": "2022-08-08T16:45:21+02:00",
+  "impl_files": [
+    "pydantic/_hypothesis_plugin.py"
+  ],
+  "test_files": [
+    "tests/test_hypothesis_plugin.py"
+  ],
+  "diff_lines": 42
+}

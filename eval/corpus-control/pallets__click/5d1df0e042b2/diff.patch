@@ -1,0 +1,108 @@
+diff --git a/CHANGES b/CHANGES
+index 5e8c57c..a44f322 100644
+--- a/CHANGES
++++ b/CHANGES
+@@ -31,6 +31,9 @@ Version 7.0
+   See #790.
+ - Allow autocompletion function to determine whether or not to return
+   completions that start with the incomplete argument.
++- Subcommands that are named by the function now automatically have the
++  underscore replaced with a dash.  So if you register a function named
++  `my_command` it becomes `my-command` in the command line interface.
+ 
+ Version 6.8
+ -----------
+diff --git a/click/decorators.py b/click/decorators.py
+index c0b9e85..8e5a462 100644
+--- a/click/decorators.py
++++ b/click/decorators.py
+@@ -85,7 +85,7 @@ def _make_command(f, name, attrs, cls):
+         help = inspect.cleandoc(help)
+     attrs['help'] = help
+     _check_for_unicode_literals()
+-    return cls(name=name or f.__name__.lower(),
++    return cls(name=name or f.__name__.lower().replace('_', '-'),
+                callback=f, params=params, **attrs)
+ 
+ 
+@@ -105,7 +105,7 @@ def command(name=None, cls=None, **attrs):
+     command :class:`Group`.
+ 
+     :param name: the name of the command.  This defaults to the function
+-                 name.
++                 name with underscores replaced by dashes.
+     :param cls: the command class to instantiate.  This defaults to
+                 :class:`Command`.
+     """
+diff --git a/tests/test_commands.py b/tests/test_commands.py
+index 9b6a6fb..e900c43 100644
+--- a/tests/test_commands.py
++++ b/tests/test_commands.py
+@@ -62,7 +62,7 @@ def test_auto_shorthelp(runner):
+         r'Commands:\n\s+'
+         r'long\s+This is a long text that is too long to show\.\.\.\n\s+'
+         r'short\s+This is a short text\.\n\s+'
+-        r'special_chars\s+Login and store the token in ~/.netrc\.\s*',
++        r'special-chars\s+Login and store the token in ~/.netrc\.\s*',
+         result.output) is not None
+ 
+ 
+@@ -206,7 +206,7 @@ def test_other_command_invoke_with_defaults(runner):
+     @click.option('--foo', type=click.INT, default=42)
+     @click.pass_context
+     def other_cmd(ctx, foo):
+-        assert ctx.info_name == 'other_cmd'
++        assert ctx.info_name == 'other-cmd'
+         click.echo(foo)
+ 
+     result = runner.invoke(cli, [])
+@@ -253,3 +253,17 @@ def test_unprocessed_options(runner):
+         'Verbosity: 4',
+         'Args: -foo|-x|--muhaha|x|y|-x',
+     ]
++
++
++def test_subcommand_naming(runner):
++    @click.group()
++    def cli():
++        pass
++
++    @cli.command()
++    def foo_bar():
++        click.echo('foo-bar')
++
++    result = runner.invoke(cli, ['foo-bar'])
++    assert not result.exception
++    assert result.output.splitlines() == ['foo-bar']
+diff --git a/tests/test_formatting.py b/tests/test_formatting.py
+index 4c1c491..b3de277 100644
+--- a/tests/test_formatting.py
++++ b/tests/test_formatting.py
+@@ -74,11 +74,11 @@ def test_wrapping_long_options_strings(runner):
+ 
+     # 54 is chosen as a length where the second line is one character
+     # longer than the maximum length.
+-    result = runner.invoke(cli, ['a_very_long', 'command', '--help'],
++    result = runner.invoke(cli, ['a-very-long', 'command', '--help'],
+                            terminal_width=54)
+     assert not result.exception
+     assert result.output.splitlines() == [
+-        'Usage: cli a_very_long command [OPTIONS] FIRST SECOND',
++        'Usage: cli a-very-long command [OPTIONS] FIRST SECOND',
+         '                               THIRD FOURTH FIFTH',
+         '                               SIXTH',
+         '',
+@@ -111,11 +111,11 @@ def test_wrapping_long_command_name(runner):
+         """A command.
+         """
+ 
+-    result = runner.invoke(cli, ['a_very_very_very_long', 'command', '--help'],
++    result = runner.invoke(cli, ['a-very-very-very-long', 'command', '--help'],
+                            terminal_width=54)
+     assert not result.exception
+     assert result.output.splitlines() == [
+-        'Usage: cli a_very_very_very_long command ',
++        'Usage: cli a-very-very-very-long command ',
+         '           [OPTIONS] FIRST SECOND THIRD FOURTH FIFTH',
+         '           SIXTH',
+         '',

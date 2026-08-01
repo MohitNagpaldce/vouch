@@ -1,0 +1,20 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "b4f8fb5dbc20b91afd0923d631a8b57dab9e952b",
+  "kind": "control_good",
+  "subject": "Add hide_input_in_errors config (#5879)",
+  "evidence_subject": "Add hide_input_in_errors config (#5879)",
+  "author": "Hasan Ramezani",
+  "date": "2023-05-26T19:56:18+03:30",
+  "impl_files": [
+    "pydantic/_internal/_config.py",
+    "pydantic/config.py"
+  ],
+  "test_files": [
+    "tests/test_config.py",
+    "tests/test_errors.py",
+    "tests/test_types.py",
+    "tests/test_validators.py"
+  ],
+  "diff_lines": 236
+}

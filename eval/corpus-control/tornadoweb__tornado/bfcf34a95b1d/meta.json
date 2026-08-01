@@ -1,0 +1,14 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "bfcf34a95b1de4a7fd8a02b6465da8c73c693760",
+  "kind": "control_good",
+  "subject": "demos/file_uploader: add missing __name__ == __main__ stanza",
+  "evidence_subject": "demos/file_uploader: add missing __name__ == __main__ stanza",
+  "author": "Jehiah Czebotar",
+  "date": "2017-05-30T09:27:15-04:00",
+  "impl_files": [
+    "demos/file_upload/file_uploader.py"
+  ],
+  "test_files": [],
+  "diff_lines": 29
+}

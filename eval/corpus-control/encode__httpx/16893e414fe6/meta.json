@@ -1,0 +1,17 @@
+{
+  "repo": "encode/httpx",
+  "sha": "16893e414fe68bd41890dc52f449328679a65134",
+  "kind": "control_good",
+  "subject": "Add support for no-proxy configurations (#1099)",
+  "evidence_subject": "Add support for no-proxy configurations (#1099)",
+  "author": "Tom Christie",
+  "date": "2020-07-31T10:21:11+01:00",
+  "impl_files": [
+    "httpx/_client.py",
+    "httpx/_types.py"
+  ],
+  "test_files": [
+    "tests/client/test_proxies.py"
+  ],
+  "diff_lines": 126
+}

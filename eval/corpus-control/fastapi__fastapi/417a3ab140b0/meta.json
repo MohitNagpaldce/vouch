@@ -1,0 +1,14 @@
+{
+  "repo": "fastapi/fastapi",
+  "sha": "417a3ab140b0017b4a4462fa08816e1bd9e629fd",
+  "kind": "control_good",
+  "subject": ":bookmark: Release 0.36.0",
+  "evidence_subject": ":bookmark: Release 0.36.0",
+  "author": "Sebasti\u00e1n Ram\u00edrez",
+  "date": "2019-08-26T08:28:33-05:00",
+  "impl_files": [
+    "fastapi/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 24
+}

@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "c6ddeb7d5f64789ed0bbc1ffef8596a79bc06fd9",
+  "kind": "control_good",
+  "subject": "Add support back for custom resolves on old resolve method",
+  "evidence_subject": "Add support back for custom resolves on old resolve method",
+  "author": "Armin Ronacher",
+  "date": "2017-01-12T20:10:58+01:00",
+  "impl_files": [
+    "jinja2/runtime.py"
+  ],
+  "test_files": [
+    "tests/test_regression.py"
+  ],
+  "diff_lines": 151
+}

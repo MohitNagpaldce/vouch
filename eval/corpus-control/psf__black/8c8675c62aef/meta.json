@@ -1,0 +1,14 @@
+{
+  "repo": "psf/black",
+  "sha": "8c8675c62aef4fb662c686d19ebd35dc047258f0",
+  "kind": "control_good",
+  "subject": "Update documentation dependencies (#3118)",
+  "evidence_subject": "Update documentation dependencies (#3118)",
+  "author": "Richard Si",
+  "date": "2022-06-11T11:44:01-04:00",
+  "impl_files": [
+    "docs/conf.py"
+  ],
+  "test_files": [],
+  "diff_lines": 30
+}

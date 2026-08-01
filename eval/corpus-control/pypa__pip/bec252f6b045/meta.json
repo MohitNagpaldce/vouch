@@ -1,0 +1,14 @@
+{
+  "repo": "pypa/pip",
+  "sha": "bec252f6b0458ae83b2878cbfd47839d958624f8",
+  "kind": "control_good",
+  "subject": "Use `debug` level for logging truststore disablement on <3.10",
+  "evidence_subject": "Use `debug` level for logging truststore disablement on <3.10",
+  "author": "Pradyun Gedam",
+  "date": "2024-07-10T00:45:49+01:00",
+  "impl_files": [
+    "src/pip/_internal/cli/index_command.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

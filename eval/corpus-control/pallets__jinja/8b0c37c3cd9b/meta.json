@@ -1,0 +1,15 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "8b0c37c3cd9b1589dd62408fd8b3800119d08c1a",
+  "kind": "control_good",
+  "subject": "Ready for another release",
+  "evidence_subject": "Ready for another release",
+  "author": "Armin Ronacher",
+  "date": "2013-08-07T14:27:53+01:00",
+  "impl_files": [
+    "jinja2/__init__.py",
+    "setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 26
+}

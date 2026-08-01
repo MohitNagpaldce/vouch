@@ -1,0 +1,21 @@
+{
+  "repo": "encode/httpx",
+  "sha": "12dd157feaa26a3cd9fbf933e127fefb2ddd8404",
+  "kind": "control_good",
+  "subject": "Public Auth API (#732)",
+  "evidence_subject": "Public Auth API (#732)",
+  "author": "Tom Christie",
+  "date": "2020-01-07T13:20:23Z",
+  "impl_files": [
+    "httpx/__init__.py",
+    "httpx/auth.py",
+    "httpx/client.py",
+    "httpx/exceptions.py",
+    "httpx/models.py"
+  ],
+  "test_files": [
+    "tests/client/test_auth.py",
+    "tests/models/test_requests.py"
+  ],
+  "diff_lines": 313
+}

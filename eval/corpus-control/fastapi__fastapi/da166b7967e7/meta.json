@@ -1,0 +1,18 @@
+{
+  "repo": "fastapi/fastapi",
+  "sha": "da166b7967e7ec404be8053c39147b07887da45d",
+  "kind": "control_good",
+  "subject": ":lock: Fix constraining return values to model",
+  "evidence_subject": ":lock: Fix constraining return values to model",
+  "author": "Sebasti\u00e1n Ram\u00edrez",
+  "date": "2018-12-10T16:46:40+04:00",
+  "impl_files": [
+    "fastapi/__init__.py",
+    "fastapi/routing.py"
+  ],
+  "test_files": [
+    "tests/main.py",
+    "tests/test_path.py"
+  ],
+  "diff_lines": 389
+}

@@ -1,0 +1,92 @@
+diff --git a/django/contrib/postgres/aggregates/mixins.py b/django/contrib/postgres/aggregates/mixins.py
+index 2ab9052467..f2ba5c4439 100644
+--- a/django/contrib/postgres/aggregates/mixins.py
++++ b/django/contrib/postgres/aggregates/mixins.py
+@@ -24,7 +24,7 @@ class OrderableAggMixin:
+             ordering_params = []
+             ordering_expr_sql = []
+             for expr in self.ordering:
+-                expr_sql, expr_params = expr.as_sql(compiler, connection)
++                expr_sql, expr_params = compiler.compile(expr)
+                 ordering_expr_sql.append(expr_sql)
+                 ordering_params.extend(expr_params)
+             sql, sql_params = super().as_sql(compiler, connection, ordering=(
+diff --git a/docs/releases/3.1.3.txt b/docs/releases/3.1.3.txt
+index 4236efce1b..4f547577ce 100644
+--- a/docs/releases/3.1.3.txt
++++ b/docs/releases/3.1.3.txt
+@@ -20,3 +20,9 @@ Bugfixes
+   :class:`forms.JSONField <django.forms.JSONField>` and read-only
+   :class:`models.JSONField <django.db.models.JSONField>` values in the admin
+   (:ticket:`32080`).
++
++* Fixed a regression in Django 3.1 that caused a crash of
++  :class:`~django.contrib.postgres.aggregates.ArrayAgg`,
++  :class:`~django.contrib.postgres.aggregates.JSONBAgg`, and
++  :class:`~django.contrib.postgres.aggregates.StringAgg` with ``ordering``
++  on key transforms for :class:`~django.db.models.JSONField` (:ticket:`32096`).
+diff --git a/tests/postgres_tests/test_aggregates.py b/tests/postgres_tests/test_aggregates.py
+index b6cce4658b..06cca6313d 100644
+--- a/tests/postgres_tests/test_aggregates.py
++++ b/tests/postgres_tests/test_aggregates.py
+@@ -1,7 +1,7 @@
+ import json
+ 
+ from django.db.models import CharField, F, OuterRef, Q, Subquery, Value
+-from django.db.models.fields.json import KeyTransform
++from django.db.models.fields.json import KeyTextTransform, KeyTransform
+ from django.db.models.functions import Cast, Concat, Substr
+ from django.test.utils import Approximate
+ 
+@@ -106,6 +106,16 @@ class TestGeneralAggregate(PostgreSQLTestCase):
+         )
+         self.assertEqual(values, {'arrayagg': ['pl', 'en']})
+ 
++    def test_array_agg_jsonfield_ordering(self):
++        values = AggregateTestModel.objects.aggregate(
++            arrayagg=ArrayAgg(
++                KeyTransform('lang', 'json_field'),
++                filter=Q(json_field__lang__isnull=False),
++                ordering=KeyTransform('lang', 'json_field'),
++            ),
++        )
++        self.assertEqual(values, {'arrayagg': ['en', 'pl']})
++
+     def test_array_agg_filter(self):
+         values = AggregateTestModel.objects.aggregate(
+             arrayagg=ArrayAgg('integer_field', filter=Q(integer_field__gt=0)),
+@@ -232,6 +242,17 @@ class TestGeneralAggregate(PostgreSQLTestCase):
+                 )
+                 self.assertEqual(values, {'stringagg': expected_output})
+ 
++    def test_string_agg_jsonfield_ordering(self):
++        values = AggregateTestModel.objects.aggregate(
++            stringagg=StringAgg(
++                KeyTextTransform('lang', 'json_field'),
++                delimiter=';',
++                ordering=KeyTextTransform('lang', 'json_field'),
++                output_field=CharField(),
++            ),
++        )
++        self.assertEqual(values, {'stringagg': 'en;pl'})
++
+     def test_string_agg_filter(self):
+         values = AggregateTestModel.objects.aggregate(
+             stringagg=StringAgg(
+@@ -297,6 +318,16 @@ class TestGeneralAggregate(PostgreSQLTestCase):
+                 )
+                 self.assertEqual(values, {'jsonagg': expected_output})
+ 
++    def test_json_agg_jsonfield_ordering(self):
++        values = AggregateTestModel.objects.aggregate(
++            jsonagg=JSONBAgg(
++                KeyTransform('lang', 'json_field'),
++                filter=Q(json_field__lang__isnull=False),
++                ordering=KeyTransform('lang', 'json_field'),
++            ),
++        )
++        self.assertEqual(values, {'jsonagg': ['en', 'pl']})
++
+     def test_string_agg_array_agg_ordering_in_subquery(self):
+         stats = []
+         for i, agg in enumerate(AggregateTestModel.objects.order_by('char_field')):

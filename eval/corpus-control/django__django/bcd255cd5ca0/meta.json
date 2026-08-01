@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "bcd255cd5ca0a1e686d276cca71f45ec400d84a2",
+  "kind": "control_good",
+  "subject": "Fixed #35354 -- Simplified ASGIRequest path handling.",
+  "evidence_subject": "Fixed #35354 -- Simplified ASGIRequest path handling.",
+  "author": "Carlton Gibson",
+  "date": "2024-04-05T10:24:36+02:00",
+  "impl_files": [
+    "django/core/handlers/asgi.py"
+  ],
+  "test_files": [
+    "tests/handlers/tests.py"
+  ],
+  "diff_lines": 47
+}

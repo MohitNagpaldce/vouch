@@ -1,0 +1,14 @@
+diff --git a/src/_pytest/mark/__init__.py b/src/_pytest/mark/__init__.py
+index 702732c97..a4f942c5a 100644
+--- a/src/_pytest/mark/__init__.py
++++ b/src/_pytest/mark/__init__.py
+@@ -238,9 +238,6 @@ class MarkMatcher:
+         if not (matches := self.own_mark_name_mapping.get(name, [])):
+             return False
+ 
+-        if not kwargs:
+-            return True
+-
+         for mark in matches:
+             if all(mark.kwargs.get(k, NOT_SET) == v for k, v in kwargs.items()):
+                 return True

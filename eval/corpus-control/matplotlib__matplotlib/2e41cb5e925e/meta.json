@@ -1,0 +1,14 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "2e41cb5e925e23b93b8b7108628d7818fb904b78",
+  "kind": "control_good",
+  "subject": "update and fix docs",
+  "evidence_subject": "update and fix docs",
+  "author": "saranti",
+  "date": "2024-03-19T23:28:58+11:00",
+  "impl_files": [
+    "lib/matplotlib/axes/_axes.py"
+  ],
+  "test_files": [],
+  "diff_lines": 76
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "ecf449b503b51f6344f7dfcaac8d58d2967f52a4",
+  "kind": "control_good",
+  "subject": "Update _core.py to show valid plot types in the Error Message for Invalid plot kind (#55758)",
+  "evidence_subject": "Update _core.py to show valid plot types in the Error Message for Invalid plot kind (#55758)",
+  "author": "Ahmad Mustafa Anis",
+  "date": "2023-11-01T04:40:59+05:00",
+  "impl_files": [
+    "pandas/plotting/_core.py"
+  ],
+  "test_files": [],
+  "diff_lines": 16
+}

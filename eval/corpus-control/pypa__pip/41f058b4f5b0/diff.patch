@@ -1,0 +1,61 @@
+diff --git a/src/pip/_internal/vcs/__init__.py b/src/pip/_internal/vcs/__init__.py
+index 71703c6f7..32df79608 100644
+--- a/src/pip/_internal/vcs/__init__.py
++++ b/src/pip/_internal/vcs/__init__.py
+@@ -210,7 +210,8 @@ class VersionControl(object):
+         """
+         return RevOptions(self, rev, extra_args=extra_args)
+ 
+-    def _is_local_repository(self, repo):
++    @classmethod
++    def _is_local_repository(cls, repo):
+         # type: (str) -> bool
+         """
+            posix absolute paths start with os.path.sep,
+diff --git a/src/pip/_internal/vcs/git.py b/src/pip/_internal/vcs/git.py
+index 0b31beed8..e7d4e2b16 100644
+--- a/src/pip/_internal/vcs/git.py
++++ b/src/pip/_internal/vcs/git.py
+@@ -283,11 +283,12 @@ class Git(VersionControl):
+         )
+         return current_rev.strip()
+ 
+-    def _get_subdirectory(self, location):
++    @classmethod
++    def _get_subdirectory(cls, location):
+         """Return the relative path of setup.py to the git repo root."""
+         # find the repo root
+-        git_dir = self.run_command(['rev-parse', '--git-dir'],
+-                                   show_stdout=False, cwd=location).strip()
++        git_dir = cls.run_command(['rev-parse', '--git-dir'],
++                                  show_stdout=False, cwd=location).strip()
+         if not os.path.isabs(git_dir):
+             git_dir = os.path.join(location, git_dir)
+         root_dir = os.path.join(git_dir, '..')
+diff --git a/src/pip/_internal/vcs/subversion.py b/src/pip/_internal/vcs/subversion.py
+index 3aea1c184..6840474eb 100644
+--- a/src/pip/_internal/vcs/subversion.py
++++ b/src/pip/_internal/vcs/subversion.py
+@@ -136,10 +136,11 @@ class Subversion(VersionControl):
+ 
+         return self._get_svn_url_rev(location)[0]
+ 
+-    def _get_svn_url_rev(self, location):
++    @classmethod
++    def _get_svn_url_rev(cls, location):
+         from pip._internal.exceptions import InstallationError
+ 
+-        entries_path = os.path.join(location, self.dirname, 'entries')
++        entries_path = os.path.join(location, cls.dirname, 'entries')
+         if os.path.exists(entries_path):
+             with open(entries_path) as f:
+                 data = f.read()
+@@ -162,7 +163,7 @@ class Subversion(VersionControl):
+         else:
+             try:
+                 # subversion >= 1.7
+-                xml = self.run_command(
++                xml = cls.run_command(
+                     ['info', '--xml', location],
+                     show_stdout=False,
+                 )

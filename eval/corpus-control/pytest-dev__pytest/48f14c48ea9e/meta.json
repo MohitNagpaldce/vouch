@@ -1,0 +1,14 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "48f14c48ea9ef88dd642a2600f670eb103558956",
+  "kind": "control_good",
+  "subject": "Remove unnecessary else clause in repr_failure() (#8661)",
+  "evidence_subject": "Remove unnecessary else clause in repr_failure() (#8661)",
+  "author": "Zack Kneupper",
+  "date": "2021-05-11T04:36:36-04:00",
+  "impl_files": [
+    "src/_pytest/doctest.py"
+  ],
+  "test_files": [],
+  "diff_lines": 109
+}

@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/click",
+  "sha": "2814073e04e7811ce0f4cf70d7b23073e876fc72",
+  "kind": "control_good",
+  "subject": "fix new mypy findings",
+  "evidence_subject": "fix new mypy findings",
+  "author": "David Lord",
+  "date": "2021-12-26T13:12:17-07:00",
+  "impl_files": [
+    "src/click/core.py",
+    "src/click/termui.py",
+    "src/click/testing.py"
+  ],
+  "test_files": [],
+  "diff_lines": 70
+}

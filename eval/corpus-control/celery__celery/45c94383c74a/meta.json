@@ -1,0 +1,14 @@
+{
+  "repo": "celery/celery",
+  "sha": "45c94383c74af90a5addbc3a7c13b080e7e882ca",
+  "kind": "control_good",
+  "subject": "add task_received, task_rejected and task_unknown to signals module objects",
+  "evidence_subject": "add task_received, task_rejected and task_unknown to signals module objects",
+  "author": "Mateusz-Slisz",
+  "date": "2020-07-08T00:25:18+02:00",
+  "impl_files": [
+    "celery/signals.py"
+  ],
+  "test_files": [],
+  "diff_lines": 12
+}

@@ -1,0 +1,16 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "4714836a667eb4837d005eb89d34fae60b9dc6cc",
+  "kind": "control_good",
+  "subject": "Continue reading the response stream if there is buffered decompressed data",
+  "evidence_subject": "Continue reading the response stream if there is buffered decompressed data",
+  "author": "Seth Michael Larson",
+  "date": "2023-05-03T15:46:21-05:00",
+  "impl_files": [
+    "src/urllib3/response.py"
+  ],
+  "test_files": [
+    "test/with_dummyserver/test_socketlevel.py"
+  ],
+  "diff_lines": 89
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "7783dbd8e1f17e4fa32f65e49ff09fb0aa31000d",
+  "kind": "control_good",
+  "subject": "Add `proxy_is_tunneling` to `HTTPConnection` and `HTTPSConnection` (#3459)",
+  "evidence_subject": "Add `proxy_is_tunneling` to `HTTPConnection` and `HTTPSConnection` (#3459)",
+  "author": "Kanishk Pachauri",
+  "date": "2024-10-03T02:05:18+05:30",
+  "impl_files": [
+    "src/urllib3/connection.py"
+  ],
+  "test_files": [],
+  "diff_lines": 43
+}

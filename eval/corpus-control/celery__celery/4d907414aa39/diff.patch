@@ -1,0 +1,557 @@
+diff --git a/README.rst b/README.rst
+index 49a2c92a1..187f90a04 100644
+--- a/README.rst
++++ b/README.rst
+@@ -315,6 +315,9 @@ Transports and Backends
+ :``celery[riak]``:
+     for using Riak as a result backend.
+ 
++:``celery[cosmosdbsql]``:
++    for using Azure Cosmos DB as a result backend (using ``pydocumentdb``)
++
+ :``celery[zookeeper]``:
+     for using Zookeeper as a message transport.
+ 
+diff --git a/celery/app/backends.py b/celery/app/backends.py
+index db2240baa..40af340ef 100644
+--- a/celery/app/backends.py
++++ b/celery/app/backends.py
+@@ -30,6 +30,7 @@ BACKEND_ALIASES = {
+     'cassandra': 'celery.backends.cassandra:CassandraBackend',
+     'couchbase': 'celery.backends.couchbase:CouchbaseBackend',
+     'couchdb': 'celery.backends.couchdb:CouchBackend',
++    'cosmosdbsql': 'celery.backends.cosmosdbsql:CosmosDBSQLBackend',
+     'riak': 'celery.backends.riak:RiakBackend',
+     'file': 'celery.backends.filesystem:FilesystemBackend',
+     'disabled': 'celery.backends.base:DisabledBackend',
+diff --git a/celery/app/defaults.py b/celery/app/defaults.py
+index 3690cbe59..634d95448 100644
+--- a/celery/app/defaults.py
++++ b/celery/app/defaults.py
+@@ -150,6 +150,13 @@ NAMESPACES = Namespace(
+ 
+         backend_settings=Option(type='dict'),
+     ),
++    cosmosdbsql=Namespace(
++        database_name=Option('celerydb', type='string'),
++        collection_name=Option('celerycol', type='string'),
++        consistency_level=Option('Session', type='string'),
++        max_retry_attempts=Option(9, type='int'),
++        max_retry_wait_time=Option(30, type='int'),
++    ),
+     event=Namespace(
+         __old__=old_ns('celery_event'),
+ 
+diff --git a/celery/backends/cosmosdbsql.py b/celery/backends/cosmosdbsql.py
+new file mode 100644
+index 000000000..fadbd1e16
+--- /dev/null
++++ b/celery/backends/cosmosdbsql.py
+@@ -0,0 +1,223 @@
++# -*- coding: utf-8 -*-
++"""The CosmosDB/SQL backend for Celery (experimental)."""
++from __future__ import absolute_import, unicode_literals
++
++from kombu.utils import cached_property
++from kombu.utils.encoding import bytes_to_str
++from kombu.utils.url import _parse_url
++
++from celery.exceptions import ImproperlyConfigured
++from celery.utils.log import get_logger
++
++from .base import KeyValueStoreBackend
++
++try:
++    import pydocumentdb
++    from pydocumentdb.document_client import DocumentClient
++    from pydocumentdb.documents import ConnectionPolicy
++    from pydocumentdb.documents import ConsistencyLevel
++    from pydocumentdb.documents import PartitionKind
++    from pydocumentdb.errors import HTTPFailure
++    from pydocumentdb.retry_options import RetryOptions
++except ImportError:  # pragma: no cover
++    pydocumentdb = DocumentClient = ConsistencyLevel = PartitionKind = \
++        HTTPFailure = ConnectionPolicy = RetryOptions = None  # noqa
++
++__all__ = ("CosmosDBSQLBackend",)
++
++
++ERROR_NOT_FOUND = 404
++ERROR_EXISTS = 409
++
++LOGGER = get_logger(__name__)
++
++
++class CosmosDBSQLBackend(KeyValueStoreBackend):
++    """CosmosDB/SQL backend for Celery."""
++
++    def __init__(self,
++                 url=None,
++                 database_name=None,
++                 collection_name=None,
++                 consistency_level=None,
++                 max_retry_attempts=None,
++                 max_retry_wait_time=None,
++                 *args,
++                 **kwargs):
++        super(CosmosDBSQLBackend, self).__init__(*args, **kwargs)
++
++        if pydocumentdb is None:
++            raise ImproperlyConfigured(
++                "You need to install the pydocumentdb library to use the "
++                "CosmosDB backend.")
++
++        conf = self.app.conf
++
++        self._endpoint, self._key = self._parse_url(url)
++
++        self._database_name = (
++            database_name or
++            conf["cosmosdbsql_database_name"])
++
++        self._collection_name = (
++            collection_name or
++            conf["cosmosdbsql_collection_name"])
++
++        try:
++            self._consistency_level = getattr(
++                ConsistencyLevel,
++                consistency_level or
++                conf["cosmosdbsql_consistency_level"])
++        except AttributeError:
++            raise ImproperlyConfigured("Unknown CosmosDB consistency level")
++
++        self._max_retry_attempts = (
++            max_retry_attempts or
++            conf["cosmosdbsql_max_retry_attempts"])
++
++        self._max_retry_wait_time = (
++            max_retry_wait_time or
++            conf["cosmosdbsql_max_retry_wait_time"])
++
++    @classmethod
++    def _parse_url(cls, url):
++        _, host, port, _, password, _, _ = _parse_url(url)
++
++        if not host or not password:
++            raise ImproperlyConfigured("Invalid URL")
++
++        if not port:
++            port = 443
++
++        scheme = "https" if port == 443 else "http"
++        endpoint = "%s://%s:%s" % (scheme, host, port)
++        return endpoint, password
++
++    @cached_property
++    def _client(self):
++        """Return the CosmosDB/SQL client.
++
++        If this is the first call to the property, the client is created and
++        the database and collection are initialized if they don't yet exist.
++
++        """
++        connection_policy = ConnectionPolicy()
++        connection_policy.RetryOptions = RetryOptions(
++            max_retry_attempt_count=self._max_retry_attempts,
++            max_wait_time_in_seconds=self._max_retry_wait_time)
++
++        client = DocumentClient(
++            self._endpoint,
++            {"masterKey": self._key},
++            connection_policy=connection_policy,
++            consistency_level=self._consistency_level)
++
++        self._create_database_if_not_exists(client)
++        self._create_collection_if_not_exists(client)
++
++        return client
++
++    def _create_database_if_not_exists(self, client):
++        try:
++            client.CreateDatabase({"id": self._database_name})
++        except HTTPFailure as ex:
++            if ex.status_code != ERROR_EXISTS:
++                raise
++        else:
++            LOGGER.info("Created CosmosDB database %s",
++                        self._database_name)
++
++    def _create_collection_if_not_exists(self, client):
++        try:
++            client.CreateCollection(
++                self._database_link,
++                {"id": self._collection_name,
++                 "partitionKey": {"paths": ["/id"],
++                                  "kind": PartitionKind.Hash}})
++        except HTTPFailure as ex:
++            if ex.status_code != ERROR_EXISTS:
++                raise
++        else:
++            LOGGER.info("Created CosmosDB collection %s/%s",
++                        self._database_name, self._collection_name)
++
++    @cached_property
++    def _database_link(self):
++        return "dbs/" + self._database_name
++
++    @cached_property
++    def _collection_link(self):
++        return self._database_link + "/colls/" + self._collection_name
++
++    def _get_document_link(self, key):
++        return self._collection_link + "/docs/" + key
++
++    @classmethod
++    def _get_partition_key(cls, key):
++        if not key or key.isspace():
++            raise ValueError("Key cannot be none, empty or whitespace.")
++
++        return {"partitionKey": key}
++
++    def get(self, key):
++        """Read the value stored at the given key.
++
++        Args:
++              key: The key for which to read the value.
++
++        """
++        key = bytes_to_str(key)
++        LOGGER.debug("Getting CosmosDB document %s/%s/%s",
++                     self._database_name, self._collection_name, key)
++
++        try:
++            document = self._client.ReadDocument(
++                self._get_document_link(key),
++                self._get_partition_key(key))
++        except HTTPFailure as ex:
++            if ex.status_code != ERROR_NOT_FOUND:
++                raise
++            return None
++        else:
++            return document.get("value")
++
++    def set(self, key, value):
++        """Store a value for a given key.
++
++        Args:
++              key: The key at which to store the value.
++              value: The value to store.
++
++        """
++        key = bytes_to_str(key)
++        LOGGER.debug("Creating CosmosDB document %s/%s/%s",
++                     self._database_name, self._collection_name, key)
++
++        self._client.CreateDocument(
++            self._collection_link,
++            {"id": key, "value": value},
++            self._get_partition_key(key))
++
++    def mget(self, keys):
++        """Read all the values for the provided keys.
++
++        Args:
++              keys: The list of keys to read.
++
++        """
++        return [self.get(key) for key in keys]
++
++    def delete(self, key):
++        """Delete the value at a given key.
++
++        Args:
++              key: The key of the value to delete.
++
++        """
++        key = bytes_to_str(key)
++        LOGGER.debug("Deleting CosmosDB document %s/%s/%s",
++                     self._database_name, self._collection_name, key)
++
++        self._client.DeleteDocument(
++            self._get_document_link(key),
++            self._get_partition_key(key))
+diff --git a/docs/internals/reference/celery.backends.cosmosdbsql.rst b/docs/internals/reference/celery.backends.cosmosdbsql.rst
+new file mode 100644
+index 000000000..7e178d9f7
+--- /dev/null
++++ b/docs/internals/reference/celery.backends.cosmosdbsql.rst
+@@ -0,0 +1,11 @@
++================================================
++ ``celery.backends.cosmosdbsql``
++================================================
++
++.. contents::
++    :local:
++.. currentmodule:: celery.backends.cosmosdbsql
++
++.. automodule:: celery.backends.cosmosdbsql
++    :members:
++    :undoc-members:
+diff --git a/docs/userguide/configuration.rst b/docs/userguide/configuration.rst
+index 5aacc5aa6..b6ab47b0e 100644
+--- a/docs/userguide/configuration.rst
++++ b/docs/userguide/configuration.rst
+@@ -576,6 +576,10 @@ Can be one of the following:
+     Use `CouchDB`_ to store the results.
+     See :ref:`conf-couchdb-result-backend`.
+ 
++* ``cosmosdbsql (experimental)``
++    Use the `CosmosDB`_ PaaS to store the results.
++    See :ref:`conf-cosmosdbsql-result-backend`.
++
+ * ``filesystem``
+     Use a shared directory to store the results.
+     See :ref:`conf-filesystem-result-backend`.
+@@ -600,6 +604,7 @@ Can be one of the following:
+ .. _`Elasticsearch`: https://aws.amazon.com/elasticsearch-service/
+ .. _`IronCache`: http://www.iron.io/cache
+ .. _`CouchDB`: http://www.couchdb.com/
++.. _`CosmosDB`: https://azure.microsoft.com/en-us/services/cosmos-db/
+ .. _`Couchbase`: https://www.couchbase.com/
+ .. _`Consul`: https://consul.io/
+ .. _`AzureBlockBlob`: https://azure.microsoft.com/en-us/services/storage/blobs/
+@@ -1462,6 +1467,68 @@ This is a dict supporting the following keys:
+ 
+     Password to authenticate to the Couchbase server (optional).
+ 
++.. _conf-cosmosdbsql-result-backend:
++
++CosmosDB backend settings (experimental)
++----------------------------------------
++
++To use `CosmosDB`_ as the result backend, you simply need to configure the
++:setting:`result_backend` setting with the correct URL.
++
++Example configuration
++~~~~~~~~~~~~~~~~~~~~~
++
++.. code-block:: python
++
++    result_backend = 'cosmosdbsql://:{InsertAccountPrimaryKeyHere}@{InsertAccountNameHere}.documents.azure.com'
++
++.. setting:: cosmosdbsql_database_name
++
++``cosmosdbsql_database_name``
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Default: celerydb.
++
++The name for the database in which to store the results.
++
++.. setting:: cosmosdbsql_collection_name
++
++``cosmosdbsql_collection_name``
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Default: celerycol.
++
++The name of the collection in which to store the results.
++
++.. setting:: cosmosdbsql_consistency_level
++
++``cosmosdbsql_consistency_level``
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Default: Session.
++
++Represents the consistency levels supported for Azure Cosmos DB client operations.
++
++Consistency levels by order of strength are: Strong, BoundedStaleness, Session, ConsistentPrefix and Eventual.
++
++.. setting:: cosmosdbsql_max_retry_attempts
++
++``cosmosdbsql_max_retry_attempts``
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Default: 9.
++
++Maximum number of retries to be performed for a request.
++
++.. setting:: cosmosdbsql_max_retry_wait_time
++
++``cosmosdbsql_max_retry_wait_time``
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Default: 30.
++
++Maximum wait time in seconds to wait for a request while the retries are happening.
++
+ .. _conf-couchdb-result-backend:
+ 
+ CouchDB backend settings
+diff --git a/requirements/extras/cosmosdbsql.txt b/requirements/extras/cosmosdbsql.txt
+new file mode 100644
+index 000000000..23e1783b2
+--- /dev/null
++++ b/requirements/extras/cosmosdbsql.txt
+@@ -0,0 +1 @@
++pydocumentdb==2.3.2
+diff --git a/requirements/test-ci-default.txt b/requirements/test-ci-default.txt
+index d962167e3..ab7b77d54 100644
+--- a/requirements/test-ci-default.txt
++++ b/requirements/test-ci-default.txt
+@@ -16,6 +16,7 @@
+ -r extras/couchdb.txt
+ -r extras/couchbase.txt
+ -r extras/consul.txt
++-r extras/cosmosdbsql.txt
+ -r extras/cassandra.txt
+ -r extras/dynamodb.txt
+ -r extras/azureblockblob.txt
+diff --git a/setup.py b/setup.py
+index 217d41add..1c67d36e5 100644
+--- a/setup.py
++++ b/setup.py
+@@ -76,6 +76,7 @@ EXTENSIONS = {
+     'consul',
+     'dynamodb',
+     'mongodb',
++    'cosmosdbsql',
+ }
+ 
+ # -*- Classifiers -*-
+diff --git a/t/unit/backends/test_cosmosdbsql.py b/t/unit/backends/test_cosmosdbsql.py
+new file mode 100644
+index 000000000..aee2c5372
+--- /dev/null
++++ b/t/unit/backends/test_cosmosdbsql.py
+@@ -0,0 +1,138 @@
++from __future__ import absolute_import, unicode_literals
++
++import pytest
++from case import Mock, call, patch, skip
++
++from celery.backends import cosmosdbsql
++from celery.backends.cosmosdbsql import CosmosDBSQLBackend
++from celery.exceptions import ImproperlyConfigured
++
++MODULE_TO_MOCK = "celery.backends.cosmosdbsql"
++
++
++@skip.unless_module("pydocumentdb")
++class test_DocumentDBBackend:
++    def setup(self):
++        self.url = "cosmosdbsql://:key@endpoint"
++        self.backend = CosmosDBSQLBackend(app=self.app, url=self.url)
++
++    def test_missing_third_party_sdk(self):
++        pydocumentdb = cosmosdbsql.pydocumentdb
++        try:
++            cosmosdbsql.pydocumentdb = None
++            with pytest.raises(ImproperlyConfigured):
++                CosmosDBSQLBackend(app=self.app, url=self.url)
++        finally:
++            cosmosdbsql.pydocumentdb = pydocumentdb
++
++    def test_bad_connection_url(self):
++        with pytest.raises(ImproperlyConfigured):
++            CosmosDBSQLBackend._parse_url(
++                "cosmosdbsql://:key@")
++
++        with pytest.raises(ImproperlyConfigured):
++            CosmosDBSQLBackend._parse_url(
++                "cosmosdbsql://:@host")
++
++        with pytest.raises(ImproperlyConfigured):
++            CosmosDBSQLBackend._parse_url(
++                "cosmosdbsql://corrupted")
++
++    def test_default_connection_url(self):
++        endpoint, password = CosmosDBSQLBackend._parse_url(
++            "cosmosdbsql://:key@host")
++
++        assert password == "key"
++        assert endpoint == "https://host:443"
++
++        endpoint, password = CosmosDBSQLBackend._parse_url(
++            "cosmosdbsql://:key@host:443")
++
++        assert password == "key"
++        assert endpoint == "https://host:443"
++
++        endpoint, password = CosmosDBSQLBackend._parse_url(
++            "cosmosdbsql://:key@host:8080")
++
++        assert password == "key"
++        assert endpoint == "http://host:8080"
++
++    def test_bad_partition_key(self):
++        with pytest.raises(ValueError):
++            CosmosDBSQLBackend._get_partition_key("")
++
++        with pytest.raises(ValueError):
++            CosmosDBSQLBackend._get_partition_key("   ")
++
++        with pytest.raises(ValueError):
++            CosmosDBSQLBackend._get_partition_key(None)
++
++    def test_bad_consistency_level(self):
++        with pytest.raises(ImproperlyConfigured):
++            CosmosDBSQLBackend(app=self.app, url=self.url,
++                               consistency_level="DoesNotExist")
++
++    @patch(MODULE_TO_MOCK + ".DocumentClient")
++    def test_create_client(self, mock_factory):
++        mock_instance = Mock()
++        mock_factory.return_value = mock_instance
++        backend = CosmosDBSQLBackend(app=self.app, url=self.url)
++
++        # ensure database and collection get created on client access...
++        assert mock_instance.CreateDatabase.call_count == 0
++        assert mock_instance.CreateCollection.call_count == 0
++        assert backend._client is not None
++        assert mock_instance.CreateDatabase.call_count == 1
++        assert mock_instance.CreateCollection.call_count == 1
++
++        # ...but only once per backend instance
++        assert backend._client is not None
++        assert mock_instance.CreateDatabase.call_count == 1
++        assert mock_instance.CreateCollection.call_count == 1
++
++    @patch(MODULE_TO_MOCK + ".CosmosDBSQLBackend._client")
++    def test_get(self, mock_client):
++        self.backend.get(b"mykey")
++
++        mock_client.ReadDocument.assert_has_calls(
++            [call("dbs/celerydb/colls/celerycol/docs/mykey",
++                  {"partitionKey": "mykey"}),
++             call().get("value")])
++
++    @patch(MODULE_TO_MOCK + ".CosmosDBSQLBackend._client")
++    def test_get_missing(self, mock_client):
++        mock_client.ReadDocument.side_effect = \
++            cosmosdbsql.HTTPFailure(cosmosdbsql.ERROR_NOT_FOUND)
++
++        assert self.backend.get(b"mykey") is None
++
++    @patch(MODULE_TO_MOCK + ".CosmosDBSQLBackend._client")
++    def test_set(self, mock_client):
++        self.backend.set(b"mykey", "myvalue")
++
++        mock_client.CreateDocument.assert_called_once_with(
++            "dbs/celerydb/colls/celerycol",
++            {"id": "mykey", "value": "myvalue"},
++            {"partitionKey": "mykey"})
++
++    @patch(MODULE_TO_MOCK + ".CosmosDBSQLBackend._client")
++    def test_mget(self, mock_client):
++        keys = [b"mykey1", b"mykey2"]
++
++        self.backend.mget(keys)
++
++        mock_client.ReadDocument.assert_has_calls(
++            [call("dbs/celerydb/colls/celerycol/docs/mykey1",
++                  {"partitionKey": "mykey1"}),
++             call().get("value"),
++             call("dbs/celerydb/colls/celerycol/docs/mykey2",
++                  {"partitionKey": "mykey2"}),
++             call().get("value")])
++
++    @patch(MODULE_TO_MOCK + ".CosmosDBSQLBackend._client")
++    def test_delete(self, mock_client):
++        self.backend.delete(b"mykey")
++
++        mock_client.DeleteDocument.assert_called_once_with(
++            "dbs/celerydb/colls/celerycol/docs/mykey",
++            {"partitionKey": "mykey"})

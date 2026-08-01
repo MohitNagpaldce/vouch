@@ -1,0 +1,14 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "18a9e197c9c71bb2acd649a90054a593be90cb99",
+  "kind": "control_good",
+  "subject": "correctly parse If-None-Match header",
+  "evidence_subject": "correctly parse If-None-Match header",
+  "author": "daftshady",
+  "date": "2014-12-12T19:49:13+09:00",
+  "impl_files": [
+    "tornado/web.py"
+  ],
+  "test_files": [],
+  "diff_lines": 20
+}

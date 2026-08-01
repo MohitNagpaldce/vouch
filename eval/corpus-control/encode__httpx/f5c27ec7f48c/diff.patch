@@ -1,0 +1,158 @@
+diff --git a/httpx/_api.py b/httpx/_api.py
+index ba7bed3..afa9ca5 100644
+--- a/httpx/_api.py
++++ b/httpx/_api.py
+@@ -84,7 +84,7 @@ def request(
+     ```
+     """
+     with Client(
+-        proxies=proxies, cert=cert, verify=verify, timeout=timeout, trust_env=trust_env,
++        proxies=proxies, cert=cert, verify=verify, timeout=timeout, trust_env=trust_env
+     ) as client:
+         return client.request(
+             method=method,
+diff --git a/httpx/_client.py b/httpx/_client.py
+index 0f4110c..8d323f2 100644
+--- a/httpx/_client.py
++++ b/httpx/_client.py
+@@ -90,7 +90,7 @@ class BaseClient:
+         return url.copy_with(path=url.path + "/")
+ 
+     def _get_proxy_map(
+-        self, proxies: typing.Optional[ProxiesTypes], allow_env_proxies: bool,
++        self, proxies: typing.Optional[ProxiesTypes], allow_env_proxies: bool
+     ) -> typing.Dict[str, typing.Optional[Proxy]]:
+         if proxies is None:
+             if allow_env_proxies:
+@@ -671,7 +671,7 @@ class Client(BaseClient):
+             cookies=cookies,
+         )
+         return self.send(
+-            request, auth=auth, allow_redirects=allow_redirects, timeout=timeout,
++            request, auth=auth, allow_redirects=allow_redirects, timeout=timeout
+         )
+ 
+     def send(
+@@ -701,7 +701,7 @@ class Client(BaseClient):
+         auth = self._build_request_auth(request, auth)
+ 
+         response = self._send_handling_redirects(
+-            request, auth=auth, timeout=timeout, allow_redirects=allow_redirects,
++            request, auth=auth, timeout=timeout, allow_redirects=allow_redirects
+         )
+ 
+         if not stream:
+@@ -1279,7 +1279,7 @@ class AsyncClient(BaseClient):
+             cookies=cookies,
+         )
+         response = await self.send(
+-            request, auth=auth, allow_redirects=allow_redirects, timeout=timeout,
++            request, auth=auth, allow_redirects=allow_redirects, timeout=timeout
+         )
+         return response
+ 
+@@ -1310,7 +1310,7 @@ class AsyncClient(BaseClient):
+         auth = self._build_request_auth(request, auth)
+ 
+         response = await self._send_handling_redirects(
+-            request, auth=auth, timeout=timeout, allow_redirects=allow_redirects,
++            request, auth=auth, timeout=timeout, allow_redirects=allow_redirects
+         )
+ 
+         if not stream:
+@@ -1392,7 +1392,7 @@ class AsyncClient(BaseClient):
+                 history.append(response)
+ 
+     async def _send_single_request(
+-        self, request: Request, timeout: Timeout,
++        self, request: Request, timeout: Timeout
+     ) -> Response:
+         """
+         Sends a single request, without handling any redirections.
+diff --git a/httpx/_config.py b/httpx/_config.py
+index 4284a32..8d589ea 100644
+--- a/httpx/_config.py
++++ b/httpx/_config.py
+@@ -374,7 +374,7 @@ class PoolLimits(Limits):
+ 
+ class Proxy:
+     def __init__(
+-        self, url: URLTypes, *, headers: HeaderTypes = None, mode: str = "DEFAULT",
++        self, url: URLTypes, *, headers: HeaderTypes = None, mode: str = "DEFAULT"
+     ):
+         url = URL(url)
+         headers = Headers(headers)
+diff --git a/requirements.txt b/requirements.txt
+index a901dbe..b871b15 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -14,7 +14,7 @@ wheel
+ 
+ # Tests & Linting
+ autoflake
+-black
++black==20.8b1
+ cryptography
+ flake8
+ flake8-bugbear
+diff --git a/tests/client/test_auth.py b/tests/client/test_auth.py
+index edfccf0..ae35e2c 100644
+--- a/tests/client/test_auth.py
++++ b/tests/client/test_auth.py
+@@ -104,7 +104,7 @@ class MockDigestAuthTransport(httpcore.AsyncHTTPTransport):
+         return b"HTTP/1.1", 200, b"", [], body
+ 
+     def challenge_send(
+-        self, method: bytes, headers: typing.List[typing.Tuple[bytes, bytes]],
++        self, method: bytes, headers: typing.List[typing.Tuple[bytes, bytes]]
+     ) -> typing.Tuple[
+         bytes, int, bytes, typing.List[typing.Tuple[bytes, bytes]], ContentStream
+     ]:
+diff --git a/tests/models/test_responses.py b/tests/models/test_responses.py
+index de330fe..878bef0 100644
+--- a/tests/models/test_responses.py
++++ b/tests/models/test_responses.py
+@@ -105,7 +105,7 @@ def test_response_set_explicit_encoding():
+         "Content-Type": "text-plain; charset=utf-8"
+     }  # Deliberately incorrect charset
+     response = httpx.Response(
+-        200, content="Latin 1: ÿ".encode("latin-1"), headers=headers, request=REQUEST,
++        200, content="Latin 1: ÿ".encode("latin-1"), headers=headers, request=REQUEST
+     )
+     response.encoding = "latin-1"
+     assert response.text == "Latin 1: ÿ"
+diff --git a/tests/test_utils.py b/tests/test_utils.py
+index 461e4b9..d5dfb58 100644
+--- a/tests/test_utils.py
++++ b/tests/test_utils.py
+@@ -237,18 +237,18 @@ def test_not_same_origin():
+ @pytest.mark.parametrize(
+     ["pattern", "url", "expected"],
+     [
+-        ("http://example.com", "http://example.com", True,),
+-        ("http://example.com", "https://example.com", False,),
+-        ("http://example.com", "http://other.com", False,),
+-        ("http://example.com:123", "http://example.com:123", True,),
+-        ("http://example.com:123", "http://example.com:456", False,),
+-        ("http://example.com:123", "http://example.com", False,),
+-        ("all://example.com", "http://example.com", True,),
+-        ("all://example.com", "https://example.com", True,),
+-        ("http://", "http://example.com", True,),
+-        ("http://", "https://example.com", False,),
+-        ("all://", "https://example.com:123", True,),
+-        ("", "https://example.com:123", True,),
++        ("http://example.com", "http://example.com", True),
++        ("http://example.com", "https://example.com", False),
++        ("http://example.com", "http://other.com", False),
++        ("http://example.com:123", "http://example.com:123", True),
++        ("http://example.com:123", "http://example.com:456", False),
++        ("http://example.com:123", "http://example.com", False),
++        ("all://example.com", "http://example.com", True),
++        ("all://example.com", "https://example.com", True),
++        ("http://", "http://example.com", True),
++        ("http://", "https://example.com", False),
++        ("all://", "https://example.com:123", True),
++        ("", "https://example.com:123", True),
+     ],
+ )
+ def test_url_matches(pattern, url, expected):

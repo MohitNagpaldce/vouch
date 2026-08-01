@@ -1,0 +1,92 @@
+diff --git a/.travis.yml b/.travis.yml
+index e093a8d7..f39bb765 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -84,8 +84,8 @@ script:
+     # run it with nightly cpython. Coverage is very slow on pypy.
+     - if [[ $TRAVIS_PYTHON_VERSION != nightly && $TRAVIS_PYTHON_VERSION != 'pypy'* ]]; then export RUN_COVERAGE=1; fi
+     - if [[ "$RUN_COVERAGE" == 1 ]]; then export TARGET="-m coverage run $TARGET"; fi
+-    # See comments in tox.ini
+-    - export PYTHONWARNINGS=error,ignore:::site
++    # See comments in tox.ini. Disabled on py35 because ResourceWarnings are too noisy there.
++    - if [[ $TRAVIS_PYTHON_VERSION != '3.5' ]]; then export PYTHONWARNINGS=error,ignore:::site; fi
+     - python -bb $TARGET
+     - python -O $TARGET
+     - LANG=C python $TARGET
+diff --git a/tornado/httpclient.py b/tornado/httpclient.py
+index d1c92a49..b6344cff 100644
+--- a/tornado/httpclient.py
++++ b/tornado/httpclient.py
+@@ -233,9 +233,14 @@ class AsyncHTTPClient(Configurable):
+             return
+         self._closed = True
+         if self._instance_cache is not None:
+-            if self._instance_cache.get(self.io_loop) is not self:
++            cached_val = self._instance_cache.pop(self.io_loop, None)
++            # If there's an object other than self in the instance
++            # cache for our IOLoop, something has gotten mixed up. A
++            # value of None appears to be possible when this is called
++            # from a destructor (HTTPClient.__del__) as the weakref
++            # gets cleared before the destructor runs.
++            if cached_val is not None and cached_val is not self:
+                 raise RuntimeError("inconsistent AsyncHTTPClient cache")
+-            del self._instance_cache[self.io_loop]
+ 
+     def fetch(
+         self,
+diff --git a/tornado/test/httpclient_test.py b/tornado/test/httpclient_test.py
+index 0a732ddc..4677101c 100644
+--- a/tornado/test/httpclient_test.py
++++ b/tornado/test/httpclient_test.py
+@@ -6,12 +6,14 @@ import copy
+ import threading
+ import datetime
+ from io import BytesIO
++import subprocess
++import sys
+ import time
+ import typing  # noqa: F401
+ import unicodedata
+ import unittest
+ 
+-from tornado.escape import utf8, native_str
++from tornado.escape import utf8, native_str, to_unicode
+ from tornado import gen
+ from tornado.httpclient import (
+     HTTPRequest,
+@@ -676,6 +678,35 @@ class SyncHTTPClientTest(unittest.TestCase):
+         self.assertEqual(assertion.exception.code, 404)
+ 
+ 
++class SyncHTTPClientSubprocessTest(unittest.TestCase):
++    def test_destructor_log(self):
++        # Regression test for
++        # https://github.com/tornadoweb/tornado/issues/2539
++        #
++        # In the past, the following program would log an
++        # "inconsistent AsyncHTTPClient cache" error from a destructor
++        # when the process is shutting down. The shutdown process is
++        # subtle and I don't fully understand it; the failure does not
++        # manifest if that lambda isn't there or is a simpler object
++        # like an int (nor does it manifest in the tornado test suite
++        # as a whole, which is why we use this subprocess).
++        proc = subprocess.run(
++            [
++                sys.executable,
++                "-c",
++                "from tornado.httpclient import HTTPClient; f = lambda: None; c = HTTPClient()",
++            ],
++            stdout=subprocess.PIPE,
++            stderr=subprocess.STDOUT,
++            check=True,
++        )
++        if proc.stdout:
++            print("STDOUT:")
++            print(to_unicode(proc.stdout))
++        if proc.stdout:
++            self.fail("subprocess produced unexpected output")
++
++
+ class HTTPRequestTestCase(unittest.TestCase):
+     def test_headers(self):
+         request = HTTPRequest("http://example.com", headers={"foo": "bar"})

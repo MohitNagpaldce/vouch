@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "c37ec5a6595f963a04fae1b17858225c2b3d08c4",
+  "kind": "control_good",
+  "subject": "Fixed #27781 -- Made simplify_regex() remove outstanding '?' characters.",
+  "evidence_subject": "Fixed #27781 -- Made simplify_regex() remove outstanding '?' characters.",
+  "author": "Mariusz Felisiak",
+  "date": "2017-01-27T00:36:34+01:00",
+  "impl_files": [
+    "django/contrib/admindocs/views.py"
+  ],
+  "test_files": [
+    "tests/admin_docs/test_views.py"
+  ],
+  "diff_lines": 25
+}

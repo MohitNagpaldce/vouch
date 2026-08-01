@@ -1,0 +1,13 @@
+diff --git a/src/urllib3/connectionpool.py b/src/urllib3/connectionpool.py
+index fd68cd00..1604a951 100644
+--- a/src/urllib3/connectionpool.py
++++ b/src/urllib3/connectionpool.py
+@@ -257,7 +257,7 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
+             conn = self.pool.get(block=self.block, timeout=timeout)
+ 
+         except AttributeError:  # self.pool is None
+-            raise ClosedPoolError(self, "Pool is closed.")
++            raise ClosedPoolError(self, "Pool is closed.")  # Defensive:
+ 
+         except queue.Empty:
+             if self.block:

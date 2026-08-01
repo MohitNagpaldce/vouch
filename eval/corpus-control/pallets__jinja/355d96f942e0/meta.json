@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "355d96f942e0d506a027fe364dffff82b168b64f",
+  "kind": "control_good",
+  "subject": "Removed dead code.",
+  "evidence_subject": "Removed dead code.",
+  "author": "jason kirtland",
+  "date": "2011-04-25T11:19:22-07:00",
+  "impl_files": [
+    "jinja2/runtime.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

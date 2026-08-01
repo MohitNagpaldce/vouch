@@ -1,0 +1,14 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "c901caeeecc395c150f2ee8948c882bf153d8555",
+  "kind": "control_good",
+  "subject": "DOC Add class link in `GroupShuffleSplit` docstring (#29446)",
+  "evidence_subject": "DOC Add class link in `GroupShuffleSplit` docstring (#29446)",
+  "author": "Lucy Liu",
+  "date": "2024-07-23T00:05:47+10:00",
+  "impl_files": [
+    "sklearn/model_selection/_split.py"
+  ],
+  "test_files": [],
+  "diff_lines": 43
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "2b11f5e5252d7696b4089c7498cc1612404304de",
+  "kind": "control_good",
+  "subject": "[PR #9168/5e15ea61 backport][3.10] Avoid creating handler waiter until shutdown (#9210)",
+  "evidence_subject": "[PR #9168/5e15ea61 backport][3.10] Avoid creating handler waiter until shutdown (#9210)",
+  "author": "patchback[bot]",
+  "date": "2024-09-21T09:58:13Z",
+  "impl_files": [
+    "aiohttp/web_protocol.py"
+  ],
+  "test_files": [],
+  "diff_lines": 61
+}

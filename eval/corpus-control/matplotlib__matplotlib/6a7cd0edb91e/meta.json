@@ -1,0 +1,14 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "6a7cd0edb91e92645bed258b62fe7fe53ba32cfb",
+  "kind": "control_good",
+  "subject": "[DOC]: Fix menu example",
+  "evidence_subject": "[DOC]: Fix menu example",
+  "author": "Steffen Rehberg",
+  "date": "2023-11-23T13:19:09+01:00",
+  "impl_files": [
+    "galleries/examples/widgets/menu.py"
+  ],
+  "test_files": [],
+  "diff_lines": 74
+}

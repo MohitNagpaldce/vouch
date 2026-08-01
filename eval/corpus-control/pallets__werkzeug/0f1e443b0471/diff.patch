@@ -1,0 +1,61 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 839c7727..6857b294 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -9,6 +9,8 @@ Unreleased
+     Python 2.7. (:issue:`1080`)
+ -   Restore the ``response`` argument to :exc:`exceptions.Unauthorized`.
+     (:pr:`1527`)
++-   The default URL converter correctly encodes bytes to string rather
++    than representing them with ``b''``. (:issue:`1502`)
+ 
+ 
+ Version 0.15.2
+diff --git a/src/werkzeug/routing.py b/src/werkzeug/routing.py
+index c7cff94d..8ddea51c 100644
+--- a/src/werkzeug/routing.py
++++ b/src/werkzeug/routing.py
+@@ -1052,8 +1052,9 @@ class Rule(RuleFactory):
+                 # resolve it to a constant ahead of time
+                 if is_dynamic and data in self.defaults:
+                     data = self.rule._converters[data].to_url(self.defaults[data])
+-                    is_dynamic = False
+-                if not is_dynamic:
++                    opl.append((None, data))
++                    continue
++                elif not is_dynamic:
+                     opl.append(
+                         (
+                             None,
+@@ -1260,6 +1261,8 @@ class BaseConverter(object):
+         return value
+ 
+     def to_url(self, value):
++        if isinstance(value, (bytes, bytearray)):
++            return _fast_url_quote(value)
+         return _fast_url_quote(text_type(value).encode(self.map.charset))
+ 
+ 
+diff --git a/tests/test_routing.py b/tests/test_routing.py
+index 835ca684..1d02b9dc 100644
+--- a/tests/test_routing.py
++++ b/tests/test_routing.py
+@@ -822,6 +822,18 @@ def test_double_defaults(prefix):
+     assert a.build("x", {"bar": True}) == prefix + "/bar/"
+ 
+ 
++def test_building_bytes():
++    m = r.Map(
++        [
++            r.Rule("/<a>", endpoint="a"),
++            r.Rule("/<b>", defaults={"b": b"\x01\x02\x03"}, endpoint="b"),
++        ]
++    )
++    a = m.bind("example.org", "/")
++    assert a.build("a", {"a": b"\x01\x02\x03"}) == "/%01%02%03"
++    assert a.build("b") == "/%01%02%03"
++
++
+ def test_host_matching():
+     m = r.Map(
+         [

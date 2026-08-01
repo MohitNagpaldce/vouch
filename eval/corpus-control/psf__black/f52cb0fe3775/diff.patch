@@ -1,0 +1,57 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index e5f4a1f..5d89c71 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -19,6 +19,7 @@
+ - Add `flake8-simplify` and `flake8-comprehensions` plugins (#2653)
+ - Fix determination of f-string expression spans (#2654)
+ - Fix parser error location on invalid syntax in a `match` statement (#2649)
++- Fix bad formatting of error messages about EOF in multi-line statements (#2343)
+ - Functions and classes in blocks now have more consistent surrounding spacing (#2472)
+ 
+ ## 21.11b1
+diff --git a/src/black/parsing.py b/src/black/parsing.py
+index e384056..b673027 100644
+--- a/src/black/parsing.py
++++ b/src/black/parsing.py
+@@ -17,6 +17,7 @@
+ from blib2to3.pgen2 import driver
+ from blib2to3.pgen2.grammar import Grammar
+ from blib2to3.pgen2.parse import ParseError
++from blib2to3.pgen2.tokenize import TokenError
+ 
+ from black.mode import TargetVersion, Feature, supports_feature
+ from black.nodes import syms
+@@ -109,6 +110,12 @@ def lib2to3_parse(src_txt: str, target_versions: Iterable[TargetVersion] = ()) -
+             except IndexError:
+                 faulty_line = "<line number missing in source>"
+             exc = InvalidInput(f"Cannot parse: {lineno}:{column}: {faulty_line}")
++
++        except TokenError as te:
++            # In edge cases these are raised; and typically don't have a "faulty_line".
++            lineno, column = te.args[1]
++            exc = InvalidInput(f"Cannot parse: {lineno}:{column}: {te.args[0]}")
++
+     else:
+         raise exc from None
+ 
+diff --git a/tests/test_black.py b/tests/test_black.py
+index 51a2030..9259853 100644
+--- a/tests/test_black.py
++++ b/tests/test_black.py
+@@ -1557,6 +1557,15 @@ def test_code_option_parent_config(self) -> None:
+                     call_args[0].lower() == str(pyproject_path).lower()
+                 ), "Incorrect config loaded."
+ 
++    def test_for_handled_unexpected_eof_error(self) -> None:
++        """
++        Test that an unexpected EOF SyntaxError is nicely presented.
++        """
++        with pytest.raises(black.parsing.InvalidInput) as exc_info:
++            black.lib2to3_parse("print(", {})
++
++        exc_info.match("Cannot parse: 2:0: EOF in multi-line statement")
++
+ 
+ class TestCaching:
+     def test_cache_broken_file(self) -> None:

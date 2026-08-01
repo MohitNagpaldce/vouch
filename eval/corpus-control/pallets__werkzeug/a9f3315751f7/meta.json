@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "a9f3315751f7ebc5da8ccaab35260fdcd4a20544",
+  "kind": "control_good",
+  "subject": "Don't use relative imports in serving",
+  "evidence_subject": "Don't use relative imports in serving",
+  "author": "Markus Unterwaditzer",
+  "date": "2017-01-27T15:00:53+01:00",
+  "impl_files": [
+    "werkzeug/serving.py"
+  ],
+  "test_files": [],
+  "diff_lines": 25
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "37249c08101060bf5a4a230e412575aa741989db",
+  "kind": "control_good",
+  "subject": "add comments about lstrip code",
+  "evidence_subject": "add comments about lstrip code",
+  "author": "David Lord",
+  "date": "2019-10-06T23:37:16-07:00",
+  "impl_files": [
+    "jinja2/lexer.py"
+  ],
+  "test_files": [],
+  "diff_lines": 106
+}

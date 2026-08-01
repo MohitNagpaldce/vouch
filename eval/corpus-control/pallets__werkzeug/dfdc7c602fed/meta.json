@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "dfdc7c602fed71082ca11662e53b4c09095af7e7",
+  "kind": "control_good",
+  "subject": "Ignore false positive B023 errors",
+  "evidence_subject": "Ignore false positive B023 errors",
+  "author": "pgjones",
+  "date": "2022-07-22T13:21:24+01:00",
+  "impl_files": [
+    "src/werkzeug/routing.py"
+  ],
+  "test_files": [],
+  "diff_lines": 17
+}

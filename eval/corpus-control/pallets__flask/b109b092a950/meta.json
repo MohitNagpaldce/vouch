@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/flask",
+  "sha": "b109b092a95036de875246f05cdc377a2c7faab8",
+  "kind": "control_good",
+  "subject": "start version 2.2.0",
+  "evidence_subject": "start version 2.2.0",
+  "author": "David Lord",
+  "date": "2022-03-28T12:17:25-07:00",
+  "impl_files": [
+    "src/flask/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 26
+}

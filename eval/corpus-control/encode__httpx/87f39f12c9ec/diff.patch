@@ -1,0 +1,235 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4865b8d..5b370ca 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+ 
+ ## Unreleased
+ 
++### Added
++
++* Add missing type hints to few `__init__()` methods. (#2938)
++
+ ## 0.25.1 (3rd November, 2023)
+ 
+ ### Added
+diff --git a/httpx/_auth.py b/httpx/_auth.py
+index c2c38f3..6613250 100644
+--- a/httpx/_auth.py
++++ b/httpx/_auth.py
+@@ -126,7 +126,7 @@ class BasicAuth(Auth):
+ 
+     def __init__(
+         self, username: typing.Union[str, bytes], password: typing.Union[str, bytes]
+-    ):
++    ) -> None:
+         self._auth_header = self._build_auth_header(username, password)
+ 
+     def auth_flow(self, request: Request) -> typing.Generator[Request, Response, None]:
+@@ -146,7 +146,7 @@ class NetRCAuth(Auth):
+     Use a 'netrc' file to lookup basic auth credentials based on the url host.
+     """
+ 
+-    def __init__(self, file: typing.Optional[str] = None):
++    def __init__(self, file: typing.Optional[str] = None) -> None:
+         # Lazily import 'netrc'.
+         # There's no need for us to load this module unless 'NetRCAuth' is being used.
+         import netrc
+diff --git a/httpx/_client.py b/httpx/_client.py
+index cb475e0..2c7ae03 100644
+--- a/httpx/_client.py
++++ b/httpx/_client.py
+@@ -172,7 +172,7 @@ class BaseClient:
+         base_url: URLTypes = "",
+         trust_env: bool = True,
+         default_encoding: typing.Union[str, typing.Callable[[bytes], str]] = "utf-8",
+-    ):
++    ) -> None:
+         event_hooks = {} if event_hooks is None else event_hooks
+ 
+         self._base_url = self._enforce_trailing_slash(URL(base_url))
+@@ -642,7 +642,7 @@ class Client(BaseClient):
+         app: typing.Optional[typing.Callable[..., typing.Any]] = None,
+         trust_env: bool = True,
+         default_encoding: typing.Union[str, typing.Callable[[bytes], str]] = "utf-8",
+-    ):
++    ) -> None:
+         super().__init__(
+             auth=auth,
+             params=params,
+@@ -1367,7 +1367,7 @@ class AsyncClient(BaseClient):
+         app: typing.Optional[typing.Callable[..., typing.Any]] = None,
+         trust_env: bool = True,
+         default_encoding: typing.Union[str, typing.Callable[[bytes], str]] = "utf-8",
+-    ):
++    ) -> None:
+         super().__init__(
+             auth=auth,
+             params=params,
+diff --git a/httpx/_config.py b/httpx/_config.py
+index 45ed29e..05c096d 100644
+--- a/httpx/_config.py
++++ b/httpx/_config.py
+@@ -67,7 +67,7 @@ class SSLConfig:
+         verify: VerifyTypes = True,
+         trust_env: bool = True,
+         http2: bool = False,
+-    ):
++    ) -> None:
+         self.cert = cert
+         self.verify = verify
+         self.trust_env = trust_env
+@@ -211,7 +211,7 @@ class Timeout:
+         read: typing.Union[None, float, UnsetType] = UNSET,
+         write: typing.Union[None, float, UnsetType] = UNSET,
+         pool: typing.Union[None, float, UnsetType] = UNSET,
+-    ):
++    ) -> None:
+         if isinstance(timeout, Timeout):
+             # Passed as a single explicit Timeout.
+             assert connect is UNSET
+@@ -296,7 +296,7 @@ class Limits:
+         max_connections: typing.Optional[int] = None,
+         max_keepalive_connections: typing.Optional[int] = None,
+         keepalive_expiry: typing.Optional[float] = 5.0,
+-    ):
++    ) -> None:
+         self.max_connections = max_connections
+         self.max_keepalive_connections = max_keepalive_connections
+         self.keepalive_expiry = keepalive_expiry
+@@ -326,7 +326,7 @@ class Proxy:
+         ssl_context: typing.Optional[ssl.SSLContext] = None,
+         auth: typing.Optional[typing.Tuple[str, str]] = None,
+         headers: typing.Optional[HeaderTypes] = None,
+-    ):
++    ) -> None:
+         url = URL(url)
+         headers = Headers(headers)
+ 
+diff --git a/httpx/_content.py b/httpx/_content.py
+index b16e12d..0aaea33 100644
+--- a/httpx/_content.py
++++ b/httpx/_content.py
+@@ -42,7 +42,7 @@ class ByteStream(AsyncByteStream, SyncByteStream):
+ class IteratorByteStream(SyncByteStream):
+     CHUNK_SIZE = 65_536
+ 
+-    def __init__(self, stream: Iterable[bytes]):
++    def __init__(self, stream: Iterable[bytes]) -> None:
+         self._stream = stream
+         self._is_stream_consumed = False
+         self._is_generator = inspect.isgenerator(stream)
+@@ -67,7 +67,7 @@ class IteratorByteStream(SyncByteStream):
+ class AsyncIteratorByteStream(AsyncByteStream):
+     CHUNK_SIZE = 65_536
+ 
+-    def __init__(self, stream: AsyncIterable[bytes]):
++    def __init__(self, stream: AsyncIterable[bytes]) -> None:
+         self._stream = stream
+         self._is_stream_consumed = False
+         self._is_generator = inspect.isasyncgen(stream)
+diff --git a/httpx/_decoders.py b/httpx/_decoders.py
+index 500ce7f..b4ac9a4 100644
+--- a/httpx/_decoders.py
++++ b/httpx/_decoders.py
+@@ -245,7 +245,7 @@ class TextDecoder:
+     Handles incrementally decoding bytes into text
+     """
+ 
+-    def __init__(self, encoding: str = "utf-8"):
++    def __init__(self, encoding: str = "utf-8") -> None:
+         self.decoder = codecs.getincrementaldecoder(encoding)(errors="replace")
+ 
+     def decode(self, data: bytes) -> str:
+diff --git a/httpx/_models.py b/httpx/_models.py
+index 4e4162d..8a5e628 100644
+--- a/httpx/_models.py
++++ b/httpx/_models.py
+@@ -318,7 +318,7 @@ class Request:
+         json: typing.Optional[typing.Any] = None,
+         stream: typing.Union[SyncByteStream, AsyncByteStream, None] = None,
+         extensions: typing.Optional[RequestExtensions] = None,
+-    ):
++    ) -> None:
+         self.method = (
+             method.decode("ascii").upper()
+             if isinstance(method, bytes)
+@@ -456,7 +456,7 @@ class Response:
+         extensions: typing.Optional[ResponseExtensions] = None,
+         history: typing.Optional[typing.List["Response"]] = None,
+         default_encoding: typing.Union[str, typing.Callable[[bytes], str]] = "utf-8",
+-    ):
++    ) -> None:
+         self.status_code = status_code
+         self.headers = Headers(headers)
+ 
+@@ -1201,7 +1201,7 @@ class Cookies(typing.MutableMapping[str, str]):
+         for use with `CookieJar` operations.
+         """
+ 
+-        def __init__(self, response: Response):
++        def __init__(self, response: Response) -> None:
+             self.response = response
+ 
+         def info(self) -> email.message.Message:
+diff --git a/httpx/_transports/default.py b/httpx/_transports/default.py
+index 76c543c..343c588 100644
+--- a/httpx/_transports/default.py
++++ b/httpx/_transports/default.py
+@@ -102,7 +102,7 @@ HTTPCORE_EXC_MAP = {
+ 
+ 
+ class ResponseStream(SyncByteStream):
+-    def __init__(self, httpcore_stream: typing.Iterable[bytes]):
++    def __init__(self, httpcore_stream: typing.Iterable[bytes]) -> None:
+         self._httpcore_stream = httpcore_stream
+ 
+     def __iter__(self) -> typing.Iterator[bytes]:
+@@ -241,7 +241,7 @@ class HTTPTransport(BaseTransport):
+ 
+ 
+ class AsyncResponseStream(AsyncByteStream):
+-    def __init__(self, httpcore_stream: typing.AsyncIterable[bytes]):
++    def __init__(self, httpcore_stream: typing.AsyncIterable[bytes]) -> None:
+         self._httpcore_stream = httpcore_stream
+ 
+     async def __aiter__(self) -> typing.AsyncIterator[bytes]:
+diff --git a/tests/client/test_async_client.py b/tests/client/test_async_client.py
+index cc19e93..49664df 100644
+--- a/tests/client/test_async_client.py
++++ b/tests/client/test_async_client.py
+@@ -212,7 +212,7 @@ async def test_context_managed_transport():
+ @pytest.mark.anyio
+ async def test_context_managed_transport_and_mount():
+     class Transport(httpx.AsyncBaseTransport):
+-        def __init__(self, name: str):
++        def __init__(self, name: str) -> None:
+             self.name: str = name
+             self.events: typing.List[str] = []
+ 
+diff --git a/tests/client/test_auth.py b/tests/client/test_auth.py
+index fee5150..9b1dd88 100644
+--- a/tests/client/test_auth.py
++++ b/tests/client/test_auth.py
+@@ -93,7 +93,7 @@ class RepeatAuth(httpx.Auth):
+ 
+     requires_request_body = True
+ 
+-    def __init__(self, repeat: int):
++    def __init__(self, repeat: int) -> None:
+         self.repeat = repeat
+ 
+     def auth_flow(
+diff --git a/tests/client/test_client.py b/tests/client/test_client.py
+index b824528..fcc6ec6 100644
+--- a/tests/client/test_client.py
++++ b/tests/client/test_client.py
+@@ -260,7 +260,7 @@ def test_context_managed_transport():
+ 
+ def test_context_managed_transport_and_mount():
+     class Transport(httpx.BaseTransport):
+-        def __init__(self, name: str):
++        def __init__(self, name: str) -> None:
+             self.name: str = name
+             self.events: typing.List[str] = []
+ 

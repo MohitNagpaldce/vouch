@@ -1,0 +1,14 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "bdd22fdd521778e92cd643ab413b3cdbb69606d3",
+  "kind": "control_good",
+  "subject": "logging: improve help for log_level",
+  "evidence_subject": "logging: improve help for log_level",
+  "author": "Daniel Hahler",
+  "date": "2020-03-01T21:57:29+01:00",
+  "impl_files": [
+    "src/_pytest/logging.py"
+  ],
+  "test_files": [],
+  "diff_lines": 18
+}

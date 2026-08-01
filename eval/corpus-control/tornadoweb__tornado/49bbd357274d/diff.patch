@@ -1,0 +1,538 @@
+diff --git a/demos/blog/blog.py b/demos/blog/blog.py
+index 215c4050..bd0c5b3f 100755
+--- a/demos/blog/blog.py
++++ b/demos/blog/blog.py
+@@ -123,7 +123,7 @@ class BaseHandler(tornado.web.RequestHandler):
+     async def prepare(self):
+         # get_current_user cannot be a coroutine, so set
+         # self.current_user in prepare instead.
+-        user_id = self.get_secure_cookie("blogdemo_user")
++        user_id = self.get_signed_cookie("blogdemo_user")
+         if user_id:
+             self.current_user = await self.queryone(
+                 "SELECT * FROM authors WHERE id = %s", int(user_id)
+@@ -242,7 +242,7 @@ class AuthCreateHandler(BaseHandler):
+             self.get_argument("name"),
+             tornado.escape.to_unicode(hashed_password),
+         )
+-        self.set_secure_cookie("blogdemo_user", str(author.id))
++        self.set_signed_cookie("blogdemo_user", str(author.id))
+         self.redirect(self.get_argument("next", "/"))
+ 
+ 
+@@ -269,7 +269,7 @@ class AuthLoginHandler(BaseHandler):
+             tornado.escape.utf8(author.hashed_password),
+         )
+         if password_equal:
+-            self.set_secure_cookie("blogdemo_user", str(author.id))
++            self.set_signed_cookie("blogdemo_user", str(author.id))
+             self.redirect(self.get_argument("next", "/"))
+         else:
+             self.render("login.html", error="incorrect password")
+diff --git a/demos/facebook/facebook.py b/demos/facebook/facebook.py
+index 480c8028..9b608aaf 100755
+--- a/demos/facebook/facebook.py
++++ b/demos/facebook/facebook.py
+@@ -49,7 +49,7 @@ class Application(tornado.web.Application):
+ 
+ class BaseHandler(tornado.web.RequestHandler):
+     def get_current_user(self):
+-        user_json = self.get_secure_cookie("fbdemo_user")
++        user_json = self.get_signed_cookie("fbdemo_user")
+         if not user_json:
+             return None
+         return tornado.escape.json_decode(user_json)
+@@ -84,7 +84,7 @@ class AuthLoginHandler(BaseHandler, tornado.auth.FacebookGraphMixin):
+                 client_secret=self.settings["facebook_secret"],
+                 code=self.get_argument("code"),
+             )
+-            self.set_secure_cookie("fbdemo_user", tornado.escape.json_encode(user))
++            self.set_signed_cookie("fbdemo_user", tornado.escape.json_encode(user))
+             self.redirect(self.get_argument("next", "/"))
+             return
+         self.authorize_redirect(
+diff --git a/demos/twitter/twitterdemo.py b/demos/twitter/twitterdemo.py
+index c459df3a..f7bc1ebd 100755
+--- a/demos/twitter/twitterdemo.py
++++ b/demos/twitter/twitterdemo.py
+@@ -53,7 +53,7 @@ class BaseHandler(RequestHandler):
+     COOKIE_NAME = "twitterdemo_user"
+ 
+     def get_current_user(self):
+-        user_json = self.get_secure_cookie(self.COOKIE_NAME)
++        user_json = self.get_signed_cookie(self.COOKIE_NAME)
+         if not user_json:
+             return None
+         return json_decode(user_json)
+@@ -75,7 +75,7 @@ class LoginHandler(BaseHandler, TwitterMixin):
+         if self.get_argument("oauth_token", None):
+             user = yield self.get_authenticated_user()
+             del user["description"]
+-            self.set_secure_cookie(self.COOKIE_NAME, json_encode(user))
++            self.set_signed_cookie(self.COOKIE_NAME, json_encode(user))
+             self.redirect(self.get_argument("next", "/"))
+         else:
+             yield self.authorize_redirect(callback_uri=self.request.full_url())
+diff --git a/docs/guide/security.rst b/docs/guide/security.rst
+index ea2b87ff..ee33141e 100644
+--- a/docs/guide/security.rst
++++ b/docs/guide/security.rst
+@@ -5,7 +5,7 @@ Authentication and security
+ 
+    import tornado
+ 
+-Cookies and secure cookies
++Cookies and signed cookies
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ You can set cookies in the user's browser with the ``set_cookie``
+@@ -27,8 +27,8 @@ method:
+ Cookies are not secure and can easily be modified by clients.  If you
+ need to set cookies to, e.g., identify the currently logged in user,
+ you need to sign your cookies to prevent forgery. Tornado supports
+-signed cookies with the `~.RequestHandler.set_secure_cookie` and
+-`~.RequestHandler.get_secure_cookie` methods. To use these methods,
++signed cookies with the `~.RequestHandler.set_signed_cookie` and
++`~.RequestHandler.get_signed_cookie` methods. To use these methods,
+ you need to specify a secret key named ``cookie_secret`` when you
+ create your application. You can pass in application settings as
+ keyword arguments to your application:
+@@ -45,15 +45,15 @@ keyword arguments to your application:
+ Signed cookies contain the encoded value of the cookie in addition to a
+ timestamp and an `HMAC <http://en.wikipedia.org/wiki/HMAC>`_ signature.
+ If the cookie is old or if the signature doesn't match,
+-``get_secure_cookie`` will return ``None`` just as if the cookie isn't
++``get_signed_cookie`` will return ``None`` just as if the cookie isn't
+ set. The secure version of the example above:
+ 
+ .. testcode::
+ 
+     class MainHandler(tornado.web.RequestHandler):
+         def get(self):
+-            if not self.get_secure_cookie("mycookie"):
+-                self.set_secure_cookie("mycookie", "myvalue")
++            if not self.get_signed_cookie("mycookie"):
++                self.set_signed_cookie("mycookie", "myvalue")
+                 self.write("Your cookie was not set yet!")
+             else:
+                 self.write("Your cookie was set!")
+@@ -61,15 +61,15 @@ set. The secure version of the example above:
+ .. testoutput::
+    :hide:
+ 
+-Tornado's secure cookies guarantee integrity but not confidentiality.
++Tornado's signed cookies guarantee integrity but not confidentiality.
+ That is, the cookie cannot be modified but its contents can be seen by the
+ user.  The ``cookie_secret`` is a symmetric key and must be kept secret --
+ anyone who obtains the value of this key could produce their own signed
+ cookies.
+ 
+-By default, Tornado's secure cookies expire after 30 days.  To change this,
+-use the ``expires_days`` keyword argument to ``set_secure_cookie`` *and* the
+-``max_age_days`` argument to ``get_secure_cookie``.  These two values are
++By default, Tornado's signed cookies expire after 30 days.  To change this,
++use the ``expires_days`` keyword argument to ``set_signed_cookie`` *and* the
++``max_age_days`` argument to ``get_signed_cookie``.  These two values are
+ passed separately so that you may e.g. have a cookie that is valid for 30 days
+ for most purposes, but for certain sensitive actions (such as changing billing
+ information) you use a smaller ``max_age_days`` when reading the cookie.
+@@ -81,7 +81,7 @@ signing key must then be set as ``key_version`` application setting
+ but all other keys in the dict are allowed for cookie signature validation,
+ if the correct key version is set in the cookie.
+ To implement cookie updates, the current signing key version can be
+-queried via `~.RequestHandler.get_secure_cookie_key_version`.
++queried via `~.RequestHandler.get_signed_cookie_key_version`.
+ 
+ .. _user-authentication:
+ 
+@@ -103,7 +103,7 @@ specifying a nickname, which is then saved in a cookie:
+ 
+     class BaseHandler(tornado.web.RequestHandler):
+         def get_current_user(self):
+-            return self.get_secure_cookie("user")
++            return self.get_signed_cookie("user")
+ 
+     class MainHandler(BaseHandler):
+         def get(self):
+@@ -121,7 +121,7 @@ specifying a nickname, which is then saved in a cookie:
+                        '</form></body></html>')
+ 
+         def post(self):
+-            self.set_secure_cookie("user", self.get_argument("name"))
++            self.set_signed_cookie("user", self.get_argument("name"))
+             self.redirect("/")
+ 
+     application = tornado.web.Application([
+@@ -193,7 +193,7 @@ the Google credentials in a cookie for later access:
+                 user = await self.get_authenticated_user(
+                     redirect_uri='http://your.site.com/auth/google',
+                     code=self.get_argument('code'))
+-                # Save the user with e.g. set_secure_cookie
++                # Save the user with e.g. set_signed_cookie
+             else:
+                 await self.authorize_redirect(
+                     redirect_uri='http://your.site.com/auth/google',
+diff --git a/docs/guide/templates.rst b/docs/guide/templates.rst
+index 73440dae..7c5a8f41 100644
+--- a/docs/guide/templates.rst
++++ b/docs/guide/templates.rst
+@@ -192,7 +192,7 @@ by overriding `.RequestHandler.get_user_locale`:
+ 
+     class BaseHandler(tornado.web.RequestHandler):
+         def get_current_user(self):
+-            user_id = self.get_secure_cookie("user")
++            user_id = self.get_signed_cookie("user")
+             if not user_id: return None
+             return self.backend.get_user_by_id(user_id)
+ 
+diff --git a/docs/web.rst b/docs/web.rst
+index 720d7567..3d6a7ba1 100644
+--- a/docs/web.rst
++++ b/docs/web.rst
+@@ -117,9 +117,27 @@
+    .. automethod:: RequestHandler.set_cookie
+    .. automethod:: RequestHandler.clear_cookie
+    .. automethod:: RequestHandler.clear_all_cookies
+-   .. automethod:: RequestHandler.get_secure_cookie
+-   .. automethod:: RequestHandler.get_secure_cookie_key_version
+-   .. automethod:: RequestHandler.set_secure_cookie
++   .. automethod:: RequestHandler.get_signed_cookie
++   .. automethod:: RequestHandler.get_signed_cookie_key_version
++   .. automethod:: RequestHandler.set_signed_cookie
++   .. method:: RequestHandler.get_secure_cookie
++
++      Deprecated alias for ``get_signed_cookie``.
++
++      .. deprecated:: 6.3
++
++   .. method:: RequestHandler.get_secure_cookie_key_version
++
++      Deprecated alias for ``get_signed_cookie_key_version``.
++
++      .. deprecated:: 6.3
++
++   .. method:: RequestHandler.set_secure_cookie
++
++      Deprecated alias for ``set_signed_cookie``.
++
++      .. deprecated:: 6.3
++
+    .. automethod:: RequestHandler.create_signed_value
+    .. autodata:: MIN_SUPPORTED_SIGNED_VALUE_VERSION
+    .. autodata:: MAX_SUPPORTED_SIGNED_VALUE_VERSION
+@@ -217,9 +235,9 @@
+ 
+          Authentication and security settings:
+ 
+-         * ``cookie_secret``: Used by `RequestHandler.get_secure_cookie`
+-           and `.set_secure_cookie` to sign cookies.
+-         * ``key_version``: Used by requestHandler `.set_secure_cookie`
++         * ``cookie_secret``: Used by `RequestHandler.get_signed_cookie`
++           and `.set_signed_cookie` to sign cookies.
++         * ``key_version``: Used by requestHandler `.set_signed_cookie`
+            to sign cookies with a specific key when ``cookie_secret``
+            is a key dictionary.
+          * ``login_url``: The `authenticated` decorator will redirect
+diff --git a/tornado/auth.py b/tornado/auth.py
+index d158ac6f..59501f56 100644
+--- a/tornado/auth.py
++++ b/tornado/auth.py
+@@ -42,7 +42,7 @@ Example usage for Google OAuth:
+                 user = await self.get_authenticated_user(
+                     redirect_uri='http://your.site.com/auth/google',
+                     code=self.get_argument('code'))
+-                # Save the user with e.g. set_secure_cookie
++                # Save the user with e.g. set_signed_cookie
+             else:
+                 self.authorize_redirect(
+                     redirect_uri='http://your.site.com/auth/google',
+@@ -694,7 +694,7 @@ class TwitterMixin(OAuthMixin):
+             async def get(self):
+                 if self.get_argument("oauth_token", None):
+                     user = await self.get_authenticated_user()
+-                    # Save the user using e.g. set_secure_cookie()
++                    # Save the user using e.g. set_signed_cookie()
+                 else:
+                     await self.authorize_redirect()
+ 
+@@ -903,7 +903,7 @@ class GoogleOAuth2Mixin(OAuth2Mixin):
+                             "https://www.googleapis.com/oauth2/v1/userinfo",
+                             access_token=access["access_token"])
+                         # Save the user and access token with
+-                        # e.g. set_secure_cookie.
++                        # e.g. set_signed_cookie.
+                     else:
+                         self.authorize_redirect(
+                             redirect_uri='http://your.site.com/auth/google',
+@@ -977,7 +977,7 @@ class FacebookGraphMixin(OAuth2Mixin):
+                           client_id=self.settings["facebook_api_key"],
+                           client_secret=self.settings["facebook_secret"],
+                           code=self.get_argument("code"))
+-                      # Save the user with e.g. set_secure_cookie
++                      # Save the user with e.g. set_signed_cookie
+                   else:
+                       self.authorize_redirect(
+                           redirect_uri='/auth/facebookgraph/',
+diff --git a/tornado/test/web_test.py b/tornado/test/web_test.py
+index 414e58de..f1760b9a 100644
+--- a/tornado/test/web_test.py
++++ b/tornado/test/web_test.py
+@@ -97,7 +97,7 @@ class HelloHandler(RequestHandler):
+ 
+ 
+ class CookieTestRequestHandler(RequestHandler):
+-    # stub out enough methods to make the secure_cookie functions work
++    # stub out enough methods to make the signed_cookie functions work
+     def __init__(self, cookie_secret="0123456789", key_version=None):
+         # don't call super.__init__
+         self._cookies = {}  # type: typing.Dict[str, bytes]
+@@ -121,13 +121,13 @@ class CookieTestRequestHandler(RequestHandler):
+ class SecureCookieV1Test(unittest.TestCase):
+     def test_round_trip(self):
+         handler = CookieTestRequestHandler()
+-        handler.set_secure_cookie("foo", b"bar", version=1)
+-        self.assertEqual(handler.get_secure_cookie("foo", min_version=1), b"bar")
++        handler.set_signed_cookie("foo", b"bar", version=1)
++        self.assertEqual(handler.get_signed_cookie("foo", min_version=1), b"bar")
+ 
+     def test_cookie_tampering_future_timestamp(self):
+         handler = CookieTestRequestHandler()
+         # this string base64-encodes to '12345678'
+-        handler.set_secure_cookie("foo", binascii.a2b_hex(b"d76df8e7aefc"), version=1)
++        handler.set_signed_cookie("foo", binascii.a2b_hex(b"d76df8e7aefc"), version=1)
+         cookie = handler._cookies["foo"]
+         match = re.match(rb"12345678\|([0-9]+)\|([0-9a-f]+)", cookie)
+         assert match is not None
+@@ -160,14 +160,14 @@ class SecureCookieV1Test(unittest.TestCase):
+         )
+         # it gets rejected
+         with ExpectLog(gen_log, "Cookie timestamp in future"):
+-            self.assertTrue(handler.get_secure_cookie("foo", min_version=1) is None)
++            self.assertTrue(handler.get_signed_cookie("foo", min_version=1) is None)
+ 
+     def test_arbitrary_bytes(self):
+         # Secure cookies accept arbitrary data (which is base64 encoded).
+         # Note that normal cookies accept only a subset of ascii.
+         handler = CookieTestRequestHandler()
+-        handler.set_secure_cookie("foo", b"\xe9", version=1)
+-        self.assertEqual(handler.get_secure_cookie("foo", min_version=1), b"\xe9")
++        handler.set_signed_cookie("foo", b"\xe9", version=1)
++        self.assertEqual(handler.get_signed_cookie("foo", min_version=1), b"\xe9")
+ 
+ 
+ # See SignedValueTest below for more.
+@@ -176,46 +176,46 @@ class SecureCookieV2Test(unittest.TestCase):
+ 
+     def test_round_trip(self):
+         handler = CookieTestRequestHandler()
+-        handler.set_secure_cookie("foo", b"bar", version=2)
+-        self.assertEqual(handler.get_secure_cookie("foo", min_version=2), b"bar")
++        handler.set_signed_cookie("foo", b"bar", version=2)
++        self.assertEqual(handler.get_signed_cookie("foo", min_version=2), b"bar")
+ 
+     def test_key_version_roundtrip(self):
+         handler = CookieTestRequestHandler(
+             cookie_secret=self.KEY_VERSIONS, key_version=0
+         )
+-        handler.set_secure_cookie("foo", b"bar")
+-        self.assertEqual(handler.get_secure_cookie("foo"), b"bar")
++        handler.set_signed_cookie("foo", b"bar")
++        self.assertEqual(handler.get_signed_cookie("foo"), b"bar")
+ 
+     def test_key_version_roundtrip_differing_version(self):
+         handler = CookieTestRequestHandler(
+             cookie_secret=self.KEY_VERSIONS, key_version=1
+         )
+-        handler.set_secure_cookie("foo", b"bar")
+-        self.assertEqual(handler.get_secure_cookie("foo"), b"bar")
++        handler.set_signed_cookie("foo", b"bar")
++        self.assertEqual(handler.get_signed_cookie("foo"), b"bar")
+ 
+     def test_key_version_increment_version(self):
+         handler = CookieTestRequestHandler(
+             cookie_secret=self.KEY_VERSIONS, key_version=0
+         )
+-        handler.set_secure_cookie("foo", b"bar")
++        handler.set_signed_cookie("foo", b"bar")
+         new_handler = CookieTestRequestHandler(
+             cookie_secret=self.KEY_VERSIONS, key_version=1
+         )
+         new_handler._cookies = handler._cookies
+-        self.assertEqual(new_handler.get_secure_cookie("foo"), b"bar")
++        self.assertEqual(new_handler.get_signed_cookie("foo"), b"bar")
+ 
+     def test_key_version_invalidate_version(self):
+         handler = CookieTestRequestHandler(
+             cookie_secret=self.KEY_VERSIONS, key_version=0
+         )
+-        handler.set_secure_cookie("foo", b"bar")
++        handler.set_signed_cookie("foo", b"bar")
+         new_key_versions = self.KEY_VERSIONS.copy()
+         new_key_versions.pop(0)
+         new_handler = CookieTestRequestHandler(
+             cookie_secret=new_key_versions, key_version=1
+         )
+         new_handler._cookies = handler._cookies
+-        self.assertEqual(new_handler.get_secure_cookie("foo"), None)
++        self.assertEqual(new_handler.get_signed_cookie("foo"), None)
+ 
+ 
+ class FinalReturnTest(WebTestCase):
+@@ -585,7 +585,7 @@ class TypeCheckHandler(RequestHandler):
+             raise Exception(
+                 "unexpected values for cookie keys: %r" % self.cookies.keys()
+             )
+-        self.check_type("get_secure_cookie", self.get_secure_cookie("asdf"), bytes)
++        self.check_type("get_signed_cookie", self.get_signed_cookie("asdf"), bytes)
+         self.check_type("get_cookie", self.get_cookie("asdf"), str)
+ 
+         self.check_type("xsrf_token", self.xsrf_token, bytes)
+diff --git a/tornado/web.py b/tornado/web.py
+index fde31a6c..42306a7f 100644
+--- a/tornado/web.py
++++ b/tornado/web.py
+@@ -166,7 +166,7 @@ May be overridden by passing a ``version`` keyword argument.
+ """
+ 
+ DEFAULT_SIGNED_VALUE_MIN_VERSION = 1
+-"""The oldest signed value accepted by `.RequestHandler.get_secure_cookie`.
++"""The oldest signed value accepted by `.RequestHandler.get_signed_cookie`.
+ 
+ May be overridden by passing a ``min_version`` keyword argument.
+ 
+@@ -684,7 +684,7 @@ class RequestHandler(object):
+         for name in self.request.cookies:
+             self.clear_cookie(name, path=path, domain=domain)
+ 
+-    def set_secure_cookie(
++    def set_signed_cookie(
+         self,
+         name: str,
+         value: Union[str, bytes],
+@@ -698,11 +698,11 @@ class RequestHandler(object):
+         to use this method. It should be a long, random sequence of bytes
+         to be used as the HMAC secret for the signature.
+ 
+-        To read a cookie set with this method, use `get_secure_cookie()`.
++        To read a cookie set with this method, use `get_signed_cookie()`.
+ 
+         Note that the ``expires_days`` parameter sets the lifetime of the
+         cookie in the browser, but is independent of the ``max_age_days``
+-        parameter to `get_secure_cookie`.
++        parameter to `get_signed_cookie`.
+         A value of None limits the lifetime to the current browser session.
+ 
+         Secure cookies may contain arbitrary byte values, not just unicode
+@@ -715,6 +715,12 @@ class RequestHandler(object):
+ 
+            Added the ``version`` argument.  Introduced cookie version 2
+            and made it the default.
++
++        .. versionchanged:: 6.3
++
++           Renamed from ``set_secure_cookie`` to ``set_signed_cookie`` to
++           avoid confusion with other uses of "secure" in cookie attributes
++           and prefixes. The old name remains as an alias.
+         """
+         self.set_cookie(
+             name,
+@@ -723,14 +729,16 @@ class RequestHandler(object):
+             **kwargs
+         )
+ 
++    set_secure_cookie = set_signed_cookie
++
+     def create_signed_value(
+         self, name: str, value: Union[str, bytes], version: Optional[int] = None
+     ) -> bytes:
+         """Signs and timestamps a string so it cannot be forged.
+ 
+-        Normally used via set_secure_cookie, but provided as a separate
++        Normally used via set_signed_cookie, but provided as a separate
+         method for non-cookie uses.  To decode a value not stored
+-        as a cookie use the optional value argument to get_secure_cookie.
++        as a cookie use the optional value argument to get_signed_cookie.
+ 
+         .. versionchanged:: 3.2.1
+ 
+@@ -749,7 +757,7 @@ class RequestHandler(object):
+             secret, name, value, version=version, key_version=key_version
+         )
+ 
+-    def get_secure_cookie(
++    def get_signed_cookie(
+         self,
+         name: str,
+         value: Optional[str] = None,
+@@ -763,12 +771,19 @@ class RequestHandler(object):
+ 
+         Similar to `get_cookie`, this method only returns cookies that
+         were present in the request. It does not see outgoing cookies set by
+-        `set_secure_cookie` in this handler.
++        `set_signed_cookie` in this handler.
+ 
+         .. versionchanged:: 3.2.1
+ 
+            Added the ``min_version`` argument.  Introduced cookie version 2;
+            both versions 1 and 2 are accepted by default.
++
++         .. versionchanged:: 6.3
++
++           Renamed from ``get_secure_cookie`` to ``get_signed_cookie`` to
++           avoid confusion with other uses of "secure" in cookie attributes
++           and prefixes. The old name remains as an alias.
++
+         """
+         self.require_setting("cookie_secret", "secure cookies")
+         if value is None:
+@@ -781,12 +796,22 @@ class RequestHandler(object):
+             min_version=min_version,
+         )
+ 
+-    def get_secure_cookie_key_version(
++    get_secure_cookie = get_signed_cookie
++
++    def get_signed_cookie_key_version(
+         self, name: str, value: Optional[str] = None
+     ) -> Optional[int]:
+         """Returns the signing key version of the secure cookie.
+ 
+         The version is returned as int.
++
++        .. versionchanged:: 6.3
++
++           Renamed from ``get_secure_cookie_key_version`` to
++           ``set_signed_cookie_key_version`` to avoid confusion with other
++           uses of "secure" in cookie attributes and prefixes. The old name
++           remains as an alias.
++
+         """
+         self.require_setting("cookie_secret", "secure cookies")
+         if value is None:
+@@ -795,6 +820,8 @@ class RequestHandler(object):
+             return None
+         return get_signature_key_version(value)
+ 
++    get_secure_cookie_key_version = get_signed_cookie_key_version
++
+     def redirect(
+         self, url: str, permanent: bool = False, status: Optional[int] = None
+     ) -> None:
+@@ -1321,7 +1348,7 @@ class RequestHandler(object):
+           and is cached for future access::
+ 
+               def get_current_user(self):
+-                  user_cookie = self.get_secure_cookie("user")
++                  user_cookie = self.get_signed_cookie("user")
+                   if user_cookie:
+                       return json.loads(user_cookie)
+                   return None
+@@ -1331,7 +1358,7 @@ class RequestHandler(object):
+ 
+               @gen.coroutine
+               def prepare(self):
+-                  user_id_cookie = self.get_secure_cookie("user_id")
++                  user_id_cookie = self.get_signed_cookie("user_id")
+                   if user_id_cookie:
+                       self.current_user = yield load_user(user_id_cookie)
+ 

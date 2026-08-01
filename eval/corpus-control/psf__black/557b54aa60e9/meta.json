@@ -1,0 +1,16 @@
+{
+  "repo": "psf/black",
+  "sha": "557b54aa60e9abbb93e5737512d9963e640f2d1f",
+  "kind": "control_good",
+  "subject": "Fix crash on docstrings ending with \"\\ \" (#2142)",
+  "evidence_subject": "Fix crash on docstrings ending with \"\\ \" (#2142)",
+  "author": "Jelle Zijlstra",
+  "date": "2021-04-26T10:42:16-07:00",
+  "impl_files": [
+    "src/black/__init__.py"
+  ],
+  "test_files": [
+    "tests/data/docstring.py"
+  ],
+  "diff_lines": 78
+}

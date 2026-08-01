@@ -1,0 +1,34 @@
+diff --git a/lib/sqlalchemy/dialects/postgresql/psycopg2.py b/lib/sqlalchemy/dialects/postgresql/psycopg2.py
+index da333e8eb..fcc1946ff 100644
+--- a/lib/sqlalchemy/dialects/postgresql/psycopg2.py
++++ b/lib/sqlalchemy/dialects/postgresql/psycopg2.py
+@@ -392,8 +392,13 @@ class PGDialect_psycopg2(PGDialect):
+                 hstore_oids = self._hstore_oids(conn)
+                 if hstore_oids is not None:
+                     oid, array_oid = hstore_oids
+-                    extras.register_hstore(conn, oid=oid, array_oid=array_oid,
++                    if util.py2k:
++                        extras.register_hstore(conn, oid=oid,
++                                        array_oid=array_oid,
+                                            unicode=True)
++                    else:
++                        extras.register_hstore(conn, oid=oid,
++                                        array_oid=array_oid)
+             fns.append(on_connect)
+ 
+         if fns:
+diff --git a/test/dialect/test_postgresql.py b/test/dialect/test_postgresql.py
+index 3931a1968..00e5c07ab 100644
+--- a/test/dialect/test_postgresql.py
++++ b/test/dialect/test_postgresql.py
+@@ -2901,8 +2901,8 @@ class HStoreTest(fixtures.TestBase):
+                     dialect, None)
+         assert_raises_message(
+             ValueError,
+-            r'''After '\[\.\.\.\], "key1"=>"value1", ', could not parse '''
+-            '''residual at position 36: 'crapcrapcrap, "key3"\[\.\.\.\]''',
++            r'''After u?'\[\.\.\.\], "key1"=>"value1", ', could not parse '''
++            '''residual at position 36: u?'crapcrapcrap, "key3"\[\.\.\.\]''',
+             proc,
+             '"key2"=>"value2", "key1"=>"value1", '
+                         'crapcrapcrap, "key3"=>"value3"'

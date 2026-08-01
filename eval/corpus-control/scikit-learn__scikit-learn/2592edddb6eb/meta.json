@@ -1,0 +1,14 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "2592edddb6eb326a65311f081e668d93ab044703",
+  "kind": "control_good",
+  "subject": "MNT Fixes DataConversionWarning doctest in pypy (#16965)",
+  "evidence_subject": "MNT Fixes DataConversionWarning doctest in pypy (#16965)",
+  "author": "Thomas J Fan",
+  "date": "2020-04-23T12:12:07-04:00",
+  "impl_files": [
+    "sklearn/exceptions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 18
+}

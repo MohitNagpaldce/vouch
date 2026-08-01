@@ -1,0 +1,54 @@
+diff --git a/changes/3190-joaommartins.md b/changes/3190-joaommartins.md
+new file mode 100644
+index 000000000..74af4f13a
+--- /dev/null
++++ b/changes/3190-joaommartins.md
+@@ -0,0 +1 @@
++Always use `Enum` value as default in generated JSON schema.
+\ No newline at end of file
+diff --git a/pydantic/schema.py b/pydantic/schema.py
+index fd9012126..727fc7274 100644
+--- a/pydantic/schema.py
++++ b/pydantic/schema.py
+@@ -922,7 +922,9 @@ def multitypes_literal_field_for_schema(values: Tuple[Any, ...], field: ModelFie
+ 
+ 
+ def encode_default(dft: Any) -> Any:
+-    if isinstance(dft, (int, float, str)):
++    if isinstance(dft, Enum):
++        return dft.value
++    elif isinstance(dft, (int, float, str)):
+         return dft
+     elif sequence_like(dft):
+         t = dft.__class__
+diff --git a/tests/test_schema.py b/tests/test_schema.py
+index 709f4aaa9..709b468b2 100644
+--- a/tests/test_schema.py
++++ b/tests/test_schema.py
+@@ -1435,6 +1435,26 @@ def test_list_default():
+     }
+ 
+ 
++def test_enum_str_default():
++    class MyEnum(str, Enum):
++        FOO = 'foo'
++
++    class UserModel(BaseModel):
++        friends: MyEnum = MyEnum.FOO
++
++    assert UserModel.schema()['properties']['friends']['default'] is MyEnum.FOO.value
++
++
++def test_enum_int_default():
++    class MyEnum(IntEnum):
++        FOO = 1
++
++    class UserModel(BaseModel):
++        friends: MyEnum = MyEnum.FOO
++
++    assert UserModel.schema()['properties']['friends']['default'] is MyEnum.FOO.value
++
++
+ def test_dict_default():
+     class UserModel(BaseModel):
+         friends: Dict[str, float] = {'a': 1.1, 'b': 2.2}

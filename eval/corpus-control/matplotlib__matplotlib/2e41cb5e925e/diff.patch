@@ -1,0 +1,76 @@
+diff --git a/doc/users/next_whats_new/boxplot_legend_support.rst b/doc/users/next_whats_new/boxplot_legend_support.rst
+index fa6069ebb9..3232244024 100644
+--- a/doc/users/next_whats_new/boxplot_legend_support.rst
++++ b/doc/users/next_whats_new/boxplot_legend_support.rst
+@@ -3,7 +3,7 @@ Legend support for Boxplot
+ Boxplots now support a *label* parameter to create legend entries.
+ 
+ Legend labels can be passed as a list of strings to label multiple boxes in a single
+-boxplot call:
++`.boxplot` call:
+ 
+ 
+ .. plot::
+@@ -37,7 +37,7 @@ boxplot call:
+     ax.legend()
+ 
+ 
+-Or as a single string to each individual boxplot:
++Or as a single string to each individual `.boxplot`:
+ 
+ .. plot::
+     :include-source: true
+diff --git a/lib/matplotlib/axes/_axes.py b/lib/matplotlib/axes/_axes.py
+index 52804e38cf..44d82184c3 100644
+--- a/lib/matplotlib/axes/_axes.py
++++ b/lib/matplotlib/axes/_axes.py
+@@ -3997,6 +3997,8 @@ class Axes(_AxesBase):
+             median line (``result["medians"]``); if *patch_artist* is True, the legend
+             will show the box `.Patch` artists (``result["boxes"]``) instead.
+ 
++            .. versionadded:: 3.9
++
+         data : indexable object, optional
+             DATA_PARAMETER_PLACEHOLDER
+ 
+@@ -4221,6 +4223,8 @@ class Axes(_AxesBase):
+             median line (``result["medians"]``); if *patch_artist* is True, the legend
+             will show the box `.Patch` artists (``result["boxes"]``) instead.
+ 
++            .. versionadded:: 3.9
++
+         zorder : float, default: ``Line2D.zorder = 2``
+           The zorder of the resulting boxplot.
+ 
+@@ -4421,8 +4425,7 @@ class Axes(_AxesBase):
+                 box_or_med[0].set_label(label)
+             else:  # label is a sequence
+                 if len(box_or_med) != len(label):
+-                    raise ValueError("There must be an equal number of legend"
+-                                     " labels and boxplots.")
++                    raise ValueError(datashape_message.format("label"))
+                 for artist, lbl in zip(box_or_med, label):
+                     artist.set_label(lbl)
+ 
+diff --git a/lib/matplotlib/axes/_axes.pyi b/lib/matplotlib/axes/_axes.pyi
+index d000086236..b70d330aa4 100644
+--- a/lib/matplotlib/axes/_axes.pyi
++++ b/lib/matplotlib/axes/_axes.pyi
+@@ -372,7 +372,7 @@ class Axes(_AxesBase):
+         autorange: bool = ...,
+         zorder: float | None = ...,
+         capwidths: float | ArrayLike | None = ...,
+-		label: Sequence[str] | None = ...,
++        label: Sequence[str] | None = ...,
+         *,
+         data=...,
+     ) -> dict[str, Any]: ...
+@@ -398,7 +398,7 @@ class Axes(_AxesBase):
+         manage_ticks: bool = ...,
+         zorder: float | None = ...,
+         capwidths: float | ArrayLike | None = ...,
+-		label: Sequence[str] | None = ...,
++        label: Sequence[str] | None = ...,
+     ) -> dict[str, Any]: ...
+     def scatter(
+         self,

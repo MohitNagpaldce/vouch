@@ -1,0 +1,17 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "4747c95a9de2154165449689b2a338a8ed915def",
+  "kind": "control_good",
+  "subject": "Fix tests in the app engine sandbox",
+  "evidence_subject": "Fix tests in the app engine sandbox",
+  "author": "Ben Darnell",
+  "date": "2015-10-18T21:39:43+02:00",
+  "impl_files": [
+    "tornado/process.py",
+    "tornado/test/util.py"
+  ],
+  "test_files": [
+    "tornado/test/locale_test.py"
+  ],
+  "diff_lines": 56
+}

@@ -1,0 +1,20 @@
+diff --git a/examples/text_labels_and_annotations/font_family_rc.py b/examples/text_labels_and_annotations/font_family_rc.py
+index 4fc5b1872c..8014714150 100644
+--- a/examples/text_labels_and_annotations/font_family_rc.py
++++ b/examples/text_labels_and_annotations/font_family_rc.py
+@@ -71,3 +71,14 @@ print_text("Hello World! 04")
+ plt.rcParams["font.family"] = "monospace"
+ plt.rcParams["font.monospace"] = ["Menlo"]
+ print_text("Hello World! 05")
++
++
++
++#############################################################################
++#
++# Print all available fonts:
++
++import matplotlib.font_manager
++list_of_fonts = matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
++for l in list_of_fonts:
++    print(l)
+\ No newline at end of file

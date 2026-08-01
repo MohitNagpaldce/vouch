@@ -1,0 +1,26 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 4d229203..07e69240 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -1,5 +1,11 @@
+ .. currentmodule:: flask
+ 
++Version 2.2.0
++-------------
++
++Unreleased
++
++
+ Version 2.1.0
+ -------------
+ 
+diff --git a/src/flask/__init__.py b/src/flask/__init__.py
+index e721eddd..f4b8c75c 100644
+--- a/src/flask/__init__.py
++++ b/src/flask/__init__.py
+@@ -42,4 +42,4 @@ from .signals import template_rendered as template_rendered
+ from .templating import render_template as render_template
+ from .templating import render_template_string as render_template_string
+ 
+-__version__ = "2.1.0"
++__version__ = "2.2.0.dev0"

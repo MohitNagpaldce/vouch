@@ -1,0 +1,288 @@
+diff --git a/fastapi/__init__.py b/fastapi/__init__.py
+index 2c895c4c..8ee9d8cf 100644
+--- a/fastapi/__init__.py
++++ b/fastapi/__init__.py
+@@ -7,5 +7,15 @@ from starlette.background import BackgroundTasks
+ from .applications import FastAPI
+ from .datastructures import UploadFile
+ from .exceptions import HTTPException
+-from .params import Body, Cookie, Depends, File, Form, Header, Path, Query, Security
++from .param_functions import (
++    Body,
++    Cookie,
++    Depends,
++    File,
++    Form,
++    Header,
++    Path,
++    Query,
++    Security,
++)
+ from .routing import APIRouter
+diff --git a/fastapi/dependencies/utils.py b/fastapi/dependencies/utils.py
+index a1bfe2bb..a87f23c6 100644
+--- a/fastapi/dependencies/utils.py
++++ b/fastapi/dependencies/utils.py
+@@ -66,7 +66,7 @@ def get_sub_dependant(
+         dependency_scopes = depends.scopes
+         security_scopes.extend(dependency_scopes)
+     if isinstance(dependency, SecurityBase):
+-        use_scopes = []
++        use_scopes: List[str] = []
+         if isinstance(dependency, (OAuth2, OpenIdConnect)):
+             use_scopes = security_scopes
+         security_requirement = SecurityRequirement(
+diff --git a/fastapi/param_functions.py b/fastapi/param_functions.py
+new file mode 100644
+index 00000000..92c83ba9
+--- /dev/null
++++ b/fastapi/param_functions.py
+@@ -0,0 +1,248 @@
++from typing import Any, Callable, Sequence
++
++from fastapi import params
++
++
++def Path(  # noqa: N802
++    default: Any,
++    *,
++    alias: str = None,
++    title: str = None,
++    description: str = None,
++    gt: float = None,
++    ge: float = None,
++    lt: float = None,
++    le: float = None,
++    min_length: int = None,
++    max_length: int = None,
++    regex: str = None,
++    deprecated: bool = None,
++    **extra: Any,
++) -> Any:
++    return params.Path(
++        default=default,
++        alias=alias,
++        title=title,
++        description=description,
++        gt=gt,
++        ge=ge,
++        lt=lt,
++        le=le,
++        min_length=min_length,
++        max_length=max_length,
++        regex=regex,
++        deprecated=deprecated,
++        **extra,
++    )
++
++
++def Query(  # noqa: N802
++    default: Any,
++    *,
++    alias: str = None,
++    title: str = None,
++    description: str = None,
++    gt: float = None,
++    ge: float = None,
++    lt: float = None,
++    le: float = None,
++    min_length: int = None,
++    max_length: int = None,
++    regex: str = None,
++    deprecated: bool = None,
++    **extra: Any,
++) -> Any:
++    return params.Query(
++        default,
++        alias=alias,
++        title=title,
++        description=description,
++        gt=gt,
++        ge=ge,
++        lt=lt,
++        le=le,
++        min_length=min_length,
++        max_length=max_length,
++        regex=regex,
++        deprecated=deprecated,
++        **extra,
++    )
++
++
++def Header(  # noqa: N802
++    default: Any,
++    *,
++    alias: str = None,
++    convert_underscores: bool = True,
++    title: str = None,
++    description: str = None,
++    gt: float = None,
++    ge: float = None,
++    lt: float = None,
++    le: float = None,
++    min_length: int = None,
++    max_length: int = None,
++    regex: str = None,
++    deprecated: bool = None,
++    **extra: Any,
++) -> Any:
++    return params.Header(
++        default,
++        alias=alias,
++        convert_underscores=convert_underscores,
++        title=title,
++        description=description,
++        gt=gt,
++        ge=ge,
++        lt=lt,
++        le=le,
++        min_length=min_length,
++        max_length=max_length,
++        regex=regex,
++        deprecated=deprecated,
++        **extra,
++    )
++
++
++def Cookie(  # noqa: N802
++    default: Any,
++    *,
++    alias: str = None,
++    title: str = None,
++    description: str = None,
++    gt: float = None,
++    ge: float = None,
++    lt: float = None,
++    le: float = None,
++    min_length: int = None,
++    max_length: int = None,
++    regex: str = None,
++    deprecated: bool = None,
++    **extra: Any,
++) -> Any:
++    return params.Cookie(
++        default,
++        alias=alias,
++        title=title,
++        description=description,
++        gt=gt,
++        ge=ge,
++        lt=lt,
++        le=le,
++        min_length=min_length,
++        max_length=max_length,
++        regex=regex,
++        deprecated=deprecated,
++        **extra,
++    )
++
++
++def Body(  # noqa: N802
++    default: Any,
++    *,
++    embed: bool = False,
++    media_type: str = "application/json",
++    alias: str = None,
++    title: str = None,
++    description: str = None,
++    gt: float = None,
++    ge: float = None,
++    lt: float = None,
++    le: float = None,
++    min_length: int = None,
++    max_length: int = None,
++    regex: str = None,
++    **extra: Any,
++) -> Any:
++    return params.Body(
++        default,
++        embed=embed,
++        media_type=media_type,
++        alias=alias,
++        title=title,
++        description=description,
++        gt=gt,
++        ge=ge,
++        lt=lt,
++        le=le,
++        min_length=min_length,
++        max_length=max_length,
++        regex=regex,
++        **extra,
++    )
++
++
++def Form(  # noqa: N802
++    default: Any,
++    *,
++    media_type: str = "application/x-www-form-urlencoded",
++    alias: str = None,
++    title: str = None,
++    description: str = None,
++    gt: float = None,
++    ge: float = None,
++    lt: float = None,
++    le: float = None,
++    min_length: int = None,
++    max_length: int = None,
++    regex: str = None,
++    **extra: Any,
++) -> Any:
++    return params.Form(
++        default,
++        media_type=media_type,
++        alias=alias,
++        title=title,
++        description=description,
++        gt=gt,
++        ge=ge,
++        lt=lt,
++        le=le,
++        min_length=min_length,
++        max_length=max_length,
++        regex=regex,
++        **extra,
++    )
++
++
++def File(  # noqa: N802
++    default: Any,
++    *,
++    media_type: str = "multipart/form-data",
++    alias: str = None,
++    title: str = None,
++    description: str = None,
++    gt: float = None,
++    ge: float = None,
++    lt: float = None,
++    le: float = None,
++    min_length: int = None,
++    max_length: int = None,
++    regex: str = None,
++    **extra: Any,
++) -> Any:
++    return params.File(
++        default,
++        media_type=media_type,
++        alias=alias,
++        title=title,
++        description=description,
++        gt=gt,
++        ge=ge,
++        lt=lt,
++        le=le,
++        min_length=min_length,
++        max_length=max_length,
++        regex=regex,
++        **extra,
++    )
++
++
++def Depends(dependency: Callable = None) -> Any:  # noqa: N802
++    return params.Depends(dependency=dependency)
++
++
++def Security(  # noqa: N802
++    dependency: Callable = None, scopes: Sequence[str] = None
++) -> Any:
++    return params.Security(dependency=dependency, scopes=scopes)

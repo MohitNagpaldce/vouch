@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "213d1b22d42ce8efc54d7858b490e920fcdb4f0a",
+  "kind": "control_good",
+  "subject": "Restore requirements-txt-fixer in pre-commit (#7808)",
+  "evidence_subject": "Restore requirements-txt-fixer in pre-commit (#7808)",
+  "author": "Alex",
+  "date": "2023-11-27T17:20:17-06:00",
+  "impl_files": [
+    "requirements/sync-direct-runtime-deps.py"
+  ],
+  "test_files": [],
+  "diff_lines": 99
+}

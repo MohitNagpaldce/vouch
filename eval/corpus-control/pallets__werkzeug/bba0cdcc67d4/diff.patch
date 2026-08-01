@@ -1,0 +1,321 @@
+diff --git a/CHANGES b/CHANGES
+index 6f503e16..e5c01095 100644
+--- a/CHANGES
++++ b/CHANGES
+@@ -23,6 +23,8 @@ Version 0.11
+   converted to lowercase.
+ - Changed cache so that cache never expires if timeout is 0. This also fixes
+   an issue with redis setex (issue ``#550``)
++- Werkzeug now assumes ``UTF-8`` as filesystem encoding on Unix if Python
++  detected it as ASCII.
+ 
+ Version 0.10.5
+ --------------
+diff --git a/docs/contents.rst.inc b/docs/contents.rst.inc
+index 7615eaea..d5d29a85 100644
+--- a/docs/contents.rst.inc
++++ b/docs/contents.rst.inc
+@@ -36,6 +36,7 @@ Reference
+    wrappers
+    routing
+    wsgi
++   filesystem
+    http
+    datastructures
+    utils
+diff --git a/docs/filesystem.rst b/docs/filesystem.rst
+new file mode 100644
+index 00000000..0ac92838
+--- /dev/null
++++ b/docs/filesystem.rst
+@@ -0,0 +1,11 @@
++====================
++Filesystem Utilities
++====================
++
++Various utilities for the local filesystem.
++
++.. module:: werkzeug.filesystem
++
++.. autoclass:: BrokenFilesystemWarning
++
++.. autofunction:: get_filesystem_encoding
+diff --git a/docs/unicode.rst b/docs/unicode.rst
+index 84a4cd73..31404419 100644
+--- a/docs/unicode.rst
++++ b/docs/unicode.rst
+@@ -134,3 +134,25 @@ but not encoding.  If Werkzeug encounters an encoding error it will raise a
+ :exc:`UnicodeEncodeError`.  It's your responsibility to not create data that is
+ not present in the target charset (a non issue with all unicode encodings
+ such as utf-8).
++
++.. _filesystem-encoding:
++
++The Filesystem
++==============
++
++.. versionchanged:: 0.11
++
++Up until version 0.11, Werkzeug used Python's stdlib functionality to detect
++the filesystem encoding. However, several bug reports against Werkzeug have
++shown that the value of :py:func:`sys.getfilesystemencoding` can not the
++trusted under traditional UNIX systems. The usual problems come from
++misconfigured systems, where ``LANG`` and similar environment variables are not
++set. In such cases, Python would default to ASCII as filesystem encoding, a
++very conservative default that is usually wrong and causes more problems than
++it avoids.
++
++Therefore Werkzeug will force the filesystem encoding to ``UTF-8`` and issue a
++warning whenever it detects that it is running under BSD or Linux, and
++:py:func:`sys.getfilesystemencoding` is returning an ASCII encoding.
++
++See also :py:mod:`werkzeug.filesystem`.
+diff --git a/werkzeug/_compat.py b/werkzeug/_compat.py
+index 964533f4..5c399757 100644
+--- a/werkzeug/_compat.py
++++ b/werkzeug/_compat.py
+@@ -1,8 +1,11 @@
+ # flake8: noqa
+ # This whole file is full of lint errors
++import codecs
+ import sys
+ import operator
+ import functools
++import warnings
++
+ try:
+     import builtins
+ except ImportError:
+diff --git a/werkzeug/contrib/sessions.py b/werkzeug/contrib/sessions.py
+index 7f7254c4..caee4e16 100644
+--- a/werkzeug/contrib/sessions.py
++++ b/werkzeug/contrib/sessions.py
+@@ -53,7 +53,6 @@ r"""
+ """
+ import re
+ import os
+-import sys
+ import tempfile
+ from os import path
+ from time import time
+@@ -66,6 +65,7 @@ from werkzeug.utils import dump_cookie, parse_cookie
+ from werkzeug.wsgi import ClosingIterator
+ from werkzeug.posixemulation import rename
+ from werkzeug._compat import PY2, text_type
++from werkzeug.filesystem import get_filesystem_encoding
+ 
+ 
+ _sha1_re = re.compile(r'^[a-f0-9]{40}$')
+@@ -223,7 +223,7 @@ class FilesystemSessionStore(SessionStore):
+         self.path = path
+         if isinstance(filename_template, text_type) and PY2:
+             filename_template = filename_template.encode(
+-                sys.getfilesystemencoding() or 'utf-8')
++                get_filesystem_encoding())
+         assert not filename_template.endswith(_fs_transaction_suffix), \
+             'filename templates may not end with %s' % _fs_transaction_suffix
+         self.filename_template = filename_template
+@@ -235,7 +235,7 @@ class FilesystemSessionStore(SessionStore):
+         # you might reconfigure the session object to have a more
+         # arbitrary string.
+         if isinstance(sid, text_type) and PY2:
+-            sid = sid.encode(sys.getfilesystemencoding() or 'utf-8')
++            sid = sid.encode(get_filesystem_encoding())
+         return path.join(self.path, self.filename_template % sid)
+ 
+     def save(self, session):
+diff --git a/werkzeug/datastructures.py b/werkzeug/datastructures.py
+index 25fc6302..4753c532 100644
+--- a/werkzeug/datastructures.py
++++ b/werkzeug/datastructures.py
+@@ -9,7 +9,6 @@
+     :license: BSD, see LICENSE for more details.
+ """
+ import re
+-import sys
+ import codecs
+ import mimetypes
+ from copy import deepcopy
+@@ -19,6 +18,7 @@ from werkzeug._internal import _missing, _empty_stream
+ from werkzeug._compat import iterkeys, itervalues, iteritems, iterlists, \
+     PY2, text_type, integer_types, string_types, make_literal_wrapper, \
+     to_native
++from werkzeug.filesystem import get_filesystem_encoding
+ 
+ 
+ _locale_delim_re = re.compile(r'[_-]')
+@@ -2565,7 +2565,7 @@ class FileStorage(object):
+             # This might not be if the name attribute is bytes due to the
+             # file being opened from the bytes API.
+             if not PY2 and isinstance(filename, bytes):
+-                filename = filename.decode(sys.getfilesystemencoding(),
++                filename = filename.decode(get_filesystem_encoding(),
+                                            'replace')
+ 
+         self.filename = filename
+diff --git a/werkzeug/debug/tbtools.py b/werkzeug/debug/tbtools.py
+index 5024bb30..ec5f5b21 100644
+--- a/werkzeug/debug/tbtools.py
++++ b/werkzeug/debug/tbtools.py
+@@ -22,6 +22,7 @@ from werkzeug.utils import cached_property, escape
+ from werkzeug.debug.console import Console
+ from werkzeug._compat import range_type, PY2, text_type, string_types, \
+     to_native, to_unicode
++from werkzeug.filesystem import get_filesystem_encoding
+ 
+ 
+ _coding_re = re.compile(br'coding[:=]\s*([-\w.]+)')
+@@ -383,7 +384,7 @@ class Frame(object):
+         # if it's a file on the file system resolve the real filename.
+         if os.path.isfile(fn):
+             fn = os.path.realpath(fn)
+-        self.filename = to_unicode(fn, sys.getfilesystemencoding())
++        self.filename = to_unicode(fn, get_filesystem_encoding())
+         self.module = self.globals.get('__name__')
+         self.loader = self.globals.get('__loader__')
+         self.code = tb.tb_frame.f_code
+@@ -466,7 +467,8 @@ class Frame(object):
+ 
+         if source is None:
+             try:
+-                f = open(self.filename, mode='rb')
++                f = open(to_native(self.filename, get_filesystem_encoding()),
++                         mode='rb')
+             except IOError:
+                 return []
+             try:
+diff --git a/werkzeug/filesystem.py b/werkzeug/filesystem.py
+new file mode 100644
+index 00000000..3bd96d1a
+--- /dev/null
++++ b/werkzeug/filesystem.py
+@@ -0,0 +1,66 @@
++# -*- coding: utf-8 -*-
++"""
++    werkzeug.filesystem
++    ~~~~~~~~~~~~~~~~~~~
++
++    Various utilities for the local filesystem.
++
++    :copyright: (c) 2015 by the Werkzeug Team, see AUTHORS for more details.
++    :license: BSD, see LICENSE for more details.
++"""
++
++import codecs
++import sys
++import warnings
++
++# We do not trust traditional unixes.
++has_likely_buggy_unicode_filesystem = \
++    sys.platform.startswith('linux') or 'bsd' in sys.platform
++
++
++def _is_ascii_encoding(encoding):
++    """
++    Given an encoding this figures out if the encoding is actually ASCII (which
++    is something we don't actually want in most cases). This is necessary
++    because ASCII comes under many names such as ANSI_X3.4-1968.
++    """
++    if encoding is None:
++        return False
++    try:
++        return codecs.lookup(encoding).name == 'ascii'
++    except LookupError:
++        return False
++
++
++class BrokenFilesystemWarning(RuntimeWarning, UnicodeWarning):
++    '''The warning used by Werkzeug to signal a broken filesystem. Will only be
++    used once per runtime.'''
++
++
++_warned_about_filesystem_encoding = False
++
++
++def get_filesystem_encoding():
++    """
++    Returns the filesystem encoding that should be used. Note that this is
++    different from the Python understanding of the filesystem encoding which
++    might be deeply flawed. Do not use this value against Python's unicode APIs
++    because it might be different. See :ref:`filesystem-encoding` for the exact
++    behavior.
++
++    The concept of a filesystem encoding in generally is not something you
++    should rely on. As such if you ever need to use this function except for
++    writing wrapper code reconsider.
++    """
++    global _warned_about_filesystem_encoding
++    rv = sys.getfilesystemencoding()
++    if has_likely_buggy_unicode_filesystem and not rv \
++       or _is_ascii_encoding(rv):
++        if not _warned_about_filesystem_encoding:
++            warnings.warn(
++                'Detected a misconfigured UNIX filesystem: Will use UTF-8 as '
++                'filesystem encoding instead of {!r}'.format(rv),
++                BrokenFilesystemWarning)
++            _warned_about_filesystem_encoding = True
++        return 'utf-8'
++    return rv
+diff --git a/werkzeug/posixemulation.py b/werkzeug/posixemulation.py
+index 953db9fe..8fd6314f 100644
+--- a/werkzeug/posixemulation.py
++++ b/werkzeug/posixemulation.py
+@@ -22,7 +22,9 @@ import os
+ import errno
+ import time
+ import random
++
+ from ._compat import to_unicode
++from .filesystem import get_filesystem_encoding
+ 
+ 
+ can_rename_open_file = False
+@@ -38,8 +40,8 @@ if os.name == 'nt':  # pragma: no cover
+         _MoveFileEx = ctypes.windll.kernel32.MoveFileExW
+ 
+         def _rename(src, dst):
+-            src = to_unicode(src, sys.getfilesystemencoding())
+-            dst = to_unicode(dst, sys.getfilesystemencoding())
++            src = to_unicode(src, get_filesystem_encoding())
++            dst = to_unicode(dst, get_filesystem_encoding())
+             if _rename_atomic(src, dst):
+                 return True
+             retry = 0
+diff --git a/werkzeug/wsgi.py b/werkzeug/wsgi.py
+index 25264eab..7c16bc1f 100644
+--- a/werkzeug/wsgi.py
++++ b/werkzeug/wsgi.py
+@@ -10,7 +10,6 @@
+ """
+ import re
+ import os
+-import sys
+ import posixpath
+ import mimetypes
+ from itertools import chain
+@@ -25,6 +24,7 @@ from werkzeug._compat import iteritems, text_type, string_types, \
+ from werkzeug._internal import _empty_stream, _encode_idna
+ from werkzeug.http import is_resource_modified, http_date
+ from werkzeug.urls import uri_to_iri, url_quote, url_parse, url_join
++from werkzeug.filesystem import get_filesystem_encoding
+ 
+ 
+ def responder(f):
+@@ -559,7 +559,7 @@ class SharedDataMiddleware(object):
+ 
+     def generate_etag(self, mtime, file_size, real_filename):
+         if not isinstance(real_filename, bytes):
+-            real_filename = real_filename.encode(sys.getfilesystemencoding())
++            real_filename = real_filename.encode(get_filesystem_encoding())
+         return 'wzsdm-%d-%s-%s' % (
+             mktime(mtime.timetuple()),
+             file_size,
+@@ -569,7 +569,7 @@ class SharedDataMiddleware(object):
+     def __call__(self, environ, start_response):
+         cleaned_path = get_path_info(environ)
+         if PY2:
+-            cleaned_path = cleaned_path.encode(sys.getfilesystemencoding())
++            cleaned_path = cleaned_path.encode(get_filesystem_encoding())
+         # sanitize the path for non unix systems
+         cleaned_path = cleaned_path.strip('/')
+         for sep in os.sep, os.altsep:

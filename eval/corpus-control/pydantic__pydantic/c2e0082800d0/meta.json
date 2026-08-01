@@ -1,0 +1,17 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "c2e0082800d0fd265e8d470677f99300e1c0d48e",
+  "kind": "control_good",
+  "subject": "ByteSize conversion (#996)",
+  "evidence_subject": "ByteSize conversion (#996)",
+  "author": "Daniel Smith",
+  "date": "2019-11-14T11:22:51-05:00",
+  "impl_files": [
+    "docs/examples/types_bytesize.py",
+    "pydantic/types.py"
+  ],
+  "test_files": [
+    "tests/test_types.py"
+  ],
+  "diff_lines": 71
+}

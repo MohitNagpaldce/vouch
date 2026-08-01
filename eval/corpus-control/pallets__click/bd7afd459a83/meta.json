@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/click",
+  "sha": "bd7afd459a83f86ca363b9200ae505406af7a5f3",
+  "kind": "control_good",
+  "subject": "[pre-commit.ci lite] apply automatic fixes",
+  "evidence_subject": "[pre-commit.ci lite] apply automatic fixes",
+  "author": "pre-commit-ci-lite[bot]",
+  "date": "2025-04-12T08:07:00Z",
+  "impl_files": [
+    "src/click/core.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

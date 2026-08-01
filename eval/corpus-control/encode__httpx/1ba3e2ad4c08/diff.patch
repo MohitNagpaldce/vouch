@@ -1,0 +1,35 @@
+diff --git a/httpx/_client.py b/httpx/_client.py
+index f4c62ac..2d9ff62 100644
+--- a/httpx/_client.py
++++ b/httpx/_client.py
+@@ -356,7 +356,7 @@ class BaseClient:
+                 if isinstance(timeout, UseClientDefault)
+                 else Timeout(timeout)
+             )
+-            extensions["timeout"] = timeout.as_dict()
++            extensions = dict(**extensions, timeout=timeout.as_dict())
+         return Request(
+             method,
+             url,
+diff --git a/httpx/_types.py b/httpx/_types.py
+index 08fee30..effed62 100644
+--- a/httpx/_types.py
++++ b/httpx/_types.py
+@@ -76,7 +76,7 @@ AuthTypes = Union[
+ 
+ RequestContent = Union[str, bytes, Iterable[bytes], AsyncIterable[bytes]]
+ ResponseContent = Union[str, bytes, Iterable[bytes], AsyncIterable[bytes]]
+-ResponseExtensions = Dict[str, Any]
++ResponseExtensions = Mapping[str, Any]
+ 
+ RequestData = Mapping[str, Any]
+ 
+@@ -93,7 +93,7 @@ FileTypes = Union[
+ ]
+ RequestFiles = Union[Mapping[str, FileTypes], Sequence[Tuple[str, FileTypes]]]
+ 
+-RequestExtensions = Dict[str, Any]
++RequestExtensions = Mapping[str, Any]
+ 
+ 
+ class SyncByteStream:

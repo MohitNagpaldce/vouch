@@ -1,0 +1,15 @@
+{
+  "repo": "pypa/pip",
+  "sha": "42613daf360431b7a5e141d880883ee943f445a2",
+  "kind": "control_good",
+  "subject": "explain requires-python ignored links",
+  "evidence_subject": "explain requires-python ignored links",
+  "author": "ronaudinho",
+  "date": "2021-03-15T23:35:42+07:00",
+  "impl_files": [
+    "src/pip/_internal/index/package_finder.py",
+    "src/pip/_internal/resolution/resolvelib/factory.py"
+  ],
+  "test_files": [],
+  "diff_lines": 87
+}

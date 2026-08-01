@@ -1,0 +1,16 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "d59f7b0f307e2ad80d13c5078ff654c3c13df1e4",
+  "kind": "control_good",
+  "subject": "BUG: Move FPE clearing to work around issue on clang",
+  "evidence_subject": "BUG: Move FPE clearing to work around issue on clang",
+  "author": "Sebastian Berg",
+  "date": "2022-04-22T12:47:46+02:00",
+  "impl_files": [
+    "numpy/core/setup_common.py"
+  ],
+  "test_files": [
+    "numpy/core/tests/test_scalarmath.py"
+  ],
+  "diff_lines": 217
+}

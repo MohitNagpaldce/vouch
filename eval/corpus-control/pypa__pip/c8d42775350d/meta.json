@@ -1,0 +1,14 @@
+{
+  "repo": "pypa/pip",
+  "sha": "c8d42775350d32572010345fcb6eda0a5c7a7fa0",
+  "kind": "control_good",
+  "subject": "Convert _build_one from method to function",
+  "evidence_subject": "Convert _build_one from method to function",
+  "author": "St\u00e9phane Bidoul (ACSONE)",
+  "date": "2019-12-29T12:42:08+01:00",
+  "impl_files": [
+    "src/pip/_internal/wheel_builder.py"
+  ],
+  "test_files": [],
+  "diff_lines": 208
+}

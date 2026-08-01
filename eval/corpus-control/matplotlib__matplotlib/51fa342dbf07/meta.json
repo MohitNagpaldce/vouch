@@ -1,0 +1,14 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "51fa342dbf07be95a6083dc3ec61d143538784b3",
+  "kind": "control_good",
+  "subject": "print available fonts",
+  "evidence_subject": "print available fonts",
+  "author": "Jan-Hendrik M\u00fcller",
+  "date": "2022-04-26T08:37:34+02:00",
+  "impl_files": [
+    "examples/text_labels_and_annotations/font_family_rc.py"
+  ],
+  "test_files": [],
+  "diff_lines": 20
+}

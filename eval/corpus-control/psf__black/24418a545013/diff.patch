@@ -1,0 +1,52 @@
+diff --git a/README.md b/README.md
+index 5f8b52c..411a8c8 100644
+--- a/README.md
++++ b/README.md
+@@ -49,7 +49,7 @@ _Contents:_ **[Installation and usage](#installation-and-usage)** |
+ 
+ ### Installation
+ 
+-_Black_ can be installed by running `pip install black`. It requires Python 3.6.0+ to
++_Black_ can be installed by running `pip install black`. It requires Python 3.6.2+ to
+ run but you can reformat Python 2 code with it, too.
+ 
+ #### Install from GitHub
+diff --git a/plugin/black.vim b/plugin/black.vim
+index c5f0313..39a31f1 100644
+--- a/plugin/black.vim
++++ b/plugin/black.vim
+@@ -103,9 +103,9 @@ def _get_virtualenv_site_packages(venv_path, pyver):
+   return venv_path / 'lib' / f'python{pyver[0]}.{pyver[1]}' / 'site-packages'
+ 
+ def _initialize_black_env(upgrade=False):
+-  pyver = sys.version_info[:2]
+-  if pyver < (3, 6):
+-    print("Sorry, Black requires Python 3.6+ to run.")
++  pyver = sys.version_info[:3]
++  if pyver < (3, 6, 2):
++    print("Sorry, Black requires Python 3.6.2+ to run.")
+     return False
+ 
+   from pathlib import Path
+diff --git a/setup.py b/setup.py
+index 4816056..efdf693 100644
+--- a/setup.py
++++ b/setup.py
+@@ -3,7 +3,7 @@
+ import sys
+ import os
+ 
+-assert sys.version_info >= (3, 6, 0), "black requires Python 3.6+"
++assert sys.version_info >= (3, 6, 2), "black requires Python 3.6.2+"
+ from pathlib import Path  # noqa E402
+ 
+ CURRENT_DIR = Path(__file__).parent
+@@ -65,7 +65,7 @@ def get_long_description() -> str:
+     packages=["blackd", "black", "blib2to3", "blib2to3.pgen2", "black_primer"],
+     package_dir={"": "src"},
+     package_data={"blib2to3": ["*.txt"], "black": ["py.typed"]},
+-    python_requires=">=3.6",
++    python_requires=">=3.6.2",
+     zip_safe=False,
+     install_requires=[
+         "click>=7.1.2",

@@ -1,0 +1,16 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "935244a9b9c0fe796de315cd381d6364719bfdc1",
+  "kind": "control_good",
+  "subject": "FIX preserve dtype with datetime columns of different resolution when merging (#53213)",
+  "evidence_subject": "FIX preserve dtype with datetime columns of different resolution when merging (#53213)",
+  "author": "Guillaume Lemaitre",
+  "date": "2023-05-14T18:15:32+02:00",
+  "impl_files": [
+    "pandas/core/reshape/merge.py"
+  ],
+  "test_files": [
+    "pandas/tests/reshape/merge/test_merge.py"
+  ],
+  "diff_lines": 77
+}

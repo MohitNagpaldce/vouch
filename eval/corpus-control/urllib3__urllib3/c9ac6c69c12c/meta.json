@@ -1,0 +1,16 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "c9ac6c69c12c291008261a0597361f5525998a81",
+  "kind": "control_good",
+  "subject": "Add type hints to test.test_retry",
+  "evidence_subject": "Add type hints to test.test_retry",
+  "author": "Hasan Ramezani",
+  "date": "2021-08-17T20:56:47+04:30",
+  "impl_files": [
+    "noxfile.py"
+  ],
+  "test_files": [
+    "test/test_retry.py"
+  ],
+  "diff_lines": 302
+}

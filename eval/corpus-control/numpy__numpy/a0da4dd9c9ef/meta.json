@@ -1,0 +1,14 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "a0da4dd9c9ef23654984b857d6e53cc4e79cdf7d",
+  "kind": "control_good",
+  "subject": "API: Remove `noprefix.h` headers",
+  "evidence_subject": "API: Remove `noprefix.h` headers",
+  "author": "Sebastian Berg",
+  "date": "2023-06-12T13:08:23+02:00",
+  "impl_files": [
+    "numpy/core/setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 249
+}

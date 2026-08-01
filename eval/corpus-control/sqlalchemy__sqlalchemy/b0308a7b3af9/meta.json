@@ -1,0 +1,16 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "b0308a7b3af91cc61fbe3347376024ad8b7be019",
+  "kind": "control_good",
+  "subject": "- Fixed an issue in baked queries where the .get() method, used either directly or within lazy loads, didn't consider the mapper's \"get clause\" as part of the cache key, causing bound parameter mismatches if the clause got re-generated.  This clause is cached by mappers on the fly but in highly concurrent scenarios may be generated more than once when first accessed. fixes #3597",
+  "evidence_subject": "- Fixed an issue in baked queries where the .get() method, used either directly or within lazy loads, didn't consider the mapper's \"get clause\" as part of the cache key, causing bound parameter mismatches if the clause got re-generated.  This clause is cached by mappers on the fly but in highly concurrent scenarios may be generated more than once when first accessed. fixes #3597",
+  "author": "Mike Bayer",
+  "date": "2015-11-29T11:42:55-05:00",
+  "impl_files": [
+    "lib/sqlalchemy/ext/baked.py"
+  ],
+  "test_files": [
+    "test/ext/test_baked.py"
+  ],
+  "diff_lines": 75
+}

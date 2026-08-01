@@ -1,0 +1,17 @@
+{
+  "repo": "django/django",
+  "sha": "359be1c8702ede41e7fe823ed13350795ba96a61",
+  "kind": "control_good",
+  "subject": "Fixed #26691 -- Removed checking for a file's existence before deleting.",
+  "evidence_subject": "Fixed #26691 -- Removed checking for a file's existence before deleting.",
+  "author": "Jon Dufresne",
+  "date": "2016-05-26T08:36:00-07:00",
+  "impl_files": [
+    "django/core/cache/backends/filebased.py",
+    "django/core/files/storage.py"
+  ],
+  "test_files": [
+    "tests/staticfiles_tests/storage.py"
+  ],
+  "diff_lines": 75
+}

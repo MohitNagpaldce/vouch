@@ -1,0 +1,330 @@
+diff --git a/pandas/core/array_algos/datetimelike_accumulations.py b/pandas/core/array_algos/datetimelike_accumulations.py
+new file mode 100644
+index 0000000000..d0c6227421
+--- /dev/null
++++ b/pandas/core/array_algos/datetimelike_accumulations.py
+@@ -0,0 +1,67 @@
++"""
++datetimelke_accumulations.py is for accumulations of datetimelike extension arrays
++"""
++
++from __future__ import annotations
++
++from typing import Callable
++
++import numpy as np
++
++from pandas._libs import iNaT
++
++from pandas.core.dtypes.missing import isna
++
++
++def _cum_func(
++    func: Callable,
++    values: np.ndarray,
++    *,
++    skipna: bool = True,
++):
++    """
++    Accumulations for 1D datetimelike arrays.
++
++    Parameters
++    ----------
++    func : np.cumsum, np.maximum.accumulate, np.minimum.accumulate
++    values : np.ndarray
++        Numpy array with the values (can be of any dtype that support the
++        operation). Values is changed is modified inplace.
++    skipna : bool, default True
++        Whether to skip NA.
++    """
++    try:
++        fill_value = {
++            np.maximum.accumulate: np.iinfo(np.int64).min,
++            np.cumsum: 0,
++            np.minimum.accumulate: np.iinfo(np.int64).max,
++        }[func]
++    except KeyError:
++        raise ValueError(f"No accumulation for {func} implemented on BaseMaskedArray")
++
++    mask = isna(values)
++    y = values.view("i8")
++    y[mask] = fill_value
++
++    if not skipna:
++        mask = np.maximum.accumulate(mask)
++
++    result = func(y)
++    result[mask] = iNaT
++
++    if values.dtype.kind in ["m", "M"]:
++        return result.view(values.dtype.base)
++    return result
++
++
++def cumsum(values: np.ndarray, *, skipna: bool = True) -> np.ndarray:
++    return _cum_func(np.cumsum, values, skipna=skipna)
++
++
++def cummin(values: np.ndarray, *, skipna: bool = True):
++    return _cum_func(np.minimum.accumulate, values, skipna=skipna)
++
++
++def cummax(values: np.ndarray, *, skipna: bool = True):
++    return _cum_func(np.maximum.accumulate, values, skipna=skipna)
+diff --git a/pandas/core/arrays/datetimelike.py b/pandas/core/arrays/datetimelike.py
+index d735c896de..bb21bed2dc 100644
+--- a/pandas/core/arrays/datetimelike.py
++++ b/pandas/core/arrays/datetimelike.py
+@@ -121,6 +121,7 @@ from pandas.core.algorithms import (
+     isin,
+     unique1d,
+ )
++from pandas.core.array_algos import datetimelike_accumulations
+ from pandas.core.arraylike import OpsMixin
+ from pandas.core.arrays._mixins import (
+     NDArrayBackedExtensionArray,
+@@ -1292,25 +1293,15 @@ class DatetimeLikeArrayMixin(OpsMixin, NDArrayBackedExtensionArray):
+         return res_values
+ 
+     def _accumulate(self, name: str, *, skipna: bool = True, **kwargs):
++        if name not in {"cummin", "cummax"}:
++            raise TypeError(f"Accumulation {name} not supported for {type(self)}")
+ 
+-        if is_period_dtype(self.dtype):
+-            data = self
+-        else:
+-            # Incompatible types in assignment (expression has type
+-            # "ndarray[Any, Any]", variable has type "DatetimeLikeArrayMixin"
+-            data = self._ndarray.copy()  # type: ignore[assignment]
+-
+-        if name in {"cummin", "cummax"}:
+-            func = np.minimum.accumulate if name == "cummin" else np.maximum.accumulate
+-            result = cast(np.ndarray, nanops.na_accum_func(data, func, skipna=skipna))
+-
+-            # error: Unexpected keyword argument "freq" for
+-            # "_simple_new" of "NDArrayBacked"  [call-arg]
+-            return type(self)._simple_new(
+-                result, freq=self.freq, dtype=self.dtype  # type: ignore[call-arg]
+-            )
++        op = getattr(datetimelike_accumulations, name)
++        result = op(self.copy(), skipna=skipna, **kwargs)
+ 
+-        raise TypeError(f"Accumulation {name} not supported for {type(self)}")
++        return type(self)._simple_new(
++            result, freq=None, dtype=self.dtype  # type: ignore[call-arg]
++        )
+ 
+     @unpack_zerodim_and_defer("__add__")
+     def __add__(self, other):
+diff --git a/pandas/core/arrays/timedeltas.py b/pandas/core/arrays/timedeltas.py
+index 9b85212336..ac4e893457 100644
+--- a/pandas/core/arrays/timedeltas.py
++++ b/pandas/core/arrays/timedeltas.py
+@@ -63,6 +63,7 @@ from pandas.core.dtypes.common import (
+ from pandas.core.dtypes.missing import isna
+ 
+ from pandas.core import nanops
++from pandas.core.array_algos import datetimelike_accumulations
+ from pandas.core.arrays import datetimelike as dtl
+ from pandas.core.arrays._ranges import generate_regular_range
+ import pandas.core.common as com
+@@ -418,12 +419,9 @@ class TimedeltaArray(dtl.TimelikeOps):
+     # Accumulations
+ 
+     def _accumulate(self, name: str, *, skipna: bool = True, **kwargs):
+-
+-        data = self._ndarray.copy()
+-
+         if name == "cumsum":
+-            func = np.cumsum
+-            result = cast(np.ndarray, nanops.na_accum_func(data, func, skipna=skipna))
++            op = getattr(datetimelike_accumulations, name)
++            result = op(self._ndarray.copy(), skipna=skipna, **kwargs)
+ 
+             return type(self)._simple_new(result, freq=None, dtype=self.dtype)
+         elif name == "cumprod":
+diff --git a/pandas/core/nanops.py b/pandas/core/nanops.py
+index 1ee74f62b6..02372356d3 100644
+--- a/pandas/core/nanops.py
++++ b/pandas/core/nanops.py
+@@ -1715,53 +1715,11 @@ def na_accum_func(values: ArrayLike, accum_func, *, skipna: bool) -> ArrayLike:
+         np.minimum.accumulate: (np.inf, np.nan),
+     }[accum_func]
+ 
+-    # We will be applying this function to block values
+-    if values.dtype.kind in ["m", "M"]:
+-        # GH#30460, GH#29058
+-        # numpy 1.18 started sorting NaTs at the end instead of beginning,
+-        #  so we need to work around to maintain backwards-consistency.
+-        orig_dtype = values.dtype
+-
+-        # We need to define mask before masking NaTs
+-        mask = isna(values)
+-
+-        y = values.view("i8")
+-        # Note: the accum_func comparison fails as an "is" comparison
+-        changed = accum_func == np.minimum.accumulate
+-
+-        try:
+-            if changed:
+-                y[mask] = lib.i8max
+-
+-            result = accum_func(y, axis=0)
+-        finally:
+-            if changed:
+-                # restore NaT elements
+-                y[mask] = iNaT
++    # This should go through ea interface
++    assert values.dtype.kind not in ["m", "M"]
+ 
+-        if skipna:
+-            result[mask] = iNaT
+-        elif accum_func == np.minimum.accumulate:
+-            # Restore NaTs that we masked previously
+-            nz = (~np.asarray(mask)).nonzero()[0]
+-            if len(nz):
+-                # everything up to the first non-na entry stays NaT
+-                result[: nz[0]] = iNaT
+-
+-        if isinstance(values.dtype, np.dtype):
+-            result = result.view(orig_dtype)
+-        else:
+-            # DatetimeArray/TimedeltaArray
+-            # TODO: have this case go through a DTA method?
+-            # For DatetimeTZDtype, view result as M8[ns]
+-            npdtype = orig_dtype if isinstance(orig_dtype, np.dtype) else "M8[ns]"
+-            # Item "type" of "Union[Type[ExtensionArray], Type[ndarray[Any, Any]]]"
+-            # has no attribute "_simple_new"
+-            result = type(values)._simple_new(  # type: ignore[union-attr]
+-                result.view(npdtype), dtype=orig_dtype
+-            )
+-
+-    elif skipna and not issubclass(values.dtype.type, (np.integer, np.bool_)):
++    # We will be applying this function to block values
++    if skipna and not issubclass(values.dtype.type, (np.integer, np.bool_)):
+         vals = values.copy()
+         mask = isna(vals)
+         vals[mask] = mask_a
+diff --git a/pandas/tests/arrays/datetimes/test_cumulative.py b/pandas/tests/arrays/datetimes/test_cumulative.py
+new file mode 100644
+index 0000000000..ca9760d587
+--- /dev/null
++++ b/pandas/tests/arrays/datetimes/test_cumulative.py
+@@ -0,0 +1,46 @@
++import pytest
++
++import pandas._testing as tm
++from pandas.core.arrays import DatetimeArray
++
++
++class TestAccumulator:
++    def test_accumulators_freq(self):
++        # GH#50297
++        arr = DatetimeArray._from_sequence_not_strict(
++            [
++                "2000-01-01",
++                "2000-01-02",
++                "2000-01-03",
++            ],
++            freq="D",
++        )
++        result = arr._accumulate("cummin")
++        expected = DatetimeArray._from_sequence_not_strict(
++            ["2000-01-01"] * 3, freq=None
++        )
++        tm.assert_datetime_array_equal(result, expected)
++
++        result = arr._accumulate("cummax")
++        expected = DatetimeArray._from_sequence_not_strict(
++            [
++                "2000-01-01",
++                "2000-01-02",
++                "2000-01-03",
++            ],
++            freq=None,
++        )
++        tm.assert_datetime_array_equal(result, expected)
++
++    @pytest.mark.parametrize("func", ["cumsum", "cumprod"])
++    def test_accumulators_disallowed(self, func):
++        # GH#50297
++        arr = DatetimeArray._from_sequence_not_strict(
++            [
++                "2000-01-01",
++                "2000-01-02",
++            ],
++            freq="D",
++        )
++        with pytest.raises(TypeError, match=f"Accumulation {func}"):
++            arr._accumulate(func)
+diff --git a/pandas/tests/arrays/timedeltas/test_cumulative.py b/pandas/tests/arrays/timedeltas/test_cumulative.py
+new file mode 100644
+index 0000000000..b321dc05be
+--- /dev/null
++++ b/pandas/tests/arrays/timedeltas/test_cumulative.py
+@@ -0,0 +1,19 @@
++import pytest
++
++import pandas._testing as tm
++from pandas.core.arrays import TimedeltaArray
++
++
++class TestAccumulator:
++    def test_accumulators_disallowed(self):
++        # GH#50297
++        arr = TimedeltaArray._from_sequence_not_strict(["1D", "2D"])
++        with pytest.raises(TypeError, match="cumprod not supported"):
++            arr._accumulate("cumprod")
++
++    def test_cumsum(self):
++        # GH#50297
++        arr = TimedeltaArray._from_sequence_not_strict(["1D", "2D"])
++        result = arr._accumulate("cumsum")
++        expected = TimedeltaArray._from_sequence_not_strict(["1D", "3D"])
++        tm.assert_timedelta_array_equal(result, expected)
+diff --git a/pandas/tests/series/test_cumulative.py b/pandas/tests/series/test_cumulative.py
+index 6fbc78bf3f..4c5fd2d44e 100644
+--- a/pandas/tests/series/test_cumulative.py
++++ b/pandas/tests/series/test_cumulative.py
+@@ -70,12 +70,12 @@ class TestSeriesCumulativeOps:
+             [
+                 "cummax",
+                 False,
+-                ["NaT", "2 days", "2 days", "2 days", "2 days", "3 days"],
++                ["NaT", "NaT", "NaT", "NaT", "NaT", "NaT"],
+             ],
+             [
+                 "cummin",
+                 False,
+-                ["NaT", "2 days", "2 days", "1 days", "1 days", "1 days"],
++                ["NaT", "NaT", "NaT", "NaT", "NaT", "NaT"],
+             ],
+         ],
+     )
+@@ -91,6 +91,26 @@ class TestSeriesCumulativeOps:
+         result = getattr(ser, method)(skipna=skipna)
+         tm.assert_series_equal(expected, result)
+ 
++    @pytest.mark.parametrize(
++        "func, exp",
++        [
++            ("cummin", pd.Period("2012-1-1", freq="D")),
++            ("cummax", pd.Period("2012-1-2", freq="D")),
++        ],
++    )
++    def test_cummin_cummax_period(self, func, exp):
++        # GH#28385
++        ser = pd.Series(
++            [pd.Period("2012-1-1", freq="D"), pd.NaT, pd.Period("2012-1-2", freq="D")]
++        )
++        result = getattr(ser, func)(skipna=False)
++        expected = pd.Series([pd.Period("2012-1-1", freq="D"), pd.NaT, pd.NaT])
++        tm.assert_series_equal(result, expected)
++
++        result = getattr(ser, func)(skipna=True)
++        expected = pd.Series([pd.Period("2012-1-1", freq="D"), pd.NaT, exp])
++        tm.assert_series_equal(result, expected)
++
+     @pytest.mark.parametrize(
+         "arg",
+         [

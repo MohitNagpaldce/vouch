@@ -1,0 +1,160 @@
+diff --git a/CHANGES/3087.bugfix b/CHANGES/3087.bugfix
+new file mode 100644
+index 00000000..617d5d55
+--- /dev/null
++++ b/CHANGES/3087.bugfix
+@@ -0,0 +1,2 @@
++raise 413 "Payload Too Large" rather than raising ValueError in request.post()
++Add helpful debug message to 413 responses
+diff --git a/aiohttp/web_exceptions.py b/aiohttp/web_exceptions.py
+index 4d948f4e..d8a04a3f 100644
+--- a/aiohttp/web_exceptions.py
++++ b/aiohttp/web_exceptions.py
+@@ -253,6 +253,14 @@ class HTTPPreconditionFailed(HTTPClientError):
+ class HTTPRequestEntityTooLarge(HTTPClientError):
+     status_code = 413
+ 
++    def __init__(self, max_size, actual_size, **kwargs):
++        kwargs.setdefault(
++            'text',
++            'Maximum request body size {} exceeded, '
++            'actual body size {}'.format(max_size, actual_size)
++        )
++        super().__init__(**kwargs)
++
+ 
+ class HTTPRequestURITooLong(HTTPClientError):
+     status_code = 414
+diff --git a/aiohttp/web_request.py b/aiohttp/web_request.py
+index 02521da1..a5b213ca 100644
+--- a/aiohttp/web_request.py
++++ b/aiohttp/web_request.py
+@@ -527,9 +527,13 @@ class BaseRequest(collections.MutableMapping, HeadersMixin):
+             while True:
+                 chunk = await self._payload.readany()
+                 body.extend(chunk)
+-                if self._client_max_size \
+-                        and len(body) >= self._client_max_size:
+-                    raise HTTPRequestEntityTooLarge
++                if self._client_max_size:
++                    body_size = len(body)
++                    if body_size >= self._client_max_size:
++                        raise HTTPRequestEntityTooLarge(
++                            max_size=self._client_max_size,
++                            actual_size=body_size
++                        )
+                 if not chunk:
+                     break
+             self._read_bytes = bytes(body)
+@@ -569,11 +573,11 @@ class BaseRequest(collections.MutableMapping, HeadersMixin):
+ 
+         if content_type == 'multipart/form-data':
+             multipart = await self.multipart()
++            max_size = self._client_max_size
+ 
+             field = await multipart.next()
+             while field is not None:
+                 size = 0
+-                max_size = self._client_max_size
+                 content_type = field.headers.get(hdrs.CONTENT_TYPE)
+ 
+                 if field.filename:
+@@ -585,8 +589,10 @@ class BaseRequest(collections.MutableMapping, HeadersMixin):
+                         tmp.write(chunk)
+                         size += len(chunk)
+                         if 0 < max_size < size:
+-                            raise ValueError(
+-                                'Maximum request body size exceeded')
++                            raise HTTPRequestEntityTooLarge(
++                                max_size=max_size,
++                                actual_size=size
++                            )
+                         chunk = await field.read_chunk(size=2**16)
+                     tmp.seek(0)
+ 
+@@ -603,8 +609,10 @@ class BaseRequest(collections.MutableMapping, HeadersMixin):
+                     out.add(field.name, value)
+                     size += len(value)
+                     if 0 < max_size < size:
+-                        raise ValueError(
+-                            'Maximum request body size exceeded')
++                        raise HTTPRequestEntityTooLarge(
++                            max_size=max_size,
++                            actual_size=size
++                        )
+ 
+                 field = await multipart.next()
+         else:
+diff --git a/tests/test_web_functional.py b/tests/test_web_functional.py
+index 0e973bb4..3651bb60 100644
+--- a/tests/test_web_functional.py
++++ b/tests/test_web_functional.py
+@@ -1451,7 +1451,8 @@ async def test_app_max_client_size(aiohttp_client):
+         resp = await client.post('/', data=data)
+     assert 413 == resp.status
+     resp_text = await resp.text()
+-    assert 'Request Entity Too Large' in resp_text
++    assert 'Maximum request body size 1048576 exceeded, ' \
++           'actual body size 1048591' in resp_text
+ 
+ 
+ async def test_app_max_client_size_adjusted(aiohttp_client):
+@@ -1476,7 +1477,8 @@ async def test_app_max_client_size_adjusted(aiohttp_client):
+         resp = await client.post('/', data=too_large_data)
+     assert 413 == resp.status
+     resp_text = await resp.text()
+-    assert 'Request Entity Too Large' in resp_text
++    assert 'Maximum request body size 2097152 exceeded, ' \
++           'actual body size 2097166' in resp_text
+ 
+ 
+ async def test_app_max_client_size_none(aiohttp_client):
+@@ -1507,30 +1509,27 @@ async def test_app_max_client_size_none(aiohttp_client):
+ async def test_post_max_client_size(aiohttp_client):
+ 
+     async def handler(request):
+-        try:
+-            await request.post()
+-        except ValueError:
+-            return web.Response()
+-        raise web.HTTPBadRequest()
++        await request.post()
++        return web.Response()
+ 
+     app = web.Application(client_max_size=10)
+     app.router.add_post('/', handler)
+     client = await aiohttp_client(app)
+ 
+-    data = {"long_string": 1024 * 'x', 'file': io.BytesIO(b'test')}
++    data = {'long_string': 1024 * 'x', 'file': io.BytesIO(b'test')}
+     resp = await client.post('/', data=data)
+ 
+-    assert 200 == resp.status
++    assert 413 == resp.status
++    resp_text = await resp.text()
++    assert 'Maximum request body size 10 exceeded, ' \
++           'actual body size 1024' in resp_text
+ 
+ 
+ async def test_post_max_client_size_for_file(aiohttp_client):
+ 
+     async def handler(request):
+-        try:
+-            await request.post()
+-        except ValueError:
+-            return web.Response()
+-        raise web.HTTPBadRequest()
++        await request.post()
++        return web.Response()
+ 
+     app = web.Application(client_max_size=2)
+     app.router.add_post('/', handler)
+@@ -1539,7 +1538,7 @@ async def test_post_max_client_size_for_file(aiohttp_client):
+     data = {'file': io.BytesIO(b'test')}
+     resp = await client.post('/', data=data)
+ 
+-    assert 200 == resp.status
++    assert 413 == resp.status
+ 
+ 
+ async def test_response_with_bodypart(aiohttp_client):

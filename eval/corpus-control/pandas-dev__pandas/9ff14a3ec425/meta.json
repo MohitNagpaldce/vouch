@@ -1,0 +1,16 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "9ff14a3ec4259b04b25aa9ce5b23185574c2c771",
+  "kind": "control_good",
+  "subject": "BUG: Avoid copying categorical codes if `copy=False` (#62000)",
+  "evidence_subject": "BUG: Avoid copying categorical codes if `copy=False` (#62000)",
+  "author": "Florian Jetter",
+  "date": "2025-08-01T18:58:40+02:00",
+  "impl_files": [
+    "pandas/core/arrays/categorical.py"
+  ],
+  "test_files": [
+    "pandas/tests/arrays/categorical/test_astype.py"
+  ],
+  "diff_lines": 64
+}

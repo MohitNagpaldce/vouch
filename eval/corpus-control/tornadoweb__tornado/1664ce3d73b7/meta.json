@@ -1,0 +1,15 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "1664ce3d73b7e1ec891fb95545b8a724b6265e53",
+  "kind": "control_good",
+  "subject": "Release notes and version bump for 4.4.2",
+  "evidence_subject": "Release notes and version bump for 4.4.2",
+  "author": "Ben Darnell",
+  "date": "2016-10-01T00:03:23+08:00",
+  "impl_files": [
+    "setup.py",
+    "tornado/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 65
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "c4d221ddcb9171f5bb05f7fe0dd0b96f7d532331",
+  "kind": "control_good",
+  "subject": "DOC Fix FutureWarning in ensemble/plot_gradient_boosting_regression.html (#24946)",
+  "evidence_subject": "DOC Fix FutureWarning in ensemble/plot_gradient_boosting_regression.html (#24946)",
+  "author": "Maxim Smolskiy",
+  "date": "2022-11-15T23:09:47+03:00",
+  "impl_files": [
+    "examples/ensemble/plot_gradient_boosting_regression.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

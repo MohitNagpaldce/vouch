@@ -1,0 +1,14 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "09d792459e066d17c786939090dbddc848caa522",
+  "kind": "control_good",
+  "subject": "Fix _local_data.py for py32.",
+  "evidence_subject": "Fix _local_data.py for py32.",
+  "author": "Ben Darnell",
+  "date": "2015-08-08T18:29:13-04:00",
+  "impl_files": [
+    "tornado/_locale_data.py"
+  ],
+  "test_files": [],
+  "diff_lines": 136
+}

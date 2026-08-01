@@ -1,0 +1,46 @@
+diff --git a/CHANGES b/CHANGES
+index 64c9aaa3..d4978888 100644
+--- a/CHANGES
++++ b/CHANGES
+@@ -96,6 +96,7 @@ Version 0.9.7
+ - Fix bug in ``werkzeug.contrib.cache.SimpleCache`` with Python 3 where add/set 
+   may throw an exception when pruning old entries from the cache (pull request
+   ``#651``).
++- Allow multiple values for the same field for url building (issue ``#658``).
+ 
+ Version 0.9.6
+ -------------
+diff --git a/tests/test_routing.py b/tests/test_routing.py
+index 6596378a..8621cca1 100644
+--- a/tests/test_routing.py
++++ b/tests/test_routing.py
+@@ -428,6 +428,16 @@ def test_build_append_unknown():
+     assert adapter.build('barf', {'bazf': 0.815, 'bif' : 1.0},
+         append_unknown=False) == 'http://example.org/bar/0.815'
+ 
++def test_build_append_multiple():
++    map = r.Map([
++        r.Rule('/bar/<float:bazf>', endpoint='barf')
++    ])
++    adapter = map.bind('example.org', '/', subdomain='blah')
++    params = MultiDict((('bazf', 0.815), ('bif', 1.0), ('pof', 2.0),
++                        ('bif', 3.0)))
++    assert adapter.build('barf', params) == \
++        'http://example.org/bar/0.815?pof=2.0&bif=1.0&bif=3.0'
++
+ def test_method_fallback():
+     map = r.Map([
+         r.Rule('/', endpoint='index', methods=['GET']),
+diff --git a/werkzeug/routing.py b/werkzeug/routing.py
+index b9465d8a..ba400bd4 100644
+--- a/werkzeug/routing.py
++++ b/werkzeug/routing.py
+@@ -1641,7 +1641,7 @@ class MapAdapter(object):
+                 valueiter = iteritems(values, multi=True)
+             else:
+                 valueiter = iteritems(values)
+-            values = dict((k, v) for k, v in valueiter if v is not None)
++            values = MultiDict((k, v) for k, v in valueiter if v is not None)
+         else:
+             values = {}
+ 

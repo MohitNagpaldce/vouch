@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "03a3ca500491ed55c90255398fa514be017efe10",
+  "kind": "control_good",
+  "subject": "get_auth_from_url return None if nothing is found",
+  "evidence_subject": "get_auth_from_url return None if nothing is found",
+  "author": "Kenneth Reitz",
+  "date": "2013-03-22T00:13:08-04:00",
+  "impl_files": [
+    "requests/utils.py"
+  ],
+  "test_files": [],
+  "diff_lines": 10
+}

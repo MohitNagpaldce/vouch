@@ -1,0 +1,464 @@
+diff --git a/sklearn/cluster/_feature_agglomeration.py b/sklearn/cluster/_feature_agglomeration.py
+index 1983aae00..3471329cb 100644
+--- a/sklearn/cluster/_feature_agglomeration.py
++++ b/sklearn/cluster/_feature_agglomeration.py
+@@ -11,8 +11,6 @@ import numpy as np
+ from scipy.sparse import issparse
+ 
+ from ..base import TransformerMixin
+-from ..utils import metadata_routing
+-from ..utils.deprecation import _deprecate_Xt_in_inverse_transform
+ from ..utils.validation import check_is_fitted, validate_data
+ 
+ ###############################################################################
+@@ -24,11 +22,6 @@ class AgglomerationTransform(TransformerMixin):
+     A class for feature agglomeration via the transform interface.
+     """
+ 
+-    # This prevents ``set_split_inverse_transform`` to be generated for the
+-    # non-standard ``Xt`` arg on ``inverse_transform``.
+-    # TODO(1.7): remove when Xt is removed for inverse_transform.
+-    __metadata_request__inverse_transform = {"Xt": metadata_routing.UNUSED}
+-
+     def transform(self, X):
+         """
+         Transform a new matrix using the built clustering.
+@@ -63,7 +56,7 @@ class AgglomerationTransform(TransformerMixin):
+             nX = np.array(nX).T
+         return nX
+ 
+-    def inverse_transform(self, X=None, *, Xt=None):
++    def inverse_transform(self, X):
+         """
+         Inverse the transformation and return a vector of size `n_features`.
+ 
+@@ -72,20 +65,12 @@ class AgglomerationTransform(TransformerMixin):
+         X : array-like of shape (n_samples, n_clusters) or (n_clusters,)
+             The values to be assigned to each cluster of samples.
+ 
+-        Xt : array-like of shape (n_samples, n_clusters) or (n_clusters,)
+-            The values to be assigned to each cluster of samples.
+-
+-            .. deprecated:: 1.5
+-                `Xt` was deprecated in 1.5 and will be removed in 1.7. Use `X` instead.
+-
+         Returns
+         -------
+         X : ndarray of shape (n_samples, n_features) or (n_features,)
+             A vector of size `n_samples` with the values of `Xred` assigned to
+             each of the cluster of samples.
+         """
+-        X = _deprecate_Xt_in_inverse_transform(X, Xt)
+-
+         check_is_fitted(self)
+ 
+         unil, inverse = np.unique(self.labels_, return_inverse=True)
+diff --git a/sklearn/cluster/tests/test_feature_agglomeration.py b/sklearn/cluster/tests/test_feature_agglomeration.py
+index ef8596c08..80aa251c3 100644
+--- a/sklearn/cluster/tests/test_feature_agglomeration.py
++++ b/sklearn/cluster/tests/test_feature_agglomeration.py
+@@ -2,10 +2,7 @@
+ Tests for sklearn.cluster._feature_agglomeration
+ """
+ 
+-import warnings
+-
+ import numpy as np
+-import pytest
+ from numpy.testing import assert_array_equal
+ 
+ from sklearn.cluster import FeatureAgglomeration
+@@ -56,25 +53,3 @@ def test_feature_agglomeration_feature_names_out():
+     assert_array_equal(
+         [f"featureagglomeration{i}" for i in range(n_clusters)], names_out
+     )
+-
+-
+-# TODO(1.7): remove this test
+-def test_inverse_transform_Xt_deprecation():
+-    X = np.array([0, 0, 1]).reshape(1, 3)  # (n_samples, n_features)
+-
+-    est = FeatureAgglomeration(n_clusters=1, pooling_func=np.mean)
+-    est.fit(X)
+-    X = est.transform(X)
+-
+-    with pytest.raises(TypeError, match="Missing required positional argument"):
+-        est.inverse_transform()
+-
+-    with pytest.raises(TypeError, match="Cannot use both X and Xt. Use X only."):
+-        est.inverse_transform(X=X, Xt=X)
+-
+-    with warnings.catch_warnings(record=True):
+-        warnings.simplefilter("error")
+-        est.inverse_transform(X)
+-
+-    with pytest.warns(FutureWarning, match="Xt was renamed X in version 1.5"):
+-        est.inverse_transform(Xt=X)
+diff --git a/sklearn/decomposition/_nmf.py b/sklearn/decomposition/_nmf.py
+index dc21e389f..78c394ad7 100644
+--- a/sklearn/decomposition/_nmf.py
++++ b/sklearn/decomposition/_nmf.py
+@@ -22,13 +22,12 @@ from ..base import (
+     _fit_context,
+ )
+ from ..exceptions import ConvergenceWarning
+-from ..utils import check_array, check_random_state, gen_batches, metadata_routing
++from ..utils import check_array, check_random_state, gen_batches
+ from ..utils._param_validation import (
+     Interval,
+     StrOptions,
+     validate_params,
+ )
+-from ..utils.deprecation import _deprecate_Xt_in_inverse_transform
+ from ..utils.extmath import randomized_svd, safe_sparse_dot, squared_norm
+ from ..utils.validation import (
+     check_is_fitted,
+@@ -1135,11 +1134,6 @@ def non_negative_factorization(
+ class _BaseNMF(ClassNamePrefixFeaturesOutMixin, TransformerMixin, BaseEstimator, ABC):
+     """Base class for NMF and MiniBatchNMF."""
+ 
+-    # This prevents ``set_split_inverse_transform`` to be generated for the
+-    # non-standard ``Xt`` arg on ``inverse_transform``.
+-    # TODO(1.7): remove when Xt is removed in v1.7 for inverse_transform
+-    __metadata_request__inverse_transform = {"Xt": metadata_routing.UNUSED}
+-
+     _parameter_constraints: dict = {
+         "n_components": [
+             Interval(Integral, 1, None, closed="left"),
+@@ -1296,7 +1290,7 @@ class _BaseNMF(ClassNamePrefixFeaturesOutMixin, TransformerMixin, BaseEstimator,
+         self.fit_transform(X, **params)
+         return self
+ 
+-    def inverse_transform(self, X=None, *, Xt=None):
++    def inverse_transform(self, X):
+         """Transform data back to its original space.
+ 
+         .. versionadded:: 0.18
+@@ -1306,20 +1300,12 @@ class _BaseNMF(ClassNamePrefixFeaturesOutMixin, TransformerMixin, BaseEstimator,
+         X : {ndarray, sparse matrix} of shape (n_samples, n_components)
+             Transformed data matrix.
+ 
+-        Xt : {ndarray, sparse matrix} of shape (n_samples, n_components)
+-            Transformed data matrix.
+-
+-            .. deprecated:: 1.5
+-                `Xt` was deprecated in 1.5 and will be removed in 1.7. Use `X` instead.
+-
+         Returns
+         -------
+         X : ndarray of shape (n_samples, n_features)
+             Returns a data matrix of the original shape.
+         """
+ 
+-        X = _deprecate_Xt_in_inverse_transform(X, Xt)
+-
+         check_is_fitted(self)
+         return X @ self.components_
+ 
+diff --git a/sklearn/decomposition/tests/test_nmf.py b/sklearn/decomposition/tests/test_nmf.py
+index be7d902a5..17be798b3 100644
+--- a/sklearn/decomposition/tests/test_nmf.py
++++ b/sklearn/decomposition/tests/test_nmf.py
+@@ -1,6 +1,5 @@
+ import re
+ import sys
+-import warnings
+ from io import StringIO
+ 
+ import numpy as np
+@@ -919,33 +918,6 @@ def test_minibatch_nmf_verbose():
+         sys.stdout = old_stdout
+ 
+ 
+-# TODO(1.7): remove this test
+-@pytest.mark.parametrize("Estimator", [NMF, MiniBatchNMF])
+-def test_NMF_inverse_transform_Xt_deprecation(Estimator):
+-    rng = np.random.RandomState(42)
+-    A = np.abs(rng.randn(6, 5))
+-    est = Estimator(
+-        n_components=3,
+-        init="random",
+-        random_state=0,
+-        tol=1e-6,
+-    )
+-    X = est.fit_transform(A)
+-
+-    with pytest.raises(TypeError, match="Missing required positional argument"):
+-        est.inverse_transform()
+-
+-    with pytest.raises(TypeError, match="Cannot use both X and Xt. Use X only"):
+-        est.inverse_transform(X=X, Xt=X)
+-
+-    with warnings.catch_warnings(record=True):
+-        warnings.simplefilter("error")
+-        est.inverse_transform(X)
+-
+-    with pytest.warns(FutureWarning, match="Xt was renamed X in version 1.5"):
+-        est.inverse_transform(Xt=X)
+-
+-
+ @pytest.mark.parametrize("Estimator", [NMF, MiniBatchNMF])
+ def test_nmf_n_components_auto(Estimator):
+     # Check that n_components is correctly inferred
+diff --git a/sklearn/model_selection/_search.py b/sklearn/model_selection/_search.py
+index c8ee1a5b6..fe86a11c5 100644
+--- a/sklearn/model_selection/_search.py
++++ b/sklearn/model_selection/_search.py
+@@ -34,7 +34,6 @@ from ..utils import Bunch, check_random_state
+ from ..utils._estimator_html_repr import _VisualBlock
+ from ..utils._param_validation import HasMethods, Interval, StrOptions
+ from ..utils._tags import get_tags
+-from ..utils.deprecation import _deprecate_Xt_in_inverse_transform
+ from ..utils.metadata_routing import (
+     MetadataRouter,
+     MethodMapping,
+@@ -690,7 +689,7 @@ class BaseSearchCV(MetaEstimatorMixin, BaseEstimator, metaclass=ABCMeta):
+         return self.best_estimator_.transform(X)
+ 
+     @available_if(_search_estimator_has("inverse_transform"))
+-    def inverse_transform(self, X=None, Xt=None):
++    def inverse_transform(self, X):
+         """Call inverse_transform on the estimator with the best found params.
+ 
+         Only available if the underlying estimator implements
+@@ -702,20 +701,12 @@ class BaseSearchCV(MetaEstimatorMixin, BaseEstimator, metaclass=ABCMeta):
+             Must fulfill the input assumptions of the
+             underlying estimator.
+ 
+-        Xt : indexable, length n_samples
+-            Must fulfill the input assumptions of the
+-            underlying estimator.
+-
+-            .. deprecated:: 1.5
+-                `Xt` was deprecated in 1.5 and will be removed in 1.7. Use `X` instead.
+-
+         Returns
+         -------
+         X : {ndarray, sparse matrix} of shape (n_samples, n_features)
+             Result of the `inverse_transform` function for `Xt` based on the
+             estimator with the best found parameters.
+         """
+-        X = _deprecate_Xt_in_inverse_transform(X, Xt)
+         check_is_fitted(self)
+         return self.best_estimator_.inverse_transform(X)
+ 
+diff --git a/sklearn/model_selection/tests/test_search.py b/sklearn/model_selection/tests/test_search.py
+index e35a0dfb3..e87bb440c 100644
+--- a/sklearn/model_selection/tests/test_search.py
++++ b/sklearn/model_selection/tests/test_search.py
+@@ -2679,28 +2679,6 @@ def test_search_html_repr():
+         assert "<pre>LogisticRegression()</pre>" in repr_html
+ 
+ 
+-# TODO(1.7): remove this test
+-@pytest.mark.parametrize("SearchCV", [GridSearchCV, RandomizedSearchCV])
+-def test_inverse_transform_Xt_deprecation(SearchCV):
+-    clf = MockClassifier()
+-    search = SearchCV(clf, {"foo_param": [1, 2, 3]}, cv=2, verbose=3)
+-
+-    X2 = search.fit(X, y).transform(X)
+-
+-    with pytest.raises(TypeError, match="Missing required positional argument"):
+-        search.inverse_transform()
+-
+-    with pytest.raises(TypeError, match="Cannot use both X and Xt. Use X only"):
+-        search.inverse_transform(X=X2, Xt=X2)
+-
+-    with warnings.catch_warnings(record=True):
+-        warnings.simplefilter("error")
+-        search.inverse_transform(X2)
+-
+-    with pytest.warns(FutureWarning, match="Xt was renamed X in version 1.5"):
+-        search.inverse_transform(Xt=X2)
+-
+-
+ # Metadata Routing Tests
+ # ======================
+ 
+diff --git a/sklearn/pipeline.py b/sklearn/pipeline.py
+index 68b4344ba..13b9599ff 100644
+--- a/sklearn/pipeline.py
++++ b/sklearn/pipeline.py
+@@ -25,7 +25,6 @@ from .utils._set_output import (
+ )
+ from .utils._tags import get_tags
+ from .utils._user_interface import _print_elapsed_time
+-from .utils.deprecation import _deprecate_Xt_in_inverse_transform
+ from .utils.metadata_routing import (
+     MetadataRouter,
+     MethodMapping,
+@@ -1096,7 +1095,7 @@ class Pipeline(_BaseComposition):
+         return all(hasattr(t, "inverse_transform") for _, _, t in self._iter())
+ 
+     @available_if(_can_inverse_transform)
+-    def inverse_transform(self, X=None, *, Xt=None, **params):
++    def inverse_transform(self, X, **params):
+         """Apply `inverse_transform` for each step in a reverse order.
+ 
+         All estimators in the pipeline must support `inverse_transform`.
+@@ -1109,15 +1108,6 @@ class Pipeline(_BaseComposition):
+             input requirements of last step of pipeline's
+             ``inverse_transform`` method.
+ 
+-        Xt : array-like of shape (n_samples, n_transformed_features)
+-            Data samples, where ``n_samples`` is the number of samples and
+-            ``n_features`` is the number of features. Must fulfill
+-            input requirements of last step of pipeline's
+-            ``inverse_transform`` method.
+-
+-            .. deprecated:: 1.5
+-                `Xt` was deprecated in 1.5 and will be removed in 1.7. Use `X` instead.
+-
+         **params : dict of str -> object
+             Parameters requested and accepted by steps. Each step must have
+             requested certain metadata for these parameters to be forwarded to
+@@ -1138,8 +1128,6 @@ class Pipeline(_BaseComposition):
+         with _raise_or_warn_if_not_fitted(self):
+             _raise_for_params(params, self, "inverse_transform")
+ 
+-            X = _deprecate_Xt_in_inverse_transform(X, Xt)
+-
+             # we don't have to branch here, since params is only non-empty if
+             # enable_metadata_routing=True.
+             routed_params = process_routing(self, "inverse_transform", **params)
+diff --git a/sklearn/preprocessing/_discretization.py b/sklearn/preprocessing/_discretization.py
+index f5bc3c810..0cdfe225d 100644
+--- a/sklearn/preprocessing/_discretization.py
++++ b/sklearn/preprocessing/_discretization.py
+@@ -10,7 +10,6 @@ import numpy as np
+ from ..base import BaseEstimator, TransformerMixin, _fit_context
+ from ..utils import resample
+ from ..utils._param_validation import Interval, Options, StrOptions
+-from ..utils.deprecation import _deprecate_Xt_in_inverse_transform
+ from ..utils.stats import _averaged_weighted_percentile, _weighted_percentile
+ from ..utils.validation import (
+     _check_feature_names_in,
+@@ -481,7 +480,7 @@ class KBinsDiscretizer(TransformerMixin, BaseEstimator):
+             self._encoder.dtype = dtype_init
+         return Xt_enc
+ 
+-    def inverse_transform(self, X=None, *, Xt=None):
++    def inverse_transform(self, X):
+         """
+         Transform discretized data back to original feature space.
+ 
+@@ -493,18 +492,11 @@ class KBinsDiscretizer(TransformerMixin, BaseEstimator):
+         X : array-like of shape (n_samples, n_features)
+             Transformed data in the binned space.
+ 
+-        Xt : array-like of shape (n_samples, n_features)
+-            Transformed data in the binned space.
+-
+-            .. deprecated:: 1.5
+-                `Xt` was deprecated in 1.5 and will be removed in 1.7. Use `X` instead.
+-
+         Returns
+         -------
+         Xinv : ndarray, dtype={np.float32, np.float64}
+             Data in the original feature space.
+         """
+-        X = _deprecate_Xt_in_inverse_transform(X, Xt)
+ 
+         check_is_fitted(self)
+ 
+diff --git a/sklearn/preprocessing/tests/test_discretization.py b/sklearn/preprocessing/tests/test_discretization.py
+index 7ee2cbcdb..7463a8608 100644
+--- a/sklearn/preprocessing/tests/test_discretization.py
++++ b/sklearn/preprocessing/tests/test_discretization.py
+@@ -663,27 +663,3 @@ def test_invalid_quantile_method_with_sample_weight():
+             X,
+             sample_weight=[1, 1, 2, 2],
+         )
+-
+-
+-# TODO(1.7): remove this test
+-@pytest.mark.parametrize(
+-    "strategy, quantile_method",
+-    [("uniform", "warn"), ("quantile", "averaged_inverted_cdf"), ("kmeans", "warn")],
+-)
+-def test_KBD_inverse_transform_Xt_deprecation(strategy, quantile_method):
+-    X = np.arange(10)[:, None]
+-    kbd = KBinsDiscretizer(strategy=strategy, quantile_method=quantile_method)
+-    X = kbd.fit_transform(X)
+-
+-    with pytest.raises(TypeError, match="Missing required positional argument"):
+-        kbd.inverse_transform()
+-
+-    with pytest.raises(TypeError, match="Cannot use both X and Xt. Use X only"):
+-        kbd.inverse_transform(X=X, Xt=X)
+-
+-    with warnings.catch_warnings(record=True):
+-        warnings.simplefilter("error")
+-        kbd.inverse_transform(X)
+-
+-    with pytest.warns(FutureWarning, match="Xt was renamed X in version 1.5"):
+-        kbd.inverse_transform(Xt=X)
+diff --git a/sklearn/tests/test_pipeline.py b/sklearn/tests/test_pipeline.py
+index 74a5b17b2..ad00ffb67 100644
+--- a/sklearn/tests/test_pipeline.py
++++ b/sklearn/tests/test_pipeline.py
+@@ -6,7 +6,6 @@ import itertools
+ import re
+ import shutil
+ import time
+-import warnings
+ from tempfile import mkdtemp
+ 
+ import joblib
+@@ -1891,26 +1890,6 @@ def test_feature_union_feature_names_in_():
+     assert not hasattr(union, "feature_names_in_")
+ 
+ 
+-# TODO(1.7): remove this test
+-def test_pipeline_inverse_transform_Xt_deprecation():
+-    X = np.random.RandomState(0).normal(size=(10, 5))
+-    pipe = Pipeline([("pca", PCA(n_components=2))])
+-    X = pipe.fit_transform(X)
+-
+-    with pytest.raises(TypeError, match="Missing required positional argument"):
+-        pipe.inverse_transform()
+-
+-    with pytest.raises(TypeError, match="Cannot use both X and Xt. Use X only"):
+-        pipe.inverse_transform(X=X, Xt=X)
+-
+-    with warnings.catch_warnings(record=True):
+-        warnings.simplefilter("error")
+-        pipe.inverse_transform(X)
+-
+-    with pytest.warns(FutureWarning, match="Xt was renamed X in version 1.5"):
+-        pipe.inverse_transform(Xt=X)
+-
+-
+ # transform_input tests
+ # =====================
+ 
+diff --git a/sklearn/utils/deprecation.py b/sklearn/utils/deprecation.py
+index 35b9dfc8a..d03978a8d 100644
+--- a/sklearn/utils/deprecation.py
++++ b/sklearn/utils/deprecation.py
+@@ -124,25 +124,6 @@ def _is_deprecated(func):
+     return is_deprecated
+ 
+ 
+-# TODO: remove in 1.7
+-def _deprecate_Xt_in_inverse_transform(X, Xt):
+-    """Helper to deprecate the `Xt` argument in favor of `X` in inverse_transform."""
+-    if X is not None and Xt is not None:
+-        raise TypeError("Cannot use both X and Xt. Use X only.")
+-
+-    if X is None and Xt is None:
+-        raise TypeError("Missing required positional argument: X.")
+-
+-    if Xt is not None:
+-        warnings.warn(
+-            "Xt was renamed X in version 1.5 and will be removed in 1.7.",
+-            FutureWarning,
+-        )
+-        return Xt
+-
+-    return X
+-
+-
+ # TODO(1.8): remove force_all_finite and change the default value of ensure_all_finite
+ # to True (remove None without deprecation).
+ def _deprecate_force_all_finite(force_all_finite, ensure_all_finite):

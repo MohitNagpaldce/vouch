@@ -1,0 +1,121 @@
+diff --git a/lib/matplotlib/dviread.py b/lib/matplotlib/dviread.py
+index 069c24caef..9850b73ea4 100644
+--- a/lib/matplotlib/dviread.py
++++ b/lib/matplotlib/dviread.py
+@@ -893,11 +893,10 @@ class PsfontsMap:
+             return self._parsed[texname]
+         except KeyError:
+             raise LookupError(
+-                f"An associated PostScript font (required by Matplotlib) "
+-                f"could not be found for TeX font {texname.decode('ascii')!r} "
+-                f"in {self._filename!r}; this problem can often be solved by "
+-                f"installing a suitable PostScript font package in your TeX "
+-                f"package manager") from None
++                f"The font map {self._filename!r} is missing a PostScript font "
++                f"associated to TeX font {texname.decode('ascii')!r}; this problem can "
++                f"often be solved by installing a suitable PostScript font package in "
++                f"your TeX package manager") from None
+ 
+     def _parse_and_cache_line(self, line):
+         """
+diff --git a/lib/mpl_toolkits/axes_grid1/axes_grid.py b/lib/mpl_toolkits/axes_grid1/axes_grid.py
+index ec366b45f4..7bcebaeabb 100644
+--- a/lib/mpl_toolkits/axes_grid1/axes_grid.py
++++ b/lib/mpl_toolkits/axes_grid1/axes_grid.py
+@@ -251,28 +251,24 @@ class Grid:
+             - "keep": Do not do anything.
+         """
+         _api.check_in_list(["all", "L", "1", "keep"], mode=mode)
+-        is_last_row, is_first_col = (
+-            np.mgrid[:self._nrows, :self._ncols] == [[[self._nrows - 1]], [[0]]])
+-        if mode == "all":
+-            bottom = left = np.full((self._nrows, self._ncols), True)
+-        elif mode == "L":
+-            bottom = is_last_row
+-            left = is_first_col
+-        elif mode == "1":
+-            bottom = left = is_last_row & is_first_col
+-        else:
++        if mode == "keep":
+             return
+-        for i in range(self._nrows):
+-            for j in range(self._ncols):
+-                ax = self.axes_row[i][j]
+-                if isinstance(ax.axis, MethodType):
+-                    bottom_axis = SimpleAxisArtist(ax.xaxis, 1, ax.spines["bottom"])
+-                    left_axis = SimpleAxisArtist(ax.yaxis, 1, ax.spines["left"])
+-                else:
+-                    bottom_axis = ax.axis["bottom"]
+-                    left_axis = ax.axis["left"]
+-                bottom_axis.toggle(ticklabels=bottom[i, j], label=bottom[i, j])
+-                left_axis.toggle(ticklabels=left[i, j], label=left[i, j])
++        for i, j in np.ndindex(self._nrows, self._ncols):
++            ax = self.axes_row[i][j]
++            if isinstance(ax.axis, MethodType):
++                bottom_axis = SimpleAxisArtist(ax.xaxis, 1, ax.spines["bottom"])
++                left_axis = SimpleAxisArtist(ax.yaxis, 1, ax.spines["left"])
++            else:
++                bottom_axis = ax.axis["bottom"]
++                left_axis = ax.axis["left"]
++            display_at_bottom = (i == self._nrows - 1 if mode == "L" else
++                                 i == self._nrows - 1 and j == 0 if mode == "1" else
++                                 True)  # if mode == "all"
++            display_at_left = (j == 0 if mode == "L" else
++                               i == self._nrows - 1 and j == 0 if mode == "1" else
++                               True)  # if mode == "all"
++            bottom_axis.toggle(ticklabels=display_at_bottom, label=display_at_bottom)
++            left_axis.toggle(ticklabels=display_at_left, label=display_at_left)
+ 
+     def get_divider(self):
+         return self._divider
+diff --git a/lib/mpl_toolkits/axisartist/grid_finder.py b/lib/mpl_toolkits/axisartist/grid_finder.py
+index b2495b8d88..e51d4912c7 100644
+--- a/lib/mpl_toolkits/axisartist/grid_finder.py
++++ b/lib/mpl_toolkits/axisartist/grid_finder.py
+@@ -36,14 +36,10 @@ def _find_line_box_crossings(xys, bbox):
+         for u0, inside in [(umin, us > umin), (umax, us < umax)]:
+             cross = []
+             idxs, = (inside[:-1] ^ inside[1:]).nonzero()
+-            for idx in idxs:
+-                v = vs[idx] + (u0 - us[idx]) * dvs[idx] / dus[idx]
+-                if not vmin <= v <= vmax:
+-                    continue
+-                crossing = (u0, v)[sl]
+-                theta = np.degrees(np.arctan2(*dxys[idx][::-1]))
+-                cross.append((crossing, theta))
+-            crossings.append(cross)
++            vv = vs[idxs] + (u0 - us[idxs]) * dvs[idxs] / dus[idxs]
++            crossings.append([
++                ((u0, v)[sl], np.degrees(np.arctan2(*dxy[::-1])))  # ((x, y), theta)
++                for v, dxy in zip(vv, dxys[idxs]) if vmin <= v <= vmax])
+     return crossings
+ 
+ 
+diff --git a/lib/mpl_toolkits/mplot3d/art3d.py b/lib/mpl_toolkits/mplot3d/art3d.py
+index 88c2ae625c..6c0bd641d9 100644
+--- a/lib/mpl_toolkits/mplot3d/art3d.py
++++ b/lib/mpl_toolkits/mplot3d/art3d.py
+@@ -1100,9 +1100,7 @@ class Poly3DCollection(PolyCollection):
+             be of shape (num_faces, num_vertices, 3).
+         """
+         if isinstance(segments3d, np.ndarray):
+-            if segments3d.ndim != 3 or segments3d.shape[-1] != 3:
+-                raise ValueError("segments3d must be a MxNx3 array, but got "
+-                                 f"shape {segments3d.shape}")
++            _api.check_shape((None, None, 3), segments3d=segments3d)
+             if isinstance(segments3d, np.ma.MaskedArray):
+                 self._faces = segments3d.data
+                 self._invalid_vertices = segments3d.mask.any(axis=-1)
+diff --git a/lib/mpl_toolkits/mplot3d/tests/test_axes3d.py b/lib/mpl_toolkits/mplot3d/tests/test_axes3d.py
+index 7067576e35..243f04be61 100644
+--- a/lib/mpl_toolkits/mplot3d/tests/test_axes3d.py
++++ b/lib/mpl_toolkits/mplot3d/tests/test_axes3d.py
+@@ -996,7 +996,7 @@ def test_poly3dcollection_verts_validation():
+         art3d.Poly3DCollection(poly)  # should be Poly3DCollection([poly])
+ 
+     poly = np.array(poly, dtype=float)
+-    with pytest.raises(ValueError, match=r'MxNx3 array'):
++    with pytest.raises(ValueError, match=r'shape \(M, N, 3\)'):
+         art3d.Poly3DCollection(poly)  # should be Poly3DCollection([poly])
+ 
+ 

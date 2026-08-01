@@ -1,0 +1,14 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "1283c356fb80d7fee8681bfc52e99acfcf37730f",
+  "kind": "control_good",
+  "subject": "Update [secure] extra.",
+  "evidence_subject": "Update [secure] extra.",
+  "author": "Cory Benfield",
+  "date": "2016-07-19T10:36:25+01:00",
+  "impl_files": [
+    "setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 15
+}

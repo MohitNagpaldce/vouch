@@ -1,0 +1,25 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "c8e3187ff5012b392c94c9b66f2845d6c95cab9a",
+  "kind": "control_good",
+  "subject": "MNT Clean-up deprecations for 1.7: Xt in inverse_transform (#31106)",
+  "evidence_subject": "MNT Clean-up deprecations for 1.7: Xt in inverse_transform (#31106)",
+  "author": "J\u00e9r\u00e9mie du Boisberranger",
+  "date": "2025-04-02T07:00:58+02:00",
+  "impl_files": [
+    "sklearn/cluster/_feature_agglomeration.py",
+    "sklearn/decomposition/_nmf.py",
+    "sklearn/model_selection/_search.py",
+    "sklearn/pipeline.py",
+    "sklearn/preprocessing/_discretization.py",
+    "sklearn/utils/deprecation.py"
+  ],
+  "test_files": [
+    "sklearn/cluster/tests/test_feature_agglomeration.py",
+    "sklearn/decomposition/tests/test_nmf.py",
+    "sklearn/model_selection/tests/test_search.py",
+    "sklearn/preprocessing/tests/test_discretization.py",
+    "sklearn/tests/test_pipeline.py"
+  ],
+  "diff_lines": 464
+}

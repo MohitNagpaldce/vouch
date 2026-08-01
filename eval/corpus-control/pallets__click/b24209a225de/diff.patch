@@ -1,0 +1,64 @@
+diff --git a/examples/complex/complex/cli.py b/examples/complex/complex/cli.py
+index bcfd14a..0d10c62 100644
+--- a/examples/complex/complex/cli.py
++++ b/examples/complex/complex/cli.py
+@@ -6,7 +6,7 @@ import click
+ CONTEXT_SETTINGS = dict(auto_envvar_prefix='COMPLEX')
+ 
+ 
+-class Context(object):
++class Environment(object):
+ 
+     def __init__(self):
+         self.verbose = False
+@@ -24,7 +24,7 @@ class Context(object):
+             self.log(msg, *args)
+ 
+ 
+-pass_context = click.make_pass_decorator(Context, ensure=True)
++pass_environment = click.make_pass_decorator(Environment, ensure=True)
+ cmd_folder = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                           'commands'))
+ 
+@@ -57,7 +57,7 @@ class ComplexCLI(click.MultiCommand):
+               help='Changes the folder to operate on.')
+ @click.option('-v', '--verbose', is_flag=True,
+               help='Enables verbose mode.')
+-@pass_context
++@pass_environment
+ def cli(ctx, verbose, home):
+     """A complex command line interface."""
+     ctx.verbose = verbose
+diff --git a/examples/complex/complex/commands/cmd_init.py b/examples/complex/complex/commands/cmd_init.py
+index 8c30186..a77116b 100644
+--- a/examples/complex/complex/commands/cmd_init.py
++++ b/examples/complex/complex/commands/cmd_init.py
+@@ -1,10 +1,10 @@
+ import click
+-from complex.cli import pass_context
++from complex.cli import pass_environment
+ 
+ 
+ @click.command('init', short_help='Initializes a repo.')
+ @click.argument('path', required=False, type=click.Path(resolve_path=True))
+-@pass_context
++@pass_environment
+ def cli(ctx, path):
+     """Initializes a repository."""
+     if path is None:
+diff --git a/examples/complex/complex/commands/cmd_status.py b/examples/complex/complex/commands/cmd_status.py
+index 99e736e..12229c4 100644
+--- a/examples/complex/complex/commands/cmd_status.py
++++ b/examples/complex/complex/commands/cmd_status.py
+@@ -1,9 +1,9 @@
+ import click
+-from complex.cli import pass_context
++from complex.cli import pass_environment
+ 
+ 
+ @click.command('status', short_help='Shows file changes.')
+-@pass_context
++@pass_environment
+ def cli(ctx):
+     """Shows file changes in the current working directory."""
+     ctx.log('Changed files: none')

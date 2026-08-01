@@ -1,0 +1,16 @@
+{
+  "repo": "psf/requests",
+  "sha": "8f0ac668da796b04df9901db58f5d4215be308dd",
+  "kind": "control_good",
+  "subject": "update urllib3",
+  "evidence_subject": "update urllib3",
+  "author": "Kenneth Reitz",
+  "date": "2012-06-25T12:35:39-04:00",
+  "impl_files": [
+    "requests/packages/urllib3/__init__.py",
+    "requests/packages/urllib3/connectionpool.py",
+    "requests/packages/urllib3/util.py"
+  ],
+  "test_files": [],
+  "diff_lines": 119
+}

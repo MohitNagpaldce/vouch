@@ -1,0 +1,14 @@
+{
+  "repo": "encode/httpx",
+  "sha": "640667d81d4bbf0d6f5e319d061353cad083f068",
+  "kind": "control_good",
+  "subject": "Release 0.7.4 (#388)",
+  "evidence_subject": "Release 0.7.4 (#388)",
+  "author": "Florimond Manca",
+  "date": "2019-09-26T13:45:38+02:00",
+  "impl_files": [
+    "httpx/__version__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 35
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "217e453a68dbec38b9c178dad7e088f6030dfbed",
+  "kind": "control_good",
+  "subject": "Fixed a few spelling mistakes in a docstring",
+  "evidence_subject": "Fixed a few spelling mistakes in a docstring",
+  "author": "Luke Plant",
+  "date": "2015-11-14T09:46:08Z",
+  "impl_files": [
+    "jinja2/sandbox.py"
+  ],
+  "test_files": [],
+  "diff_lines": 15
+}

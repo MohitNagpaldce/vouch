@@ -1,0 +1,18 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "0b9dce3a6c17d8dc827df57367383e0b82fa8b07",
+  "kind": "control_good",
+  "subject": "Add DOWNLOADER_CLIENT_TLS_VERBOSE_LOGGING setting.",
+  "evidence_subject": "Add DOWNLOADER_CLIENT_TLS_VERBOSE_LOGGING setting.",
+  "author": "Andrey Rakhmatullin",
+  "date": "2019-07-08T17:40:56+05:00",
+  "impl_files": [
+    "scrapy/core/downloader/contextfactory.py",
+    "scrapy/core/downloader/handlers/http10.py",
+    "scrapy/core/downloader/handlers/http11.py",
+    "scrapy/core/downloader/tls.py",
+    "scrapy/settings/default_settings.py"
+  ],
+  "test_files": [],
+  "diff_lines": 216
+}

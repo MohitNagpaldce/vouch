@@ -1,0 +1,16 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "d91d21648f74d4bb0f9dd131cc73b48fa8c8dc84",
+  "kind": "control_good",
+  "subject": "BUG: ensure that errorbar does not error on masked negative errors.",
+  "evidence_subject": "BUG: ensure that errorbar does not error on masked negative errors.",
+  "author": "Marten H. van Kerkwijk",
+  "date": "2025-04-10T12:03:57-04:00",
+  "impl_files": [
+    "lib/matplotlib/axes/_axes.py"
+  ],
+  "test_files": [
+    "lib/matplotlib/tests/test_axes.py"
+  ],
+  "diff_lines": 38
+}

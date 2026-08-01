@@ -1,0 +1,14 @@
+{
+  "repo": "fastapi/fastapi",
+  "sha": "23bda0ffeb26e906b5dcf58423522ab4166669ed",
+  "kind": "control_good",
+  "subject": "\u267b\ufe0f Refactor internal `check_file_field()`, rename to `ensure_multipart_is_installed()` to clarify its purpose (#12106)",
+  "evidence_subject": "\u267b\ufe0f Refactor internal `check_file_field()`, rename to `ensure_multipart_is_installed()` to clarify its purpose (#12106)",
+  "author": "Sebasti\u00e1n Ram\u00edrez",
+  "date": "2024-09-01T21:39:25+02:00",
+  "impl_files": [
+    "fastapi/dependencies/utils.py"
+  ],
+  "test_files": [],
+  "diff_lines": 136
+}

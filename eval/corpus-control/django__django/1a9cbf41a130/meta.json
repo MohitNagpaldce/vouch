@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "1a9cbf41a130def83a7e384955544d08be0fc148",
+  "kind": "control_good",
+  "subject": "Fixed #29613 -- Fixed --keepdb on PostgreSQL if the database exists and the user can't create databases.",
+  "evidence_subject": "Fixed #29613 -- Fixed --keepdb on PostgreSQL if the database exists and the user can't create databases.",
+  "author": "Mariusz Felisiak",
+  "date": "2018-08-03T10:31:55+02:00",
+  "impl_files": [
+    "django/db/backends/postgresql/creation.py"
+  ],
+  "test_files": [
+    "tests/backends/postgresql/test_creation.py"
+  ],
+  "diff_lines": 63
+}

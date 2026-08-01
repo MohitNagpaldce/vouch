@@ -1,0 +1,21 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "fbfa53cb64d8838048bcf93ffbd4935a21d9d4df",
+  "kind": "control_good",
+  "subject": "Async writer (#2774)",
+  "evidence_subject": "Async writer (#2774)",
+  "author": "Andrew Svetlov",
+  "date": "2018-02-27T14:39:15+02:00",
+  "impl_files": [
+    "aiohttp/client_reqrep.py",
+    "aiohttp/http_writer.py",
+    "aiohttp/multipart.py",
+    "aiohttp/web_urldispatcher.py"
+  ],
+  "test_files": [
+    "tests/test_client_request.py",
+    "tests/test_http_writer.py",
+    "tests/test_web_functional.py"
+  ],
+  "diff_lines": 329
+}

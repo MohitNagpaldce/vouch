@@ -1,0 +1,16 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "2cdb97e2f806d83965c7dee8fb5fcf164a340379",
+  "kind": "control_good",
+  "subject": "BUG: Fix precision loss in read_json (#59284)",
+  "evidence_subject": "BUG: Fix precision loss in read_json (#59284)",
+  "author": "Fawaz Ahmed",
+  "date": "2024-09-24T06:21:39+05:30",
+  "impl_files": [
+    "pandas/io/json/_json.py"
+  ],
+  "test_files": [
+    "pandas/tests/io/json/test_pandas.py"
+  ],
+  "diff_lines": 53
+}

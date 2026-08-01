@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "5fd65c12fbd0e32c7e81fc2a4470095f1a7a9c98",
+  "kind": "control_good",
+  "subject": "Bump flake8 to 3.8.4",
+  "evidence_subject": "Bump flake8 to 3.8.4",
+  "author": "Andrew Svetlov",
+  "date": "2020-10-15T13:12:02+03:00",
+  "impl_files": [
+    "aiohttp/client_reqrep.py"
+  ],
+  "test_files": [],
+  "diff_lines": 33
+}

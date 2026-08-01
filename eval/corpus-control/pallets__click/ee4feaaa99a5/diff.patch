@@ -1,0 +1,137 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 9db1566..6b5cb35 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -192,6 +192,8 @@ Unreleased
+ -   Command deprecation notice appears at the start of the help text, as
+     well as in the short help. The notice is not in all caps.
+     :issue:`1791`
++-   When taking arguments from ``sys.argv`` on Windows, glob patterns,
++    user dir, and env vars are expanded. :issue:`1096`
+ 
+ 
+ Version 7.1.2
+diff --git a/src/click/core.py b/src/click/core.py
+index 17cfc3a..80b1075 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -30,6 +30,7 @@ from .types import BOOL
+ from .types import convert_type
+ from .types import IntRange
+ from .utils import _detect_program_name
++from .utils import _expand_args
+ from .utils import echo
+ from .utils import make_default_short_help
+ from .utils import make_str
+@@ -903,9 +904,6 @@ class BaseCommand:
+         This method is also available by directly calling the instance of
+         a :class:`Command`.
+ 
+-        .. versionadded:: 3.0
+-           Added the `standalone_mode` flag to control the standalone mode.
+-
+         :param args: the arguments that should be used for parsing.  If not
+                      provided, ``sys.argv[1:]`` is used.
+         :param prog_name: the program name that should be used.  By default
+@@ -926,6 +924,13 @@ class BaseCommand:
+                                 of :meth:`invoke`.
+         :param extra: extra keyword arguments are forwarded to the context
+                       constructor.  See :class:`Context` for more information.
++
++        .. versionchanged:: 8.0
++            When taking arguments from ``sys.argv`` on Windows, glob
++            patterns, user dir, and env vars are expanded.
++
++        .. versionchanged:: 3.0
++           Added the ``standalone_mode`` parameter.
+         """
+         # Verify that the environment is configured correctly, or reject
+         # further execution to avoid a broken script.
+@@ -933,6 +938,9 @@ class BaseCommand:
+ 
+         if args is None:
+             args = sys.argv[1:]
++
++            if os.name == "nt":
++                args = _expand_args(args)
+         else:
+             args = list(args)
+ 
+diff --git a/src/click/utils.py b/src/click/utils.py
+index eccdfd9..4a52478 100644
+--- a/src/click/utils.py
++++ b/src/click/utils.py
+@@ -1,5 +1,6 @@
+ import os
+ import sys
++import typing as t
+ 
+ from ._compat import _default_text_stderr
+ from ._compat import _default_text_stdout
+@@ -482,3 +483,48 @@ def _detect_program_name(path=None, _main=sys.modules["__main__"]):
+         py_module = f"{py_module}.{name}"
+ 
+     return f"python -m {py_module.lstrip('.')}"
++
++
++def _expand_args(
++    args: t.Iterable[str],
++    *,
++    user: bool = True,
++    env: bool = True,
++    glob_recursive: bool = True,
++) -> t.List[str]:
++    """Simulate Unix shell expansion with Python functions.
++
++    See :func:`glob.glob`, :func:`os.path.expanduser`, and
++    :func:`os.path.expandvars`.
++
++    This intended for use on Windows, where the shell does not do any
++    expansion. It may not exactly match what a Unix shell would do.
++
++    :param args: List of command line arguments to expand.
++    :param user: Expand user home directory.
++    :param env: Expand environment variables.
++    :param glob_recursive: ``**`` matches directories recursively.
++
++    .. versionadded:: 8.0
++
++    :meta private:
++    """
++    from glob import glob
++
++    out = []
++
++    for arg in args:
++        if user:
++            arg = os.path.expanduser(arg)
++
++        if env:
++            arg = os.path.expandvars(arg)
++
++        matches = glob(arg, recursive=glob_recursive)
++
++        if not matches:
++            out.append(arg)
++        else:
++            out.extend(matches)
++
++    return out
+diff --git a/tests/test_utils.py b/tests/test_utils.py
+index cc0893d..441794b 100644
+--- a/tests/test_utils.py
++++ b/tests/test_utils.py
+@@ -429,3 +429,13 @@ class MockMain:
+ )
+ def test_detect_program_name(path, main, expected):
+     assert click.utils._detect_program_name(path, _main=main) == expected
++
++
++def test_expand_args(monkeypatch):
++    user = os.path.expanduser("~")
++    assert user in click.utils._expand_args(["~"])
++    monkeypatch.setenv("CLICK_TEST", "hello")
++    assert "hello" in click.utils._expand_args(["$CLICK_TEST"])
++    assert "setup.cfg" in click.utils._expand_args(["*.cfg"])
++    assert os.path.join("docs", "conf.py") in click.utils._expand_args(["**/conf.py"])
++    assert "*.not-found" in click.utils._expand_args(["*.not-found"])

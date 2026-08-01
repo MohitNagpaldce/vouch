@@ -1,0 +1,14 @@
+{
+  "repo": "django/django",
+  "sha": "4f8bc75bc310a6a206d2d1b9550d3df313eb63eb",
+  "kind": "control_good",
+  "subject": "Removed obsolete docstring from WhereNode.clone().",
+  "evidence_subject": "Removed obsolete docstring from WhereNode.clone().",
+  "author": "Nick Pope",
+  "date": "2021-09-20T23:22:17+01:00",
+  "impl_files": [
+    "django/db/models/sql/where.py"
+  ],
+  "test_files": [],
+  "diff_lines": 16
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "4497a26c376c60360d05644b574be0db3c887fe3",
+  "kind": "control_good",
+  "subject": "Document Response.iter_lines() reentrancy issues",
+  "evidence_subject": "Document Response.iter_lines() reentrancy issues",
+  "author": "Priit Laes",
+  "date": "2015-03-07T11:04:43+02:00",
+  "impl_files": [
+    "requests/models.py"
+  ],
+  "test_files": [],
+  "diff_lines": 37
+}

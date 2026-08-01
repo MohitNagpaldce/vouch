@@ -1,0 +1,16 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "dc4710b56cbd427ca47ea2da7b45b1f669c4d45f",
+  "kind": "control_good",
+  "subject": "Replacing encode_default instance check with strict type check (#3197)",
+  "evidence_subject": "Replacing encode_default instance check with strict type check (#3197)",
+  "author": "Jo\u00e3o M. Martins",
+  "date": "2021-12-08T22:52:25+01:00",
+  "impl_files": [
+    "pydantic/schema.py"
+  ],
+  "test_files": [
+    "tests/test_schema.py"
+  ],
+  "diff_lines": 54
+}

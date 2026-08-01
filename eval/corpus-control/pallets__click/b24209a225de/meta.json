@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/click",
+  "sha": "b24209a225de57989cc73e94be33a0f99b6c0851",
+  "kind": "control_good",
+  "subject": "renamed context to environment to reduce confusion",
+  "evidence_subject": "renamed context to environment to reduce confusion",
+  "author": "Ming Zhang",
+  "date": "2019-05-31T11:04:04-04:00",
+  "impl_files": [
+    "examples/complex/complex/cli.py",
+    "examples/complex/complex/commands/cmd_init.py",
+    "examples/complex/complex/commands/cmd_status.py"
+  ],
+  "test_files": [],
+  "diff_lines": 64
+}

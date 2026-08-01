@@ -1,0 +1,16 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "973c31f73595c73fac9b825ce7587d93d7055546",
+  "kind": "control_good",
+  "subject": "TST cleanup: use assertIn instead of assert_",
+  "evidence_subject": "TST cleanup: use assertIn instead of assert_",
+  "author": "Mikhail Korobov",
+  "date": "2015-04-14T20:11:46+05:00",
+  "impl_files": [
+    "scrapy/utils/testproc.py"
+  ],
+  "test_files": [
+    "tests/test_commands.py"
+  ],
+  "diff_lines": 103
+}

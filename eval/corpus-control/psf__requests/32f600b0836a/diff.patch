@@ -1,0 +1,54 @@
+diff --git a/requests/models.py b/requests/models.py
+index 9b16b9d8..5aad8ce4 100644
+--- a/requests/models.py
++++ b/requests/models.py
+@@ -309,8 +309,8 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
+         p = PreparedRequest()
+         p.method = self.method
+         p.url = self.url
+-        p.headers = self.headers.copy()
+-        p._cookies = self._cookies.copy()
++        p.headers = self.headers.copy() if self.headers is not None else None
++        p._cookies = self._cookies.copy() if self._cookies is not None else None
+         p.body = self.body
+         p.hooks = self.hooks
+         return p
+diff --git a/test_requests.py b/test_requests.py
+index 4871dc51..f3c93723 100755
+--- a/test_requests.py
++++ b/test_requests.py
+@@ -1369,6 +1369,34 @@ def test_data_argument_accepts_tuples(list_of_tuples):
+         )
+         assert p.body == urlencode(data)
+ 
++def assert_copy(p, p_copy):
++    for attr in ('method', 'url', 'headers', '_cookies', 'body', 'hooks'):
++        assert getattr(p, attr) == getattr(p_copy, attr)
++
++def test_prepared_request_empty_copy():
++    p = PreparedRequest()
++    assert_copy(p, p.copy())
++
++def test_prepared_request_no_cookies_copy():
++    p = PreparedRequest()
++    p.prepare(
++        method='GET',
++        url='http://www.example.com',
++        data='foo=bar',
++        hooks=default_hooks()
++    )
++    assert_copy(p, p.copy())
++
++def test_prepared_request_complete_copy():
++    p = PreparedRequest()
++    p.prepare(
++        method='GET',
++        url='http://www.example.com',
++        data='foo=bar',
++        hooks=default_hooks(),
++        cookies={'foo': 'bar'}
++    )
++    assert_copy(p, p.copy())
+ 
+ if __name__ == '__main__':
+     unittest.main()

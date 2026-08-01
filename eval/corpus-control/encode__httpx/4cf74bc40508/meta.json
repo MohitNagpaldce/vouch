@@ -1,0 +1,16 @@
+{
+  "repo": "encode/httpx",
+  "sha": "4cf74bc40508f1d22e1159bc93607e9c777e41b2",
+  "kind": "control_good",
+  "subject": "Fix behaviour with multiple Set-Cookie headers (#1156)",
+  "evidence_subject": "Fix behaviour with multiple Set-Cookie headers (#1156)",
+  "author": "Tom Christie",
+  "date": "2020-08-10T14:53:51+01:00",
+  "impl_files": [
+    "httpx/_models.py"
+  ],
+  "test_files": [
+    "tests/models/test_cookies.py"
+  ],
+  "diff_lines": 96
+}

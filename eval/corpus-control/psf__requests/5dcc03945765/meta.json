@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "5dcc03945765a7e7b7044b5f41ff5ee8d707c49b",
+  "kind": "control_good",
+  "subject": "v2.12.5",
+  "evidence_subject": "v2.12.5",
+  "author": "Cory Benfield",
+  "date": "2017-01-18T12:41:46Z",
+  "impl_files": [
+    "requests/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 15
+}

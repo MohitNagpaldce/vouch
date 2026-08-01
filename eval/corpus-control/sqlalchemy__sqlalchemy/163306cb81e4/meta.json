@@ -1,0 +1,16 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "163306cb81e4aa866972b77c3b4f142e3f1dc676",
+  "kind": "control_good",
+  "subject": "Repair Oracle Interval",
+  "evidence_subject": "Repair Oracle Interval",
+  "author": "Mike Bayer",
+  "date": "2019-11-11T16:51:46-05:00",
+  "impl_files": [
+    "lib/sqlalchemy/dialects/oracle/base.py"
+  ],
+  "test_files": [
+    "test/sql/test_types.py"
+  ],
+  "diff_lines": 104
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "1d00bd2c1cdb43298ac6eba0c8bbc316123a154e",
+  "kind": "control_good",
+  "subject": "[PR #10744/23d3ee06 backport][3.11] Refactor WebSocket reader to avoid frequent realloc when frames are fragmented (#10747)",
+  "evidence_subject": "[PR #10744/23d3ee06 backport][3.11] Refactor WebSocket reader to avoid frequent realloc when frames are fragmented (#10747)",
+  "author": "patchback[bot]",
+  "date": "2025-04-19T08:13:54Z",
+  "impl_files": [
+    "aiohttp/_websocket/reader_py.py"
+  ],
+  "test_files": [],
+  "diff_lines": 226
+}

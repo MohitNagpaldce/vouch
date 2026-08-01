@@ -1,0 +1,16 @@
+{
+  "repo": "pypa/pip",
+  "sha": "41f058b4f5b0f2452fbf018e9024ac693b6a1a20",
+  "kind": "control_good",
+  "subject": "Make _get_subdirectory(), _get_svn_url_rev(), and _is_local_repository() class methods.",
+  "evidence_subject": "Make _get_subdirectory(), _get_svn_url_rev(), and _is_local_repository() class methods.",
+  "author": "Chris Jerdonek",
+  "date": "2019-01-06T16:27:27-08:00",
+  "impl_files": [
+    "src/pip/_internal/vcs/__init__.py",
+    "src/pip/_internal/vcs/git.py",
+    "src/pip/_internal/vcs/subversion.py"
+  ],
+  "test_files": [],
+  "diff_lines": 61
+}

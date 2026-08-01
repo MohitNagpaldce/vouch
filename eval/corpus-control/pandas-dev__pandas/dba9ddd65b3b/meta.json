@@ -1,0 +1,18 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "dba9ddd65b3b3bc30e9081ee2ad93533e23d14f2",
+  "kind": "control_good",
+  "subject": "API: ArrowDtype.type (#51307)",
+  "evidence_subject": "API: ArrowDtype.type (#51307)",
+  "author": "jbrockmendel",
+  "date": "2023-02-16T08:38:33-08:00",
+  "impl_files": [
+    "pandas/core/arrays/arrow/array.py",
+    "pandas/core/arrays/arrow/dtype.py",
+    "pandas/core/internals/blocks.py"
+  ],
+  "test_files": [
+    "pandas/tests/extension/test_arrow.py"
+  ],
+  "diff_lines": 176
+}

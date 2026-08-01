@@ -1,0 +1,25 @@
+diff --git a/CHANGES b/CHANGES
+index 42d43fa8..b7073a8c 100644
+--- a/CHANGES
++++ b/CHANGES
+@@ -5,6 +5,7 @@ Version 0.11.16
+ ---------------
+ 
+ - werkzeug.serving: set CONTENT_TYPE / CONTENT_LENGTH if only they're provided by the client
++- werkzeug.serving: Fix crash of reloader when using `python -m werkzeug.serving`.
+ 
+ Version 0.11.15
+ ---------------
+diff --git a/werkzeug/serving.py b/werkzeug/serving.py
+index 0a98f87b..a59cacb3 100644
+--- a/werkzeug/serving.py
++++ b/werkzeug/serving.py
+@@ -700,6 +700,8 @@ def run_simple(hostname, port, application, use_reloader=False,
+             else:
+                 s.close()
+ 
++        # Do not use relative imports, otherwise "python -m werkzeug.serving"
++        # breaks.
+         from ._reloader import run_with_reloader
+         run_with_reloader(inner, extra_files, reloader_interval,
+                           reloader_type)

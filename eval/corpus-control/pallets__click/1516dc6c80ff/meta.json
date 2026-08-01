@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/click",
+  "sha": "1516dc6c80ff9f6aebfaf846126909650e451ad9",
+  "kind": "control_good",
+  "subject": "convert objects to string in style/secho",
+  "evidence_subject": "convert objects to string in style/secho",
+  "author": "Segev Finer",
+  "date": "2018-10-14T19:38:11+03:00",
+  "impl_files": [
+    "src/click/termui.py"
+  ],
+  "test_files": [
+    "tests/test_termui.py"
+  ],
+  "diff_lines": 76
+}

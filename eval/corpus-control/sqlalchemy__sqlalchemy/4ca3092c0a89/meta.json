@@ -1,0 +1,22 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "4ca3092c0a89855cd740bafb4e0fb4c99051f89e",
+  "kind": "control_good",
+  "subject": "Prevent __init__ from being called for Alias, subclasses",
+  "evidence_subject": "Prevent __init__ from being called for Alias, subclasses",
+  "author": "Mike Bayer",
+  "date": "2019-02-20T15:00:09-05:00",
+  "impl_files": [
+    "lib/sqlalchemy/sql/__init__.py",
+    "lib/sqlalchemy/sql/expression.py",
+    "lib/sqlalchemy/sql/functions.py",
+    "lib/sqlalchemy/sql/selectable.py"
+  ],
+  "test_files": [
+    "test/sql/test_cte.py",
+    "test/sql/test_lateral.py",
+    "test/sql/test_selectable.py",
+    "test/sql/test_tablesample.py"
+  ],
+  "diff_lines": 624
+}

@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "ae180fa4b7f927a4aeae772975927c9888bb0cb0",
+  "kind": "control_good",
+  "subject": "Fixed #29986 -- Added .format() support to ngettext_lazy strings.",
+  "evidence_subject": "Fixed #29986 -- Added .format() support to ngettext_lazy strings.",
+  "author": "Patrick Arminio",
+  "date": "2018-11-25T21:50:34Z",
+  "impl_files": [
+    "django/utils/translation/__init__.py"
+  ],
+  "test_files": [
+    "tests/i18n/tests.py"
+  ],
+  "diff_lines": 129
+}

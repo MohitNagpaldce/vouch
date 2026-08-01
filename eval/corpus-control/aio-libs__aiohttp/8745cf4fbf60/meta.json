@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "8745cf4fbf6024d133891a29ab451686f26f505a",
+  "kind": "control_good",
+  "subject": "[PR #10107/84bb77d1 backport][3.12] Use internal `self._headers` var in `FileResponse` (#10109)",
+  "evidence_subject": "[PR #10107/84bb77d1 backport][3.12] Use internal `self._headers` var in `FileResponse` (#10109)",
+  "author": "patchback[bot]",
+  "date": "2024-12-04T21:12:41Z",
+  "impl_files": [
+    "aiohttp/web_fileresponse.py"
+  ],
+  "test_files": [],
+  "diff_lines": 57
+}

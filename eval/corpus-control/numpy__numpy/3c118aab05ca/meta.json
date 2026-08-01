@@ -1,0 +1,14 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "3c118aab05ca06f30b2eec8057e2e46db98ad745",
+  "kind": "control_good",
+  "subject": "BUG: Workaround for #14787: on Windows/Cygwin add extra compiler flags when building the numpy.core._multiarray_umath module",
+  "evidence_subject": "BUG: Workaround for #14787: on Windows/Cygwin add extra compiler flags when building the numpy.core._multiarray_umath module",
+  "author": "E. Madison Bray",
+  "date": "2020-10-13T14:32:15+02:00",
+  "impl_files": [
+    "numpy/core/setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 37
+}

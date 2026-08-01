@@ -1,0 +1,17 @@
+{
+  "repo": "pallets/flask",
+  "sha": "024f0d384cf5bb65c76ac59f8ddce464b2dc2ca1",
+  "kind": "control_good",
+  "subject": "move package metadata to setup.cfg",
+  "evidence_subject": "move package metadata to setup.cfg",
+  "author": "David Lord",
+  "date": "2020-04-04T14:36:09-07:00",
+  "impl_files": [
+    "examples/javascript/setup.py",
+    "examples/tutorial/setup.py",
+    "setup.py",
+    "src/flask/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 417
+}

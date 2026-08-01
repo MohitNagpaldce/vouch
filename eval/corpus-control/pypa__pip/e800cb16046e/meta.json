@@ -1,0 +1,14 @@
+{
+  "repo": "pypa/pip",
+  "sha": "e800cb16046e4992f50569a9fa1e78017c55f2ea",
+  "kind": "control_good",
+  "subject": "Make BuildEnvironment._temp_dir a local variable",
+  "evidence_subject": "Make BuildEnvironment._temp_dir a local variable",
+  "author": "Chris Hunt",
+  "date": "2020-01-30T22:10:47-05:00",
+  "impl_files": [
+    "src/pip/_internal/build_env.py"
+  ],
+  "test_files": [],
+  "diff_lines": 28
+}

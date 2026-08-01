@@ -1,0 +1,24 @@
+diff --git a/scripts/flaskext_migrate.py b/scripts/flaskext_migrate.py
+index d3681b7b..9b378a09 100644
+--- a/scripts/flaskext_migrate.py
++++ b/scripts/flaskext_migrate.py
+@@ -26,7 +26,6 @@ def fix_imports(red):
+                 package = values[2].value
+                 modules = from_imports[x].modules()
+                 r = "{}," * len(modules)
+-                print modules
+                 from_imports[x].replace("from flask_%s import %s"
+                                         % (package, r.format(*modules)[:-1]))
+             # Case 2
+diff --git a/scripts/test.py b/scripts/test.py
+index 1c17e0d7..31b33b58 100644
+--- a/scripts/test.py
++++ b/scripts/test.py
+@@ -9,6 +9,7 @@ from flask.ext.foo import (bam,
+                            b
+ )
+ 
++import flask.ext.foo
+ 
+ from flask.ext import foo
+ 

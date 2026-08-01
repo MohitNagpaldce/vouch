@@ -1,0 +1,14 @@
+{
+  "repo": "celery/celery",
+  "sha": "e60533b4bbec090223b25f71bc464ae952139d36",
+  "kind": "control_good",
+  "subject": "Docs: Adds event crossref type",
+  "evidence_subject": "Docs: Adds event crossref type",
+  "author": "Ask Solem",
+  "date": "2012-08-29T16:35:19+01:00",
+  "impl_files": [
+    "docs/_ext/celerydocs.py"
+  ],
+  "test_files": [],
+  "diff_lines": 203
+}

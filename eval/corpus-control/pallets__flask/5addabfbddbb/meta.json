@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/flask",
+  "sha": "5addabfbddbb0f620d81adc7bcafbf8bd5f12a3e",
+  "kind": "control_good",
+  "subject": "Fix typo in helpers.py",
+  "evidence_subject": "Fix typo in helpers.py",
+  "author": "Zachary Wright Heller",
+  "date": "2013-12-24T20:12:34-08:00",
+  "impl_files": [
+    "flask/helpers.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

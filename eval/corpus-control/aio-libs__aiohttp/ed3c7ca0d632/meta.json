@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "ed3c7ca0d6324013f4d0b0f60936f86acb6bd428",
+  "kind": "control_good",
+  "subject": "Simplify http writer",
+  "evidence_subject": "Simplify http writer",
+  "author": "Andrew Svetlov",
+  "date": "2017-11-22T14:56:31+02:00",
+  "impl_files": [
+    "aiohttp/http_writer.py"
+  ],
+  "test_files": [],
+  "diff_lines": 48
+}

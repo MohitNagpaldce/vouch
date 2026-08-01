@@ -1,0 +1,14 @@
+{
+  "repo": "psf/black",
+  "sha": "229498e531b26f93c482115b1ccdb16b70bad620",
+  "kind": "control_good",
+  "subject": "Fix flake8 configuration by switching from extend-ignore to ignore (#2320)",
+  "evidence_subject": "Fix flake8 configuration by switching from extend-ignore to ignore (#2320)",
+  "author": "jack1142",
+  "date": "2021-06-09T16:01:07+02:00",
+  "impl_files": [
+    "src/black/output.py"
+  ],
+  "test_files": [],
+  "diff_lines": 25
+}

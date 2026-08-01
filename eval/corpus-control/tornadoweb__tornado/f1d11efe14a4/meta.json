@@ -1,0 +1,14 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "f1d11efe14a48b5347b8e21022c10df4fb47bace",
+  "kind": "control_good",
+  "subject": "http: fix infinite loop hang with invalid gzip data",
+  "evidence_subject": "http: fix infinite loop hang with invalid gzip data",
+  "author": "Jeff Hunter",
+  "date": "2020-06-09T13:18:29-07:00",
+  "impl_files": [
+    "tornado/http1connection.py"
+  ],
+  "test_files": [],
+  "diff_lines": 15
+}

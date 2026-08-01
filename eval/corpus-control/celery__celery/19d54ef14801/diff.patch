@@ -1,0 +1,33 @@
+diff --git a/celery/app/task.py b/celery/app/task.py
+index fc2d4f1ad..cd137d967 100644
+--- a/celery/app/task.py
++++ b/celery/app/task.py
+@@ -127,6 +127,8 @@ class TaskType(type):
+     def __repr__(cls):
+         if cls._app:
+             return '<class %s of %s>' % (cls.__name__, cls._app, )
++        if cls.__v2_compat__:
++            return '<unbound %s (v2 compatible)>' % (cls.__name__, )
+         return '<unbound %s>' % (cls.__name__, )
+ 
+ 
+@@ -140,6 +142,7 @@ class Task(object):
+     """
+     __metaclass__ = TaskType
+     __trace__ = None
++    __v2_compat__ = False  # set by old base in celery.task.base
+ 
+     ErrorMail = ErrorMail
+     MaxRetriesExceededError = MaxRetriesExceededError
+diff --git a/celery/task/base.py b/celery/task/base.py
+index 9b67a2efc..72f6fb2ae 100644
+--- a/celery/task/base.py
++++ b/celery/task/base.py
+@@ -34,6 +34,7 @@ class Task(BaseTask):
+     """
+     abstract = True
+     __bound__ = False
++    __v2_compat__ = True
+ 
+     #- Deprecated compat. attributes -:
+ 

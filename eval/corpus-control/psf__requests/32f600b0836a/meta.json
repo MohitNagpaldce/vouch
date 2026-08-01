@@ -1,0 +1,16 @@
+{
+  "repo": "psf/requests",
+  "sha": "32f600b0836a86596aa3edc98aaa6827f6fe4644",
+  "kind": "control_good",
+  "subject": "Allow copying of PreparedRequests without headers/cookies",
+  "evidence_subject": "Allow copying of PreparedRequests without headers/cookies",
+  "author": "David Gouldin",
+  "date": "2014-05-30T10:11:53-07:00",
+  "impl_files": [
+    "requests/models.py"
+  ],
+  "test_files": [
+    "test_requests.py"
+  ],
+  "diff_lines": 54
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "encode/httpx",
+  "sha": "adbcd0e0e7fcb174ce60772c7d6104b8b9d329ca",
+  "kind": "control_good",
+  "subject": "Change extensions type (#2803)",
+  "evidence_subject": "Change extensions type (#2803)",
+  "author": "Kar Petrosyan",
+  "date": "2023-09-11T02:29:22-04:00",
+  "impl_files": [
+    "httpx/_types.py"
+  ],
+  "test_files": [],
+  "diff_lines": 55
+}

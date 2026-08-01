@@ -1,0 +1,12 @@
+diff --git a/flask/cli.py b/flask/cli.py
+index 8f8fac03..8db7e07e 100644
+--- a/flask/cli.py
++++ b/flask/cli.py
+@@ -372,7 +372,6 @@ class FlaskGroup(AppGroup):
+             # However, we will not do so silently because that would confuse
+             # users.
+             traceback.print_exc()
+-            pass
+         return sorted(rv)
+ 
+     def main(self, *args, **kwargs):

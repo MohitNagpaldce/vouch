@@ -1,0 +1,30 @@
+diff --git a/docs/conf.py b/docs/conf.py
+index e9fdebb..8da9c39 100644
+--- a/docs/conf.py
++++ b/docs/conf.py
+@@ -87,7 +87,7 @@ def make_pypi_svg(version: str) -> None:
+ #
+ # This is also used if you do content translation via gettext catalogs.
+ # Usually you set "language" from the command line for these cases.
+-language = None
++language = "en"
+ 
+ # List of patterns, relative to source directory, that match files and
+ # directories to ignore when looking for source files.
+diff --git a/docs/requirements.txt b/docs/requirements.txt
+index 72cf09f..a3c801b 100644
+--- a/docs/requirements.txt
++++ b/docs/requirements.txt
+@@ -1,7 +1,9 @@
+ # Used by ReadTheDocs; pinned requirements for stability.
+ 
+-myst-parser==0.17.2
+-Sphinx==4.5.0
++myst-parser==0.18.0
++Sphinx==5.0.1
++# Older versions break Sphinx even though they're declared to be supported.
++docutils==0.18.1
+ sphinxcontrib-programoutput==0.17
+ sphinx_copybutton==0.5.0
+-furo==2022.4.7
++furo==2022.6.4.1

@@ -1,0 +1,459 @@
+diff --git a/pandas/_libs/tslib.pyx b/pandas/_libs/tslib.pyx
+index da4eeaeb3b..017fdc4bc8 100644
+--- a/pandas/_libs/tslib.pyx
++++ b/pandas/_libs/tslib.pyx
+@@ -338,7 +338,7 @@ def array_with_unit_to_datetime(
+                     f"unit='{unit}' not valid with non-numerical val='{val}'"
+                 )
+ 
+-        except (ValueError, OutOfBoundsDatetime, TypeError) as err:
++        except (ValueError, TypeError) as err:
+             if is_raise:
+                 err.args = (f"{err}, at position {i}",)
+                 raise
+@@ -435,15 +435,15 @@ cpdef array_to_datetime(
+     Parameters
+     ----------
+     values : ndarray of object
+-         date-like objects to convert
++        date-like objects to convert
+     errors : str, default 'raise'
+-         error behavior when parsing
++        error behavior when parsing
+     dayfirst : bool, default False
+-         dayfirst parsing behavior when encountering datetime strings
++        dayfirst parsing behavior when encountering datetime strings
+     yearfirst : bool, default False
+-         yearfirst parsing behavior when encountering datetime strings
++        yearfirst parsing behavior when encountering datetime strings
+     utc : bool, default False
+-         indicator whether the dates should be UTC
++        indicator whether the dates should be UTC
+     creso : NPY_DATETIMEUNIT, default NPY_FR_ns
+         Set to NPY_FR_GENERIC to infer a resolution.
+ 
+@@ -464,7 +464,7 @@ cpdef array_to_datetime(
+         bint is_ignore = errors == "ignore"
+         bint is_coerce = errors == "coerce"
+         bint is_same_offsets
+-        _TSObject _ts
++        _TSObject tsobj
+         float tz_offset
+         set out_tzoffset_vals = set()
+         tzinfo tz, tz_out = None
+@@ -550,29 +550,28 @@ cpdef array_to_datetime(
+                         creso = state.creso
+                     continue
+ 
+-                _ts = convert_str_to_tsobject(
++                tsobj = convert_str_to_tsobject(
+                     val, None, dayfirst=dayfirst, yearfirst=yearfirst
+                 )
+ 
+-                if _ts.value == NPY_NAT:
++                if tsobj.value == NPY_NAT:
+                     # e.g. "NaT" string or empty string, we do not consider
+                     #  this as either tzaware or tznaive. See
+                     #  test_to_datetime_with_empty_str_utc_false_format_mixed
+                     # We also do not update resolution inference based on this,
+                     #  see test_infer_with_nat_int_float_str
+-                    iresult[i] = _ts.value
++                    iresult[i] = tsobj.value
+                     continue
+ 
+-                item_reso = _ts.creso
++                item_reso = tsobj.creso
+                 state.update_creso(item_reso)
+                 if infer_reso:
+                     creso = state.creso
+ 
+-                _ts.ensure_reso(creso, val)
+-
+-                iresult[i] = _ts.value
++                tsobj.ensure_reso(creso, val)
++                iresult[i] = tsobj.value
+ 
+-                tz = _ts.tzinfo
++                tz = tsobj.tzinfo
+                 if tz is not None:
+                     # dateutil timezone objects cannot be hashed, so
+                     # store the UTC offsets in seconds instead
+diff --git a/pandas/_libs/tslibs/conversion.pyx b/pandas/_libs/tslibs/conversion.pyx
+index 4def5e2c93..3a55f5fa0c 100644
+--- a/pandas/_libs/tslibs/conversion.pyx
++++ b/pandas/_libs/tslibs/conversion.pyx
+@@ -29,7 +29,6 @@ from cpython.datetime cimport (
+ import_datetime()
+ 
+ from pandas._libs.missing cimport checknull_with_nat_and_na
+-from pandas._libs.tslibs.base cimport ABCTimestamp
+ from pandas._libs.tslibs.dtypes cimport (
+     abbrev_to_npy_unit,
+     get_supported_reso,
+@@ -492,7 +491,7 @@ cdef _TSObject convert_datetime_to_tsobject(
+         pydatetime_to_dtstruct(ts, &obj.dts)
+         obj.tzinfo = ts.tzinfo
+ 
+-    if isinstance(ts, ABCTimestamp):
++    if isinstance(ts, _Timestamp):
+         obj.dts.ps = ts.nanosecond * 1000
+ 
+     if nanos:
+@@ -766,7 +765,7 @@ cpdef inline datetime localize_pydatetime(datetime dt, tzinfo tz):
+     """
+     if tz is None:
+         return dt
+-    elif isinstance(dt, ABCTimestamp):
++    elif isinstance(dt, _Timestamp):
+         return dt.tz_localize(tz)
+     return _localize_pydatetime(dt, tz)
+ 
+diff --git a/pandas/_libs/tslibs/dtypes.pyi b/pandas/_libs/tslibs/dtypes.pyi
+index 72d12ca2d9..7fdeb88d49 100644
+--- a/pandas/_libs/tslibs/dtypes.pyi
++++ b/pandas/_libs/tslibs/dtypes.pyi
+@@ -4,7 +4,7 @@ OFFSET_TO_PERIOD_FREQSTR: dict[str, str]
+ 
+ def periods_per_day(reso: int = ...) -> int: ...
+ def periods_per_second(reso: int) -> int: ...
+-def abbrev_to_npy_unit(abbrev: str) -> int: ...
++def abbrev_to_npy_unit(abbrev: str | None) -> int: ...
+ def freq_to_period_freqstr(freq_n: int, freq_name: str) -> str: ...
+ 
+ class PeriodDtypeBase:
+diff --git a/pandas/_libs/tslibs/np_datetime.pyx b/pandas/_libs/tslibs/np_datetime.pyx
+index 54a5bcf316..aa01a05d0d 100644
+--- a/pandas/_libs/tslibs/np_datetime.pyx
++++ b/pandas/_libs/tslibs/np_datetime.pyx
+@@ -596,7 +596,7 @@ cdef int64_t get_conversion_factor(
+     ):
+         raise ValueError("unit-less resolutions are not supported")
+     if from_unit > to_unit:
+-        raise ValueError
++        raise ValueError("from_unit must be <= to_unit")
+ 
+     if from_unit == to_unit:
+         return 1
+diff --git a/pandas/_libs/tslibs/strptime.pyx b/pandas/_libs/tslibs/strptime.pyx
+index 5616bc1704..ee72b13110 100644
+--- a/pandas/_libs/tslibs/strptime.pyx
++++ b/pandas/_libs/tslibs/strptime.pyx
+@@ -319,14 +319,14 @@ def array_strptime(
+         Py_ssize_t i, n = len(values)
+         npy_datetimestruct dts
+         int64_t[::1] iresult
+-        object val, tz
++        object val
+         bint seen_datetime_offset = False
+         bint is_raise = errors=="raise"
+         bint is_ignore = errors=="ignore"
+         bint is_coerce = errors=="coerce"
+         bint is_same_offsets
+         set out_tzoffset_vals = set()
+-        tzinfo tz_out = None
++        tzinfo tz, tz_out = None
+         bint iso_format = format_is_iso(fmt)
+         NPY_DATETIMEUNIT out_bestunit, item_reso
+         int out_local = 0, out_tzoffset = 0
+@@ -484,7 +484,7 @@ def array_strptime(
+                 tz = None
+                 out_tzoffset_vals.add("naive")
+ 
+-        except (ValueError, OutOfBoundsDatetime) as ex:
++        except ValueError as ex:
+             ex.args = (
+                 f"{str(ex)}, at position {i}. You might want to try:\n"
+                 "    - passing `format` if your strings have a consistent format;\n"
+@@ -1084,7 +1084,7 @@ cdef tzinfo parse_timezone_directive(str z):
+     cdef:
+         int hours, minutes, seconds, pad_number, microseconds
+         int total_minutes
+-        object gmtoff_remainder, gmtoff_remainder_padding
++        str gmtoff_remainder, gmtoff_remainder_padding
+ 
+     if z == "Z":
+         return timezone(timedelta(0))
+diff --git a/pandas/_libs/tslibs/timedeltas.pyx b/pandas/_libs/tslibs/timedeltas.pyx
+index 5852a7d95d..475b85fa64 100644
+--- a/pandas/_libs/tslibs/timedeltas.pyx
++++ b/pandas/_libs/tslibs/timedeltas.pyx
+@@ -499,9 +499,9 @@ cdef int64_t parse_timedelta_string(str ts) except? -1:
+     """
+ 
+     cdef:
+-        unicode c
++        str c
+         bint neg = 0, have_dot = 0, have_value = 0, have_hhmmss = 0
+-        object current_unit = None
++        str current_unit = None
+         int64_t result = 0, m = 0, r
+         list number = [], frac = [], unit = []
+ 
+diff --git a/pandas/core/dtypes/dtypes.py b/pandas/core/dtypes/dtypes.py
+index 07fb25008c..4c1654ab0f 100644
+--- a/pandas/core/dtypes/dtypes.py
++++ b/pandas/core/dtypes/dtypes.py
+@@ -1453,7 +1453,7 @@ class NumpyEADtype(ExtensionDtype):
+ 
+     def __init__(self, dtype: npt.DTypeLike | NumpyEADtype | None) -> None:
+         if isinstance(dtype, NumpyEADtype):
+-            # make constructor univalent
++            # make constructor idempotent
+             dtype = dtype.numpy_dtype
+         self._dtype = np.dtype(dtype)
+ 
+diff --git a/pandas/core/frame.py b/pandas/core/frame.py
+index 8ba9926c05..b63929079a 100644
+--- a/pandas/core/frame.py
++++ b/pandas/core/frame.py
+@@ -143,7 +143,6 @@ from pandas.core.arrays import (
+ from pandas.core.arrays.sparse import SparseFrameAccessor
+ from pandas.core.construction import (
+     ensure_wrapped_if_datetimelike,
+-    extract_array,
+     sanitize_array,
+     sanitize_masked_array,
+ )
+@@ -8784,11 +8783,11 @@ class DataFrame(NDFrame, OpsMixin):
+         """
+         from pandas.core.computation import expressions
+ 
+-        def combiner(x, y):
+-            mask = extract_array(isna(x))
++        def combiner(x: Series, y: Series):
++            mask = x.isna()._values
+ 
+-            x_values = extract_array(x, extract_numpy=True)
+-            y_values = extract_array(y, extract_numpy=True)
++            x_values = x._values
++            y_values = y._values
+ 
+             # If the column y in other DataFrame is not in first DataFrame,
+             # just return y_values.
+diff --git a/pandas/core/tools/datetimes.py b/pandas/core/tools/datetimes.py
+index 5ebf1e4427..05262c2355 100644
+--- a/pandas/core/tools/datetimes.py
++++ b/pandas/core/tools/datetimes.py
+@@ -1201,7 +1201,7 @@ def _assemble_from_unit_mappings(arg, errors: DateTimeErrorChoices, utc: bool):
+         values = to_numeric(values, errors=errors)
+ 
+         # prevent overflow in case of int8 or int16
+-        if is_integer_dtype(values):
++        if is_integer_dtype(values.dtype):
+             values = values.astype("int64", copy=False)
+         return values
+ 
+diff --git a/pandas/io/sas/sas7bdat.py b/pandas/io/sas/sas7bdat.py
+index 9cff06503a..331dd2d2da 100644
+--- a/pandas/io/sas/sas7bdat.py
++++ b/pandas/io/sas/sas7bdat.py
+@@ -86,7 +86,7 @@ def _convert_datetimes(sas_datetimes: pd.Series, unit: str) -> pd.Series:
+     ----------
+     sas_datetimes : {Series, Sequence[float]}
+        Dates or datetimes in SAS
+-    unit : {str}
++    unit : {'d', 's'}
+        "d" if the floats represent dates, "s" for datetimes
+ 
+     Returns
+diff --git a/pandas/io/stata.py b/pandas/io/stata.py
+index 1eb8f531dc..8e03839e17 100644
+--- a/pandas/io/stata.py
++++ b/pandas/io/stata.py
+@@ -234,9 +234,6 @@ _date_formats = ["%tc", "%tC", "%td", "%d", "%tw", "%tm", "%tq", "%th", "%ty"]
+ stata_epoch: Final = datetime(1960, 1, 1)
+ 
+ 
+-# TODO: Add typing. As of January 2020 it is not possible to type this function since
+-#  mypy doesn't understand that a Series and an int can be combined using mathematical
+-#  operations. (+, -).
+ def _stata_elapsed_date_to_datetime_vec(dates: Series, fmt: str) -> Series:
+     """
+     Convert from SIF to datetime. https://www.stata.com/help.cgi?datetime
+diff --git a/pandas/plotting/_matplotlib/core.py b/pandas/plotting/_matplotlib/core.py
+index 99314e60b7..2a1503b84a 100644
+--- a/pandas/plotting/_matplotlib/core.py
++++ b/pandas/plotting/_matplotlib/core.py
+@@ -1495,7 +1495,7 @@ class LinePlot(MPLPlot):
+         return not self.x_compat and self.use_index and self._use_dynamic_x()
+ 
+     @final
+-    def _use_dynamic_x(self):
++    def _use_dynamic_x(self) -> bool:
+         return use_dynamic_x(self._get_ax(0), self.data)
+ 
+     def _make_plot(self, fig: Figure) -> None:
+@@ -1537,7 +1537,7 @@ class LinePlot(MPLPlot):
+             errors = self._get_errorbars(label=label, index=i)
+             kwds = dict(kwds, **errors)
+ 
+-            label = pprint_thing(label)  # .encode('utf-8')
++            label = pprint_thing(label)
+             label = self._mark_right_label(label, index=i)
+             kwds["label"] = label
+ 
+diff --git a/pandas/tests/arithmetic/test_datetime64.py b/pandas/tests/arithmetic/test_datetime64.py
+index 4bd0e6c1c3..dbff88dc6f 100644
+--- a/pandas/tests/arithmetic/test_datetime64.py
++++ b/pandas/tests/arithmetic/test_datetime64.py
+@@ -1082,6 +1082,8 @@ class TestDatetime64Arithmetic:
+         self, request, dtype, index_or_series_or_array, freq, tz_naive_fixture
+     ):
+         # GH#19959, GH#19123, GH#19012
++        # GH#55860 use index_or_series_or_array instead of box_with_array
++        #  bc DataFrame alignment makes it inapplicable
+         tz = tz_naive_fixture
+ 
+         if freq is None:
+diff --git a/pandas/tests/arithmetic/test_timedelta64.py b/pandas/tests/arithmetic/test_timedelta64.py
+index 73c6b4a1b2..007d1e670e 100644
+--- a/pandas/tests/arithmetic/test_timedelta64.py
++++ b/pandas/tests/arithmetic/test_timedelta64.py
+@@ -497,6 +497,7 @@ class TestTimedelta64ArithmeticUnsorted:
+             tdi + Index([1, 2, 3], dtype=np.int64)
+ 
+         # this is a union!
++        # FIXME: don't leave commented-out
+         # pytest.raises(TypeError, lambda : Index([1,2,3]) + tdi)
+ 
+         result = tdi + dti  # name will be reset
+diff --git a/pandas/tests/arrays/numpy_/test_numpy.py b/pandas/tests/arrays/numpy_/test_numpy.py
+index 4217745e60..5112ce262f 100644
+--- a/pandas/tests/arrays/numpy_/test_numpy.py
++++ b/pandas/tests/arrays/numpy_/test_numpy.py
+@@ -87,7 +87,7 @@ def test_constructor_from_string():
+     assert result == expected
+ 
+ 
+-def test_dtype_univalent(any_numpy_dtype):
++def test_dtype_idempotent(any_numpy_dtype):
+     dtype = NumpyEADtype(any_numpy_dtype)
+ 
+     result = NumpyEADtype(dtype)
+diff --git a/pandas/tests/arrays/string_/test_string.py b/pandas/tests/arrays/string_/test_string.py
+index 1532a20126..f2f5272125 100644
+--- a/pandas/tests/arrays/string_/test_string.py
++++ b/pandas/tests/arrays/string_/test_string.py
+@@ -463,7 +463,7 @@ def test_min_max_numpy(method, box, dtype, request, arrow_string_storage):
+     assert result == expected
+ 
+ 
+-def test_fillna_args(dtype, request, arrow_string_storage):
++def test_fillna_args(dtype, arrow_string_storage):
+     # GH 37987
+ 
+     arr = pd.array(["a", pd.NA], dtype=dtype)
+diff --git a/pandas/tests/arrays/test_datetimelike.py b/pandas/tests/arrays/test_datetimelike.py
+index 25c09d9397..4fba662631 100644
+--- a/pandas/tests/arrays/test_datetimelike.py
++++ b/pandas/tests/arrays/test_datetimelike.py
+@@ -183,9 +183,7 @@ class SharedTests:
+             arr1d.take([0, 1], allow_fill=True, fill_value=fill_value)
+ 
+     def test_take_fill(self, arr1d):
+-        np.arange(10, dtype="i8") * 24 * 3600 * 10**9
+-
+-        arr = arr1d  # self.array_cls(data, freq="D")
++        arr = arr1d
+ 
+         result = arr.take([-1, 1], allow_fill=True, fill_value=None)
+         assert result[0] is NaT
+diff --git a/pandas/tests/indexes/datetimes/test_constructors.py b/pandas/tests/indexes/datetimes/test_constructors.py
+index 7396945713..15597ecad6 100644
+--- a/pandas/tests/indexes/datetimes/test_constructors.py
++++ b/pandas/tests/indexes/datetimes/test_constructors.py
+@@ -959,7 +959,7 @@ class TestDatetimeIndex:
+         for other in [idx2, idx3, idx4]:
+             tm.assert_index_equal(idx1, other)
+ 
+-    def test_dti_construction_univalent(self, unit):
++    def test_dti_construction_idempotent(self, unit):
+         rng = date_range(
+             "03/12/2012 00:00", periods=10, freq="W-FRI", tz="US/Eastern", unit=unit
+         )
+diff --git a/pandas/tests/io/parser/common/test_data_list.py b/pandas/tests/io/parser/common/test_data_list.py
+index 5c798316e2..3b0ff9e08d 100644
+--- a/pandas/tests/io/parser/common/test_data_list.py
++++ b/pandas/tests/io/parser/common/test_data_list.py
+@@ -16,10 +16,10 @@ pytestmark = pytest.mark.filterwarnings(
+     "ignore:Passing a BlockManager to DataFrame:DeprecationWarning"
+ )
+ 
+-skip_pyarrow = pytest.mark.usefixtures("pyarrow_xfail")
++xfail_pyarrow = pytest.mark.usefixtures("pyarrow_xfail")
+ 
+ 
+-@skip_pyarrow
++@xfail_pyarrow
+ def test_read_data_list(all_parsers):
+     parser = all_parsers
+     kwargs = {"index_col": 0}
+diff --git a/pandas/tests/io/sas/test_sas7bdat.py b/pandas/tests/io/sas/test_sas7bdat.py
+index 2c4fe10ea9..b71896c77f 100644
+--- a/pandas/tests/io/sas/test_sas7bdat.py
++++ b/pandas/tests/io/sas/test_sas7bdat.py
+@@ -14,6 +14,8 @@ import pandas.util._test_decorators as td
+ import pandas as pd
+ import pandas._testing as tm
+ 
++from pandas.io.sas.sas7bdat import SAS7BDATReader
++
+ 
+ @pytest.fixture
+ def dirpath(datapath):
+@@ -127,8 +129,6 @@ def test_encoding_options(datapath):
+             pass
+     tm.assert_frame_equal(df1, df2)
+ 
+-    from pandas.io.sas.sas7bdat import SAS7BDATReader
+-
+     with contextlib.closing(SAS7BDATReader(fname, convert_header_text=False)) as rdr:
+         df3 = rdr.read()
+     for x, y in zip(df1.columns, df3.columns):
+@@ -189,10 +189,9 @@ def test_date_time(datapath):
+         fname, parse_dates=["Date1", "Date2", "DateTime", "DateTimeHi", "Taiw"]
+     )
+     # GH 19732: Timestamps imported from sas will incur floating point errors
+-    # 2023-11-16 we don't know the correct "expected" result bc we do not have
+-    #  access to SAS to read the sas7bdat file. We are really just testing
+-    #  that we are "close". This only seems to be an issue near the
+-    #  implementation bounds.
++    # See GH#56014 for discussion of the correct "expected" results
++    #  We are really just testing that we are "close". This only seems to be
++    #  an issue near the implementation bounds.
+ 
+     df[df.columns[3]] = df.iloc[:, 3].dt.round("us")
+     df0["Date1"] = df0["Date1"].astype("M8[s]")
+@@ -271,6 +270,7 @@ def test_max_sas_date(datapath):
+     # NB. max datetime in SAS dataset is 31DEC9999:23:59:59.999
+     #    but this is read as 29DEC9999:23:59:59.998993 by a buggy
+     #    sas7bdat module
++    # See also GH#56014 for discussion of the correct "expected" results.
+     fname = datapath("io", "sas", "data", "max_sas_date.sas7bdat")
+     df = pd.read_sas(fname, encoding="iso-8859-1")
+ 
+diff --git a/pandas/tests/io/test_stata.py b/pandas/tests/io/test_stata.py
+index 19d81d50f5..7390094f70 100644
+--- a/pandas/tests/io/test_stata.py
++++ b/pandas/tests/io/test_stata.py
+@@ -197,6 +197,7 @@ class TestStata:
+             # datapath("io", "data", "stata", "stata2_113.dta")
+             # )
+ 
++        # FIXME: don't leave commented-out
+         # buggy test because of the NaT comparison on certain platforms
+         # Format 113 test fails since it does not support tc and tC formats
+         # tm.assert_frame_equal(parsed_113, expected)
+diff --git a/pandas/tests/tools/test_to_datetime.py b/pandas/tests/tools/test_to_datetime.py
+index de5d67e6bd..a23d2d3dc2 100644
+--- a/pandas/tests/tools/test_to_datetime.py
++++ b/pandas/tests/tools/test_to_datetime.py
+@@ -3107,7 +3107,7 @@ class TestDatetimeParsingWrappers:
+             ("Thu Sep 25 2003", datetime(2003, 9, 25)),
+             ("Sep 25 2003", datetime(2003, 9, 25)),
+             ("January 1 2014", datetime(2014, 1, 1)),
+-            # GHE10537
++            # GH#10537
+             ("2014-06", datetime(2014, 6, 1)),
+             ("06-2014", datetime(2014, 6, 1)),
+             ("2014-6", datetime(2014, 6, 1)),

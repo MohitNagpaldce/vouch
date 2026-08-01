@@ -1,0 +1,15 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "756501b65a9c88790c1947d7c39956bfc374b8e8",
+  "kind": "control_good",
+  "subject": "improve return type for QueryableAttribute.and_()",
+  "evidence_subject": "improve return type for QueryableAttribute.and_()",
+  "author": "Mike Bayer",
+  "date": "2023-04-18T09:42:50-04:00",
+  "impl_files": [
+    "lib/sqlalchemy/orm/attributes.py",
+    "test/ext/mypy/plain_files/orm_querying.py"
+  ],
+  "test_files": [],
+  "diff_lines": 70
+}

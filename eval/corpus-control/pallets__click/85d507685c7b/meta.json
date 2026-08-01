@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/click",
+  "sha": "85d507685c7b6c90079c85dfacb51bb834a519e3",
+  "kind": "control_good",
+  "subject": "Added deprecation flag to commands",
+  "evidence_subject": "Added deprecation flag to commands",
+  "author": "FooBarQuaxx",
+  "date": "2016-11-07T14:32:21+03:00",
+  "impl_files": [
+    "click/core.py"
+  ],
+  "test_files": [
+    "tests/test_commands.py"
+  ],
+  "diff_lines": 169
+}

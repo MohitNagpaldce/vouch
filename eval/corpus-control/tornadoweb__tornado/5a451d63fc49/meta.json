@@ -1,0 +1,14 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "5a451d63fc492177ce86959ef33cd70394517c19",
+  "kind": "control_good",
+  "subject": "websocket: Avoid calling convert_yielded twice on the same object",
+  "evidence_subject": "websocket: Avoid calling convert_yielded twice on the same object",
+  "author": "Ben Darnell",
+  "date": "2017-03-26T11:12:37-04:00",
+  "impl_files": [
+    "tornado/websocket.py"
+  ],
+  "test_files": [],
+  "diff_lines": 25
+}

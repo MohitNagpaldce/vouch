@@ -1,0 +1,21 @@
+diff --git a/CHANGES/9796.misc.rst b/CHANGES/9796.misc.rst
+new file mode 100644
+index 00000000..8cf4d621
+--- /dev/null
++++ b/CHANGES/9796.misc.rst
+@@ -0,0 +1 @@
++Improved performance of the ``WebsocketWriter`` when the protocol is not paused -- by :user:`bdraco`.
+diff --git a/aiohttp/_websocket/writer.py b/aiohttp/_websocket/writer.py
+index e49b6224..4935690f 100644
+--- a/aiohttp/_websocket/writer.py
++++ b/aiohttp/_websocket/writer.py
+@@ -155,7 +155,8 @@ class WebSocketWriter:
+         # if the writer is not paused.
+         if self._output_size > self._limit:
+             self._output_size = 0
+-            await self.protocol._drain_helper()
++            if self.protocol._paused:
++                await self.protocol._drain_helper()
+ 
+     def _make_compress_obj(self, compress: int) -> ZLibCompressor:
+         return ZLibCompressor(

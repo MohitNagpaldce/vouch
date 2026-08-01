@@ -1,0 +1,16 @@
+{
+  "repo": "psf/requests",
+  "sha": "512beb8795f49ed474e3d679dda9524853853378",
+  "kind": "control_good",
+  "subject": "Response and Request objects are pickleable.",
+  "evidence_subject": "Response and Request objects are pickleable.",
+  "author": "Eric Larson",
+  "date": "2013-11-06T20:01:27-06:00",
+  "impl_files": [
+    "requests/models.py"
+  ],
+  "test_files": [
+    "test_requests.py"
+  ],
+  "diff_lines": 81
+}

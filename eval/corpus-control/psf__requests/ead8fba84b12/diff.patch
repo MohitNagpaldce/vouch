@@ -1,0 +1,147 @@
+diff --git a/requests/api.py b/requests/api.py
+index 687ed447..7430474f 100644
+--- a/requests/api.py
++++ b/requests/api.py
+@@ -59,7 +59,7 @@ def request(method, url, **kwargs):
+ 
+ 
+ def get(url, params=None, **kwargs):
+-    """Sends a GET request.
++    r"""Sends a GET request.
+ 
+     :param url: URL for the new :class:`Request` object.
+     :param params: (optional) Dictionary or bytes to be sent in the query string for the :class:`Request`.
+@@ -73,7 +73,7 @@ def get(url, params=None, **kwargs):
+ 
+ 
+ def options(url, **kwargs):
+-    """Sends a OPTIONS request.
++    r"""Sends a OPTIONS request.
+ 
+     :param url: URL for the new :class:`Request` object.
+     :param \*\*kwargs: Optional arguments that ``request`` takes.
+@@ -86,7 +86,7 @@ def options(url, **kwargs):
+ 
+ 
+ def head(url, **kwargs):
+-    """Sends a HEAD request.
++    r"""Sends a HEAD request.
+ 
+     :param url: URL for the new :class:`Request` object.
+     :param \*\*kwargs: Optional arguments that ``request`` takes.
+@@ -99,7 +99,7 @@ def head(url, **kwargs):
+ 
+ 
+ def post(url, data=None, json=None, **kwargs):
+-    """Sends a POST request.
++    r"""Sends a POST request.
+ 
+     :param url: URL for the new :class:`Request` object.
+     :param data: (optional) Dictionary (will be form-encoded), bytes, or file-like object to send in the body of the :class:`Request`.
+@@ -113,7 +113,7 @@ def post(url, data=None, json=None, **kwargs):
+ 
+ 
+ def put(url, data=None, **kwargs):
+-    """Sends a PUT request.
++    r"""Sends a PUT request.
+ 
+     :param url: URL for the new :class:`Request` object.
+     :param data: (optional) Dictionary (will be form-encoded), bytes, or file-like object to send in the body of the :class:`Request`.
+@@ -127,7 +127,7 @@ def put(url, data=None, **kwargs):
+ 
+ 
+ def patch(url, data=None, **kwargs):
+-    """Sends a PATCH request.
++    r"""Sends a PATCH request.
+ 
+     :param url: URL for the new :class:`Request` object.
+     :param data: (optional) Dictionary (will be form-encoded), bytes, or file-like object to send in the body of the :class:`Request`.
+@@ -141,7 +141,7 @@ def patch(url, data=None, **kwargs):
+ 
+ 
+ def delete(url, **kwargs):
+-    """Sends a DELETE request.
++    r"""Sends a DELETE request.
+ 
+     :param url: URL for the new :class:`Request` object.
+     :param \*\*kwargs: Optional arguments that ``request`` takes.
+diff --git a/requests/models.py b/requests/models.py
+index 01b60afe..c9d517e9 100644
+--- a/requests/models.py
++++ b/requests/models.py
+@@ -859,7 +859,7 @@ class Response(object):
+         return content
+ 
+     def json(self, **kwargs):
+-        """Returns the json-encoded content of a response, if any.
++        r"""Returns the json-encoded content of a response, if any.
+ 
+         :param \*\*kwargs: Optional arguments that ``json.loads`` takes.
+         :raises ValueError: If the response body does not contain valid json.
+diff --git a/requests/sessions.py b/requests/sessions.py
+index 47ad9fae..9ad8d84c 100644
+--- a/requests/sessions.py
++++ b/requests/sessions.py
+@@ -500,7 +500,7 @@ class Session(SessionRedirectMixin):
+         return resp
+ 
+     def get(self, url, **kwargs):
+-        """Sends a GET request. Returns :class:`Response` object.
++        r"""Sends a GET request. Returns :class:`Response` object.
+ 
+         :param url: URL for the new :class:`Request` object.
+         :param \*\*kwargs: Optional arguments that ``request`` takes.
+@@ -511,7 +511,7 @@ class Session(SessionRedirectMixin):
+         return self.request('GET', url, **kwargs)
+ 
+     def options(self, url, **kwargs):
+-        """Sends a OPTIONS request. Returns :class:`Response` object.
++        r"""Sends a OPTIONS request. Returns :class:`Response` object.
+ 
+         :param url: URL for the new :class:`Request` object.
+         :param \*\*kwargs: Optional arguments that ``request`` takes.
+@@ -522,7 +522,7 @@ class Session(SessionRedirectMixin):
+         return self.request('OPTIONS', url, **kwargs)
+ 
+     def head(self, url, **kwargs):
+-        """Sends a HEAD request. Returns :class:`Response` object.
++        r"""Sends a HEAD request. Returns :class:`Response` object.
+ 
+         :param url: URL for the new :class:`Request` object.
+         :param \*\*kwargs: Optional arguments that ``request`` takes.
+@@ -533,7 +533,7 @@ class Session(SessionRedirectMixin):
+         return self.request('HEAD', url, **kwargs)
+ 
+     def post(self, url, data=None, json=None, **kwargs):
+-        """Sends a POST request. Returns :class:`Response` object.
++        r"""Sends a POST request. Returns :class:`Response` object.
+ 
+         :param url: URL for the new :class:`Request` object.
+         :param data: (optional) Dictionary, bytes, or file-like object to send in the body of the :class:`Request`.
+@@ -545,7 +545,7 @@ class Session(SessionRedirectMixin):
+         return self.request('POST', url, data=data, json=json, **kwargs)
+ 
+     def put(self, url, data=None, **kwargs):
+-        """Sends a PUT request. Returns :class:`Response` object.
++        r"""Sends a PUT request. Returns :class:`Response` object.
+ 
+         :param url: URL for the new :class:`Request` object.
+         :param data: (optional) Dictionary, bytes, or file-like object to send in the body of the :class:`Request`.
+@@ -556,7 +556,7 @@ class Session(SessionRedirectMixin):
+         return self.request('PUT', url, data=data, **kwargs)
+ 
+     def patch(self, url, data=None, **kwargs):
+-        """Sends a PATCH request. Returns :class:`Response` object.
++        r"""Sends a PATCH request. Returns :class:`Response` object.
+ 
+         :param url: URL for the new :class:`Request` object.
+         :param data: (optional) Dictionary, bytes, or file-like object to send in the body of the :class:`Request`.
+@@ -567,7 +567,7 @@ class Session(SessionRedirectMixin):
+         return self.request('PATCH', url,  data=data, **kwargs)
+ 
+     def delete(self, url, **kwargs):
+-        """Sends a DELETE request. Returns :class:`Response` object.
++        r"""Sends a DELETE request. Returns :class:`Response` object.
+ 
+         :param url: URL for the new :class:`Request` object.
+         :param \*\*kwargs: Optional arguments that ``request`` takes.

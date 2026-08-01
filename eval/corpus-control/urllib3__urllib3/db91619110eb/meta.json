@@ -1,0 +1,14 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "db91619110ebf43ef74be24ce13c39e5d6e18b9a",
+  "kind": "control_good",
+  "subject": "Skip coverage of AttributeError exception in HTTPConnectionPool._get_conn()",
+  "evidence_subject": "Skip coverage of AttributeError exception in HTTPConnectionPool._get_conn()",
+  "author": "Hasan Ramezani",
+  "date": "2021-06-04T00:18:36+02:00",
+  "impl_files": [
+    "src/urllib3/connectionpool.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

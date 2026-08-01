@@ -1,0 +1,13 @@
+diff --git a/numpy/_array_api/_array_object.py b/numpy/_array_api/_array_object.py
+index 7b5531b9b..6e451ab7a 100644
+--- a/numpy/_array_api/_array_object.py
++++ b/numpy/_array_api/_array_object.py
+@@ -320,6 +320,8 @@ def _validate_index(key, shape):
+                     if len(key) == 1:
+                         return key
+                     raise IndexError("Boolean array indices combined with other indices are not allowed in the array API namespace")
++                if isinstance(idx, tuple):
++                    raise IndexError("Nested tuple indices are not allowed in the array API namespace")
+ 
+             if shape is None:
+                 return key

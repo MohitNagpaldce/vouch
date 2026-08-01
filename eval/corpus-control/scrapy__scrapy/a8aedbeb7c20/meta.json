@@ -1,0 +1,15 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "a8aedbeb7c20c7e2ec041e49d1567a499cd3acdb",
+  "kind": "control_good",
+  "subject": "chore: rearrange imports",
+  "evidence_subject": "chore: rearrange imports",
+  "author": "Aditya",
+  "date": "2020-08-29T12:12:18+05:30",
+  "impl_files": [
+    "scrapy/core/http2/protocol.py",
+    "scrapy/core/http2/stream.py"
+  ],
+  "test_files": [],
+  "diff_lines": 41
+}

@@ -1,0 +1,313 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 7429e5e..548ac13 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -110,6 +110,7 @@ Unreleased
+ -   Extra context settings (``obj=...``, etc.) are passed on to the
+     completion system. :issue:`942`
+ -   Include ``--help`` option in completion. :pr:`1504`
++-   ``ParameterSource`` is an ``enum.Enum`` subclass. :issue:`1530`
+ 
+ 
+ Version 7.1.2
+diff --git a/docs/advanced.rst b/docs/advanced.rst
+index e1ffcad..3ea5a15 100644
+--- a/docs/advanced.rst
++++ b/docs/advanced.rst
+@@ -386,8 +386,10 @@ Detecting the Source of a Parameter
+ 
+ In some situations it's helpful to understand whether or not an option
+ or parameter came from the command line, the environment, the default
+-value, or the default_map. The :meth:`Context.get_parameter_source`
+-method can be used to find this out.
++value, or :attr:`Context.default_map`. The
++:meth:`Context.get_parameter_source` method can be used to find this
++out. It will return a member of the :class:`~click.core.ParameterSource`
++enum.
+ 
+ .. click:example::
+ 
+@@ -396,7 +398,7 @@ method can be used to find this out.
+     @click.pass_context
+     def cli(ctx, port):
+         source = ctx.get_parameter_source("port")
+-        click.echo(f"Port came from {source}")
++        click.echo(f"Port came from {source.name}")
+ 
+ .. click:run::
+ 
+diff --git a/docs/api.rst b/docs/api.rst
+index dfc1445..59d38d9 100644
+--- a/docs/api.rst
++++ b/docs/api.rst
+@@ -108,6 +108,11 @@ Context
+ 
+ .. autofunction:: get_current_context
+ 
++.. autoclass:: click.core.ParameterSource
++    :members:
++    :member-order: bysource
++
++
+ Types
+ -----
+ 
+diff --git a/src/click/core.py b/src/click/core.py
+index 3a24f44..fae95db 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -1,3 +1,4 @@
++import enum
+ import errno
+ import inspect
+ import os
+@@ -132,36 +133,25 @@ def iter_params_for_processing(invocation_order, declaration_order):
+     return sorted(declaration_order, key=sort_key)
+ 
+ 
+-class ParameterSource:
+-    """This is an enum that indicates the source of a command line parameter.
++class ParameterSource(enum.Enum):
++    """This is an :class:`~enum.Enum` that indicates the source of a
++    parameter's value.
+ 
+-    The enum has one of the following values: COMMANDLINE,
+-    ENVIRONMENT, DEFAULT, DEFAULT_MAP.  The DEFAULT indicates that the
+-    default value in the decorator was used.  This class should be
+-    converted to an enum when Python 2 support is dropped.
+-    """
+-
+-    COMMANDLINE = "COMMANDLINE"
+-    ENVIRONMENT = "ENVIRONMENT"
+-    DEFAULT = "DEFAULT"
+-    DEFAULT_MAP = "DEFAULT_MAP"
++    Use :meth:`click.Context.get_parameter_source` to get the
++    source for a parameter by name.
+ 
+-    VALUES = {COMMANDLINE, ENVIRONMENT, DEFAULT, DEFAULT_MAP}
+-
+-    @classmethod
+-    def validate(cls, value):
+-        """Validate that the specified value is a valid enum.
++    .. versionchanged:: 8.0
++        Use :class:`~enum.Enum` and drop the ``validate`` method.
++    """
+ 
+-        This method will raise a ValueError if the value is
+-        not a valid enum.
+-
+-        :param value: the string value to verify
+-        """
+-        if value not in cls.VALUES:
+-            raise ValueError(
+-                f"Invalid ParameterSource value: {value!r}. Valid"
+-                f" values are: {','.join(cls.VALUES)}"
+-            )
++    COMMANDLINE = enum.auto()
++    """The value was provided by the command line args."""
++    ENVIRONMENT = enum.auto()
++    """The value was provided with an environment variable."""
++    DEFAULT = enum.auto()
++    """Used the default specified by the parameter."""
++    DEFAULT_MAP = enum.auto()
++    """Used a default provided by :attr:`Context.default_map`."""
+ 
+ 
+ class Context:
+@@ -417,7 +407,7 @@ class Context:
+ 
+         self._close_callbacks = []
+         self._depth = 0
+-        self._source_by_paramname = {}
++        self._parameter_source = {}
+         self._exit_stack = ExitStack()
+ 
+     def to_info_dict(self):
+@@ -728,33 +718,27 @@ class Context:
+         return self.invoke(cmd, **kwargs)
+ 
+     def set_parameter_source(self, name, source):
+-        """Set the source of a parameter.
+-
+-        This indicates the location from which the value of the
+-        parameter was obtained.
++        """Set the source of a parameter. This indicates the location
++        from which the value of the parameter was obtained.
+ 
+-        :param name: the name of the command line parameter
+-        :param source: the source of the command line parameter, which
+-                       should be a valid ParameterSource value
++        :param name: The name of the parameter.
++        :param source: A member of :class:`~click.core.ParameterSource`.
+         """
+-        ParameterSource.validate(source)
+-        self._source_by_paramname[name] = source
++        self._parameter_source[name] = source
+ 
+     def get_parameter_source(self, name):
+-        """Get the source of a parameter.
++        """Get the source of a parameter. This indicates the location
++        from which the value of the parameter was obtained.
+ 
+-        This indicates the location from which the value of the
+-        parameter was obtained.  This can be useful for determining
+-        when a user specified an option on the command line that is
+-        the same as the default.  In that case, the source would be
+-        ParameterSource.COMMANDLINE, even though the value of the
+-        parameter was equivalent to the default.
++        This can be useful for determining when a user specified a value
++        on the command line that is the same as the default value. It
++        will be :attr:`~click.core.ParameterSource.DEFAULT` only if the
++        value was actually taken from the default.
+ 
+-        :param name: the name of the command line parameter
+-        :returns: the source
++        :param name: The name of the parameter.
+         :rtype: ParameterSource
+         """
+-        return self._source_by_paramname[name]
++        return self._parameter_source[name]
+ 
+ 
+ class BaseCommand:
+@@ -1933,14 +1917,18 @@ class Parameter:
+     def consume_value(self, ctx, opts):
+         value = opts.get(self.name)
+         source = ParameterSource.COMMANDLINE
++
+         if value is None:
+             value = self.value_from_envvar(ctx)
+             source = ParameterSource.ENVIRONMENT
++
+         if value is None:
+             value = ctx.lookup_default(self.name)
+             source = ParameterSource.DEFAULT_MAP
++
+         if value is not None:
+             ctx.set_parameter_source(self.name, source)
++
+         return value
+ 
+     def type_cast_value(self, ctx, value):
+diff --git a/tests/test_context.py b/tests/test_context.py
+index bfccb85..c6aee3c 100644
+--- a/tests/test_context.py
++++ b/tests/test_context.py
+@@ -297,63 +297,48 @@ def test_exit_not_standalone():
+     assert cli.main([], "test_exit_not_standalone", standalone_mode=False) == 0
+ 
+ 
+-def test_parameter_source_default(runner):
++@pytest.mark.parametrize(
++    ("option_args", "invoke_args", "expect"),
++    [
++        pytest.param({}, {}, ParameterSource.DEFAULT, id="default"),
++        pytest.param(
++            {},
++            {"default_map": {"option": 1}},
++            ParameterSource.DEFAULT_MAP,
++            id="default_map",
++        ),
++        pytest.param(
++            {},
++            {"args": ["-o", "1"]},
++            ParameterSource.COMMANDLINE,
++            id="commandline short",
++        ),
++        pytest.param(
++            {},
++            {"args": ["--option", "1"]},
++            ParameterSource.COMMANDLINE,
++            id="commandline long",
++        ),
++        pytest.param(
++            {},
++            {"auto_envvar_prefix": "TEST", "env": {"TEST_OPTION": "1"}},
++            ParameterSource.ENVIRONMENT,
++            id="environment auto",
++        ),
++        pytest.param(
++            {"envvar": "NAME"},
++            {"env": {"NAME": "1"}},
++            ParameterSource.ENVIRONMENT,
++            id="environment manual",
++        ),
++    ],
++)
++def test_parameter_source(runner, option_args, invoke_args, expect):
+     @click.command()
+     @click.pass_context
+-    @click.option("-o", "--option", default=1)
++    @click.option("-o", "--option", default=1, **option_args)
+     def cli(ctx, option):
+-        click.echo(ctx.get_parameter_source("option"))
++        return ctx.get_parameter_source("option")
+ 
+-    rv = runner.invoke(cli)
+-    assert rv.output.rstrip() == ParameterSource.DEFAULT
+-
+-
+-def test_parameter_source_default_map(runner):
+-    @click.command()
+-    @click.pass_context
+-    @click.option("-o", "--option", default=1)
+-    def cli(ctx, option):
+-        click.echo(ctx.get_parameter_source("option"))
+-
+-    rv = runner.invoke(cli, default_map={"option": 1})
+-    assert rv.output.rstrip() == ParameterSource.DEFAULT_MAP
+-
+-
+-def test_parameter_source_commandline(runner):
+-    @click.command()
+-    @click.pass_context
+-    @click.option("-o", "--option", default=1)
+-    def cli(ctx, option):
+-        click.echo(ctx.get_parameter_source("option"))
+-
+-    rv = runner.invoke(cli, ["-o", "1"])
+-    assert rv.output.rstrip() == ParameterSource.COMMANDLINE
+-    rv = runner.invoke(cli, ["--option", "1"])
+-    assert rv.output.rstrip() == ParameterSource.COMMANDLINE
+-
+-
+-def test_parameter_source_environment(runner):
+-    @click.command()
+-    @click.pass_context
+-    @click.option("-o", "--option", default=1)
+-    def cli(ctx, option):
+-        click.echo(ctx.get_parameter_source("option"))
+-
+-    rv = runner.invoke(cli, auto_envvar_prefix="TEST", env={"TEST_OPTION": "1"})
+-    assert rv.output.rstrip() == ParameterSource.ENVIRONMENT
+-
+-
+-def test_parameter_source_environment_variable_specified(runner):
+-    @click.command()
+-    @click.pass_context
+-    @click.option("-o", "--option", default=1, envvar="NAME")
+-    def cli(ctx, option):
+-        click.echo(ctx.get_parameter_source("option"))
+-
+-    rv = runner.invoke(cli, env={"NAME": "1"})
+-    assert rv.output.rstrip() == ParameterSource.ENVIRONMENT
+-
+-
+-def test_validate_parameter_source():
+-    with pytest.raises(ValueError):
+-        ParameterSource.validate("NOT_A_VALID_PARAMETER_SOURCE")
++    rv = runner.invoke(cli, standalone_mode=False, **invoke_args)
++    assert rv.return_value == expect
+diff --git a/tests/test_imports.py b/tests/test_imports.py
+index 993dbfd..54d9559 100644
+--- a/tests/test_imports.py
++++ b/tests/test_imports.py
+@@ -45,7 +45,7 @@ ALLOWED_IMPORTS = {
+     "errno",
+     "fcntl",
+     "datetime",
+-    "pipes",
++    "enum",
+ }
+ 
+ if WIN:

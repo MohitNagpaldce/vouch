@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/click",
+  "sha": "206976869afe314646c9adbd243dd6108ba434ba",
+  "kind": "control_good",
+  "subject": "Don't arbitrarily strip an argument from make_pass_decorator",
+  "evidence_subject": "Don't arbitrarily strip an argument from make_pass_decorator",
+  "author": "Eric L Frederich",
+  "date": "2017-05-15T09:55:33-04:00",
+  "impl_files": [
+    "click/decorators.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

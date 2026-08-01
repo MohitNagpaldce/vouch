@@ -1,0 +1,14 @@
+{
+  "repo": "psf/black",
+  "sha": "24418a54501381e1cdbe0ab1de4e4ced7537c124",
+  "kind": "control_good",
+  "subject": "Black requires Python 3.6.2+ (#1668)",
+  "evidence_subject": "Black requires Python 3.6.2+ (#1668)",
+  "author": "Hugo van Kemenade",
+  "date": "2021-03-04T15:59:31+02:00",
+  "impl_files": [
+    "setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 52
+}

@@ -1,0 +1,16 @@
+{
+  "repo": "psf/black",
+  "sha": "966baaacbc24a4affa88ea5bb0b5a44b0f52fe2f",
+  "kind": "control_good",
+  "subject": "Only require typing-extensions if Python < 3.8 (#1873)",
+  "evidence_subject": "Only require typing-extensions if Python < 3.8 (#1873)",
+  "author": "Taneli Hukkinen",
+  "date": "2021-01-03T17:14:59+01:00",
+  "impl_files": [
+    "setup.py",
+    "src/black/__init__.py",
+    "src/blib2to3/pgen2/token.py"
+  ],
+  "test_files": [],
+  "diff_lines": 222
+}

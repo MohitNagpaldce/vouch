@@ -1,0 +1,103 @@
+diff --git a/pydantic/_internal/_known_annotated_metadata.py b/pydantic/_internal/_known_annotated_metadata.py
+index 5c2edc9a0..0f1274090 100644
+--- a/pydantic/_internal/_known_annotated_metadata.py
++++ b/pydantic/_internal/_known_annotated_metadata.py
+@@ -5,7 +5,7 @@ from copy import copy
+ from functools import lru_cache, partial
+ from typing import TYPE_CHECKING, Any, Callable, Iterable
+ 
+-from pydantic_core import CoreSchema, PydanticCustomError, to_jsonable_python
++from pydantic_core import CoreSchema, PydanticCustomError, ValidationError, to_jsonable_python
+ from pydantic_core import core_schema as cs
+ 
+ from ._fields import PydanticMetadata
+@@ -239,7 +239,30 @@ def apply_known_metadata(annotation: Any, schema: CoreSchema) -> CoreSchema | No
+ 
+         #  else, apply a function after validator to the schema to enforce the corresponding constraint
+         if constraint in chain_schema_constraints:
+-            chain_schema_steps.append(cs.str_schema(**{constraint: value}))
++
++            def _apply_constraint_with_incompatibility_info(
++                value: Any, handler: cs.ValidatorFunctionWrapHandler
++            ) -> Any:
++                try:
++                    x = handler(value)
++                except ValidationError as ve:
++                    # if the error is about the type, it's likely that the constraint is incompatible the type of the field
++                    # for example, the following invalid schema wouldn't be caught during schema build, but rather at this point
++                    # with a cryptic 'string_type' error coming from the string validator,
++                    # that we'd rather express as a constraint incompatibility error (TypeError)
++                    # Annotated[list[int], Field(pattern='abc')]
++                    if 'type' in ve.errors()[0]['type']:
++                        raise TypeError(
++                            f"Unable to apply constraint '{constraint}' to supplied value {value} for schema of type '{schema_type}'"  # noqa: B023
++                        )
++                    raise ve
++                return x
++
++            chain_schema_steps.append(
++                cs.no_info_wrap_validator_function(
++                    _apply_constraint_with_incompatibility_info, cs.str_schema(**{constraint: value})
++                )
++            )
+         elif constraint in {*NUMERIC_CONSTRAINTS, *LENGTH_CONSTRAINTS}:
+             if constraint in NUMERIC_CONSTRAINTS:
+                 json_schema_constraint = constraint
+diff --git a/tests/test_annotated.py b/tests/test_annotated.py
+index c18cebbbf..fec98002a 100644
+--- a/tests/test_annotated.py
++++ b/tests/test_annotated.py
+@@ -9,7 +9,15 @@ from annotated_types import BaseMetadata, GroupedMetadata, Gt, Lt, Predicate
+ from pydantic_core import CoreSchema, PydanticUndefined, core_schema
+ from typing_extensions import Annotated
+ 
+-from pydantic import BaseModel, Field, GetCoreSchemaHandler, PydanticUserError, TypeAdapter, ValidationError
++from pydantic import (
++    BaseModel,
++    BeforeValidator,
++    Field,
++    GetCoreSchemaHandler,
++    PydanticUserError,
++    TypeAdapter,
++    ValidationError,
++)
+ from pydantic.errors import PydanticSchemaGenerationError
+ from pydantic.fields import PrivateAttr
+ from pydantic.functional_validators import AfterValidator
+@@ -600,3 +608,16 @@ def test_utcoffset_validator_example_pattern() -> None:
+     ta = TypeAdapter(Annotated[dt.datetime, MyDatetimeValidator(0, 4)])
+     with pytest.raises(Exception):
+         ta.validate_python(dt.datetime.now(pytz.timezone(LA)))
++
++
++def test_incompatible_metadata_error() -> None:
++    ta = TypeAdapter(Annotated[List[int], Field(pattern='abc')])
++    with pytest.raises(TypeError, match="Unable to apply constraint 'pattern'"):
++        ta.validate_python([1, 2, 3])
++
++
++def test_compatible_metadata_raises_correct_validation_error() -> None:
++    """Using a no-op before validator to ensure that constraint is applied as part of a chain."""
++    ta = TypeAdapter(Annotated[str, BeforeValidator(lambda x: x), Field(pattern='abc')])
++    with pytest.raises(ValidationError, match="String should match pattern 'abc'"):
++        ta.validate_python('def')
+diff --git a/tests/test_types.py b/tests/test_types.py
+index ff030da1a..47a3adc78 100644
+--- a/tests/test_types.py
++++ b/tests/test_types.py
+@@ -1802,14 +1802,7 @@ def test_enum_with_no_cases() -> None:
+ @pytest.mark.parametrize(
+     'kwargs,type_,a',
+     [
+-        pytest.param(
+-            {'pattern': '^foo$'},
+-            int,
+-            1,
+-            marks=pytest.mark.xfail(
+-                reason='int cannot be used with pattern but we do not currently validate that at schema build time'
+-            ),
+-        ),
++        ({'pattern': '^foo$'}, int, 1),
+         ({'gt': 0}, conlist(int, min_length=4), [1, 2, 3, 4, 5]),
+         ({'gt': 0}, conset(int, min_length=4), {1, 2, 3, 4, 5}),
+         ({'gt': 0}, confrozenset(int, min_length=4), frozenset({1, 2, 3, 4, 5})),

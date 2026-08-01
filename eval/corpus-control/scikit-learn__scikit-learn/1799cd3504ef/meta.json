@@ -1,0 +1,16 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "1799cd3504ef6f74106dab8791679ed7da43f3db",
+  "kind": "control_good",
+  "subject": "MAINT Clean-up deprecated verbose param in SimpleImputer (#26474)",
+  "evidence_subject": "MAINT Clean-up deprecated verbose param in SimpleImputer (#26474)",
+  "author": "J\u00e9r\u00e9mie du Boisberranger",
+  "date": "2023-06-01T09:47:51+02:00",
+  "impl_files": [
+    "sklearn/impute/_base.py"
+  ],
+  "test_files": [
+    "sklearn/impute/tests/test_impute.py"
+  ],
+  "diff_lines": 123
+}

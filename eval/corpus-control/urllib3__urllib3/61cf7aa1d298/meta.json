@@ -1,0 +1,16 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "61cf7aa1d298c06919cf0c37d5d02f5837ae67a3",
+  "kind": "control_good",
+  "subject": "Fix wait_for_io tests",
+  "evidence_subject": "Fix wait_for_io tests",
+  "author": "Seth Michael Larson",
+  "date": "2017-03-13T10:30:42-05:00",
+  "impl_files": [
+    "urllib3/util/selectors.py"
+  ],
+  "test_files": [
+    "test/test_selectors.py"
+  ],
+  "diff_lines": 195
+}

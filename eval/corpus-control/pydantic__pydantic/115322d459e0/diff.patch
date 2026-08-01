@@ -1,0 +1,39 @@
+diff --git a/pydantic/_internal/_validate_call.py b/pydantic/_internal/_validate_call.py
+index 3f1aadaf0..cb320ce91 100644
+--- a/pydantic/_internal/_validate_call.py
++++ b/pydantic/_internal/_validate_call.py
+@@ -118,6 +118,11 @@ class ValidateCallWrapper:
+     def __get__(self, obj: Any, objtype: type[Any] | None = None) -> ValidateCallWrapper:
+         """Bind the raw function and return another ValidateCallWrapper wrapping that."""
+         if obj is None:
++            # It's possible this wrapper is dynamically applied to a class attribute not allowing
++            # name to be populated by __set_name__. In this case, we'll manually acquire the name
++            # from the function reference.
++            if self._name is None:
++                self._name = self.raw_function.__name__
+             try:
+                 # Handle the case where a method is accessed as a class attribute
+                 return objtype.__getattribute__(objtype, self._name)  # type: ignore
+diff --git a/tests/test_validate_call.py b/tests/test_validate_call.py
+index b28ae1b07..487efc3ab 100644
+--- a/tests/test_validate_call.py
++++ b/tests/test_validate_call.py
+@@ -684,6 +684,18 @@ def test_basemodel_method():
+     assert bar.test('1') == (bar, 1)
+ 
+ 
++def test_dynamic_method_decoration():
++    class Foo:
++        def bar(self, value: str) -> str:
++            return f'bar-{value}'
++
++    Foo.bar = validate_call(Foo.bar)
++    assert Foo.bar
++
++    foo = Foo()
++    assert foo.bar('test') == 'bar-test'
++
++
+ @pytest.mark.parametrize('decorator', [staticmethod, classmethod])
+ def test_classmethod_order_error(decorator):
+     name = decorator.__name__

@@ -1,0 +1,15 @@
+{
+  "repo": "psf/requests",
+  "sha": "6e1db21733214e4d6707b0bc91b80499d4e946db",
+  "kind": "control_good",
+  "subject": "fix #2247",
+  "evidence_subject": "fix #2247",
+  "author": "Thomas Wei\u00dfschuh",
+  "date": "2014-09-25T19:47:56Z",
+  "impl_files": [
+    "requests/adapters.py",
+    "requests/utils.py"
+  ],
+  "test_files": [],
+  "diff_lines": 45
+}

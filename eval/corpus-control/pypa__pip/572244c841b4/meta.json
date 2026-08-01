@@ -1,0 +1,16 @@
+{
+  "repo": "pypa/pip",
+  "sha": "572244c841b47db8f1ab4a6658d4b1dee0139c6c",
+  "kind": "control_good",
+  "subject": "Add `pip_editable_parts` pytest fixture",
+  "evidence_subject": "Add `pip_editable_parts` pytest fixture",
+  "author": "chrysle",
+  "date": "2024-02-29T18:03:34+01:00",
+  "impl_files": [
+    "noxfile.py"
+  ],
+  "test_files": [
+    "tests/conftest.py"
+  ],
+  "diff_lines": 97
+}

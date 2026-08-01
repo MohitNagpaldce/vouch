@@ -1,0 +1,14 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "f1a1de22579c11fd1e4301e0c6648ae46a74a1d3",
+  "kind": "control_good",
+  "subject": "Use manual trigger to prepare release PRs (#8150)",
+  "evidence_subject": "Use manual trigger to prepare release PRs (#8150)",
+  "author": "Bruno Oliveira",
+  "date": "2020-12-16T07:50:02-03:00",
+  "impl_files": [
+    "scripts/prepare-release-pr.py"
+  ],
+  "test_files": [],
+  "diff_lines": 223
+}

@@ -1,0 +1,38 @@
+diff --git a/src/flask/scaffold.py b/src/flask/scaffold.py
+index 573d7103..735c142c 100644
+--- a/src/flask/scaffold.py
++++ b/src/flask/scaffold.py
+@@ -630,7 +630,7 @@ class Scaffold:
+         """
+ 
+         def decorator(f):
+-            self._register_error_handler(None, code_or_exception, f)
++            self.register_error_handler(code_or_exception, f)
+             return f
+ 
+         return decorator
+@@ -643,15 +643,6 @@ class Scaffold:
+ 
+         .. versionadded:: 0.7
+         """
+-        self._register_error_handler(None, code_or_exception, f)
+-
+-    @setupmethod
+-    def _register_error_handler(self, key, code_or_exception, f):
+-        """
+-        :type key: None|str
+-        :type code_or_exception: int|T<=Exception
+-        :type f: callable
+-        """
+         if isinstance(code_or_exception, HTTPException):  # old broken behavior
+             raise ValueError(
+                 "Tried to register a handler for an exception instance"
+@@ -668,7 +659,7 @@ class Scaffold:
+                 " instead."
+             )
+ 
+-        self.error_handler_spec[key][code][exc_class] = f
++        self.error_handler_spec[None][code][exc_class] = f
+ 
+     @staticmethod
+     def _get_exc_class_and_code(exc_class_or_code):

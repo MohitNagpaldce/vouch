@@ -1,0 +1,16 @@
+{
+  "repo": "psf/black",
+  "sha": "59acf8af38a72e57b26d739adb5d5e7f350e8f2c",
+  "kind": "control_good",
+  "subject": "Add passing 3.11 CI by exempting blackd tests (#3234)",
+  "evidence_subject": "Add passing 3.11 CI by exempting blackd tests (#3234)",
+  "author": "Cooper Lees",
+  "date": "2022-08-22T20:39:48-07:00",
+  "impl_files": [
+    "setup.py"
+  ],
+  "test_files": [
+    "tests/test_blackd.py"
+  ],
+  "diff_lines": 529
+}

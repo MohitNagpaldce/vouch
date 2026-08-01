@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/click",
+  "sha": "c99e0e8baf7012df214147dc4aa92c51f3cd6edf",
+  "kind": "control_good",
+  "subject": "Include --help option in completion (#1504)",
+  "evidence_subject": "Include --help option in completion (#1504)",
+  "author": "Sebasti\u00e1n Ram\u00edrez",
+  "date": "2020-06-06T02:02:08+02:00",
+  "impl_files": [
+    "src/click/_bashcomplete.py"
+  ],
+  "test_files": [
+    "tests/test_bashcomplete.py"
+  ],
+  "diff_lines": 225
+}

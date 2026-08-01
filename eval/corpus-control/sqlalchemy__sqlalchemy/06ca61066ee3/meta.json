@@ -1,0 +1,14 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "06ca61066ee312a5198cf1db869f388255212559",
+  "kind": "control_good",
+  "subject": "Include operators in postgres JSONB documentation (#11828)",
+  "evidence_subject": "Include operators in postgres JSONB documentation (#11828)",
+  "author": "Jimmy AUDEBERT",
+  "date": "2024-09-04T19:23:53+02:00",
+  "impl_files": [
+    "lib/sqlalchemy/dialects/postgresql/json.py"
+  ],
+  "test_files": [],
+  "diff_lines": 75
+}

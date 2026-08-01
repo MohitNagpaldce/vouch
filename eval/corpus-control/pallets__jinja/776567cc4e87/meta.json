@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "776567cc4e87f26ad57b52bb16c5462a281b4ca3",
+  "kind": "control_good",
+  "subject": "Fixed loop.last to not consume the entire iterator to determine if this is the last iteration of the loop.",
+  "evidence_subject": "Fixed loop.last to not consume the entire iterator to determine if this is the last iteration of the loop.",
+  "author": "Jason Kotenko",
+  "date": "2012-01-24T14:19:08-08:00",
+  "impl_files": [
+    "jinja2/runtime.py"
+  ],
+  "test_files": [],
+  "diff_lines": 52
+}

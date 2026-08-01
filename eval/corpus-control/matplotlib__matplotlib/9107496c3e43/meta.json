@@ -1,0 +1,17 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "9107496c3e437d189ccf5102457c6a4b41896710",
+  "kind": "control_good",
+  "subject": "Backport PR #25727: Doc: Replace matplotlibrc.template",
+  "evidence_subject": "Backport PR #25727: Doc: Replace matplotlibrc.template",
+  "author": "Ruth Comer",
+  "date": "2023-04-23T10:26:09+01:00",
+  "impl_files": [
+    "lib/matplotlib/__init__.py",
+    "lib/matplotlib/font_manager.py",
+    "lib/matplotlib/rcsetup.py",
+    "lib/matplotlib/text.py"
+  ],
+  "test_files": [],
+  "diff_lines": 76
+}

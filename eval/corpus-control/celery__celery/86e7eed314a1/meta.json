@@ -1,0 +1,14 @@
+{
+  "repo": "celery/celery",
+  "sha": "86e7eed314a167ec0f2fa377f36f0f373a334d77",
+  "kind": "control_good",
+  "subject": "Soft time limit error showed Trues instead of the timeout in seconds",
+  "evidence_subject": "Soft time limit error showed Trues instead of the timeout in seconds",
+  "author": "Ask Solem",
+  "date": "2016-12-01T13:13:12-08:00",
+  "impl_files": [
+    "celery/worker/request.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

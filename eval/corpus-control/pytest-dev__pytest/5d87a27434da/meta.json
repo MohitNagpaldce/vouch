@@ -1,0 +1,15 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "5d87a27434dada56ba69ef7b5fa014c321dc46f4",
+  "kind": "control_good",
+  "subject": "Elide pytest-internal paths for --fixtures (#9281)",
+  "evidence_subject": "Elide pytest-internal paths for --fixtures (#9281)",
+  "author": "Florian Bruhin",
+  "date": "2021-11-10T15:16:41+01:00",
+  "impl_files": [
+    "src/_pytest/python.py",
+    "testing/python/fixtures.py"
+  ],
+  "test_files": [],
+  "diff_lines": 113
+}

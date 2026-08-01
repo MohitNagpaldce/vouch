@@ -1,0 +1,19 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "ae246a6b2f4008229cff2f5c1b12afb724ba57c5",
+  "kind": "control_good",
+  "subject": "Add low-level create_dataframe_from_blocks helper function (#58197)",
+  "evidence_subject": "Add low-level create_dataframe_from_blocks helper function (#58197)",
+  "author": "Joris Van den Bossche",
+  "date": "2024-04-15T19:37:15+02:00",
+  "impl_files": [
+    "pandas/api/internals.py",
+    "pandas/core/internals/api.py",
+    "scripts/validate_unwanted_patterns.py"
+  ],
+  "test_files": [
+    "pandas/tests/api/test_api.py",
+    "pandas/tests/internals/test_api.py"
+  ],
+  "diff_lines": 268
+}

@@ -1,0 +1,16 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "b62fd79c0cfb6caeb6f620a033415bf0571f0f3c",
+  "kind": "control_good",
+  "subject": "Fix issue 2985.",
+  "evidence_subject": "Fix issue 2985.",
+  "author": "Henk-Jaap Wagenaar",
+  "date": "2017-12-06T21:55:04Z",
+  "impl_files": [
+    "_pytest/main.py"
+  ],
+  "test_files": [
+    "testing/acceptance_test.py"
+  ],
+  "diff_lines": 132
+}

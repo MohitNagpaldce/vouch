@@ -1,0 +1,17 @@
+{
+  "repo": "pypa/pip",
+  "sha": "b562531cc526c1e6119960b27113cecf18591a55",
+  "kind": "control_good",
+  "subject": "Add make_resolver() to RequirementCommand base class (#6826).",
+  "evidence_subject": "Add make_resolver() to RequirementCommand base class (#6826).",
+  "author": "Prabakaran Kumaresshan",
+  "date": "2019-08-04T12:17:50+05:30",
+  "impl_files": [
+    "src/pip/_internal/cli/base_command.py",
+    "src/pip/_internal/commands/download.py",
+    "src/pip/_internal/commands/install.py",
+    "src/pip/_internal/commands/wheel.py"
+  ],
+  "test_files": [],
+  "diff_lines": 161
+}

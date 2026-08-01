@@ -1,0 +1,16 @@
+{
+  "repo": "psf/black",
+  "sha": "5bb4da02c2c8c92d017e8b6be57eb442cc8f04ff",
+  "kind": "control_good",
+  "subject": "Add cpython Lib/ repository config into primer config - Disabled (#2429)",
+  "evidence_subject": "Add cpython Lib/ repository config into primer config - Disabled (#2429)",
+  "author": "Cooper Lees",
+  "date": "2021-08-24T14:29:49-07:00",
+  "impl_files": [
+    "src/black_primer/lib.py"
+  ],
+  "test_files": [
+    "tests/test_primer.py"
+  ],
+  "diff_lines": 171
+}

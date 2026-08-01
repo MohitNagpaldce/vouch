@@ -1,0 +1,37 @@
+diff --git a/docs/user/advanced.rst b/docs/user/advanced.rst
+index ed990666..a2fe653b 100644
+--- a/docs/user/advanced.rst
++++ b/docs/user/advanced.rst
+@@ -399,6 +399,19 @@ set ``stream`` to ``True`` and iterate over the response with
+         if line:
+             print(json.loads(line))
+ 
++.. warning::
++
++    :class:`~requests.Response.iter_lines()` is not reentrant safe.
++    Calling this method multiple times causes some of the received data
++    being lost. In case you need to call it from multiple places, use
++    the resulting iterator object instead::
++
++        lines = r.iter_lines()
++        # Save the first line for later or just skip it
++        first_line = next(lines)
++        for line in lines:
++            print(line)
++
+ .. _proxies:
+ 
+ Proxies
+diff --git a/requests/models.py b/requests/models.py
+index 4b2648f6..ce1eb40e 100644
+--- a/requests/models.py
++++ b/requests/models.py
+@@ -688,6 +688,8 @@ class Response(object):
+         """Iterates over the response data, one line at a time.  When
+         stream=True is set on the request, this avoids reading the
+         content at once into memory for large responses.
++
++        .. note:: This method is not reentrant safe.
+         """
+ 
+         pending = None

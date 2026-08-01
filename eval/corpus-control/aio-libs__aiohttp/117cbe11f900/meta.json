@@ -1,0 +1,16 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "117cbe11f90081f807303ee29126bb9966f4a185",
+  "kind": "control_good",
+  "subject": "Discourage ClientSession.requote_redirect_url changing (#3436)",
+  "evidence_subject": "Discourage ClientSession.requote_redirect_url changing (#3436)",
+  "author": "Andrew Svetlov",
+  "date": "2018-12-08T13:07:02+02:00",
+  "impl_files": [
+    "aiohttp/client.py"
+  ],
+  "test_files": [
+    "tests/test_client_session.py"
+  ],
+  "diff_lines": 137
+}

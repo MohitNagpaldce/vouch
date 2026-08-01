@@ -1,0 +1,16 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "af513bbf7f3ff31c7ad927fcf3d3c4915716944c",
+  "kind": "control_good",
+  "subject": "DOC: Include timedelta as freq for timedelta_range, interval_range, and date_range (#52307)",
+  "evidence_subject": "DOC: Include timedelta as freq for timedelta_range, interval_range, and date_range (#52307)",
+  "author": "Allison Kwan",
+  "date": "2023-03-31T13:12:05-04:00",
+  "impl_files": [
+    "pandas/core/indexes/datetimes.py",
+    "pandas/core/indexes/interval.py",
+    "pandas/core/indexes/timedeltas.py"
+  ],
+  "test_files": [],
+  "diff_lines": 39
+}

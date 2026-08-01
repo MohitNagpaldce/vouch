@@ -1,0 +1,16 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "9cb4e761f530e7a0708059b1312921753d056cbe",
+  "kind": "control_good",
+  "subject": "DOC Ensures that PLSCanonical passes numpydoc validation (#21175)",
+  "evidence_subject": "DOC Ensures that PLSCanonical passes numpydoc validation (#21175)",
+  "author": "Pinky",
+  "date": "2021-09-28T14:51:35+05:30",
+  "impl_files": [
+    "sklearn/cross_decomposition/_pls.py"
+  ],
+  "test_files": [
+    "maint_tools/test_docstrings.py"
+  ],
+  "diff_lines": 49
+}

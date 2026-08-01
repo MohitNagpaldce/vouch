@@ -1,0 +1,15 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "df099a4692c5917835a7eba6f242c65e0a55dec7",
+  "kind": "control_good",
+  "subject": "\ud83d\udcdd Remove `string_types.md` page (#7370)",
+  "evidence_subject": "\ud83d\udcdd Remove `string_types.md` page (#7370)",
+  "author": "Marcelo Trylesinski",
+  "date": "2023-09-08T12:58:43+02:00",
+  "impl_files": [
+    "pydantic/networks.py",
+    "pydantic/types.py"
+  ],
+  "test_files": [],
+  "diff_lines": 437
+}

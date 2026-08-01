@@ -1,0 +1,59 @@
+diff --git a/doc/build/changelog/changelog_09.rst b/doc/build/changelog/changelog_09.rst
+index 8e5fea1a7..d452c4bb3 100644
+--- a/doc/build/changelog/changelog_09.rst
++++ b/doc/build/changelog/changelog_09.rst
+@@ -14,6 +14,14 @@
+ .. changelog::
+     :version: 0.9.3
+ 
++    .. change::
++        :tags: bug, sql
++
++        Fixed bug where so-called "literal render" of :func:`.bindparam`
++        constructs would fail if the bind were constructed with a callable,
++        rather than a direct value.  This prevented ORM expressions
++        from being rendered with the "literal_binds" compiler flag.
++
+     .. change::
+         :tags: bug, orm
+         :tickets: 2935
+diff --git a/lib/sqlalchemy/sql/compiler.py b/lib/sqlalchemy/sql/compiler.py
+index 673e5f89b..d4b080720 100644
+--- a/lib/sqlalchemy/sql/compiler.py
++++ b/lib/sqlalchemy/sql/compiler.py
+@@ -969,7 +969,7 @@ class SQLCompiler(Compiled):
+         if literal_binds or \
+             (within_columns_clause and \
+                 self.ansi_bind_rules):
+-            if bindparam.value is None:
++            if bindparam.value is None and bindparam.callable is None:
+                 raise exc.CompileError("Bind parameter '%s' without a "
+                                         "renderable value not allowed here."
+                                         % bindparam.key)
+@@ -1005,7 +1005,7 @@ class SQLCompiler(Compiled):
+         return self.bindparam_string(name, **kwargs)
+ 
+     def render_literal_bindparam(self, bindparam, **kw):
+-        value = bindparam.value
++        value = bindparam.effective_value
+         return self.render_literal_value(value, bindparam.type)
+ 
+     def render_literal_value(self, value, type_):
+diff --git a/test/sql/test_compiler.py b/test/sql/test_compiler.py
+index cd9d31864..25aa78b03 100644
+--- a/test/sql/test_compiler.py
++++ b/test/sql/test_compiler.py
+@@ -1191,6 +1191,13 @@ class SelectTest(fixtures.TestBase, AssertsCompiledSQL):
+             dialect=dialect
+         )
+ 
++        # test callable
++        self.assert_compile(
++            select([table1.c.myid == bindparam("foo", callable_=lambda: 5)]),
++            "SELECT mytable.myid = 5 AS anon_1 FROM mytable",
++            dialect=dialect
++        )
++
+         assert_raises_message(
+             exc.CompileError,
+             "Bind parameter 'foo' without a renderable value not allowed here.",

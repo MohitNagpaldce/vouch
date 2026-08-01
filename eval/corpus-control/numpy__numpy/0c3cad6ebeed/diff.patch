@@ -1,0 +1,315 @@
+diff --git a/doc/release/upcoming_changes/25086.new_feature.rst b/doc/release/upcoming_changes/25086.new_feature.rst
+index a7e5fd4b2..1cf012f95 100644
+--- a/doc/release/upcoming_changes/25086.new_feature.rst
++++ b/doc/release/upcoming_changes/25086.new_feature.rst
+@@ -9,4 +9,4 @@ Array API compatible functions' aliases
+ 
+ * Misc: ``concat``, ``permute_dims``, ``pow``.
+ 
+-* linalg: ``tensordot``
++* linalg: ``tensordot``, ``matmul``.
+diff --git a/doc/source/reference/array_api.rst b/doc/source/reference/array_api.rst
+index 6cfe2a4be..3bf946950 100644
+--- a/doc/source/reference/array_api.rst
++++ b/doc/source/reference/array_api.rst
+@@ -76,17 +76,6 @@ The following functions are named differently in the array API
+      - ``matrix_norm`` and ``vector_norm`` each do a limited subset of what
+        ``np.norm`` does.
+ 
+-
+-``linalg`` Namespace Differences
+-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-
+-These functions are in the ``linalg`` sub-namespace in the array API, but are
+-only in the top-level namespace in NumPy:
+-
+-- ``matmul`` (*)
+-
+-(*): These functions are also in the top-level namespace in the array API.
+-
+ Keyword Argument Renames
+ ~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+diff --git a/doc/source/reference/routines.linalg.rst b/doc/source/reference/routines.linalg.rst
+index 23b3206d9..1cdb31a60 100644
+--- a/doc/source/reference/routines.linalg.rst
++++ b/doc/source/reference/routines.linalg.rst
+@@ -59,6 +59,7 @@ Matrix and vector products
+    inner
+    outer
+    matmul
++   linalg.matmul (Array API compatible location)
+    tensordot
+    linalg.tensordot (Array API compatible location)
+    einsum
+diff --git a/numpy/_core/tests/test_numeric.py b/numpy/_core/tests/test_numeric.py
+index 690c62d66..4bef497c6 100644
+--- a/numpy/_core/tests/test_numeric.py
++++ b/numpy/_core/tests/test_numeric.py
+@@ -4010,14 +4010,6 @@ def test_raise(self):
+ 
+ class TestTensordot:
+ 
+-    @pytest.mark.parametrize(
+-        "tensordot_func",
+-        [np.tensordot, np.linalg.tensordot]
+-    )
+-    def test_tensordot(self, tensordot_func):
+-        arr = np.arange(6).reshape((2, 3))
+-        assert tensordot_func(arr, arr) == 55
+-
+     def test_zero_dimension(self):
+         # Test resolution to issue #5663
+         a = np.ndarray((3,0))
+diff --git a/numpy/linalg/__init__.py b/numpy/linalg/__init__.py
+index f19a22f43..c1a95239a 100644
+--- a/numpy/linalg/__init__.py
++++ b/numpy/linalg/__init__.py
+@@ -30,6 +30,7 @@
+    multi_dot
+    matrix_power
+    tensordot
++   matmul
+ 
+ Decompositions
+ --------------
+diff --git a/numpy/linalg/__init__.pyi b/numpy/linalg/__init__.pyi
+index 89861e346..4ef877d2f 100644
+--- a/numpy/linalg/__init__.pyi
++++ b/numpy/linalg/__init__.pyi
+@@ -21,13 +21,14 @@
+     cond as cond,
+     matrix_rank as matrix_rank,
+     multi_dot as multi_dot,
++    matmul as matmul,
+     trace as trace,
+     diagonal as diagonal,
+     cross as cross,
+ )
+ 
+ from numpy._core.numeric import (
+-    tensordot as tensordot
++    tensordot as tensordot,
+ )
+ 
+ from numpy._pytesttester import PytestTester
+diff --git a/numpy/linalg/_linalg.py b/numpy/linalg/_linalg.py
+index 84019dda5..3cbcdff82 100644
+--- a/numpy/linalg/_linalg.py
++++ b/numpy/linalg/_linalg.py
+@@ -13,7 +13,7 @@
+            'cholesky', 'eigvals', 'eigvalsh', 'pinv', 'slogdet', 'det',
+            'svd', 'svdvals', 'eig', 'eigh', 'lstsq', 'norm', 'qr', 'cond',
+            'matrix_rank', 'LinAlgError', 'multi_dot', 'trace', 'diagonal',
+-           'cross', 'outer', 'tensordot']
++           'cross', 'outer', 'tensordot', 'matmul']
+ 
+ import functools
+ import operator
+@@ -29,6 +29,7 @@
+     swapaxes, divide, count_nonzero, isnan, sign, argsort, sort,
+     reciprocal, overrides, diagonal as _core_diagonal, trace as _core_trace,
+     cross as _core_cross, outer as _core_outer, tensordot as _core_tensordot,
++    matmul as _core_matmul,
+ )
+ from numpy.lib._twodim_base_impl import triu, eye
+ from numpy.lib.array_utils import normalize_axis_index
+@@ -3131,6 +3132,49 @@ def cross(x1, x2, /, *, axis=-1):
+     return _core_cross(x1, x2, axis=axis)
+ 
+ 
++# matmul
++
++def _matmul_dispatcher(x1, x2, /):
++    return (x1, x2)
++
++
++@array_function_dispatch(_matmul_dispatcher)
++def matmul(x1, x2, /):
++    """
++    Computes the matrix product.
++
++    This function is Array API compatible, contrary to
++    :func:`numpy.matmul`.
++
++    Parameters
++    ----------
++    x1 : array_like
++        The first input array.
++    x2 : array_like
++        The second input array.
++
++    Returns
++    -------
++    out : ndarray
++        The matrix product of the inputs.
++        This is a scalar only when both ``x1``, ``x2`` are 1-d vectors.
++
++    Raises
++    ------
++    ValueError
++        If the last dimension of ``x1`` is not the same size as
++        the second-to-last dimension of ``x2``.
++
++        If a scalar value is passed in.
++
++    See Also
++    --------
++    numpy.matmul
++
++    """
++    return _core_matmul(x1, x2)
++
++
+ # tensordot
+ 
+ def _tensordot_dispatcher(
+diff --git a/numpy/linalg/_linalg.pyi b/numpy/linalg/_linalg.pyi
+index 82b637f17..4c25886b5 100644
+--- a/numpy/linalg/_linalg.pyi
++++ b/numpy/linalg/_linalg.pyi
+@@ -373,3 +373,24 @@ def cross(
+     b: _ArrayLikeComplex_co,
+     axis: int = ...,
+ ) -> NDArray[complexfloating[Any, Any]]: ...
++
++@overload
++def matmul(
++    x1: _ArrayLikeInt_co,
++    x2: _ArrayLikeInt_co,
++) -> NDArray[signedinteger[Any]]: ...
++@overload
++def matmul(
++    x1: _ArrayLikeUInt_co,
++    x2: _ArrayLikeUInt_co,
++) -> NDArray[unsignedinteger[Any]]: ...
++@overload
++def matmul(
++    x1: _ArrayLikeFloat_co,
++    x2: _ArrayLikeFloat_co,
++) -> NDArray[floating[Any]]: ...
++@overload
++def matmul(
++    x1: _ArrayLikeComplex_co,
++    x2: _ArrayLikeComplex_co,
++) -> NDArray[complexfloating[Any, Any]]: ...
+diff --git a/numpy/linalg/tests/test_linalg.py b/numpy/linalg/tests/test_linalg.py
+index 207091839..54ffb3ce1 100644
+--- a/numpy/linalg/tests/test_linalg.py
++++ b/numpy/linalg/tests/test_linalg.py
+@@ -2254,7 +2254,6 @@ def test_trace():
+ 
+ 
+ def test_cross():
+-
+     x = np.arange(9).reshape((3, 3))
+     actual = np.linalg.cross(x, x + 1)
+     expected = np.array([
+@@ -2271,3 +2270,20 @@ def test_cross():
+     ):
+         x_2dim = x[:, 1:]
+         np.linalg.cross(x_2dim, x_2dim)
++
++
++def test_tensordot():
++    # np.linalg.tensordot is just an alias for np.tensordot
++    x = np.arange(6).reshape((2, 3))
++
++    assert np.linalg.tensordot(x, x) == 55
++
++
++def test_matmul():
++    # np.linalg.matmul and np.matmul only differs in the number
++    # of arguments in the signature
++    x = np.arange(6).reshape((2, 3))
++    actual = np.linalg.matmul(x, x.T)
++    expected = np.array([[5, 14], [14, 50]])
++
++    assert_equal(actual, expected)
+diff --git a/numpy/typing/tests/data/reveal/linalg.pyi b/numpy/typing/tests/data/reveal/linalg.pyi
+index f7508f4e6..f3ddc4ce9 100644
+--- a/numpy/typing/tests/data/reveal/linalg.pyi
++++ b/numpy/typing/tests/data/reveal/linalg.pyi
+@@ -118,3 +118,7 @@
+ assert_type(np.linalg.cross(AR_i8, AR_i8), npt.NDArray[np.signedinteger[Any]])
+ assert_type(np.linalg.cross(AR_f8, AR_f8), npt.NDArray[np.floating[Any]])
+ assert_type(np.linalg.cross(AR_c16, AR_c16), npt.NDArray[np.complexfloating[Any, Any]])
++
++assert_type(np.linalg.matmul(AR_i8, AR_i8), npt.NDArray[np.signedinteger[Any]])
++assert_type(np.linalg.matmul(AR_f8, AR_f8), npt.NDArray[np.floating[Any]])
++assert_type(np.linalg.matmul(AR_c16, AR_c16), npt.NDArray[np.complexfloating[Any, Any]])
+diff --git a/tools/ci/array-api-skips.txt b/tools/ci/array-api-skips.txt
+index c5e3f40ac..695a7f9f1 100644
+--- a/tools/ci/array-api-skips.txt
++++ b/tools/ci/array-api-skips.txt
+@@ -41,26 +41,11 @@ array_api_tests/test_data_type_functions.py::test_finfo[float32]
+ array_api_tests/test_data_type_functions.py::test_isdtype
+ 
+ # missing names
+-array_api_tests/test_has_names.py::test_has_names[linalg-matmul]
+ array_api_tests/test_has_names.py::test_has_names[linalg-matrix_norm]
+ array_api_tests/test_has_names.py::test_has_names[linalg-matrix_transpose]
+-array_api_tests/test_has_names.py::test_has_names[linalg-tensordot]
+ array_api_tests/test_has_names.py::test_has_names[linalg-vecdot]
+ array_api_tests/test_has_names.py::test_has_names[linalg-vector_norm]
+-array_api_tests/test_has_names.py::test_has_names[manipulation-concat]
+-array_api_tests/test_has_names.py::test_has_names[manipulation-permute_dims]
+ array_api_tests/test_has_names.py::test_has_names[data_type-isdtype]
+-array_api_tests/test_has_names.py::test_has_names[elementwise-acos]
+-array_api_tests/test_has_names.py::test_has_names[elementwise-acosh]
+-array_api_tests/test_has_names.py::test_has_names[elementwise-asin]
+-array_api_tests/test_has_names.py::test_has_names[elementwise-asinh]
+-array_api_tests/test_has_names.py::test_has_names[elementwise-atan]
+-array_api_tests/test_has_names.py::test_has_names[elementwise-atan2]
+-array_api_tests/test_has_names.py::test_has_names[elementwise-atanh]
+-array_api_tests/test_has_names.py::test_has_names[elementwise-bitwise_left_shift]
+-array_api_tests/test_has_names.py::test_has_names[elementwise-bitwise_invert]
+-array_api_tests/test_has_names.py::test_has_names[elementwise-bitwise_right_shift]
+-array_api_tests/test_has_names.py::test_has_names[elementwise-pow]
+ array_api_tests/test_has_names.py::test_has_names[linear_algebra-matrix_transpose]
+ array_api_tests/test_has_names.py::test_has_names[linear_algebra-vecdot]
+ array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
+@@ -72,10 +57,6 @@ array_api_tests/test_linalg.py::test_matrix_transpose
+ array_api_tests/test_linalg.py::test_pinv
+ array_api_tests/test_linalg.py::test_vecdot
+ 
+-# missing names
+-array_api_tests/test_manipulation_functions.py::test_concat
+-array_api_tests/test_manipulation_functions.py::test_permute_dims
+-
+ # a few misalignments
+ array_api_tests/test_operators_and_elementwise_functions.py
+ array_api_tests/test_signatures.py::test_func_signature[std]
+@@ -89,32 +70,17 @@ array_api_tests/test_signatures.py::test_func_signature[linspace]
+ array_api_tests/test_signatures.py::test_func_signature[ones]
+ array_api_tests/test_signatures.py::test_func_signature[ones_like]
+ array_api_tests/test_signatures.py::test_func_signature[zeros_like]
+-array_api_tests/test_signatures.py::test_func_signature[concat]
+-array_api_tests/test_signatures.py::test_func_signature[permute_dims]
+ array_api_tests/test_signatures.py::test_func_signature[reshape]
+ array_api_tests/test_signatures.py::test_func_signature[argsort]
+ array_api_tests/test_signatures.py::test_func_signature[sort]
+ array_api_tests/test_signatures.py::test_func_signature[isdtype]
+-array_api_tests/test_signatures.py::test_func_signature[acos]
+-array_api_tests/test_signatures.py::test_func_signature[acosh]
+-array_api_tests/test_signatures.py::test_func_signature[asin]
+-array_api_tests/test_signatures.py::test_func_signature[asinh]
+-array_api_tests/test_signatures.py::test_func_signature[atan]
+-array_api_tests/test_signatures.py::test_func_signature[atan2]
+-array_api_tests/test_signatures.py::test_func_signature[atanh]
+-array_api_tests/test_signatures.py::test_func_signature[bitwise_left_shift]
+-array_api_tests/test_signatures.py::test_func_signature[bitwise_invert]
+-array_api_tests/test_signatures.py::test_func_signature[bitwise_right_shift]
+-array_api_tests/test_signatures.py::test_func_signature[pow]
+ array_api_tests/test_signatures.py::test_func_signature[matrix_transpose]
+ array_api_tests/test_signatures.py::test_func_signature[vecdot]
+-array_api_tests/test_signatures.py::test_extension_func_signature[linalg.matmul]
+ array_api_tests/test_signatures.py::test_extension_func_signature[linalg.cholesky]
+ array_api_tests/test_signatures.py::test_extension_func_signature[linalg.matrix_norm]
+ array_api_tests/test_signatures.py::test_extension_func_signature[linalg.matrix_rank]
+ array_api_tests/test_signatures.py::test_extension_func_signature[linalg.matrix_transpose]
+ array_api_tests/test_signatures.py::test_extension_func_signature[linalg.pinv]
+-array_api_tests/test_signatures.py::test_extension_func_signature[linalg.tensordot]
+ array_api_tests/test_signatures.py::test_extension_func_signature[linalg.vecdot]
+ array_api_tests/test_signatures.py::test_extension_func_signature[linalg.vector_norm]
+ array_api_tests/test_signatures.py::test_array_method_signature[__array_namespace__]

@@ -1,0 +1,15 @@
+{
+  "repo": "encode/httpx",
+  "sha": "1ba3e2ad4c08772d1a826a192410fa0f1e61f171",
+  "kind": "control_good",
+  "subject": "Switch `extensions` from `Dict` to `Mapping`. (#2465)",
+  "evidence_subject": "Switch `extensions` from `Dict` to `Mapping`. (#2465)",
+  "author": "Tom Christie",
+  "date": "2022-11-28T12:29:02Z",
+  "impl_files": [
+    "httpx/_client.py",
+    "httpx/_types.py"
+  ],
+  "test_files": [],
+  "diff_lines": 35
+}

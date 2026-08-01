@@ -1,0 +1,16 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "b71761de38453ddc2aff63388557e482ce561b5a",
+  "kind": "control_good",
+  "subject": "BUG: MultiIndex union setting wrong sortorder parameter (#44762)",
+  "evidence_subject": "BUG: MultiIndex union setting wrong sortorder parameter (#44762)",
+  "author": "Patrick Hoefler",
+  "date": "2021-12-10T18:38:49+01:00",
+  "impl_files": [
+    "pandas/core/indexes/multi.py"
+  ],
+  "test_files": [
+    "pandas/tests/indexing/multiindex/test_loc.py"
+  ],
+  "diff_lines": 56
+}

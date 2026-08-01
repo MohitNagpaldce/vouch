@@ -1,0 +1,48 @@
+diff --git a/changelog/2692.removal.rst b/changelog/2692.removal.rst
+new file mode 100644
+index 00000000..1e4e7663
+--- /dev/null
++++ b/changelog/2692.removal.rst
+@@ -0,0 +1 @@
++Deprecated ``urllib3.contrib.securetransport`` module which will be removed in future urllib3 v2.x release.
+\ No newline at end of file
+diff --git a/docs/reference/contrib/securetransport.rst b/docs/reference/contrib/securetransport.rst
+index 12a6ddcf..cd7b9ab8 100644
+--- a/docs/reference/contrib/securetransport.rst
++++ b/docs/reference/contrib/securetransport.rst
+@@ -1,5 +1,8 @@
+ macOS SecureTransport
+ =====================
++.. warning::
++    DEPRECATED: This module is deprecated and will be removed in a future 2.x release.
++    Read more in this `issue <https://github.com/urllib3/urllib3/issues/2681>`_.
+ 
+ `SecureTranport <https://developer.apple.com/documentation/security/secure_transport>`_
+ support for urllib3 via ctypes.
+diff --git a/src/urllib3/contrib/securetransport.py b/src/urllib3/contrib/securetransport.py
+index c264be27..fd4dea35 100644
+--- a/src/urllib3/contrib/securetransport.py
++++ b/src/urllib3/contrib/securetransport.py
+@@ -61,6 +61,7 @@ import socket
+ import ssl
+ import struct
+ import threading
++import warnings
+ import weakref
+ from socket import socket as socket_cls
+ from typing import (
+@@ -91,6 +92,14 @@ from ._securetransport.low_level import (
+     _temporary_keychain,
+ )
+ 
++warnings.warn(
++    "'urllib3.contrib.securetransport' module is deprecated and will be removed "
++    "in a future release of urllib3 2.x. Read more in this issue: "
++    "https://github.com/urllib3/urllib3/issues/2681",
++    category=DeprecationWarning,
++    stacklevel=2,
++)
++
+ if TYPE_CHECKING:
+     from typing_extensions import Literal
+ 

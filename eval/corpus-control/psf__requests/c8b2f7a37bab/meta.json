@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "c8b2f7a37babe3033bd762a81f648bda02717e45",
+  "kind": "control_good",
+  "subject": "Update docs to reflect use of params",
+  "evidence_subject": "Update docs to reflect use of params",
+  "author": "Cory Benfield",
+  "date": "2012-11-16T23:05:35Z",
+  "impl_files": [
+    "requests/models.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

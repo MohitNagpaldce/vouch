@@ -1,0 +1,65 @@
+diff --git a/CHANGES/10422.misc.rst b/CHANGES/10422.misc.rst
+new file mode 100644
+index 00000000..7ecb1c0e
+--- /dev/null
++++ b/CHANGES/10422.misc.rst
+@@ -0,0 +1,3 @@
++Added human-readable error messages to the exceptions for WebSocket disconnects due to PONG not being received -- by :user:`bdraco`.
++
++Previously, the error messages were empty strings, which made it hard to determine what went wrong.
+diff --git a/aiohttp/client_ws.py b/aiohttp/client_ws.py
+index f4cfa1bf..daa57d19 100644
+--- a/aiohttp/client_ws.py
++++ b/aiohttp/client_ws.py
+@@ -163,7 +163,9 @@ class ClientWebSocketResponse:
+         self._ping_task = None
+ 
+     def _pong_not_received(self) -> None:
+-        self._handle_ping_pong_exception(ServerTimeoutError())
++        self._handle_ping_pong_exception(
++            ServerTimeoutError(f"No PONG received after {self._pong_heartbeat} seconds")
++        )
+ 
+     def _handle_ping_pong_exception(self, exc: BaseException) -> None:
+         """Handle exceptions raised during ping/pong processing."""
+diff --git a/aiohttp/web_ws.py b/aiohttp/web_ws.py
+index 0fb1549a..a448bca1 100644
+--- a/aiohttp/web_ws.py
++++ b/aiohttp/web_ws.py
+@@ -182,7 +182,11 @@ class WebSocketResponse(StreamResponse):
+ 
+     def _pong_not_received(self) -> None:
+         if self._req is not None and self._req.transport is not None:
+-            self._handle_ping_pong_exception(asyncio.TimeoutError())
++            self._handle_ping_pong_exception(
++                asyncio.TimeoutError(
++                    f"No PONG received after {self._pong_heartbeat} seconds"
++                )
++            )
+ 
+     def _handle_ping_pong_exception(self, exc: BaseException) -> None:
+         """Handle exceptions raised during ping/pong processing."""
+diff --git a/tests/test_client_ws_functional.py b/tests/test_client_ws_functional.py
+index 7ede7432..54cd5e92 100644
+--- a/tests/test_client_ws_functional.py
++++ b/tests/test_client_ws_functional.py
+@@ -902,6 +902,7 @@ async def test_heartbeat_no_pong_concurrent_receive(
+         assert resp.close_code is WSCloseCode.ABNORMAL_CLOSURE
+         assert msg.type is WSMsgType.ERROR
+         assert isinstance(msg.data, ServerTimeoutError)
++        assert str(msg.data) == "No PONG received after 0.05 seconds"
+ 
+ 
+ async def test_close_websocket_while_ping_inflight(
+diff --git a/tests/test_web_websocket_functional.py b/tests/test_web_websocket_functional.py
+index b7494d92..945096a2 100644
+--- a/tests/test_web_websocket_functional.py
++++ b/tests/test_web_websocket_functional.py
+@@ -797,6 +797,7 @@ async def test_heartbeat_failure_ends_receive(
+     assert ws.close_code == WSCloseCode.ABNORMAL_CLOSURE
+     assert ws_server_close_code == WSCloseCode.ABNORMAL_CLOSURE
+     assert isinstance(ws_server_exception, asyncio.TimeoutError)
++    assert str(ws_server_exception) == "No PONG received after 0.025 seconds"
+     await ws.close()
+ 
+ 

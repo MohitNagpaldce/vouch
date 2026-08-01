@@ -1,0 +1,24 @@
+diff --git a/docs/release-notes.md b/docs/release-notes.md
+index f8bc57af..155e70be 100644
+--- a/docs/release-notes.md
++++ b/docs/release-notes.md
+@@ -1,5 +1,7 @@
+ ## Latest changes
+ 
++## 0.36.0
++
+ * Fix implementation for `skip_defaults` when returning a Pydantic model. PR [#422](https://github.com/tiangolo/fastapi/pull/422) by [@dmontagu](https://github.com/dmontagu).
+ * Fix OpenAPI generation when using the same dependency in multiple places for the same *path operation*. PR [#417](https://github.com/tiangolo/fastapi/pull/417) by [@dmontagu](https://github.com/dmontagu).
+ * Allow having empty paths in *path operations* used with `include_router` and a `prefix`.
+diff --git a/fastapi/__init__.py b/fastapi/__init__.py
+index 3a422824..04d1406f 100644
+--- a/fastapi/__init__.py
++++ b/fastapi/__init__.py
+@@ -1,6 +1,6 @@
+ """FastAPI framework, high performance, easy to learn, fast to code, ready for production"""
+ 
+-__version__ = "0.35.0"
++__version__ = "0.36.0"
+ 
+ from starlette.background import BackgroundTasks
+ 

@@ -1,0 +1,14 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "d9a2e70155a85e769d32a1e1fbe7e655203e9575",
+  "kind": "control_good",
+  "subject": "Change LsofFdLeakChecker to emit a warning instead of failing when detecting leaked FDs",
+  "evidence_subject": "Change LsofFdLeakChecker to emit a warning instead of failing when detecting leaked FDs",
+  "author": "Bruno Oliveira",
+  "date": "2017-04-13T17:34:48-03:00",
+  "impl_files": [
+    "_pytest/pytester.py"
+  ],
+  "test_files": [],
+  "diff_lines": 14
+}

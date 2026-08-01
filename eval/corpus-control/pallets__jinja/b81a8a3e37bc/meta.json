@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "b81a8a3e37bcc117fde391249eafdfae5a3f8869",
+  "kind": "control_good",
+  "subject": "Updated docs on autoescaping and made select_autoescape case insensitive",
+  "evidence_subject": "Updated docs on autoescaping and made select_autoescape case insensitive",
+  "author": "Armin Ronacher",
+  "date": "2017-01-07T16:13:39+01:00",
+  "impl_files": [
+    "jinja2/utils.py"
+  ],
+  "test_files": [
+    "tests/test_utils.py"
+  ],
+  "diff_lines": 125
+}

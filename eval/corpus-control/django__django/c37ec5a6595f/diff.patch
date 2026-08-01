@@ -1,0 +1,25 @@
+diff --git a/django/contrib/admindocs/views.py b/django/contrib/admindocs/views.py
+index a3a70b095c..0e7f3382ca 100644
+--- a/django/contrib/admindocs/views.py
++++ b/django/contrib/admindocs/views.py
+@@ -430,7 +430,7 @@ def simplify_regex(pattern):
+     pattern = replace_named_groups(pattern)
+     pattern = replace_unnamed_groups(pattern)
+     # clean up any outstanding regex-y characters.
+-    pattern = pattern.replace('^', '').replace('$', '')
++    pattern = pattern.replace('^', '').replace('$', '').replace('?', '')
+     if not pattern.startswith('/'):
+         pattern = '/' + pattern
+     return pattern
+diff --git a/tests/admin_docs/test_views.py b/tests/admin_docs/test_views.py
+index 34f6af6cdc..0915e01dc4 100644
+--- a/tests/admin_docs/test_views.py
++++ b/tests/admin_docs/test_views.py
+@@ -336,6 +336,7 @@ class AdminDocViewFunctionsTests(SimpleTestCase):
+             (r'^(?P<a>(x|y))/b/(?P<c>\w+)$', '/<a>/b/<c>'),
+             (r'^(?P<a>(x|y))/b/(?P<c>\w+)ab', '/<a>/b/<c>ab'),
+             (r'^(?P<a>(x|y)(\(|\)))/b/(?P<c>\w+)ab', '/<a>/b/<c>ab'),
++            (r'^a/?$', '/a/'),
+         )
+         for pattern, output in tests:
+             self.assertEqual(simplify_regex(pattern), output)

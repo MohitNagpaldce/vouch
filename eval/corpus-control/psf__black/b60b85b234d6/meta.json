@@ -1,0 +1,16 @@
+{
+  "repo": "psf/black",
+  "sha": "b60b85b234d6a575f636d0a125478115f993c90c",
+  "kind": "control_good",
+  "subject": "Remove redundant 3.6 code and bump mypy's python_version to 3.7 (#3313)",
+  "evidence_subject": "Remove redundant 3.6 code and bump mypy's python_version to 3.7 (#3313)",
+  "author": "Hugo van Kemenade",
+  "date": "2022-10-06T17:37:37-07:00",
+  "impl_files": [
+    "src/black/__init__.py",
+    "src/black/concurrency.py",
+    "src/black/parsing.py"
+  ],
+  "test_files": [],
+  "diff_lines": 88
+}

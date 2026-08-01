@@ -1,0 +1,17 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "8c6cabcb0bcc802b350b0218fd71cd3c10952828",
+  "kind": "control_good",
+  "subject": "STY: Apply ruff rule RUF015",
+  "evidence_subject": "STY: Apply ruff rule RUF015",
+  "author": "Dimitri Papadopoulos",
+  "date": "2025-04-17T13:45:16+02:00",
+  "impl_files": [
+    "numpy/f2py/auxfuncs.py",
+    "tools/wheels/check_license.py"
+  ],
+  "test_files": [
+    "numpy/_core/tests/_natype.py"
+  ],
+  "diff_lines": 39
+}

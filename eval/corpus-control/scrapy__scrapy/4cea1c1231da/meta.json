@@ -1,0 +1,14 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "4cea1c1231da1583fb177e976f473fa52b9ec450",
+  "kind": "control_good",
+  "subject": "Fix SelectJmes documentation",
+  "evidence_subject": "Fix SelectJmes documentation",
+  "author": "Capi Etheriel",
+  "date": "2015-06-25T15:11:56-03:00",
+  "impl_files": [
+    "scrapy/loader/processors.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

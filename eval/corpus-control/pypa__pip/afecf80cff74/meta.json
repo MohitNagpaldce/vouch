@@ -1,0 +1,14 @@
+{
+  "repo": "pypa/pip",
+  "sha": "afecf80cff747dcdac5bf1be64a06edd9aae620d",
+  "kind": "control_good",
+  "subject": "Lint",
+  "evidence_subject": "Lint",
+  "author": "Andrey Bienkowski",
+  "date": "2021-02-10T14:54:46+03:00",
+  "impl_files": [
+    "src/pip/_internal/network/utils.py"
+  ],
+  "test_files": [],
+  "diff_lines": 19
+}

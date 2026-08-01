@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "0d5347e6281c85059be176fe650b0aa7128f1dcb",
+  "kind": "control_good",
+  "subject": "Only compute should_bypass_proxies if needed",
+  "evidence_subject": "Only compute should_bypass_proxies if needed",
+  "author": "Nate Prewitt",
+  "date": "2021-12-28T22:10:43-07:00",
+  "impl_files": [
+    "requests/utils.py"
+  ],
+  "test_files": [],
+  "diff_lines": 14
+}

@@ -1,0 +1,26 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index 9c92f8f..a840e01 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -1,5 +1,11 @@
+ # Change Log
+ 
++## Unreleased
++
++### Configuration
++
++- Do not format `__pypackages__` directories by default (#2836)
++
+ ## 22.1.0
+ 
+ At long last, _Black_ is no longer a beta product! This is the first non-beta release
+diff --git a/src/black/const.py b/src/black/const.py
+index dbb4826..03afc96 100644
+--- a/src/black/const.py
++++ b/src/black/const.py
+@@ -1,4 +1,4 @@
+ DEFAULT_LINE_LENGTH = 88
+-DEFAULT_EXCLUDES = r"/(\.direnv|\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|venv|\.svn|_build|buck-out|build|dist)/"  # noqa: B950
++DEFAULT_EXCLUDES = r"/(\.direnv|\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|venv|\.svn|_build|buck-out|build|dist|__pypackages__)/"  # noqa: B950
+ DEFAULT_INCLUDES = r"(\.pyi?|\.ipynb)$"
+ STDIN_PLACEHOLDER = "__BLACK_STDIN_FILENAME__"

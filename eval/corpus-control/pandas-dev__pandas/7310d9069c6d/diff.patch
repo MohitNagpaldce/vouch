@@ -1,0 +1,54 @@
+diff --git a/doc/source/whatsnew/v1.4.3.rst b/doc/source/whatsnew/v1.4.3.rst
+index ca8b8ca15e..bfc9422711 100644
+--- a/doc/source/whatsnew/v1.4.3.rst
++++ b/doc/source/whatsnew/v1.4.3.rst
+@@ -20,6 +20,7 @@ Fixed regressions
+ - Fixed regression in :func:`read_fwf` raising ``ValueError`` when ``widths`` was specified with ``usecols`` (:issue:`46580`)
+ - Fixed regression in :func:`concat` not sorting columns for mixed column names (:issue:`47127`)
+ - Fixed regression in :meth:`.Groupby.transform` and :meth:`.Groupby.agg` failing with ``engine="numba"`` when the index was a :class:`MultiIndex` (:issue:`46867`)
++- Fixed regression in ``NaN`` comparison for :class:`Index` operations where the same object was compared (:issue:`47105`)
+ - Fixed regression is :meth:`.Styler.to_latex` and :meth:`.Styler.to_html` where ``buf`` failed in combination with ``encoding`` (:issue:`47053`)
+ - Fixed regression in :func:`read_csv` with ``index_col=False`` identifying first row as index names when ``header=None`` (:issue:`46955`)
+ - Fixed regression in :meth:`.DataFrameGroupBy.agg` when used with list-likes or dict-likes and ``axis=1`` that would give incorrect results; now raises ``NotImplementedError`` (:issue:`46995`)
+diff --git a/pandas/core/indexes/base.py b/pandas/core/indexes/base.py
+index cb01cfc981..01bbc424c3 100644
+--- a/pandas/core/indexes/base.py
++++ b/pandas/core/indexes/base.py
+@@ -6955,7 +6955,7 @@ class Index(IndexOpsMixin, PandasObject):
+                     # TODO: should set MultiIndex._can_hold_na = False?
+                     arr[self.isna()] = False
+                 return arr
+-            elif op in {operator.ne, operator.lt, operator.gt}:
++            elif op is operator.ne:
+                 arr = np.zeros(len(self), dtype=bool)
+                 if self._can_hold_na and not isinstance(self, ABCMultiIndex):
+                     arr[self.isna()] = True
+diff --git a/pandas/tests/indexes/test_base.py b/pandas/tests/indexes/test_base.py
+index 943cc94599..5d7fc23feb 100644
+--- a/pandas/tests/indexes/test_base.py
++++ b/pandas/tests/indexes/test_base.py
+@@ -2,6 +2,7 @@ from collections import defaultdict
+ from datetime import datetime
+ from io import StringIO
+ import math
++import operator
+ import re
+ 
+ import numpy as np
+@@ -1604,3 +1605,16 @@ def test_get_attributes_dict_deprecated():
+     with tm.assert_produces_warning(DeprecationWarning):
+         attrs = idx._get_attributes_dict()
+     assert attrs == {"name": None}
++
++
++@pytest.mark.parametrize("op", [operator.lt, operator.gt])
++def test_nan_comparison_same_object(op):
++    # GH#47105
++    idx = Index([np.nan])
++    expected = np.array([False])
++
++    result = op(idx, idx)
++    tm.assert_numpy_array_equal(result, expected)
++
++    result = op(idx, idx.copy())
++    tm.assert_numpy_array_equal(result, expected)

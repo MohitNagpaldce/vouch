@@ -1,0 +1,14 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "f653d5eb169e3d0371eae388aecb0db0cb0b8c11",
+  "kind": "control_good",
+  "subject": "dont test squelched warnings against the filter",
+  "evidence_subject": "dont test squelched warnings against the filter",
+  "author": "Mike Bayer",
+  "date": "2022-01-23T09:28:22-05:00",
+  "impl_files": [
+    "lib/sqlalchemy/testing/assertions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

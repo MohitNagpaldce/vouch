@@ -1,0 +1,62 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 569ae69..cd2a4ef 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -35,8 +35,8 @@ Unreleased
+ -   Fix `copy`/`pickle` support for the internal ``missing`` object.
+     :issue:`2027`
+ -   ``Environment.overlay(enable_async)`` is applied correctly. :pr:`2061`
+--   Paths where the loader searched for the template were added
+-    to the error message. :issue:`1661`
++-   The error message from ``FileSystemLoader`` includes the paths that were
++    searched. :issue:`1661`
+ 
+ 
+ Version 3.1.4
+diff --git a/src/jinja2/loaders.py b/src/jinja2/loaders.py
+index 65dfbe1..3579958 100644
+--- a/src/jinja2/loaders.py
++++ b/src/jinja2/loaders.py
+@@ -204,9 +204,11 @@ class FileSystemLoader(BaseLoader):
+             if os.path.isfile(filename):
+                 break
+         else:
++            plural = "path" if len(self.searchpath) == 1 else "paths"
++            paths_str = ", ".join(repr(p) for p in self.searchpath)
+             raise TemplateNotFound(
+-                f"{template} not found in the following search path(s):"
+-                f" {self.searchpath}"
++                template,
++                f"{template!r} not found in search {plural}: {paths_str}",
+             )
+ 
+         with open(filename, encoding=self.encoding) as f:
+diff --git a/tests/test_loader.py b/tests/test_loader.py
+index e0cff67..5a4e1a9 100644
+--- a/tests/test_loader.py
++++ b/tests/test_loader.py
+@@ -179,6 +179,24 @@ class TestFileSystemLoader:
+         t = e.get_template("foo/test.html")
+         assert t.filename == str(self.searchpath / "foo" / "test.html")
+ 
++    def test_error_includes_paths(self, env, filesystem_loader):
++        env.loader = filesystem_loader
++
++        with pytest.raises(TemplateNotFound) as info:
++            env.get_template("missing")
++
++        e_str = str(info.value)
++        assert e_str.startswith("'missing' not found in search path: ")
++
++        filesystem_loader.searchpath.append("other")
++
++        with pytest.raises(TemplateNotFound) as info:
++            env.get_template("missing")
++
++        e_str = str(info.value)
++        assert e_str.startswith("'missing' not found in search paths: ")
++        assert ", 'other'" in e_str
++
+ 
+ class TestModuleLoader:
+     archive = None

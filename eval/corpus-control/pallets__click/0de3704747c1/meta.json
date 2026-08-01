@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/click",
+  "sha": "0de3704747c1399d019f1d94caeefe20123b6ef0",
+  "kind": "control_good",
+  "subject": "detect exe name when using shiv/pex",
+  "evidence_subject": "detect exe name when using shiv/pex",
+  "author": "Fredrik Mellstr\u00f6m",
+  "date": "2022-08-02T17:48:38+02:00",
+  "impl_files": [
+    "src/click/utils.py"
+  ],
+  "test_files": [
+    "tests/test_utils.py"
+  ],
+  "diff_lines": 38
+}

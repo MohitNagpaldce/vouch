@@ -1,0 +1,16 @@
+{
+  "repo": "psf/black",
+  "sha": "f52cb0fe3775829245acfeae191e8d63120c8416",
+  "kind": "control_good",
+  "subject": "Don't let TokenError bubble up from lib2to3_parse (GH-2343)",
+  "evidence_subject": "Don't let TokenError bubble up from lib2to3_parse (GH-2343)",
+  "author": "Tanvi Moharir",
+  "date": "2021-12-05T01:51:26+05:30",
+  "impl_files": [
+    "src/black/parsing.py"
+  ],
+  "test_files": [
+    "tests/test_black.py"
+  ],
+  "diff_lines": 57
+}

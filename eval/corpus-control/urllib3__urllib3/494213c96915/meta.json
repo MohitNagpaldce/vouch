@@ -1,0 +1,15 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "494213c96915c6e420d6cce9c59fa99a6b621f33",
+  "kind": "control_good",
+  "subject": "Fail explicitly on unsupported Python versions (#2070)",
+  "evidence_subject": "Fail explicitly on unsupported Python versions (#2070)",
+  "author": "Quentin Pradet",
+  "date": "2020-11-24T09:37:28+04:00",
+  "impl_files": [
+    "noxfile.py",
+    "setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 83
+}

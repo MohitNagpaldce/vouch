@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "2b4ab69864d73b2e2e9055dee0db7862bffc6a71",
+  "kind": "control_good",
+  "subject": "update dev dependencies",
+  "evidence_subject": "update dev dependencies",
+  "author": "David Lord",
+  "date": "2024-10-24T12:45:09-07:00",
+  "impl_files": [
+    "src/werkzeug/_reloader.py"
+  ],
+  "test_files": [],
+  "diff_lines": 576
+}

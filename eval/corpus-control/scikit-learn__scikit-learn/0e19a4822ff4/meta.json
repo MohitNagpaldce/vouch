@@ -1,0 +1,14 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "0e19a4822ff49951d2a7606444a1a6085c32b56b",
+  "kind": "control_good",
+  "subject": "DOC Fix typo `LogisticRegressionCV` docstring (#28746)",
+  "evidence_subject": "DOC Fix typo `LogisticRegressionCV` docstring (#28746)",
+  "author": "Lucy Liu",
+  "date": "2024-04-02T23:07:24+11:00",
+  "impl_files": [
+    "sklearn/linear_model/_logistic.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

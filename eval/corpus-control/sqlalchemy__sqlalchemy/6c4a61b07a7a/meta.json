@@ -1,0 +1,16 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "6c4a61b07a7aec8f6043c3e82eded27dda631cf4",
+  "kind": "control_good",
+  "subject": "- repair for py3k - fix test",
+  "evidence_subject": "- repair for py3k - fix test",
+  "author": "Mike Bayer",
+  "date": "2013-05-29T18:29:12-04:00",
+  "impl_files": [
+    "lib/sqlalchemy/dialects/postgresql/psycopg2.py"
+  ],
+  "test_files": [
+    "test/dialect/test_postgresql.py"
+  ],
+  "diff_lines": 34
+}

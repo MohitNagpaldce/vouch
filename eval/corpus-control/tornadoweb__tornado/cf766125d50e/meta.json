@@ -1,0 +1,14 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "cf766125d50e2073196f218710b39d0e27aacf31",
+  "kind": "control_good",
+  "subject": "Fix exception handling in CurlAsyncHTTPClient._process_queue.",
+  "evidence_subject": "Fix exception handling in CurlAsyncHTTPClient._process_queue.",
+  "author": "Ben Darnell",
+  "date": "2015-04-18T18:15:14-04:00",
+  "impl_files": [
+    "tornado/curl_httpclient.py"
+  ],
+  "test_files": [],
+  "diff_lines": 33
+}

@@ -1,0 +1,16 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "7310d9069c6d480b84f9a14093967243373e7c6d",
+  "kind": "control_good",
+  "subject": "REGR: Fix nan comparison for same Index object (#47326)",
+  "evidence_subject": "REGR: Fix nan comparison for same Index object (#47326)",
+  "author": "Patrick Hoefler",
+  "date": "2022-06-15T13:41:16+02:00",
+  "impl_files": [
+    "pandas/core/indexes/base.py"
+  ],
+  "test_files": [
+    "pandas/tests/indexes/test_base.py"
+  ],
+  "diff_lines": 54
+}

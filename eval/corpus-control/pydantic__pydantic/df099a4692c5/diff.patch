@@ -1,0 +1,437 @@
+diff --git a/docs/migration.md b/docs/migration.md
+index 582d51c32..438b1ed30 100644
+--- a/docs/migration.md
++++ b/docs/migration.md
+@@ -796,14 +796,14 @@ For `ConstrainedStr` you can use [`StringConstraints`][pydantic.types.StringCons
+ | Pydantic V1 | Pydantic V2 |
+ | --- | --- |
+ | `pydantic.BaseSettings` | [`pydantic_settings.BaseSettings`](#basesettings-has-moved-to-pydantic-settings) |
+-| `pydantic.color` | `pydantic_extra_types.color` |
++| `pydantic.color` | [`pydantic_extra_types.color`][pydantic_extra_types.color] |
+ | `pydantic.types.PaymentCardBrand` | [`pydantic_extra_types.PaymentCardBrand`](#color-and-payment-card-numbers-moved-to-pydantic-extra-types) |
+ | `pydantic.types.PaymentCardNumber` | [`pydantic_extra_types.PaymentCardNumber`](#color-and-payment-card-numbers-moved-to-pydantic-extra-types) |
+-| `pydantic.utils.version_info` | `pydantic.version.version_info` |
+-| `pydantic.error_wrappers.ValidationError` | `pydantic.ValidationError` |
+-| `pydantic.utils.to_camel` | `pydantic.alias_generators.to_pascal` |
+-| `pydantic.utils.to_lower_camel` | `pydantic.alias_generators.to_camel` |
+-| `pydantic.PyObject` | [`pydantic.ImportString`](usage/types/string_types.md#importstring) |
++| `pydantic.utils.version_info` | [`pydantic.version.version_info`][pydantic.version.version_info] |
++| `pydantic.error_wrappers.ValidationError` | [`pydantic.ValidationError`][pydantic_core.ValidationError] |
++| `pydantic.utils.to_camel` | [`pydantic.alias_generators.to_pascal`][pydantic.alias_generators.to_pascal] |
++| `pydantic.utils.to_lower_camel` | [`pydantic.alias_generators.to_camel`][pydantic.alias_generators.to_camel] |
++| `pydantic.PyObject` | [`pydantic.ImportString`][pydantic.types.ImportString] |
+ 
+ ## Deprecated and moved in Pydantic V2
+ 
+diff --git a/docs/usage/types/standard_types.md b/docs/usage/types/standard_types.md
+index 3c93a37d8..cf6a32c61 100644
+--- a/docs/usage/types/standard_types.md
++++ b/docs/usage/types/standard_types.md
+@@ -11,7 +11,7 @@ Pydantic supports many common types from the Python standard library. If you nee
+ | `bool` | See [Booleans](booleans.md) for details on how bools are validated and what values are permitted. |
+ | `int` | Pydantic uses `int(v)` to coerce types to an `int`. See [Number Types](number_types.md) for more details. See the [Data Conversion](../models.md#data-conversion) warning on loss of information during data conversion. |
+ | `float` | `float(v)` is used to coerce values to floats. See [Number Types](number_types.md) for more details. |
+-| `str` | Strings are accepted as-is. `bytes` and `bytearray` are converted using `v.decode()`. `Enum`s inheriting from `str` are converted using `v.value`. All other types cause an error. See [String Types](string_types.md) for more details. |
++| `str` | Strings are accepted as-is. `bytes` and `bytearray` are converted using `v.decode()`. `Enum`s inheriting from `str` are converted using `v.value`. All other types cause an error. |
+ | `bytes` | `bytes` are accepted as-is. `bytearray` is converted using `bytes(v)`. `str` are converted using `v.encode()`. `int`, `float`, and `Decimal` are coerced using `str(v).encode()`. See [ByteSize](bytesize.md) for more details. |
+ | `list` | Allows `list`, `tuple`, `set`, `frozenset`, `deque`, or generators and casts to a list. See [`typing.List`](list_types.md) for sub-type constraints. |
+ | `tuple` | Allows `list`, `tuple`, `set`, `frozenset`, `deque`, or generators and casts to a tuple. See [`typing.Tuple`](list_types.md) for sub-type constraints. |
+diff --git a/docs/usage/types/string_types.md b/docs/usage/types/string_types.md
+deleted file mode 100644
+index 049ad2770..000000000
+--- a/docs/usage/types/string_types.md
++++ /dev/null
+@@ -1,105 +0,0 @@
+----
+-description: Useful types provided by Pydantic.
+----
+-
+-## str
+-
+-Strings are accepted as-is, `bytes` and `bytearray` are converted using `v.decode()`,
+-enums inheriting from `str` are converted using `v.value`, and all other types cause an error
+-
+-## EmailStr
+-
+-`EmailStr` requires [email-validator](https://github.com/JoshData/python-email-validator) to be installed.
+-The input string must be a valid email address, and the output is a simple string
+-
+-## NameEmail
+-
+-`NameEmail` requires [email-validator](https://github.com/JoshData/python-email-validator) to be installed.
+-The input string must be either a valid email address or in the format `Fred Bloggs <fred.bloggs@example.com>`,
+-and the output is a `NameEmail` object which has two properties: `name` and `email`.
+-For `Fred Bloggs <fred.bloggs@example.com>` the name would be `"Fred Bloggs"`.
+-For `fred.bloggs@example.com` it would be `"fred.bloggs"`.
+-
+-## ImportString
+-
+-`ImportString` expects a string and loads the Python object importable at that dotted path.
+-Attributes of modules may be separated from the module by `:` or `.`, e.g. if `'math:cos'` was provided,
+-the resulting field value would be the function`cos`. If a `.` is used and both an attribute and submodule
+-are present at the same path, the module will be preferred.
+-
+-On model instantiation, pointers will be evaluated and imported. There is
+-some nuance to this behavior, demonstrated in the examples below.
+-
+-> A known limitation: setting a default value to a string
+-> won't result in validation (thus evaluation). This is actively
+-> being worked on.
+-
+-**Good behavior:**
+-```py
+-from math import cos
+-
+-from pydantic import BaseModel, ImportString, ValidationError
+-
+-
+-class ImportThings(BaseModel):
+-    obj: ImportString
+-
+-
+-# A string value will cause an automatic import
+-my_cos = ImportThings(obj='math.cos')
+-
+-# You can use the imported function as you would expect
+-cos_of_0 = my_cos.obj(0)
+-assert cos_of_0 == 1
+-
+-
+-# A string whose value cannot be imported will raise an error
+-try:
+-    ImportThings(obj='foo.bar')
+-except ValidationError as e:
+-    print(e)
+-    """
+-    1 validation error for ImportThings
+-    obj
+-      Invalid python path: No module named 'foo.bar' [type=import_error, input_value='foo.bar', input_type=str]
+-    """
+-
+-
+-# Actual python objects can be assigned as well
+-my_cos = ImportThings(obj=cos)
+-my_cos_2 = ImportThings(obj='math.cos')
+-assert my_cos == my_cos_2
+-```
+-
+-Serializing an `ImportString` type to json is also possible.
+-
+-```py
+-from pydantic import BaseModel, ImportString
+-
+-
+-class ImportThings(BaseModel):
+-    obj: ImportString
+-
+-
+-# Create an instance
+-m = ImportThings(obj='math:cos')
+-print(m)
+-#> obj=<built-in function cos>
+-print(m.model_dump_json())
+-#> {"obj":"math.cos"}
+-```
+-
+-## Constrained Types
+-
+-The value of numerous common types can be restricted using `con*` type functions.
+-
+-### Arguments to `constr`
+-The following arguments are available when using the `constr` type function
+-
+-- `strip_whitespace: bool = False`: removes leading and trailing whitespace
+-- `to_upper: bool = False`: turns all characters to uppercase
+-- `to_lower: bool = False`: turns all characters to lowercase
+-- `strict: bool = False`: controls type coercion
+-- `min_length: int = None`: minimum length of the string
+-- `max_length: int = None`: maximum length of the string
+-- `pattern: str = None`: regex to validate the string against
+diff --git a/docs/usage/types/types.md b/docs/usage/types/types.md
+index 057b69e0c..1af7e5eef 100644
+--- a/docs/usage/types/types.md
++++ b/docs/usage/types/types.md
+@@ -24,7 +24,6 @@ The following sections describe the types supported by Pydantic.
+ * [Sequence, Iterable, & Iterator](sequence_iterable.md) &mdash; iterable types including `Sequence`, `Iterable`, and `Iterator`.
+ * [Sets and frozenset](set_types.md) &mdash; `set` and `frozenset` types.
+ * [Strict Types](strict_types.md) &mdash; types that enable you to prevent coercion from compatible types.
+-* [String Types](string_types.md) &mdash; `str` types.
+ * [Type and TypeVar](typevars.md) &mdash; `Type` and `TypeVar` types.
+ * [Types with Fields](types_fields.md) &mdash; types that allow you to define fields.
+ * [Unions](unions.md) &mdash; allows a model attribute to accept different types.
+diff --git a/mkdocs.yml b/mkdocs.yml
+index 23a3df04d..983c8688b 100644
+--- a/mkdocs.yml
++++ b/mkdocs.yml
+@@ -74,7 +74,6 @@ nav:
+     - Sequence, Iterable & Iterator: usage/types/sequence_iterable.md
+     - Sets and frozenset: usage/types/set_types.md
+     - Strict Types: usage/types/strict_types.md
+-    - String Types: usage/types/string_types.md
+     - Type and TypeVar: usage/types/typevars.md
+     - Types with Fields: usage/types/types_fields.md
+     - Unions: usage/types/unions.md
+diff --git a/pydantic/networks.py b/pydantic/networks.py
+index dae5636af..80a9f04a1 100644
+--- a/pydantic/networks.py
++++ b/pydantic/networks.py
+@@ -168,19 +168,27 @@ if TYPE_CHECKING:
+ else:
+ 
+     class EmailStr:
+-        """Validate email addresses.
++        """
++        Info:
++            To use this type, you need to install the optional
++            [`email-validator`](https://github.com/JoshData/python-email-validator) package:
+ 
+-        Example:
+-            ```py
+-            from pydantic import BaseModel, EmailStr
++            ```bash
++            pip install email-validator
++            ```
+ 
+-            class Model(BaseModel):
+-                email: EmailStr
++        Validate email addresses.
+ 
+-            print(Model(email='contact@mail.com'))
+-            #> email='contact@mail.com'
+-            ```
+-        """
++        ```py
++        from pydantic import BaseModel, EmailStr
++
++        class Model(BaseModel):
++            email: EmailStr
++
++        print(Model(email='contact@mail.com'))
++        #> email='contact@mail.com'
++        ```
++        """  # noqa: D212
+ 
+         @classmethod
+         def __get_pydantic_core_schema__(
+@@ -204,23 +212,40 @@ else:
+ 
+ 
+ class NameEmail(_repr.Representation):
+-    """Validate a name and email address combination.
++    """
++    Info:
++        To use this type, you need to install the optional
++        [`email-validator`](https://github.com/JoshData/python-email-validator) package:
+ 
+-    Example:
+-        ```py
+-        from pydantic import BaseModel, NameEmail
++        ```bash
++        pip install email-validator
++        ```
+ 
+-        class User(BaseModel):
+-            email: NameEmail
++    Validate a name and email address combination, as specified by
++    [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322#section-3.4).
+ 
+-        print(User(email='John Doe <john.doe@mail.com>'))
+-        #> email=NameEmail(name='John Doe', email='john.doe@mail.com')
+-        ```
++    The `NameEmail` has two properties: `name` and `email`.
++    In case the `name` is not provided, it's inferred from the email address.
+ 
+-    Attributes:
+-        name: The name.
+-        email: The email address.
+-    """
++    ```py
++    from pydantic import BaseModel, NameEmail
++
++    class User(BaseModel):
++        email: NameEmail
++
++    user = User(email='Fred Bloggs <fred.bloggs@example.com>')
++    print(user.email)
++    #> Fred Bloggs <fred.bloggs@example.com>
++    print(user.email.name)
++    #> Fred Bloggs
++
++    user = User(email='fred.bloggs@example.com')
++    print(user.email)
++    #> fred.bloggs <fred.bloggs@example.com>
++    print(user.email.name)
++    #> fred.bloggs
++    ```
++    """  # noqa: D212
+ 
+     __slots__ = 'name', 'email'
+ 
+@@ -398,13 +423,13 @@ pretty_email_regex = _build_pretty_email_regex()
+ 
+ 
+ def validate_email(value: str) -> tuple[str, str]:
+-    """Email address validation using https://pypi.org/project/email-validator/.
++    """Email address validation using [email-validator](https://pypi.org/project/email-validator/).
+ 
+     Note:
+         Note that:
+ 
+         * Raw IP address (literal) domain parts are not allowed.
+-        * "John Doe <local_part@domain.com>" style "pretty" email addresses are processed.
++        * `"John Doe <local_part@domain.com>"` style "pretty" email addresses are processed.
+         * Spaces are striped from the beginning and end of addresses, but no error is raised.
+     """
+     if email_validator is None:
+diff --git a/pydantic/types.py b/pydantic/types.py
+index 7d0361639..6e34ed745 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -318,20 +318,58 @@ def constr(
+     max_length: int | None = None,
+     pattern: str | None = None,
+ ) -> type[str]:
+-    """A wrapper around `str` that allows for additional constraints.
++    """
++    !!! warning "Discouraged"
++        This function is **discouraged** in favor of using
++        [`Annotated`](https://docs.python.org/3/library/typing.html#typing.Annotated) with
++        [`StringConstraints`][pydantic.types.StringConstraints] instead.
++
++        This function will be **deprecated** in Pydantic 3.0.
++
++        The reason is that `constr` returns a type, which doesn't play well with static analysis tools.
++
++        === ":x: Don't do this"
++            ```py
++            from pydantic import BaseModel, constr
++
++            class Foo(BaseModel):
++                bar: constr(strip_whitespace=True, to_upper=True, pattern=r'^[A-Z]+$')
++            ```
++
++        === ":white_check_mark: Do this"
++            ```py
++            from pydantic import BaseModel, Annotated, StringConstraints
++
++            class Foo(BaseModel):
++                bar: Annotated[str, StringConstraints(strip_whitespace=True, to_upper=True, pattern=r'^[A-Z]+$')]
++            ```
++
++    A wrapper around `str` that allows for additional constraints.
++
++    ```py
++    from pydantic import BaseModel, constr
++
++    class Foo(BaseModel):
++        bar: constr(strip_whitespace=True, to_upper=True, pattern=r'^[A-Z]+$')
++
++
++    foo = Foo(bar='  hello  ')
++    print(foo)
++    #> bar='HELLO'
++    ```
+ 
+     Args:
+-        strip_whitespace: Whether to strip whitespace from the string.
+-        to_upper: Whether to convert the string to uppercase.
+-        to_lower: Whether to convert the string to lowercase.
++        strip_whitespace: Whether to remove leading and trailing whitespace.
++        to_upper: Whether to turn all characters to uppercase.
++        to_lower: Whether to turn all characters to lowercase.
+         strict: Whether to validate the string in strict mode.
+         min_length: The minimum length of the string.
+         max_length: The maximum length of the string.
+-        pattern: A regex pattern that the string must match.
++        pattern: A regex pattern to validate the string against.
+ 
+     Returns:
+         The wrapped string type.
+-    """
++    """  # noqa: D212
+     return Annotated[
+         str,
+         StringConstraints(
+@@ -428,21 +466,72 @@ else:
+     class ImportString:
+         """A type that can be used to import a type from a string.
+ 
+-        Example:
+-            ```py
+-            from datetime import date
+-            from typing import Type
++        `ImportString` expects a string and loads the Python object importable at that dotted path.
++        Attributes of modules may be separated from the module by `:` or `.`, e.g. if `'math:cos'` was provided,
++        the resulting field value would be the function`cos`. If a `.` is used and both an attribute and submodule
++        are present at the same path, the module will be preferred.
+ 
+-            from pydantic import BaseModel, ImportString
++        On model instantiation, pointers will be evaluated and imported. There is
++        some nuance to this behavior, demonstrated in the examples below.
+ 
++        > A known limitation: setting a default value to a string
++        > won't result in validation (thus evaluation). This is actively
++        > being worked on.
+ 
+-            class Foo(BaseModel):
+-                call_date: ImportString[Type[date]]
++        **Good behavior:**
++        ```py
++        from math import cos
+ 
++        from pydantic import BaseModel, ImportString, ValidationError
+ 
+-            foo = Foo(call_date="datetime.date")
+-            assert foo.call_date(2021, 1, 1) == date(2021, 1, 1)
+-            ```
++
++        class ImportThings(BaseModel):
++            obj: ImportString
++
++
++        # A string value will cause an automatic import
++        my_cos = ImportThings(obj='math.cos')
++
++        # You can use the imported function as you would expect
++        cos_of_0 = my_cos.obj(0)
++        assert cos_of_0 == 1
++
++
++        # A string whose value cannot be imported will raise an error
++        try:
++            ImportThings(obj='foo.bar')
++        except ValidationError as e:
++            print(e)
++            '''
++            1 validation error for ImportThings
++            obj
++            Invalid python path: No module named 'foo.bar' [type=import_error, input_value='foo.bar', input_type=str]
++            '''
++
++
++        # Actual python objects can be assigned as well
++        my_cos = ImportThings(obj=cos)
++        my_cos_2 = ImportThings(obj='math.cos')
++        assert my_cos == my_cos_2
++        ```
++
++        Serializing an `ImportString` type to json is also possible.
++
++        ```py
++        from pydantic import BaseModel, ImportString
++
++
++        class ImportThings(BaseModel):
++            obj: ImportString
++
++
++        # Create an instance
++        m = ImportThings(obj='math:cos')
++        print(m)
++        #> obj=<built-in function cos>
++        print(m.model_dump_json())
++        #> {"obj":"math.cos"}
++        ```
+         """
+ 
+         @classmethod

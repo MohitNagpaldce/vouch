@@ -1,0 +1,14 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "285d5bc03a7ebe8eaa558a5c24ff0693353c3e87",
+  "kind": "control_good",
+  "subject": "Patch \"Referer\" header on HTTP redirects if necessary",
+  "evidence_subject": "Patch \"Referer\" header on HTTP redirects if necessary",
+  "author": "Paul Tremberth",
+  "date": "2016-10-12T17:34:12+02:00",
+  "impl_files": [
+    "scrapy/spidermiddlewares/referer.py"
+  ],
+  "test_files": [],
+  "diff_lines": 46
+}

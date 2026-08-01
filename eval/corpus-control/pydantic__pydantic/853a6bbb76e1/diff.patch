@@ -1,0 +1,33 @@
+diff --git a/pydantic/types.py b/pydantic/types.py
+index 4681f7996..dd24711d1 100644
+--- a/pydantic/types.py
++++ b/pydantic/types.py
+@@ -190,9 +190,6 @@ class ConstrainedSet(set):  # type: ignore
+ 
+     @classmethod
+     def set_length_validator(cls, v: 'Optional[Set[T]]', field: 'ModelField') -> 'Optional[Set[T]]':
+-        if v is None and not field.required:
+-            return None
+-
+         v = set_validator(v)
+         v_len = len(v)
+ 
+diff --git a/tests/test_types.py b/tests/test_types.py
+index 125d8fa54..084b9d071 100644
+--- a/tests/test_types.py
++++ b/tests/test_types.py
+@@ -405,6 +405,14 @@ def test_conset():
+     assert exc_info.value.errors() == [{'loc': ('foo',), 'msg': 'value is not a valid set', 'type': 'type_error.set'}]
+ 
+ 
++def test_conset_not_required():
++    class Model(BaseModel):
++        foo: Set[int] = None
++
++    assert Model(foo=None).foo is None
++    assert Model().foo is None
++
++
+ class ConStringModel(BaseModel):
+     v: constr(max_length=10) = 'foobar'
+ 

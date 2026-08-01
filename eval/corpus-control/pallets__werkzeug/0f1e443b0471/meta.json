@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "0f1e443b04717c6633645464eaac867ca875535f",
+  "kind": "control_good",
+  "subject": "routing: don't convert bytes arguments to str.",
+  "evidence_subject": "routing: don't convert bytes arguments to str.",
+  "author": "Ed Kellett",
+  "date": "2019-04-03T15:03:19+01:00",
+  "impl_files": [
+    "src/werkzeug/routing.py"
+  ],
+  "test_files": [
+    "tests/test_routing.py"
+  ],
+  "diff_lines": 61
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "2759eefbf32862be464ecd5b1e91163c7773df39",
+  "kind": "control_good",
+  "subject": "Typo in sessionmaker example: s/wih/with",
+  "evidence_subject": "Typo in sessionmaker example: s/wih/with",
+  "author": "Brendan McCollam",
+  "date": "2020-11-26T15:26:07Z",
+  "impl_files": [
+    "lib/sqlalchemy/orm/session.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

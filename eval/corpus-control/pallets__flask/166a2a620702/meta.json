@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/flask",
+  "sha": "166a2a6207027bff07fdfc5590ce04f9b37e9e8f",
+  "kind": "control_good",
+  "subject": "Fix callback order for nested blueprints",
+  "evidence_subject": "Fix callback order for nested blueprints",
+  "author": "Matthias Paulsen",
+  "date": "2021-08-10T00:23:57+02:00",
+  "impl_files": [
+    "src/flask/app.py"
+  ],
+  "test_files": [
+    "tests/test_blueprints.py"
+  ],
+  "diff_lines": 197
+}

@@ -1,0 +1,16 @@
+{
+  "repo": "fastapi/fastapi",
+  "sha": "b90bf2da9ee5870a45591a10c4c8ac4af76d12f1",
+  "kind": "control_good",
+  "subject": "\ud83d\udc1b Fix callable class generator dependencies (#1365)",
+  "evidence_subject": "\ud83d\udc1b Fix callable class generator dependencies (#1365)",
+  "author": "Micah Rosales",
+  "date": "2020-06-12T15:57:59-05:00",
+  "impl_files": [
+    "fastapi/dependencies/utils.py"
+  ],
+  "test_files": [
+    "tests/test_dependency_class.py"
+  ],
+  "diff_lines": 184
+}

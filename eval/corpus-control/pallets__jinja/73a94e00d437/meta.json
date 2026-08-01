@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "73a94e00d4376da11966fd6add5bdd469b59b0da",
+  "kind": "control_good",
+  "subject": "map filter can use False as default",
+  "evidence_subject": "map filter can use False as default",
+  "author": "BALaka-18",
+  "date": "2021-02-22T21:26:22+05:30",
+  "impl_files": [
+    "src/jinja2/filters.py"
+  ],
+  "test_files": [
+    "tests/test_filters.py"
+  ],
+  "diff_lines": 52
+}

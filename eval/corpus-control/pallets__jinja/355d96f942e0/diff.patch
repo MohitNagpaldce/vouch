@@ -1,0 +1,13 @@
+diff --git a/jinja2/runtime.py b/jinja2/runtime.py
+index d73483d..a4a47a2 100644
+--- a/jinja2/runtime.py
++++ b/jinja2/runtime.py
+@@ -75,8 +75,6 @@ class TemplateReference(object):
+ 
+     def __getitem__(self, name):
+         blocks = self.__context.blocks[name]
+-        wrap = self.__context.eval_ctx.autoescape and \
+-               Markup or (lambda x: x)
+         return BlockReference(name, self.__context, blocks, 0)
+ 
+     def __repr__(self):

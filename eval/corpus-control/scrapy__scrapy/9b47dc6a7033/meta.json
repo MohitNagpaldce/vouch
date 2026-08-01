@@ -1,0 +1,14 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "9b47dc6a703310d13c9470e50d4b14f81ee893c6",
+  "kind": "control_good",
+  "subject": "[travis, setup] Adding official python 3.8 support https://github.com/scrapy/scrapy/issues/4085",
+  "evidence_subject": "[travis, setup] Adding official python 3.8 support https://github.com/scrapy/scrapy/issues/4085",
+  "author": "Roy",
+  "date": "2019-10-28T11:24:52Z",
+  "impl_files": [
+    "setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 30
+}

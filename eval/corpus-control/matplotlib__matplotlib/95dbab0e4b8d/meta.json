@@ -1,0 +1,14 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "95dbab0e4b8dba8d4d450094b0f005eca354c4f6",
+  "kind": "control_good",
+  "subject": "DOC: selecting individual colors from a colormap [ci doc]",
+  "evidence_subject": "DOC: selecting individual colors from a colormap [ci doc]",
+  "author": "Ruth Comer",
+  "date": "2024-01-20T13:50:21Z",
+  "impl_files": [
+    "galleries/examples/color/individual_colors_from_cmap.py"
+  ],
+  "test_files": [],
+  "diff_lines": 79
+}

@@ -1,0 +1,18 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "a3d8bd346dd562a32f00f386b28c24cf28d40da8",
+  "kind": "control_good",
+  "subject": "[PR #10422/289259d1 backport][3.12] Add human readable error messages for WebSocket PING/PONG timeouts (#10432)",
+  "evidence_subject": "[PR #10422/289259d1 backport][3.12] Add human readable error messages for WebSocket PING/PONG timeouts (#10432)",
+  "author": "patchback[bot]",
+  "date": "2025-02-06T17:04:23Z",
+  "impl_files": [
+    "aiohttp/client_ws.py",
+    "aiohttp/web_ws.py"
+  ],
+  "test_files": [
+    "tests/test_client_ws_functional.py",
+    "tests/test_web_websocket_functional.py"
+  ],
+  "diff_lines": 65
+}

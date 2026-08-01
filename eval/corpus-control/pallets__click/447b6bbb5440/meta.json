@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/click",
+  "sha": "447b6bbb5440d1e59f685bcddca5abcb784e3923",
+  "kind": "control_good",
+  "subject": "explicit reexports",
+  "evidence_subject": "explicit reexports",
+  "author": "David Lord",
+  "date": "2021-05-12T08:28:45-07:00",
+  "impl_files": [
+    "src/click/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 172
+}

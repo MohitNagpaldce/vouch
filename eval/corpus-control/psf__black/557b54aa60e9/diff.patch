@@ -1,0 +1,78 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index 9fe6b7e..814956c 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -4,6 +4,8 @@
+ 
+ #### _Black_
+ 
++- Fix crash on docstrings ending with "\ ". (#2142)
++
+ - Reflect the `--skip-magic-trailing-comma` and `--experimental-string-processing` flags
+   in the name of the cache file. Without this fix, changes in these flags would not take
+   effect if the cache had already been populated. (#2131)
+diff --git a/src/black/__init__.py b/src/black/__init__.py
+index 99afc7d..051de5d 100644
+--- a/src/black/__init__.py
++++ b/src/black/__init__.py
+@@ -2186,7 +2186,13 @@ def visit_STRING(self, leaf: Leaf) -> Iterator[Line]:
+                 if docstring[0] == quote_char:
+                     docstring = " " + docstring
+                 if docstring[-1] == quote_char:
+-                    docstring = docstring + " "
++                    docstring += " "
++                if docstring[-1] == "\\":
++                    backslash_count = len(docstring) - len(docstring.rstrip("\\"))
++                    if backslash_count % 2:
++                        # Odd number of tailing backslashes, add some padding to
++                        # avoid escaping the closing string quote.
++                        docstring += " "
+             else:
+                 # Add some padding if the docstring is empty.
+                 docstring = " "
+diff --git a/tests/data/docstring.py b/tests/data/docstring.py
+index 9e1c244..ee6d0c0 100644
+--- a/tests/data/docstring.py
++++ b/tests/data/docstring.py
+@@ -158,6 +158,22 @@ def docstring_with_inline_tabs_and_tab_indentation():
+ 	"""
+ 	pass
+ 
++
++def backslash_space():
++    """\ """
++
++
++def multiline_backslash_1():
++  '''
++  hey\there\
++  \ '''
++
++
++def multiline_backslash_2():
++  '''
++  hey there \ '''
++
++
+ # output
+ 
+ class MyClass:
+@@ -316,3 +332,18 @@ def docstring_with_inline_tabs_and_tab_indentation():
+     line ends with some tabs
+     """
+     pass
++
++
++def backslash_space():
++    """\ """
++
++
++def multiline_backslash_1():
++    """
++  hey\there\
++  \ """
++
++
++def multiline_backslash_2():
++    """
++    hey there \ """

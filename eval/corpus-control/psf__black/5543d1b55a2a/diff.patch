@@ -1,0 +1,45 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index 5a8a0ef..6813e86 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -20,6 +20,7 @@
+ - Tuple unpacking on `return` and `yield` constructs now implies 3.8+ (#2700)
+ - Unparenthesized tuples on annotated assignments (e.g
+   `values: Tuple[int, ...] = 1, 2, 3`) now implies 3.8+ (#2708)
++- Text coloring added in the final statistics (#2712)
+ - For stubs, one blank line between class attributes and methods is now kept if there's
+   at least one pre-existing blank line (#2736)
+ - Verbose mode also now describes how a project root was discovered and which paths will
+diff --git a/src/black/__init__.py b/src/black/__init__.py
+index cfa2c76..fa918ce 100644
+--- a/src/black/__init__.py
++++ b/src/black/__init__.py
+@@ -526,6 +526,8 @@ def main(
+             )
+ 
+     if verbose or not quiet:
++        if code is None and (verbose or report.change_count or report.failure_count):
++            out()
+         out(error_msg if report.return_code else "All done! ✨ 🍰 ✨")
+         if code is None:
+             click.echo(str(report), err=True)
+diff --git a/src/black/report.py b/src/black/report.py
+index 7e1c8b4..43b942c 100644
+--- a/src/black/report.py
++++ b/src/black/report.py
+@@ -93,11 +93,13 @@ def __str__(self) -> str:
+         if self.change_count:
+             s = "s" if self.change_count > 1 else ""
+             report.append(
+-                style(f"{self.change_count} file{s} {reformatted}", bold=True)
++                style(f"{self.change_count} file{s} ", bold=True, fg="blue")
++                + style(f"{reformatted}", bold=True)
+             )
++
+         if self.same_count:
+             s = "s" if self.same_count > 1 else ""
+-            report.append(f"{self.same_count} file{s} {unchanged}")
++            report.append(style(f"{self.same_count} file{s} ", fg="blue") + unchanged)
+         if self.failure_count:
+             s = "s" if self.failure_count > 1 else ""
+             report.append(style(f"{self.failure_count} file{s} {failed}", fg="red"))

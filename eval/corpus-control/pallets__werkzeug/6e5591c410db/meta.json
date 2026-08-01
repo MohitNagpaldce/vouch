@@ -1,0 +1,15 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "6e5591c410db70a6da5a5a35fcc9e61da72d11fd",
+  "kind": "control_good",
+  "subject": "Fix 3.x bug in make_ssl_devcert",
+  "evidence_subject": "Fix 3.x bug in make_ssl_devcert",
+  "author": "Daniel Neuha\u0308user",
+  "date": "2013-09-03T20:57:43+02:00",
+  "impl_files": [
+    "werkzeug/serving.py",
+    "werkzeug/testsuite/serving.py"
+  ],
+  "test_files": [],
+  "diff_lines": 63
+}

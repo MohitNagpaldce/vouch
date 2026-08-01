@@ -1,0 +1,16 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "2cf0f94f49f393d8d08dbf530cdde7e958a3ee99",
+  "kind": "control_good",
+  "subject": "ENH Uses x[i] to represent features in tree plotting (#23480)",
+  "evidence_subject": "ENH Uses x[i] to represent features in tree plotting (#23480)",
+  "author": "Thomas J. Fan",
+  "date": "2022-06-01T02:34:15-04:00",
+  "impl_files": [
+    "sklearn/tree/_export.py"
+  ],
+  "test_files": [
+    "sklearn/tree/tests/test_export.py"
+  ],
+  "diff_lines": 120
+}

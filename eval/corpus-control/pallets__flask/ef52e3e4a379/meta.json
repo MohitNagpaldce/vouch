@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/flask",
+  "sha": "ef52e3e4a379b16a8b906ff101c6edae71d80dc9",
+  "kind": "control_good",
+  "subject": "remove redundant _register_error_handler",
+  "evidence_subject": "remove redundant _register_error_handler",
+  "author": "David Lord",
+  "date": "2021-03-10T10:11:26-08:00",
+  "impl_files": [
+    "src/flask/scaffold.py"
+  ],
+  "test_files": [],
+  "diff_lines": 38
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "f81af92c2f704cc88dc26dac4ea1e4ffec04f578",
+  "kind": "control_good",
+  "subject": "Make tests pass on 3.x again",
+  "evidence_subject": "Make tests pass on 3.x again",
+  "author": "Armin Ronacher",
+  "date": "2017-01-02T21:26:09+01:00",
+  "impl_files": [
+    "jinja2/debug.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

@@ -1,0 +1,92 @@
+diff --git a/HISTORY.rst b/HISTORY.rst
+index a89d8a145..69fa838a5 100644
+--- a/HISTORY.rst
++++ b/HISTORY.rst
+@@ -3,6 +3,10 @@
+ History
+ -------
+ 
++v0.xx (xxxx-xx-xx)
++..................
++* fix JSON Schema for ``list``, ``tuple``, and ``set``, #540 by @tiangolo
++
+ v0.26 (2019-05-22)
+ ..................
+ * fix to schema generation for ``IPvAnyAddress``, ``IPvAnyInterface``, ``IPvAnyNetwork`` #498 by @pilosus
+diff --git a/docs/schema_mapping.py b/docs/schema_mapping.py
+index 10c99f08b..625cbbbbc 100755
+--- a/docs/schema_mapping.py
++++ b/docs/schema_mapping.py
+@@ -46,21 +46,21 @@ table = [
+     [
+         'list',
+         'array',
+-        '',
++        '{"items": {}}',
+         'JSON Schema Core',
+         ''
+     ],
+     [
+         'tuple',
+         'array',
+-        '',
++        '{"items": {}}',
+         'JSON Schema Core',
+         ''
+     ],
+     [
+         'set',
+         'array',
+-        '{"uniqueItems": true}',
++        '{"items": {}, {"uniqueItems": true}',
+         'JSON Schema Validation',
+         ''
+     ],
+diff --git a/pydantic/schema.py b/pydantic/schema.py
+index 63fea001c..24381420b 100644
+--- a/pydantic/schema.py
++++ b/pydantic/schema.py
+@@ -625,9 +625,9 @@ field_class_to_schema_enum_enabled: Tuple[Tuple[Any, Dict[str, Any]], ...] = (
+     (UUID, {'type': 'string', 'format': 'uuid'}),
+     (NameEmail, {'type': 'string', 'format': 'name-email'}),
+     (dict, {'type': 'object'}),
+-    (list, {'type': 'array'}),
+-    (tuple, {'type': 'array'}),
+-    (set, {'type': 'array', 'uniqueItems': True}),
++    (list, {'type': 'array', 'items': {}}),
++    (tuple, {'type': 'array', 'items': {}}),
++    (set, {'type': 'array', 'items': {}, 'uniqueItems': True}),
+ )
+ 
+ 
+diff --git a/tests/test_schema.py b/tests/test_schema.py
+index e0f78e5f2..78976a6d5 100644
+--- a/tests/test_schema.py
++++ b/tests/test_schema.py
+@@ -277,7 +277,7 @@ def test_set():
+         'type': 'object',
+         'properties': {
+             'a': {'title': 'A', 'type': 'array', 'uniqueItems': True, 'items': {'type': 'integer'}},
+-            'b': {'title': 'B', 'type': 'array', 'uniqueItems': True},
++            'b': {'title': 'B', 'type': 'array', 'items': {}, 'uniqueItems': True},
+         },
+         'required': ['a', 'b'],
+     }
+@@ -308,7 +308,7 @@ def test_const_false():
+ @pytest.mark.parametrize(
+     'field_type,expected_schema',
+     [
+-        (tuple, None),
++        (tuple, {}),
+         (
+             Tuple[str, int, Union[str, int, float], float],
+             [
+@@ -370,7 +370,7 @@ def test_list():
+     assert Model.schema() == {
+         'title': 'Model',
+         'type': 'object',
+-        'properties': {'a': {'title': 'A', 'type': 'array'}},
++        'properties': {'a': {'title': 'A', 'type': 'array', 'items': {}}},
+         'required': ['a'],
+     }
+ 

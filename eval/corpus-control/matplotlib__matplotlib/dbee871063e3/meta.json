@@ -1,0 +1,14 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "dbee871063e3558955fe91758636b694967d11cd",
+  "kind": "control_good",
+  "subject": "Backport PR #30180: DOC: expand polar example",
+  "evidence_subject": "Backport PR #30180: DOC: expand polar example",
+  "author": "Jody Klymak",
+  "date": "2025-06-19T15:09:33-07:00",
+  "impl_files": [
+    "galleries/examples/pie_and_polar_charts/polar_demo.py"
+  ],
+  "test_files": [],
+  "diff_lines": 57
+}

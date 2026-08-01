@@ -1,0 +1,20 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "51babd2dc5aec9e38370bc2ffad9e91e2047f94a",
+  "kind": "control_good",
+  "subject": "Backport PR #26657: DOC: Fix some small issues",
+  "evidence_subject": "Backport PR #26657: DOC: Fix some small issues",
+  "author": "Kyle Sunden",
+  "date": "2023-08-31T09:11:54-05:00",
+  "impl_files": [
+    "galleries/examples/text_labels_and_annotations/line_with_text.py",
+    "galleries/examples/userdemo/connectionstyle_demo.py",
+    "galleries/users_explain/artists/paths.py",
+    "galleries/users_explain/axes/arranging_axes.py",
+    "galleries/users_explain/axes/axes_scales.py",
+    "lib/matplotlib/figure.py",
+    "lib/matplotlib/legend.py"
+  ],
+  "test_files": [],
+  "diff_lines": 227
+}

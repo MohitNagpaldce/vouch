@@ -1,0 +1,16 @@
+{
+  "repo": "psf/black",
+  "sha": "7bca930ca3d84bbd01e98937b6b8a493d0254c7c",
+  "kind": "control_good",
+  "subject": "Fix crash on concatenated string + comment (fixes #1596) (#1677)",
+  "evidence_subject": "Fix crash on concatenated string + comment (fixes #1596) (#1677)",
+  "author": "Bryan Bugyi",
+  "date": "2020-09-06T11:02:57-04:00",
+  "impl_files": [
+    "src/black/__init__.py"
+  ],
+  "test_files": [
+    "tests/data/long_strings__regression.py"
+  ],
+  "diff_lines": 98
+}

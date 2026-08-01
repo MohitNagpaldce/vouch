@@ -1,0 +1,312 @@
+diff --git a/sklearn/linear_model/_coordinate_descent.py b/sklearn/linear_model/_coordinate_descent.py
+index 30ccb0c9f..96c001bb7 100644
+--- a/sklearn/linear_model/_coordinate_descent.py
++++ b/sklearn/linear_model/_coordinate_descent.py
+@@ -577,13 +577,11 @@ class ElasticNet(MultiOutputMixin, RegressorMixin, LinearModel):
+     positive : bool, optional
+         When set to ``True``, forces the coefficients to be positive.
+ 
+-    random_state : int, RandomState instance or None, optional, default None
++    random_state : int, RandomState instance, default=None
+         The seed of the pseudo random number generator that selects a random
+-        feature to update.  If int, random_state is the seed used by the random
+-        number generator; If RandomState instance, random_state is the random
+-        number generator; If None, the random number generator is the
+-        RandomState instance used by `np.random`. Used when ``selection`` ==
+-        'random'.
++        feature to update. Used when ``selection`` == 'random'.
++        Pass an int for reproducible output across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     selection : str, default 'cyclic'
+         If set to 'random', a random coefficient is updated every iteration
+@@ -857,13 +855,11 @@ class Lasso(ElasticNet):
+     positive : bool, optional
+         When set to ``True``, forces the coefficients to be positive.
+ 
+-    random_state : int, RandomState instance or None, optional, default None
++    random_state : int, RandomState instance, default=None
+         The seed of the pseudo random number generator that selects a random
+-        feature to update.  If int, random_state is the seed used by the random
+-        number generator; If RandomState instance, random_state is the random
+-        number generator; If None, the random number generator is the
+-        RandomState instance used by `np.random`. Used when ``selection`` ==
+-        'random'.
++        feature to update. Used when ``selection`` == 'random'.
++        Pass an int for reproducible output across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     selection : str, default 'cyclic'
+         If set to 'random', a random coefficient is updated every iteration
+@@ -1310,13 +1306,11 @@ class LassoCV(RegressorMixin, LinearModelCV):
+     positive : bool, optional
+         If positive, restrict regression coefficients to be positive
+ 
+-    random_state : int, RandomState instance or None, optional, default None
++    random_state : int, RandomState instance, default=None
+         The seed of the pseudo random number generator that selects a random
+-        feature to update.  If int, random_state is the seed used by the random
+-        number generator; If RandomState instance, random_state is the random
+-        number generator; If None, the random number generator is the
+-        RandomState instance used by `np.random`. Used when ``selection`` ==
+-        'random'.
++        feature to update. Used when ``selection`` == 'random'.
++        Pass an int for reproducible output across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     selection : str, default 'cyclic'
+         If set to 'random', a random coefficient is updated every iteration
+@@ -1484,13 +1478,11 @@ class ElasticNetCV(RegressorMixin, LinearModelCV):
+     positive : bool, optional
+         When set to ``True``, forces the coefficients to be positive.
+ 
+-    random_state : int, RandomState instance or None, optional, default None
++    random_state : int, RandomState instance, default=None
+         The seed of the pseudo random number generator that selects a random
+-        feature to update.  If int, random_state is the seed used by the random
+-        number generator; If RandomState instance, random_state is the random
+-        number generator; If None, the random number generator is the
+-        RandomState instance used by `np.random`. Used when ``selection`` ==
+-        'random'.
++        feature to update. Used when ``selection`` == 'random'.
++        Pass an int for reproducible output across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     selection : str, default 'cyclic'
+         If set to 'random', a random coefficient is updated every iteration
+@@ -1662,13 +1654,11 @@ class MultiTaskElasticNet(Lasso):
+         initialization, otherwise, just erase the previous solution.
+         See :term:`the Glossary <warm_start>`.
+ 
+-    random_state : int, RandomState instance or None, optional, default None
++    random_state : int, RandomState instance, default=None
+         The seed of the pseudo random number generator that selects a random
+-        feature to update.  If int, random_state is the seed used by the random
+-        number generator; If RandomState instance, random_state is the random
+-        number generator; If None, the random number generator is the
+-        RandomState instance used by `np.random`. Used when ``selection`` ==
+-        'random'.
++        feature to update. Used when ``selection`` == 'random'.
++        Pass an int for reproducible output across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     selection : str, default 'cyclic'
+         If set to 'random', a random coefficient is updated every iteration
+@@ -1848,13 +1838,11 @@ class MultiTaskLasso(MultiTaskElasticNet):
+         initialization, otherwise, just erase the previous solution.
+         See :term:`the Glossary <warm_start>`.
+ 
+-    random_state : int, RandomState instance or None, optional, default None
++    random_state : int, RandomState instance, default=None
+         The seed of the pseudo random number generator that selects a random
+-        feature to update.  If int, random_state is the seed used by the random
+-        number generator; If RandomState instance, random_state is the random
+-        number generator; If None, the random number generator is the
+-        RandomState instance used by `np.random`. Used when ``selection`` ==
+-        'random'.
++        feature to update. Used when ``selection`` == 'random'.
++        Pass an int for reproducible output across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     selection : str, default 'cyclic'
+         If set to 'random', a random coefficient is updated every iteration
+@@ -2013,13 +2001,11 @@ class MultiTaskElasticNetCV(RegressorMixin, LinearModelCV):
+         ``-1`` means using all processors. See :term:`Glossary <n_jobs>`
+         for more details.
+ 
+-    random_state : int, RandomState instance or None, optional, default None
++    random_state : int, RandomState instance, default=None
+         The seed of the pseudo random number generator that selects a random
+-        feature to update.  If int, random_state is the seed used by the random
+-        number generator; If RandomState instance, random_state is the random
+-        number generator; If None, the random number generator is the
+-        RandomState instance used by `np.random`. Used when ``selection`` ==
+-        'random'.
++        feature to update. Used when ``selection`` == 'random'.
++        Pass an int for reproducible output across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     selection : str, default 'cyclic'
+         If set to 'random', a random coefficient is updated every iteration
+@@ -2189,13 +2175,11 @@ class MultiTaskLassoCV(RegressorMixin, LinearModelCV):
+         ``-1`` means using all processors. See :term:`Glossary <n_jobs>`
+         for more details.
+ 
+-    random_state : int, RandomState instance or None, optional, default None
++    random_state : int, RandomState instance, default=None
+         The seed of the pseudo random number generator that selects a random
+-        feature to update.  If int, random_state is the seed used by the random
+-        number generator; If RandomState instance, random_state is the random
+-        number generator; If None, the random number generator is the
+-        RandomState instance used by `np.random`. Used when ``selection`` ==
+-        'random'
++        feature to update. Used when ``selection`` == 'random'.
++        Pass an int for reproducible output across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     selection : str, default 'cyclic'
+         If set to 'random', a random coefficient is updated every iteration
+diff --git a/sklearn/linear_model/_passive_aggressive.py b/sklearn/linear_model/_passive_aggressive.py
+index c83a8161c..ed0b1c68e 100644
+--- a/sklearn/linear_model/_passive_aggressive.py
++++ b/sklearn/linear_model/_passive_aggressive.py
+@@ -73,12 +73,11 @@ class PassiveAggressiveClassifier(BaseSGDClassifier):
+         ``-1`` means using all processors. See :term:`Glossary <n_jobs>`
+         for more details.
+ 
+-    random_state : int, RandomState instance or None, optional, default=None
+-        The seed of the pseudo random number generator to use when shuffling
+-        the data.  If int, random_state is the seed used by the random number
+-        generator; If RandomState instance, random_state is the random number
+-        generator; If None, the random number generator is the RandomState
+-        instance used by `np.random`.
++    random_state : int, RandomState instance, default=None
++        Used to shuffle the training data, when ``shuffle`` is set to
++        ``True``. Pass an int for reproducible output across multiple
++        function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     warm_start : bool, optional
+         When set to True, reuse the solution of the previous call to fit as
+@@ -319,12 +318,11 @@ class PassiveAggressiveRegressor(BaseSGDRegressor):
+         If the difference between the current prediction and the correct label
+         is below this threshold, the model is not updated.
+ 
+-    random_state : int, RandomState instance or None, optional, default=None
+-        The seed of the pseudo random number generator to use when shuffling
+-        the data.  If int, random_state is the seed used by the random number
+-        generator; If RandomState instance, random_state is the random number
+-        generator; If None, the random number generator is the RandomState
+-        instance used by `np.random`.
++    random_state : int, RandomState instance, default=None
++        Used to shuffle the training data, when ``shuffle`` is set to
++        ``True``. Pass an int for reproducible output across multiple
++        function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     warm_start : bool, optional
+         When set to True, reuse the solution of the previous call to fit as
+diff --git a/sklearn/linear_model/_perceptron.py b/sklearn/linear_model/_perceptron.py
+index 157083c01..ff50f6ebb 100644
+--- a/sklearn/linear_model/_perceptron.py
++++ b/sklearn/linear_model/_perceptron.py
+@@ -53,11 +53,10 @@ class Perceptron(BaseSGDClassifier):
+         for more details.
+ 
+     random_state : int, RandomState instance, default=None
+-        The seed of the pseudo random number generator to use when shuffling
+-        the data.  If int, random_state is the seed used by the random number
+-        generator; If RandomState instance, random_state is the random number
+-        generator; If None, the random number generator is the RandomState
+-        instance used by `np.random`.
++        Used to shuffle the training data, when ``shuffle`` is set to
++        ``True``. Pass an int for reproducible output across multiple
++        function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     early_stopping : bool, default=False
+         Whether to use early stopping to terminate training when validation.
+@@ -144,6 +143,7 @@ class Perceptron(BaseSGDClassifier):
+ 
+     https://en.wikipedia.org/wiki/Perceptron and references therein.
+     """
++
+     def __init__(self, penalty=None, alpha=0.0001, fit_intercept=True,
+                  max_iter=1000, tol=1e-3, shuffle=True, verbose=0, eta0=1.0,
+                  n_jobs=None, random_state=0, early_stopping=False,
+diff --git a/sklearn/linear_model/_ransac.py b/sklearn/linear_model/_ransac.py
+index 40ebb3a08..036303235 100644
+--- a/sklearn/linear_model/_ransac.py
++++ b/sklearn/linear_model/_ransac.py
+@@ -149,11 +149,10 @@ class RANSACRegressor(MetaEstimatorMixin, RegressorMixin,
+         If the loss on a sample is greater than the ``residual_threshold``,
+         then this sample is classified as an outlier.
+ 
+-    random_state : int, RandomState instance or None, optional, default None
+-        The generator used to initialize the centers.  If int, random_state is
+-        the seed used by the random number generator; If RandomState instance,
+-        random_state is the random number generator; If None, the random number
+-        generator is the RandomState instance used by `np.random`.
++    random_state : int, RandomState instance, default=None
++        The generator used to initialize the centers.
++        Pass an int for reproducible output across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     Attributes
+     ----------
+diff --git a/sklearn/linear_model/_sag.py b/sklearn/linear_model/_sag.py
+index c5cd88fe6..9fe6f076f 100644
+--- a/sklearn/linear_model/_sag.py
++++ b/sklearn/linear_model/_sag.py
+@@ -151,12 +151,10 @@ def sag_solver(X, y, sample_weight=None, loss='log', alpha=1., beta=0.,
+     verbose : integer, optional
+         The verbosity level.
+ 
+-    random_state : int, RandomState instance or None, optional, default None
+-        The seed of the pseudo random number generator to use when shuffling
+-        the data.  If int, random_state is the seed used by the random number
+-        generator; If RandomState instance, random_state is the random number
+-        generator; If None, the random number generator is the RandomState
+-        instance used by `np.random`.
++    random_state : int, RandomState instance, default=None
++        Used when shuffling the data. Pass an int for reproducible output
++        across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     check_input : bool, default True
+         If False, the input arrays X and y will not be checked.
+diff --git a/sklearn/linear_model/_stochastic_gradient.py b/sklearn/linear_model/_stochastic_gradient.py
+index a9775a4ae..2ca7eedd9 100644
+--- a/sklearn/linear_model/_stochastic_gradient.py
++++ b/sklearn/linear_model/_stochastic_gradient.py
+@@ -809,11 +809,9 @@ class SGDClassifier(BaseSGDClassifier):
+         for more details.
+ 
+     random_state : int, RandomState instance, default=None
+-        The seed of the pseudo random number generator to use when shuffling
+-        the data.  If int, random_state is the seed used by the random number
+-        generator; If RandomState instance, random_state is the random number
+-        generator; If None, the random number generator is the RandomState
+-        instance used by `np.random`.
++        Used for shuffling the data, when ``shuffle`` is set to ``True``.
++        Pass an int for reproducible output across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     learning_rate : str, default='optimal'
+         The learning rate schedule:
+@@ -1417,11 +1415,9 @@ class SGDRegressor(BaseSGDRegressor):
+         and the correct label are ignored if they are less than this threshold.
+ 
+     random_state : int, RandomState instance, default=None
+-        The seed of the pseudo random number generator to use when shuffling
+-        the data.  If int, random_state is the seed used by the random number
+-        generator; If RandomState instance, random_state is the random number
+-        generator; If None, the random number generator is the RandomState
+-        instance used by `np.random`.
++        Used for shuffling the data, when ``shuffle`` is set to ``True``.
++        Pass an int for reproducible output across multiple function calls.
++        See :term:`Glossary <random_state>`.
+ 
+     learning_rate : string, default='invscaling'
+         The learning rate schedule:
+diff --git a/sklearn/linear_model/_theil_sen.py b/sklearn/linear_model/_theil_sen.py
+index 9adf8109a..35cb3b8f2 100644
+--- a/sklearn/linear_model/_theil_sen.py
++++ b/sklearn/linear_model/_theil_sen.py
+@@ -240,12 +240,11 @@ class TheilSenRegressor(RegressorMixin, LinearModel):
+     tol : float, optional, default 1.e-3
+         Tolerance when calculating spatial median.
+ 
+-    random_state : int, RandomState instance or None, optional, default None
++    random_state : int, RandomState instance, default=None
+         A random number generator instance to define the state of the random
+-        permutations generator.  If int, random_state is the seed used by the
+-        random number generator; If RandomState instance, random_state is the
+-        random number generator; If None, the random number generator is the
+-        RandomState instance used by `np.random`.
++        permutations generator. Pass an int for reproducible output across
++        multiple function calls.
++        See :term:`Glossary <random_state>`
+ 
+     n_jobs : int or None, optional (default=None)
+         Number of CPUs to use during the cross validation.

@@ -1,0 +1,132 @@
+diff --git a/AUTHORS b/AUTHORS
+index 44ae6aa43..0492a1659 100644
+--- a/AUTHORS
++++ b/AUTHORS
+@@ -74,6 +74,7 @@ Grig Gheorghiu
+ Grigorii Eremeev (budulianin)
+ Guido Wesdorp
+ Harald Armin Massa
++Henk-Jaap Wagenaar
+ Hugo van Kemenade
+ Hui Wang (coldnight)
+ Ian Bicking
+diff --git a/_pytest/main.py b/_pytest/main.py
+index 25554098d..cb3ba4b8a 100644
+--- a/_pytest/main.py
++++ b/_pytest/main.py
+@@ -729,6 +729,25 @@ class Session(FSCollector):
+ 
+         """
+         import pkgutil
++
++        if six.PY2:  # python 3.4+ uses importlib instead
++            def find_module_patched(self, fullname, path=None):
++                subname = fullname.split(".")[-1]
++                if subname != fullname and self.path is None:
++                    return None
++                if self.path is None:
++                    path = None
++                else:
++                    path = [self.path]
++                try:
++                    file, filename, etc = pkgutil.imp.find_module(subname,
++                                                                  path)
++                except ImportError:
++                    return None
++                return pkgutil.ImpLoader(fullname, file, filename, etc)
++
++            pkgutil.ImpImporter.find_module = find_module_patched
++
+         try:
+             loader = pkgutil.find_loader(x)
+         except ImportError:
+diff --git a/changelog/2985.bugfix b/changelog/2985.bugfix
+new file mode 100644
+index 000000000..1a268c0c5
+--- /dev/null
++++ b/changelog/2985.bugfix
+@@ -0,0 +1 @@
++Fix conversion of pyargs to filename to not convert symlinks and not use deprecated features on Python 3.
+diff --git a/testing/acceptance_test.py b/testing/acceptance_test.py
+index a7838545b..fe55c5f8b 100644
+--- a/testing/acceptance_test.py
++++ b/testing/acceptance_test.py
+@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
+ import os
+ import sys
+ 
++import six
++
+ import _pytest._code
+ import py
+ import pytest
+@@ -645,6 +647,69 @@ class TestInvocationVariants(object):
+             "*1 passed*"
+         ])
+ 
++    @pytest.mark.skipif(not hasattr(os, "symlink"), reason="requires symlinks")
++    def test_cmdline_python_package_symlink(self, testdir, monkeypatch):
++        """
++        test --pyargs option with packages with path containing symlink can
++        have conftest.py in their package (#2985)
++        """
++        monkeypatch.delenv('PYTHONDONTWRITEBYTECODE', raising=False)
++
++        search_path = ["lib", os.path.join("local", "lib")]
++
++        dirname = "lib"
++        d = testdir.mkdir(dirname)
++        foo = d.mkdir("foo")
++        foo.ensure("__init__.py")
++        lib = foo.mkdir('bar')
++        lib.ensure("__init__.py")
++        lib.join("test_bar.py"). \
++            write("def test_bar(): pass\n"
++                  "def test_other(a_fixture):pass")
++        lib.join("conftest.py"). \
++            write("import pytest\n"
++                  "@pytest.fixture\n"
++                  "def a_fixture():pass")
++
++        d_local = testdir.mkdir("local")
++        symlink_location = os.path.join(str(d_local), "lib")
++        if six.PY2:
++            os.symlink(str(d), symlink_location)
++        else:
++            os.symlink(str(d), symlink_location, target_is_directory=True)
++
++        # The structure of the test directory is now:
++        # .
++        # ├── local
++        # │   └── lib -> ../world
++        # └── lib
++        #     └── foo
++        #         ├── __init__.py
++        #         └── bar
++        #             ├── __init__.py
++        #             ├── conftest.py
++        #             └── test_world.py
++
++        def join_pythonpath(*dirs):
++            cur = py.std.os.environ.get('PYTHONPATH')
++            if cur:
++                dirs += (cur,)
++            return os.pathsep.join(str(p) for p in dirs)
++
++        monkeypatch.setenv('PYTHONPATH', join_pythonpath(*search_path))
++        for p in search_path:
++            monkeypatch.syspath_prepend(p)
++
++        # module picked up in symlink-ed directory:
++        result = testdir.runpytest("--pyargs", "-v", "foo.bar")
++        testdir.chdir()
++        assert result.ret == 0
++        result.stdout.fnmatch_lines([
++            "*lib/foo/bar/test_bar.py::test_bar*PASSED*",
++            "*lib/foo/bar/test_bar.py::test_other*PASSED*",
++            "*2 passed*"
++        ])
++
+     def test_cmdline_python_package_not_exists(self, testdir):
+         result = testdir.runpytest("--pyargs", "tpkgwhatv")
+         assert result.ret

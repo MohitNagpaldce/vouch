@@ -1,0 +1,14 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "7d0096da6e37e508280e3af7388122bcdf0e3dcf",
+  "kind": "control_good",
+  "subject": "Fix mail attachs tcmime *** (#4229)",
+  "evidence_subject": "Fix mail attachs tcmime *** (#4229)",
+  "author": "apu",
+  "date": "2019-12-17T09:47:01+08:00",
+  "impl_files": [
+    "scrapy/mail.py"
+  ],
+  "test_files": [],
+  "diff_lines": 14
+}

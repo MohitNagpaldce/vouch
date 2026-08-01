@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "e3c852cbd609484b272f563f3c21066fb12ef7f8",
+  "kind": "control_good",
+  "subject": "Fixed #28804 -- Fixed \"Unknown system variable 'transaction_isolation'\" on MariaDB.",
+  "evidence_subject": "Fixed #28804 -- Fixed \"Unknown system variable 'transaction_isolation'\" on MariaDB.",
+  "author": "Tim Graham",
+  "date": "2017-11-20T10:08:34-05:00",
+  "impl_files": [
+    "django/db/backends/mysql/base.py"
+  ],
+  "test_files": [
+    "tests/backends/mysql/tests.py"
+  ],
+  "diff_lines": 67
+}

@@ -1,0 +1,21 @@
+{
+  "repo": "pallets/click",
+  "sha": "43c2e7f331e78684d2549439c3338335f0ddb854",
+  "kind": "control_good",
+  "subject": "format_filename replaces invalid bytes",
+  "evidence_subject": "format_filename replaces invalid bytes",
+  "author": "Frazer McLean",
+  "date": "2023-04-09T15:32:40+02:00",
+  "impl_files": [
+    "src/click/_compat.py",
+    "src/click/exceptions.py",
+    "src/click/types.py",
+    "src/click/utils.py"
+  ],
+  "test_files": [
+    "tests/conftest.py",
+    "tests/test_types.py",
+    "tests/test_utils.py"
+  ],
+  "diff_lines": 576
+}

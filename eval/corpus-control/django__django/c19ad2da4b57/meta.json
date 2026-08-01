@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "c19ad2da4b573431843e5cead77f4139e29c77a0",
+  "kind": "control_good",
+  "subject": "Fixed #30704 -- Fixed crash of JSONField nested key and index transforms on expressions with params.",
+  "evidence_subject": "Fixed #30704 -- Fixed crash of JSONField nested key and index transforms on expressions with params.",
+  "author": "Mariusz Felisiak",
+  "date": "2019-08-13T08:42:17+02:00",
+  "impl_files": [
+    "django/contrib/postgres/fields/jsonb.py"
+  ],
+  "test_files": [
+    "tests/postgres_tests/test_json.py"
+  ],
+  "diff_lines": 52
+}

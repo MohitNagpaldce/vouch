@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "5e5a17028f4b9cfb5ff777d8c259e079bca0c988",
+  "kind": "control_good",
+  "subject": "Fixed #26902 -- Allowed is_safe_url() to require an https URL.",
+  "evidence_subject": "Fixed #26902 -- Allowed is_safe_url() to require an https URL.",
+  "author": "Przemys\u0142aw Suliga",
+  "date": "2016-08-19T13:23:13+02:00",
+  "impl_files": [
+    "django/utils/http.py"
+  ],
+  "test_files": [
+    "tests/utils_tests/test_http.py"
+  ],
+  "diff_lines": 79
+}

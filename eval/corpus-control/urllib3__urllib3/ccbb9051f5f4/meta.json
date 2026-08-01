@@ -1,0 +1,14 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "ccbb9051f5f4c7078fca0fcd488b91f44dc57ca0",
+  "kind": "control_good",
+  "subject": "Added deprecation warning for urllib3.contrib.securetransport module",
+  "evidence_subject": "Added deprecation warning for urllib3.contrib.securetransport module",
+  "author": "ivanllt",
+  "date": "2022-08-04T21:36:08+08:00",
+  "impl_files": [
+    "src/urllib3/contrib/securetransport.py"
+  ],
+  "test_files": [],
+  "diff_lines": 48
+}

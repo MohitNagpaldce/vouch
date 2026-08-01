@@ -1,0 +1,282 @@
+diff --git a/tornado/auth.py b/tornado/auth.py
+index ee3db4e9..5b7657bc 100644
+--- a/tornado/auth.py
++++ b/tornado/auth.py
+@@ -288,7 +288,7 @@ class OpenIdMixin(object):
+         if name:
+             user["name"] = name
+         elif name_parts:
+-            user["name"] = u(" ").join(name_parts)
++            user["name"] = u" ".join(name_parts)
+         elif email:
+             user["name"] = email.split("@")[0]
+         if email:
+diff --git a/tornado/concurrent.py b/tornado/concurrent.py
+index 42ab0803..05205f73 100644
+--- a/tornado/concurrent.py
++++ b/tornado/concurrent.py
+@@ -505,8 +505,9 @@ def chain_future(a, b):
+         assert future is a
+         if b.done():
+             return
+-        if (isinstance(a, TracebackFuture) and isinstance(b, TracebackFuture)
+-                and a.exc_info() is not None):
++        if (isinstance(a, TracebackFuture) and
++                isinstance(b, TracebackFuture) and
++                a.exc_info() is not None):
+             b.set_exc_info(a.exc_info())
+         elif a.exception() is not None:
+             b.set_exception(a.exception())
+diff --git a/tornado/escape.py b/tornado/escape.py
+index c8d06286..e6636f20 100644
+--- a/tornado/escape.py
++++ b/tornado/escape.py
+@@ -24,7 +24,6 @@ from __future__ import absolute_import, division, print_function, with_statement
+ 
+ import json
+ import re
+-import sys
+ 
+ from tornado.util import PY3, unicode_type, basestring_type
+ 
+diff --git a/tornado/http1connection.py b/tornado/http1connection.py
+index 76322145..b04cff13 100644
+--- a/tornado/http1connection.py
++++ b/tornado/http1connection.py
+@@ -359,8 +359,8 @@ class HTTP1Connection(httputil.HTTPConnection):
+                 'Transfer-Encoding' not in headers)
+             # If a 1.0 client asked for keep-alive, add the header.
+             if (self._request_start_line.version == 'HTTP/1.0' and
+-                (self._request_headers.get('Connection', '').lower()
+-                 == 'keep-alive')):
++                (self._request_headers.get('Connection', '').lower() ==
++                 'keep-alive')):
+                 headers['Connection'] = 'Keep-Alive'
+         if self._chunking_output:
+             headers['Transfer-Encoding'] = 'chunked'
+@@ -479,9 +479,9 @@ class HTTP1Connection(httputil.HTTPConnection):
+             connection_header = connection_header.lower()
+         if start_line.version == "HTTP/1.1":
+             return connection_header != "close"
+-        elif ("Content-Length" in headers
+-              or headers.get("Transfer-Encoding", "").lower() == "chunked"
+-              or getattr(start_line, 'method', None) in ("HEAD", "GET")):
++        elif ("Content-Length" in headers or
++              headers.get("Transfer-Encoding", "").lower() == "chunked" or
++              getattr(start_line, 'method', None) in ("HEAD", "GET")):
+             # start_line may be a request or reponse start line; only
+             # the former has a method attribute.
+             return connection_header == "keep-alive"
+diff --git a/tornado/ioloop.py b/tornado/ioloop.py
+index 04094c96..0bcbd776 100644
+--- a/tornado/ioloop.py
++++ b/tornado/ioloop.py
+@@ -814,8 +814,8 @@ class PollIOLoop(IOLoop):
+                             due_timeouts.append(heapq.heappop(self._timeouts))
+                         else:
+                             break
+-                    if (self._cancellations > 512
+-                            and self._cancellations > (len(self._timeouts) >> 1)):
++                    if (self._cancellations > 512 and
++                            self._cancellations > (len(self._timeouts) >> 1)):
+                         # Clean up the timeout queue when it gets large and it's
+                         # more than half cancellations.
+                         self._cancellations = 0
+diff --git a/tornado/locks.py b/tornado/locks.py
+index abf5eade..d84a9a87 100644
+--- a/tornado/locks.py
++++ b/tornado/locks.py
+@@ -14,13 +14,13 @@
+ 
+ from __future__ import absolute_import, division, print_function, with_statement
+ 
+-__all__ = ['Condition', 'Event', 'Semaphore', 'BoundedSemaphore', 'Lock']
+-
+ import collections
+ 
+ from tornado import gen, ioloop
+ from tornado.concurrent import Future
+ 
++__all__ = ['Condition', 'Event', 'Semaphore', 'BoundedSemaphore', 'Lock']
++
+ 
+ class _TimeoutGarbageCollector(object):
+     """Base class for objects that periodically clean up timed-out waiters.
+diff --git a/tornado/options.py b/tornado/options.py
+index 84e170bb..2fbb32ad 100644
+--- a/tornado/options.py
++++ b/tornado/options.py
+@@ -43,8 +43,8 @@ either::
+ 
+ .. note:
+ 
+-   When using tornado.options.parse_command_line or 
+-   tornado.options.parse_config_file, the only options that are set are 
++   When using tornado.options.parse_command_line or
++   tornado.options.parse_config_file, the only options that are set are
+    ones that were previously defined with tornado.options.define.
+ 
+ Command line formats are what you would expect (``--myoption=myvalue``).
+diff --git a/tornado/queues.py b/tornado/queues.py
+index 129b204e..b8e9b569 100644
+--- a/tornado/queues.py
++++ b/tornado/queues.py
+@@ -14,8 +14,6 @@
+ 
+ from __future__ import absolute_import, division, print_function, with_statement
+ 
+-__all__ = ['Queue', 'PriorityQueue', 'LifoQueue', 'QueueFull', 'QueueEmpty']
+-
+ import collections
+ import heapq
+ 
+@@ -23,6 +21,8 @@ from tornado import gen, ioloop
+ from tornado.concurrent import Future
+ from tornado.locks import Event
+ 
++__all__ = ['Queue', 'PriorityQueue', 'LifoQueue', 'QueueFull', 'QueueEmpty']
++
+ 
+ class QueueEmpty(Exception):
+     """Raised by `.Queue.get_nowait` when the queue has no items."""
+diff --git a/tornado/test/ioloop_test.py b/tornado/test/ioloop_test.py
+index 71b4ef87..faea4365 100644
+--- a/tornado/test/ioloop_test.py
++++ b/tornado/test/ioloop_test.py
+@@ -375,6 +375,7 @@ class TestIOLoop(AsyncTestCase):
+             self.io_loop.add_callback(namespace["callback"])
+             with ExpectLog(app_log, "Exception in callback"):
+                 self.wait()
++
+     def test_spawn_callback(self):
+         # An added callback runs in the test's stack_context, so will be
+         # re-arised in wait().
+diff --git a/tornado/test/twisted_test.py b/tornado/test/twisted_test.py
+index 22e8b33d..f1df06a6 100644
+--- a/tornado/test/twisted_test.py
++++ b/tornado/test/twisted_test.py
+@@ -28,7 +28,17 @@ import tempfile
+ import threading
+ import warnings
+ 
+-from tornado.util import PY3
++from tornado.escape import utf8
++from tornado import gen
++from tornado.httpclient import AsyncHTTPClient
++from tornado.httpserver import HTTPServer
++from tornado.ioloop import IOLoop
++from tornado.platform.auto import set_close_exec
++from tornado.platform.select import SelectIOLoop
++from tornado.testing import bind_unused_port
++from tornado.test.util import unittest
++from tornado.util import import_object, PY3
++from tornado.web import RequestHandler, Application
+ 
+ try:
+     import fcntl
+@@ -59,17 +69,6 @@ if PY3:
+ else:
+     import thread
+ 
+-from tornado.escape import utf8
+-from tornado import gen
+-from tornado.httpclient import AsyncHTTPClient
+-from tornado.httpserver import HTTPServer
+-from tornado.ioloop import IOLoop
+-from tornado.platform.auto import set_close_exec
+-from tornado.platform.select import SelectIOLoop
+-from tornado.testing import bind_unused_port
+-from tornado.test.util import unittest
+-from tornado.util import import_object
+-from tornado.web import RequestHandler, Application
+ 
+ skipIfNoTwisted = unittest.skipUnless(have_twisted,
+                                       "twisted module not present")
+diff --git a/tornado/test/web_test.py b/tornado/test/web_test.py
+index fd4d137d..49049ad8 100644
+--- a/tornado/test/web_test.py
++++ b/tornado/test/web_test.py
+@@ -34,7 +34,9 @@ else:
+ 
+ wsgi_safe_tests = []
+ 
+-relpath = lambda *a: os.path.join(os.path.dirname(__file__), *a)
++
++def relpath(*a):
++    return os.path.join(os.path.dirname(__file__), *a)
+ 
+ 
+ def wsgi_safe(cls):
+@@ -2163,6 +2165,7 @@ class BaseStreamingRequestFlowControlTest(object):
+ 
+     def test_flow_control_chunked_body(self):
+         chunks = [b'abcd', b'efgh', b'ijkl']
++
+         @gen.coroutine
+         def body_producer(write):
+             for i in chunks:
+@@ -2627,8 +2630,8 @@ class FinishExceptionTest(SimpleHandlerTestCase):
+                 raise Finish()
+ 
+     def test_finish_exception(self):
+-        for url in ['/', '/?finish_value=1']:
+-            response = self.fetch(url)
++        for u in ['/', '/?finish_value=1']:
++            response = self.fetch(u)
+             self.assertEqual(response.code, 401)
+             self.assertEqual('Basic realm="something"',
+                              response.headers.get('WWW-Authenticate'))
+diff --git a/tornado/test/wsgi_test.py b/tornado/test/wsgi_test.py
+index 94ee884b..125d42aa 100644
+--- a/tornado/test/wsgi_test.py
++++ b/tornado/test/wsgi_test.py
+@@ -7,6 +7,9 @@ from tornado.testing import AsyncHTTPTestCase
+ from tornado.web import RequestHandler, Application
+ from tornado.wsgi import WSGIApplication, WSGIContainer, WSGIAdapter
+ 
++from tornado.test import httpserver_test
++from tornado.test import web_test
++
+ 
+ class WSGIContainerTest(AsyncHTTPTestCase):
+     def wsgi_app(self, environ, start_response):
+@@ -61,13 +64,10 @@ class WSGIApplicationTest(AsyncHTTPTestCase):
+         data = json_decode(response.body)
+         self.assertEqual(data, {})
+ 
+-# This is kind of hacky, but run some of the HTTPServer tests through
+-# WSGIContainer and WSGIApplication to make sure everything survives
+-# repeated disassembly and reassembly.
+-from tornado.test import httpserver_test
+-from tornado.test import web_test
+-
+ 
++# This is kind of hacky, but run some of the HTTPServer and web tests
++# through WSGIContainer and WSGIApplication to make sure everything
++# survives repeated disassembly and reassembly.
+ class WSGIConnectionTest(httpserver_test.HTTPConnectionTest):
+     def get_app(self):
+         return WSGIContainer(validator(WSGIApplication(self.get_handlers())))
+diff --git a/tornado/web.py b/tornado/web.py
+index 14cadf69..54a36987 100644
+--- a/tornado/web.py
++++ b/tornado/web.py
+@@ -1380,7 +1380,9 @@ class RequestHandler(object):
+             match = True
+         else:
+             # Use a weak comparison when comparing entity-tags.
+-            val = lambda x: x[2:] if x.startswith(b'W/') else x
++            def val(x):
++                return x[2:] if x.startswith(b'W/') else x
++
+             for etag in etags:
+                 if val(etag) == val(computed_etag):
+                     match = True
+@@ -1598,6 +1600,7 @@ def asynchronous(method):
+             result = method(self, *args, **kwargs)
+             if result is not None:
+                 result = gen.convert_yielded(result)
++
+                 # If @asynchronous is used with @gen.coroutine, (but
+                 # not @gen.engine), we can automatically finish the
+                 # request when the future resolves.  Additionally,

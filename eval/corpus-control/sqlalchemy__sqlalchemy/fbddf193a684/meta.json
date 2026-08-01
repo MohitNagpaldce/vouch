@@ -1,0 +1,16 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "fbddf193a684ffe660c94c28e4c26e187111b21c",
+  "kind": "control_good",
+  "subject": "- Fixed bug where a \"branched\" connection, that is the kind you get when you call :meth:`.Connection.connect`, would not share invalidation status with the parent.  The architecture of branching has been tweaked a bit so that the branched connection defers to the parent for all invalidation status and operations. fixes #3215",
+  "evidence_subject": "- Fixed bug where a \"branched\" connection, that is the kind you get when you call :meth:`.Connection.connect`, would not share invalidation status with the parent.  The architecture of branching has been tweaked a bit so that the branched connection defers to the parent for all invalidation status and operations. fixes #3215",
+  "author": "Mike Bayer",
+  "date": "2014-09-26T14:55:36-04:00",
+  "impl_files": [
+    "lib/sqlalchemy/engine/base.py"
+  ],
+  "test_files": [
+    "test/engine/test_reconnect.py"
+  ],
+  "diff_lines": 166
+}

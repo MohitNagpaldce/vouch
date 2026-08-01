@@ -1,0 +1,14 @@
+{
+  "repo": "celery/celery",
+  "sha": "35b99e4ad17a71fde29d67155bd00e0621041dcd",
+  "kind": "control_good",
+  "subject": "Use kombu.Connection.supports_exchange_type (requires kombu master)",
+  "evidence_subject": "Use kombu.Connection.supports_exchange_type (requires kombu master)",
+  "author": "Ask Solem",
+  "date": "2015-10-26T22:05:45-07:00",
+  "impl_files": [
+    "celery/worker/consumer.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

@@ -1,0 +1,23 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index bebdb98..bcf770f 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -3,7 +3,7 @@
+ Version 3.0.0
+ -------------
+ 
+-Unreleased
++Released 2021-05-11
+ 
+ -   Drop support for Python 2.7 and 3.5.
+ -   Bump MarkupSafe dependency to >=1.1.
+diff --git a/src/jinja2/__init__.py b/src/jinja2/__init__.py
+index 96b9eae..a081a5c 100644
+--- a/src/jinja2/__init__.py
++++ b/src/jinja2/__init__.py
+@@ -42,4 +42,4 @@ from .utils import pass_environment
+ from .utils import pass_eval_context
+ from .utils import select_autoescape
+ 
+-__version__ = "3.0.0rc2"
++__version__ = "3.0.0"

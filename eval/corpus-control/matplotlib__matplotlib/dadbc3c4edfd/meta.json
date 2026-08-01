@@ -1,0 +1,14 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "dadbc3c4edfdeb84ee67bca5975bc63491076cb4",
+  "kind": "control_good",
+  "subject": "Fix triage tool due to Qt bump to 5.12",
+  "evidence_subject": "Fix triage tool due to Qt bump to 5.12",
+  "author": "Elliott Sales de Andrade",
+  "date": "2023-07-25T04:13:07-04:00",
+  "impl_files": [
+    "tools/triage_tests.py"
+  ],
+  "test_files": [],
+  "diff_lines": 103
+}

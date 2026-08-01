@@ -1,0 +1,17 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "427ee3a61e9732fe41c10d2f8ab6650f24bb3d7c",
+  "kind": "control_good",
+  "subject": "- Fixed bug where items that were persisted, deleted, or had a primary key change within a savepoint block would not participate in being restored to their former state (not in session, in session, previous PK) after the outer transaction were rolled back. fixes #3108",
+  "evidence_subject": "- Fixed bug where items that were persisted, deleted, or had a primary key change within a savepoint block would not participate in being restored to their former state (not in session, in session, previous PK) after the outer transaction were rolled back. fixes #3108",
+  "author": "Mike Bayer",
+  "date": "2014-07-01T12:12:27-04:00",
+  "impl_files": [
+    "lib/sqlalchemy/orm/session.py"
+  ],
+  "test_files": [
+    "test/orm/test_naturalpks.py",
+    "test/orm/test_transaction.py"
+  ],
+  "diff_lines": 127
+}

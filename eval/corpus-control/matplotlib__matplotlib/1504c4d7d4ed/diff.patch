@@ -1,0 +1,137 @@
+diff --git a/doc/api/next_api_changes/removals/22486-OG.rst b/doc/api/next_api_changes/removals/22486-OG.rst
+index 91aabdd29..7b143d873 100644
+--- a/doc/api/next_api_changes/removals/22486-OG.rst
++++ b/doc/api/next_api_changes/removals/22486-OG.rst
+@@ -1,7 +1,7 @@
+ Removal of deprecated methods and properties in ``lines`` and ``patches``
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-The deperecated properties ``validCap`` and ``validJoin``  have been removed
++The deprecated properties ``validCap`` and ``validJoin``  have been removed
+ from `~.Line2D` and `~.Patch` as the validation is centralized in ``rcsetup``.
+ The deprecated methods ``get_dpi_cor`` and ``set_dpi_cor`` have been removed
+ from `~.FancyArrowPatch` as the parameter ``dpi_cor`` is removed.
+diff --git a/doc/users/next_whats_new/list_font_names.rst b/doc/users/next_whats_new/list_font_names.rst
+index bc7634fd7..e201b2fbb 100644
+--- a/doc/users/next_whats_new/list_font_names.rst
++++ b/doc/users/next_whats_new/list_font_names.rst
+@@ -1,7 +1,7 @@
+ List of available font names
+ ------------------------------
+ 
+-The list of available fonts are now easily accesible. Get a list of the
++The list of available fonts are now easily accessible. Get a list of the
+ available font names in matplotlib with:
+ 
+ .. code-block:: python
+diff --git a/lib/matplotlib/axes/_base.py b/lib/matplotlib/axes/_base.py
+index aa53fe1ee..acdcfd119 100644
+--- a/lib/matplotlib/axes/_base.py
++++ b/lib/matplotlib/axes/_base.py
+@@ -1335,7 +1335,7 @@ class _AxesBase(martist.Artist):
+         tuples. Use as if this is a tuple already.
+ 
+         This class exists only for the transition period to warn on the
+-        deprecated modifcation of artist lists.
++        deprecated modification of artist lists.
+         """
+         def __init__(self, axes, prop_name, add_name,
+                      valid_types=None, invalid_types=None):
+@@ -2395,7 +2395,7 @@ class _AxesBase(martist.Artist):
+             return
+         p = patch.get_path()
+         # Get all vertices on the path
+-        # Loop through each sement to get extrema for Bezier curve sections
++        # Loop through each segment to get extrema for Bezier curve sections
+         vertices = []
+         for curve, code in p.iter_bezier():
+             # Get distance along the curve of any extrema
+diff --git a/lib/matplotlib/collections.py b/lib/matplotlib/collections.py
+index 7e4407908..86c08c717 100644
+--- a/lib/matplotlib/collections.py
++++ b/lib/matplotlib/collections.py
+@@ -690,7 +690,7 @@ class Collection(artist.Artist, cm.ScalarMappable):
+             dashes = list(dashes) * (l_lw // gcd)
+             linewidths = list(linewidths) * (l_dashes // gcd)
+ 
+-        # scale the dash patters
++        # scale the dash patterns
+         dashes = [mlines._scale_dashes(o, d, lw)
+                   for (o, d), lw in zip(dashes, linewidths)]
+ 
+diff --git a/lib/matplotlib/figure.py b/lib/matplotlib/figure.py
+index ce7cb20d3..ea9cc2245 100644
+--- a/lib/matplotlib/figure.py
++++ b/lib/matplotlib/figure.py
+@@ -2320,7 +2320,7 @@ class Figure(FigureBase):
+         # figure...
+         for ax in self.axes:
+             if hasattr(ax, '_colorbar'):
+-                # colorbars list themselvs as a colorbar.
++                # colorbars list themselves as a colorbar.
+                 return False
+         return True
+ 
+diff --git a/lib/matplotlib/layout_engine.py b/lib/matplotlib/layout_engine.py
+index 4d7927b86..1262b7f23 100644
+--- a/lib/matplotlib/layout_engine.py
++++ b/lib/matplotlib/layout_engine.py
+@@ -97,7 +97,7 @@ class LayoutEngine:
+         """
+         Execute the layout on the figure given by *fig*.
+         """
+-        # subclasses must impliment this.
++        # subclasses must implement this.
+         raise NotImplementedError
+ 
+ 
+diff --git a/lib/matplotlib/tests/test_constrainedlayout.py b/lib/matplotlib/tests/test_constrainedlayout.py
+index 3d18e86cf..5e7675292 100644
+--- a/lib/matplotlib/tests/test_constrainedlayout.py
++++ b/lib/matplotlib/tests/test_constrainedlayout.py
+@@ -131,7 +131,7 @@ def test_identical_subgridspec():
+         axb += [fig.add_subplot(GSB[i])]
+ 
+     fig.draw_without_rendering()
+-    # chech first row above second
++    # check first row above second
+     assert axa[0].get_position().y0 > axb[0].get_position().y1
+ 
+ 
+diff --git a/lib/matplotlib/tests/test_widgets.py b/lib/matplotlib/tests/test_widgets.py
+index 29c2b1ed9..a19770e3b 100644
+--- a/lib/matplotlib/tests/test_widgets.py
++++ b/lib/matplotlib/tests/test_widgets.py
+@@ -94,7 +94,7 @@ def test_rectangle_minspan(spancoords, minspanx, x1, minspany, y1):
+     assert tool._selection_completed
+     assert ax._n_onselect == 1
+ 
+-    # Too small to create a selector. Should clear exising selector, and
++    # Too small to create a selector. Should clear existing selector, and
+     # trigger onselect because there was a pre-exisiting selector
+     click_and_drag(tool, start=(x0, y0), end=(x1, y1))
+     assert not tool._selection_completed
+diff --git a/lib/matplotlib/widgets.py b/lib/matplotlib/widgets.py
+index 16e03f562..4069a4d43 100644
+--- a/lib/matplotlib/widgets.py
++++ b/lib/matplotlib/widgets.py
+@@ -3274,7 +3274,7 @@ class RectangleSelector(_SelectorWidget):
+     @property
+     def edge_centers(self):
+         """
+-        Midpoint of rectangle edges in data coordiantes from left,
++        Midpoint of rectangle edges in data coordinates from left,
+         moving anti-clockwise.
+         """
+         x0, y0, width, height = self._rect_bbox
+diff --git a/tutorials/introductory/quick_start.py b/tutorials/introductory/quick_start.py
+index 34e3da9ab..7c9f98660 100644
+--- a/tutorials/introductory/quick_start.py
++++ b/tutorials/introductory/quick_start.py
+@@ -570,5 +570,5 @@ axd['right'].set_title('right');
+ # ============
+ #
+ # For more plot types see :doc:`Plot types </plot_types/index>` and the
+-# :doc:`API reference </api/index>`, in particlar the
++# :doc:`API reference </api/index>`, in particular the
+ # :doc:`Axes API </api/axes_api>`.

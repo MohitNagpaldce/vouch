@@ -1,0 +1,16 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "d42f1e87c3c4b55ef5faa1a11a4f3083860c864d",
+  "kind": "control_good",
+  "subject": "Add tests for attrs and dataclasses",
+  "evidence_subject": "Add tests for attrs and dataclasses",
+  "author": "Aly Sivji",
+  "date": "2018-08-02T17:16:14-05:00",
+  "impl_files": [
+    "src/_pytest/assertion/util.py"
+  ],
+  "test_files": [
+    "testing/test_assertion.py"
+  ],
+  "diff_lines": 193
+}

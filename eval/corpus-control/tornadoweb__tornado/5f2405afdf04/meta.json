@@ -1,0 +1,16 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "5f2405afdf044f4d4c004f4a28869b95a4467492",
+  "kind": "control_good",
+  "subject": "asyncio: Deprecate AnyThreadEventLoopPolicy",
+  "evidence_subject": "asyncio: Deprecate AnyThreadEventLoopPolicy",
+  "author": "Ben Darnell",
+  "date": "2021-12-03T13:07:30-05:00",
+  "impl_files": [
+    "tornado/platform/asyncio.py"
+  ],
+  "test_files": [
+    "tornado/test/asyncio_test.py"
+  ],
+  "diff_lines": 83
+}

@@ -1,0 +1,193 @@
+diff --git a/src/_pytest/assertion/util.py b/src/_pytest/assertion/util.py
+index 1f5a857b8..da5d5fe97 100644
+--- a/src/_pytest/assertion/util.py
++++ b/src/_pytest/assertion/util.py
+@@ -326,9 +326,6 @@ def _compare_eq_dict(left, right, verbose=False):
+ 
+ 
+ def _compare_eq_class(left, right, verbose, type=None):
+-    # TODO account for verbose
+-    # TODO write tests
+-
+     if type == "data":
+         all_fields = left.__dataclass_fields__
+         fields_to_check = [field for field, info in all_fields.items() if info.compare]
+@@ -336,7 +333,7 @@ def _compare_eq_class(left, right, verbose, type=None):
+         all_fields = left.__attrs_attrs__
+         fields_to_check = [field.name for field in all_fields if field.cmp]
+     else:
+-        raise RuntimeError  # TODO figure out what to raise
++        raise RuntimeError
+ 
+     same = []
+     diff = []
+@@ -347,8 +344,10 @@ def _compare_eq_class(left, right, verbose, type=None):
+             diff.append(field)
+ 
+     explanation = []
+-    if same:
+-        explanation += [("Common attributes:")]
++    if same and verbose < 2:
++        explanation += [u("Omitting %s identical items, use -vv to show") % len(same)]
++    elif same:
++        explanation += [u("Common items:")]
+         explanation += pprint.pformat(same).splitlines()
+     if diff:
+         explanation += [("Differing attributes:")]
+diff --git a/testing/test_assertion.py b/testing/test_assertion.py
+index b6c31aba2..87f7de2b5 100644
+--- a/testing/test_assertion.py
++++ b/testing/test_assertion.py
+@@ -6,6 +6,7 @@ from __future__ import print_function
+ import sys
+ import textwrap
+ 
++import attr
+ import py
+ import six
+ 
+@@ -548,6 +549,144 @@ class TestAssert_reprcompare(object):
+         assert msg
+ 
+ 
++class TestAssert_reprcompare_dataclass(object):
++    @pytest.mark.skipif(sys.version_info < (3, 7), reason="Dataclasses in Python3.7+")
++    def test_dataclasses(self):
++        from dataclasses import dataclass
++
++        @dataclass
++        class SimpleDataObject:
++            field_a: int
++            field_b: str
++
++        left = SimpleDataObject(1, "b")
++        right = SimpleDataObject(1, "c")
++
++        lines = callequal(left, right)
++        assert lines[1].startswith("Omitting 1 identical item")
++        assert "Common items" not in lines
++        for line in lines[1:]:
++            assert "field_a" not in line
++
++    @pytest.mark.skipif(sys.version_info < (3, 7), reason="Dataclasses in Python3.7+")
++    def test_dataclasses_verbose(self):
++        from dataclasses import dataclass
++
++        @dataclass
++        class SimpleDataObject:
++            field_a: int
++            field_b: str
++
++        left = SimpleDataObject(1, "b")
++        right = SimpleDataObject(1, "c")
++
++        lines = callequal(left, right, verbose=2)
++        assert lines[1].startswith("Common items:")
++        assert "Omitting" not in lines[1]
++        assert lines[2] == "['field_a']"
++
++    def test_dataclasses_with_attribute_comparison_off(self):
++        from dataclasses import dataclass, field
++
++        @dataclass
++        class SimpleDataObject:
++            field_a: int
++            field_b: str = field(compare=False)
++
++        left = SimpleDataObject(1, "b")
++        right = SimpleDataObject(1, "b")
++
++        lines = callequal(left, right, verbose=2)
++        assert lines[1].startswith("Common items:")
++        assert "Omitting" not in lines[1]
++        assert lines[2] == "['field_a']"
++        for line in lines[2:]:
++            assert "field_b" not in line
++
++    def test_comparing_different_data_classes(self):
++        from dataclasses import dataclass
++
++        @dataclass
++        class SimpleDataObjectOne:
++            field_a: int
++            field_b: str
++
++        @dataclass
++        class SimpleDataObjectTwo:
++            field_a: int
++            field_b: str
++
++        left = SimpleDataObjectOne(1, "b")
++        right = SimpleDataObjectTwo(1, "c")
++
++        lines = callequal(left, right)
++        assert lines is None
++
++
++class TestAssert_reprcompare_attrsclass(object):
++    def test_attrs(self):
++        @attr.s
++        class SimpleDataObject:
++            field_a = attr.ib()
++            field_b = attr.ib()
++
++        left = SimpleDataObject(1, "b")
++        right = SimpleDataObject(1, "c")
++
++        lines = callequal(left, right)
++        assert lines[1].startswith("Omitting 1 identical item")
++        assert "Common items" not in lines
++        for line in lines[1:]:
++            assert "field_a" not in line
++
++    def test_attrs_verbose(self):
++        @attr.s
++        class SimpleDataObject:
++            field_a = attr.ib()
++            field_b = attr.ib()
++
++        left = SimpleDataObject(1, "b")
++        right = SimpleDataObject(1, "c")
++
++        lines = callequal(left, right, verbose=2)
++        assert lines[1].startswith("Common items:")
++        assert "Omitting" not in lines[1]
++        assert lines[2] == "['field_a']"
++
++    def test_attrs_with_attribute_comparison_off(self):
++        @attr.s
++        class SimpleDataObject:
++            field_a = attr.ib()
++            field_b = attr.ib(cmp=False)
++
++        left = SimpleDataObject(1, "b")
++        right = SimpleDataObject(1, "b")
++
++        lines = callequal(left, right, verbose=2)
++        assert lines[1].startswith("Common items:")
++        assert "Omitting" not in lines[1]
++        assert lines[2] == "['field_a']"
++        for line in lines[2:]:
++            assert "field_b" not in line
++
++    def test_comparing_different_attrs(self):
++        @attr.s
++        class SimpleDataObjectOne:
++            field_a = attr.ib()
++            field_b = attr.ib()
++
++        @attr.s
++        class SimpleDataObjectTwo:
++            field_a = attr.ib()
++            field_b = attr.ib()
++
++        left = SimpleDataObjectOne(1, "b")
++        right = SimpleDataObjectTwo(1, "c")
++
++        lines = callequal(left, right)
++        assert lines is None
++
++
+ class TestFormatExplanation(object):
+     def test_special_chars_full(self, testdir):
+         # Issue 453, for the bug this would raise IndexError

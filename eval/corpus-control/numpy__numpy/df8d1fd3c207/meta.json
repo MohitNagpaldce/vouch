@@ -1,0 +1,23 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "df8d1fd3c2077ca785b0948912162e03727ace6c",
+  "kind": "control_good",
+  "subject": "MAINT: Replace LooseVersion by _pep440.",
+  "evidence_subject": "MAINT: Replace LooseVersion by _pep440.",
+  "author": "Charles Harris",
+  "date": "2022-02-04T16:21:58-07:00",
+  "impl_files": [
+    "numpy/compat/__init__.py",
+    "numpy/compat/_pep440.py",
+    "numpy/core/setup.py",
+    "numpy/core/setup_common.py",
+    "setup.py",
+    "tools/cythonize.py"
+  ],
+  "test_files": [
+    "numpy/core/tests/test_cython.py",
+    "numpy/core/tests/test_scalarmath.py",
+    "numpy/random/tests/test_extending.py"
+  ],
+  "diff_lines": 720
+}

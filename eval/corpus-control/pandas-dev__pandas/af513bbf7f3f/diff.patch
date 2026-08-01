@@ -1,0 +1,39 @@
+diff --git a/pandas/core/indexes/datetimes.py b/pandas/core/indexes/datetimes.py
+index d1245e8856..3cf84804e0 100644
+--- a/pandas/core/indexes/datetimes.py
++++ b/pandas/core/indexes/datetimes.py
+@@ -790,7 +790,7 @@ def date_range(
+         Right bound for generating dates.
+     periods : int, optional
+         Number of periods to generate.
+-    freq : str, datetime.timedelta, or DateOffset, default 'D'
++    freq : str, Timedelta, datetime.timedelta, or DateOffset, default 'D'
+         Frequency strings can have multiples, e.g. '5H'. See
+         :ref:`here <timeseries.offset_aliases>` for a list of
+         frequency aliases.
+diff --git a/pandas/core/indexes/interval.py b/pandas/core/indexes/interval.py
+index a686176d41..19bf24ac37 100644
+--- a/pandas/core/indexes/interval.py
++++ b/pandas/core/indexes/interval.py
+@@ -991,7 +991,7 @@ def interval_range(
+         Right bound for generating intervals.
+     periods : int, default None
+         Number of periods to generate.
+-    freq : numeric, str, datetime.timedelta, or DateOffset, default None
++    freq : numeric, str, Timedelta, datetime.timedelta, or DateOffset, default None
+         The length of each interval. Must be consistent with the type of start
+         and end, e.g. 2 for numeric, or '5H' for datetime-like.  Default is 1
+         for numeric and 'D' for datetime-like.
+diff --git a/pandas/core/indexes/timedeltas.py b/pandas/core/indexes/timedeltas.py
+index 18b6ca5835..de5e5c61e9 100644
+--- a/pandas/core/indexes/timedeltas.py
++++ b/pandas/core/indexes/timedeltas.py
+@@ -246,7 +246,7 @@ def timedelta_range(
+         Right bound for generating timedeltas.
+     periods : int, default None
+         Number of periods to generate.
+-    freq : str or DateOffset, default 'D'
++    freq : str, Timedelta, datetime.timedelta, or DateOffset, default 'D'
+         Frequency strings can have multiples, e.g. '5H'.
+     name : str, default None
+         Name of the resulting TimedeltaIndex.

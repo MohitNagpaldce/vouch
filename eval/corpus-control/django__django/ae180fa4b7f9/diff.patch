@@ -1,0 +1,129 @@
+diff --git a/django/utils/translation/__init__.py b/django/utils/translation/__init__.py
+index 7f5600be04..b1df722428 100644
+--- a/django/utils/translation/__init__.py
++++ b/django/utils/translation/__init__.py
+@@ -110,20 +110,30 @@ def lazy_number(func, resultclass, number=None, **kwargs):
+             def __bool__(self):
+                 return bool(kwargs['singular'])
+ 
++            def _get_number_value(self, values):
++                try:
++                    return values[number]
++                except KeyError:
++                    raise KeyError(
++                        "Your dictionary lacks key '%s\'. Please provide "
++                        "it, because it is required to determine whether "
++                        "string is singular or plural." % number
++                    )
++
++            def _translate(self, number_value):
++                kwargs['number'] = number_value
++                return func(**kwargs)
++
++            def format(self, *args, **kwargs):
++                number_value = self._get_number_value(kwargs) if kwargs and number else args[0]
++                return self._translate(number_value).format(*args, **kwargs)
++
+             def __mod__(self, rhs):
+                 if isinstance(rhs, dict) and number:
+-                    try:
+-                        number_value = rhs[number]
+-                    except KeyError:
+-                        raise KeyError(
+-                            "Your dictionary lacks key '%s\'. Please provide "
+-                            "it, because it is required to determine whether "
+-                            "string is singular or plural." % number
+-                        )
++                    number_value = self._get_number_value(rhs)
+                 else:
+                     number_value = rhs
+-                kwargs['number'] = number_value
+-                translated = func(**kwargs)
++                translated = self._translate(number_value)
+                 try:
+                     translated = translated % rhs
+                 except TypeError:
+diff --git a/tests/i18n/other/locale/de/LC_MESSAGES/django.mo b/tests/i18n/other/locale/de/LC_MESSAGES/django.mo
+index ef64b650ec..a8716118b7 100644
+Binary files a/tests/i18n/other/locale/de/LC_MESSAGES/django.mo and b/tests/i18n/other/locale/de/LC_MESSAGES/django.mo differ
+diff --git a/tests/i18n/other/locale/de/LC_MESSAGES/django.po b/tests/i18n/other/locale/de/LC_MESSAGES/django.po
+index 822fa3796b..bbb2b02858 100644
+--- a/tests/i18n/other/locale/de/LC_MESSAGES/django.po
++++ b/tests/i18n/other/locale/de/LC_MESSAGES/django.po
+@@ -107,4 +107,30 @@ msgstr "Es gibt %(num_comments)s Kommentare"
+ #: models.py:23
+ msgctxt "other comment count"
+ msgid "There are %(num_comments)s comments"
+-msgstr "Andere: Es gibt %(num_comments)s Kommentare"
+\ No newline at end of file
++msgstr "Andere: Es gibt %(num_comments)s Kommentare"
++
++#: tests.py:213
++msgid "{} good result"
++msgid_plural "{} good results"
++msgstr[0] "{} gutes Resultat"
++msgstr[1] "{} guten Resultate"
++
++#: tests.py:214
++msgctxt "Exclamation"
++msgid "{} good result"
++msgid_plural "{} good results"
++msgstr[0] "{} gutes Resultat!"
++msgstr[1] "{} guten Resultate!"
++
++#: tests.py:226
++msgid "Hi {name}, {num} good result"
++msgid_plural "Hi {name}, {num} good results"
++msgstr[0] "Hallo {name}, {num} gutes Resultat"
++msgstr[1] "Hallo {name}, {num} guten Resultate"
++
++#: tests.py:230
++msgctxt "Greeting"
++msgid "Hi {name}, {num} good result"
++msgid_plural "Hi {name}, {num} good results"
++msgstr[0] "Willkommen {name}, {num} gutes Resultat"
++msgstr[1] "Willkommen {name}, {num} guten Resultate"
+diff --git a/tests/i18n/tests.py b/tests/i18n/tests.py
+index 317a380a2f..7b54089cf2 100644
+--- a/tests/i18n/tests.py
++++ b/tests/i18n/tests.py
+@@ -208,6 +208,39 @@ class TranslationTests(SimpleTestCase):
+             with self.assertRaisesMessage(KeyError, 'Your dictionary lacks key'):
+                 complex_context_deferred % {'name': 'Jim'}
+ 
++    @override_settings(LOCALE_PATHS=extended_locale_paths)
++    def test_ngettext_lazy_format_style(self):
++        simple_with_format = ngettext_lazy('{} good result', '{} good results')
++        simple_context_with_format = npgettext_lazy('Exclamation', '{} good result', '{} good results')
++
++        with translation.override('de'):
++            self.assertEqual(simple_with_format.format(1), '1 gutes Resultat')
++            self.assertEqual(simple_with_format.format(4), '4 guten Resultate')
++            self.assertEqual(simple_context_with_format.format(1), '1 gutes Resultat!')
++            self.assertEqual(simple_context_with_format.format(4), '4 guten Resultate!')
++
++        complex_nonlazy = ngettext_lazy('Hi {name}, {num} good result', 'Hi {name}, {num} good results', 4)
++        complex_deferred = ngettext_lazy(
++            'Hi {name}, {num} good result', 'Hi {name}, {num} good results', 'num'
++        )
++        complex_context_nonlazy = npgettext_lazy(
++            'Greeting', 'Hi {name}, {num} good result', 'Hi {name}, {num} good results', 4
++        )
++        complex_context_deferred = npgettext_lazy(
++            'Greeting', 'Hi {name}, {num} good result', 'Hi {name}, {num} good results', 'num'
++        )
++        with translation.override('de'):
++            self.assertEqual(complex_nonlazy.format(num=4, name='Jim'), 'Hallo Jim, 4 guten Resultate')
++            self.assertEqual(complex_deferred.format(name='Jim', num=1), 'Hallo Jim, 1 gutes Resultat')
++            self.assertEqual(complex_deferred.format(name='Jim', num=5), 'Hallo Jim, 5 guten Resultate')
++            with self.assertRaisesMessage(KeyError, 'Your dictionary lacks key'):
++                complex_deferred.format(name='Jim')
++            self.assertEqual(complex_context_nonlazy.format(num=4, name='Jim'), 'Willkommen Jim, 4 guten Resultate')
++            self.assertEqual(complex_context_deferred.format(name='Jim', num=1), 'Willkommen Jim, 1 gutes Resultat')
++            self.assertEqual(complex_context_deferred.format(name='Jim', num=5), 'Willkommen Jim, 5 guten Resultate')
++            with self.assertRaisesMessage(KeyError, 'Your dictionary lacks key'):
++                complex_context_deferred.format(name='Jim')
++
+     def test_ngettext_lazy_bool(self):
+         self.assertTrue(ngettext_lazy('%d good result', '%d good results'))
+         self.assertFalse(ngettext_lazy('', ''))

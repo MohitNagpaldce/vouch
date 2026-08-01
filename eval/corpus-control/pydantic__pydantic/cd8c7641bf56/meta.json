@@ -1,0 +1,17 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "cd8c7641bf56fa98826f1b09b4fa8e734d419945",
+  "kind": "control_good",
+  "subject": "Fix JSON Schema for list, tuple, and set, improving interoperability (#540)",
+  "evidence_subject": "Fix JSON Schema for list, tuple, and set, improving interoperability (#540)",
+  "author": "Sebasti\u00e1n Ram\u00edrez",
+  "date": "2019-05-23T13:18:46+04:00",
+  "impl_files": [
+    "docs/schema_mapping.py",
+    "pydantic/schema.py"
+  ],
+  "test_files": [
+    "tests/test_schema.py"
+  ],
+  "diff_lines": 92
+}

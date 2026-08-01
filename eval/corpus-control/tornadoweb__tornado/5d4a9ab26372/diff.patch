@@ -1,0 +1,37 @@
+diff --git a/tornado/test/websocket_test.py b/tornado/test/websocket_test.py
+index 5a2a6577..54734d81 100644
+--- a/tornado/test/websocket_test.py
++++ b/tornado/test/websocket_test.py
+@@ -193,6 +193,13 @@ class WebSocketTest(WebSocketBaseTestCase):
+         response = self.fetch('/echo')
+         self.assertEqual(response.code, 400)
+ 
++    def test_missing_websocket_key(self):
++        response = self.fetch('/echo',
++                              headers={'Connection': 'Upgrade',
++                                       'Upgrade': 'WebSocket',
++                                       'Sec-WebSocket-Version': '13'})
++        self.assertEqual(response.code, 400)
++
+     def test_bad_websocket_version(self):
+         response = self.fetch('/echo',
+                               headers={'Connection': 'Upgrade',
+diff --git a/tornado/websocket.py b/tornado/websocket.py
+index d5a7fa89..c6804ca0 100644
+--- a/tornado/websocket.py
++++ b/tornado/websocket.py
+@@ -616,6 +616,14 @@ class WebSocketProtocol13(WebSocketProtocol):
+     def accept_connection(self):
+         try:
+             self._handle_websocket_headers()
++        except ValueError:
++            self.handler.set_status(400)
++            log_msg = "Missing/Invalid WebSocket headers"
++            self.handler.finish(log_msg)
++            gen_log.debug(log_msg)
++            return
++
++        try:
+             self._accept_connection()
+         except ValueError:
+             gen_log.debug("Malformed WebSocket request received",

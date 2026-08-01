@@ -1,0 +1,14 @@
+{
+  "repo": "fastapi/fastapi",
+  "sha": "0125ea4f83b29ae51386eb33cd7409aa98be93f9",
+  "kind": "control_good",
+  "subject": ":memo: Update tutorials",
+  "evidence_subject": ":memo: Update tutorials",
+  "author": "Sebasti\u00e1n Ram\u00edrez",
+  "date": "2018-12-28T16:03:54+04:00",
+  "impl_files": [
+    "docs/src/security/tutorial003.py"
+  ],
+  "test_files": [],
+  "diff_lines": 191
+}

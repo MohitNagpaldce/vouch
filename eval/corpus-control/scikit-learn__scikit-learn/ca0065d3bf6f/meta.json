@@ -1,0 +1,16 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "ca0065d3bf6f7577c64a10c0ef5a18f4c2e74cf5",
+  "kind": "control_good",
+  "subject": "BUG exchanging _safe_accumulator_op for np.average (#18537)",
+  "evidence_subject": "BUG exchanging _safe_accumulator_op for np.average (#18537)",
+  "author": "Maria Telenczuk",
+  "date": "2020-10-06T17:14:28+02:00",
+  "impl_files": [
+    "sklearn/utils/extmath.py"
+  ],
+  "test_files": [
+    "sklearn/utils/tests/test_extmath.py"
+  ],
+  "diff_lines": 57
+}

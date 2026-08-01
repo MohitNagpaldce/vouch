@@ -1,0 +1,15 @@
+{
+  "repo": "celery/celery",
+  "sha": "b0bb4121ec448850192913906664ff3f7624a393",
+  "kind": "control_good",
+  "subject": "Remove deprecated app.queues.select_subset/select_remove (use select/deselect)",
+  "evidence_subject": "Remove deprecated app.queues.select_subset/select_remove (use select/deselect)",
+  "author": "Ask Solem",
+  "date": "2016-06-13T16:28:41-07:00",
+  "impl_files": [
+    "celery/app/__init__.py",
+    "celery/app/amqp.py"
+  ],
+  "test_files": [],
+  "diff_lines": 33
+}

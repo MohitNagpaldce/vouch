@@ -1,0 +1,20 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "bba0cdcc67d4a1160d4ed9d3f99aef170a79dd88",
+  "kind": "control_good",
+  "subject": "Force UTF-8 as filesystem encoding in some cases",
+  "evidence_subject": "Force UTF-8 as filesystem encoding in some cases",
+  "author": "Markus Unterwaditzer",
+  "date": "2015-02-07T02:15:06+01:00",
+  "impl_files": [
+    "werkzeug/_compat.py",
+    "werkzeug/contrib/sessions.py",
+    "werkzeug/datastructures.py",
+    "werkzeug/debug/tbtools.py",
+    "werkzeug/filesystem.py",
+    "werkzeug/posixemulation.py",
+    "werkzeug/wsgi.py"
+  ],
+  "test_files": [],
+  "diff_lines": 321
+}

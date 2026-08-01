@@ -1,0 +1,16 @@
+{
+  "repo": "fastapi/fastapi",
+  "sha": "69cb005f61239a378a7e0715cc5e3ff4b713ab4d",
+  "kind": "control_good",
+  "subject": "\ud83d\udcdd Replace `email` with `username` in `docs_src/security/tutorial007` code examples (#10649)",
+  "evidence_subject": "\ud83d\udcdd Replace `email` with `username` in `docs_src/security/tutorial007` code examples (#10649)",
+  "author": "Nils Lindemann",
+  "date": "2024-01-11T15:33:05+01:00",
+  "impl_files": [
+    "docs_src/security/tutorial007.py",
+    "docs_src/security/tutorial007_an.py",
+    "docs_src/security/tutorial007_an_py39.py"
+  ],
+  "test_files": [],
+  "diff_lines": 66
+}

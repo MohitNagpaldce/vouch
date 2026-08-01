@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/flask",
+  "sha": "aa7e15dcbab208ca404bcecd94cbe6fc583150dc",
+  "kind": "control_good",
+  "subject": "Reduce unnecessary function calls. When propagate exceptions, the function call of \"_find_error_handler\" makes no sense.",
+  "evidence_subject": "Reduce unnecessary function calls. When propagate exceptions, the function call of \"_find_error_handler\" makes no sense.",
+  "author": "garenchan",
+  "date": "2018-09-19T10:39:56+08:00",
+  "impl_files": [
+    "flask/app.py"
+  ],
+  "test_files": [],
+  "diff_lines": 22
+}

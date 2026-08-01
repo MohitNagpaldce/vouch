@@ -1,0 +1,16 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "117072d64c395283f8e035ed4dc44e838623c119",
+  "kind": "control_good",
+  "subject": "typing: fix _pytest.config.findpaths.determine_setup",
+  "evidence_subject": "typing: fix _pytest.config.findpaths.determine_setup",
+  "author": "Daniel Hahler",
+  "date": "2020-01-12T22:17:49+01:00",
+  "impl_files": [
+    "src/_pytest/config/findpaths.py"
+  ],
+  "test_files": [
+    "testing/test_config.py"
+  ],
+  "diff_lines": 95
+}

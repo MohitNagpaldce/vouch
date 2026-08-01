@@ -1,0 +1,14 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "8e5ecad25ea86d52245a9587fd454613f03c7fb8",
+  "kind": "control_good",
+  "subject": "spelling corrections",
+  "evidence_subject": "spelling corrections",
+  "author": "Semen Zhydenko",
+  "date": "2019-08-12T01:44:12+02:00",
+  "impl_files": [
+    "tornado/http1connection.py"
+  ],
+  "test_files": [],
+  "diff_lines": 22
+}

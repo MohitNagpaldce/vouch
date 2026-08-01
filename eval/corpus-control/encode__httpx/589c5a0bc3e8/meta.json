@@ -1,0 +1,14 @@
+{
+  "repo": "encode/httpx",
+  "sha": "589c5a0bc3e8e291b24b7bdb1427ee39267228b3",
+  "kind": "control_good",
+  "subject": "Map `httpcore` transport close exceptions to `httpx` exceptions. (#1606)",
+  "evidence_subject": "Map `httpcore` transport close exceptions to `httpx` exceptions. (#1606)",
+  "author": "Tom Christie",
+  "date": "2021-04-29T12:37:37+01:00",
+  "impl_files": [
+    "httpx/_transports/default.py"
+  ],
+  "test_files": [],
+  "diff_lines": 24
+}

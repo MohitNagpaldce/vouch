@@ -1,0 +1,63 @@
+diff --git a/CHANGES b/CHANGES
+index 3eb96d8d..5ae2698c 100644
+--- a/CHANGES
++++ b/CHANGES
+@@ -10,6 +10,8 @@ Release date and codename to be decided
+   ``contrib.cache``.
+ - Fixed a bug on Python 3 when creating adhoc ssl contexts, due to `sys.maxint`
+   not being defined.
++- Fixed a bug on Python 3, that caused
++  :func:`~werkzeug.serving.make_ssl_devcert` to fail with an exception.
+ 
+ Version 0.9.5
+ -------------
+diff --git a/werkzeug/serving.py b/werkzeug/serving.py
+index 43c4c71c..160a0ce6 100644
+--- a/werkzeug/serving.py
++++ b/werkzeug/serving.py
+@@ -323,9 +323,9 @@ def make_ssl_devcert(base_path, host=None, cn=None):
+     cert_file = base_path + '.crt'
+     pkey_file = base_path + '.key'
+ 
+-    with open(cert_file, 'w') as f:
++    with open(cert_file, 'wb') as f:
+         f.write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
+-    with open(pkey_file, 'w') as f:
++    with open(pkey_file, 'wb') as f:
+         f.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, pkey))
+ 
+     return cert_file, pkey_file
+diff --git a/werkzeug/testsuite/serving.py b/werkzeug/testsuite/serving.py
+index 5d6e7d07..1ef623e1 100644
+--- a/werkzeug/testsuite/serving.py
++++ b/werkzeug/testsuite/serving.py
+@@ -8,6 +8,7 @@
+     :copyright: (c) 2013 by Armin Ronacher.
+     :license: BSD, see LICENSE for more details.
+ """
++import os
+ import sys
+ import time
+ try:
+@@ -28,7 +29,7 @@ try:
+ except ImportError:
+     OpenSSL = None
+ 
+-from werkzeug.testsuite import WerkzeugTestCase
++from werkzeug.testsuite import WerkzeugTestCase, get_temporary_directory
+ 
+ from werkzeug import __version__ as version, serving
+ from werkzeug.testapp import test_app
+@@ -128,6 +129,12 @@ class ServingTestCase(WerkzeugTestCase):
+             response = connection.getresponse()
+             assert response.read() == b'hello'
+ 
++        def test_make_ssl_devcert(self):
++            certificate, private_key = serving.make_ssl_devcert(
++                get_temporary_directory())
++            assert os.path.isfile(certificate)
++            assert os.path.isfile(private_key)
++
+ 
+ def suite():
+     suite = unittest.TestSuite()

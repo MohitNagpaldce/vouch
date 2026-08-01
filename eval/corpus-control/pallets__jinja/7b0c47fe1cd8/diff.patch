@@ -1,0 +1,23 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 5770eff..0a67388 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -3,7 +3,7 @@
+ Version 3.1.0
+ -------------
+ 
+-Unreleased
++Released 2022-03-24
+ 
+ -   Drop support for Python 3.6. :pr:`1534`
+ -   Remove previously deprecated code. :pr:`1544`
+diff --git a/src/jinja2/__init__.py b/src/jinja2/__init__.py
+index f2499c7..5478417 100644
+--- a/src/jinja2/__init__.py
++++ b/src/jinja2/__init__.py
+@@ -34,4 +34,4 @@ from .utils import pass_environment as pass_environment
+ from .utils import pass_eval_context as pass_eval_context
+ from .utils import select_autoescape as select_autoescape
+ 
+-__version__ = "3.1.0.dev0"
++__version__ = "3.1.0"

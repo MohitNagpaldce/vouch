@@ -1,0 +1,15 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "20efcb2c47c633e373540458aa0c8bd892923459",
+  "kind": "control_good",
+  "subject": "DOC: align contour parameter doc with implementation",
+  "evidence_subject": "DOC: align contour parameter doc with implementation",
+  "author": "Martok",
+  "date": "2022-10-08T15:10:10+02:00",
+  "impl_files": [
+    "lib/matplotlib/contour.py",
+    "lib/matplotlib/tri/tricontour.py"
+  ],
+  "test_files": [],
+  "diff_lines": 26
+}

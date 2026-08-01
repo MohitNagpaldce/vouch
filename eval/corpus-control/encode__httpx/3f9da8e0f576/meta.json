@@ -1,0 +1,14 @@
+{
+  "repo": "encode/httpx",
+  "sha": "3f9da8e0f57678276ca8758a143d682006f2edba",
+  "kind": "control_good",
+  "subject": "Bump `black` to 22.3.0 (#2153)",
+  "evidence_subject": "Bump `black` to 22.3.0 (#2153)",
+  "author": "Marcelo Trylesinski",
+  "date": "2022-03-30T10:56:57+02:00",
+  "impl_files": [
+    "httpx/_compat.py"
+  ],
+  "test_files": [],
+  "diff_lines": 25
+}

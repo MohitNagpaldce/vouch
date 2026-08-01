@@ -1,0 +1,16 @@
+diff --git a/src/pip/_internal/commands/cache.py b/src/pip/_internal/commands/cache.py
+index fc46f9d6b..4d557a0f9 100644
+--- a/src/pip/_internal/commands/cache.py
++++ b/src/pip/_internal/commands/cache.py
+@@ -20,9 +20,9 @@ logger = logging.getLogger(__name__)
+ 
+ class CacheCommand(Command):
+     """
+-        Inspect and manage pip's wheel cache.
++    Inspect and manage pip's wheel cache.
+ 
+-        Subcommands:
++    Subcommands:
+ 
+         info: Show information about the cache.
+         list: List filenames of packages stored in the cache.

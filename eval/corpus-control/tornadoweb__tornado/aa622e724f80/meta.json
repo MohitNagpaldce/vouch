@@ -1,0 +1,16 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "aa622e724f80e0f7fcee369f75d69d1db13d72f2",
+  "kind": "control_good",
+  "subject": "httpclient: Fix warning logged by sync HTTPClient destructor",
+  "evidence_subject": "httpclient: Fix warning logged by sync HTTPClient destructor",
+  "author": "Ben Darnell",
+  "date": "2018-12-02T12:33:07-05:00",
+  "impl_files": [
+    "tornado/httpclient.py"
+  ],
+  "test_files": [
+    "tornado/test/httpclient_test.py"
+  ],
+  "diff_lines": 92
+}

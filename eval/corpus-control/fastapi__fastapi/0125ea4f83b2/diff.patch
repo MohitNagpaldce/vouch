@@ -1,0 +1,191 @@
+diff --git a/docs/src/security/tutorial003.py b/docs/src/security/tutorial003.py
+index e10384c6..d18330e9 100644
+--- a/docs/src/security/tutorial003.py
++++ b/docs/src/security/tutorial003.py
+@@ -10,6 +10,13 @@ fake_users_db = {
+         "email": "johndoe@example.com",
+         "hashed_password": "fakehashedsecret",
+         "disabled": False,
++    },
++    "alice": {
++        "username": "alice",
++        "full_name": "Alice Wonderson",
++        "email": "alice@example.com",
++        "hashed_password": "fakehashedsecret2",
++        "disabled": True,
+     }
+ }
+ 
+@@ -68,7 +75,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+     if not user_dict:
+         raise HTTPException(status_code=400, detail="Incorrect username or password")
+     user = UserInDB(**user_dict)
+-    hashed_password = fake_hash_password(data.password)
++    hashed_password = fake_hash_password(form_data.password)
+     if not hashed_password == user.hashed_password:
+         raise HTTPException(status_code=400, detail="Incorrect username or password")
+ 
+diff --git a/docs/tutorial/extra-models.md b/docs/tutorial/extra-models.md
+index 1cf727df..ad35ffee 100644
+--- a/docs/tutorial/extra-models.md
++++ b/docs/tutorial/extra-models.md
+@@ -7,7 +7,9 @@ This is especially the case for user models, because:
+ * The **database model** would probably need to have a hashed password.
+ 
+ !!! danger
+-    Never store user's plaintext passwords. Always store a secure hash that you can then verify.
++    Never store user's plaintext passwords. Always store a "secure hash" that you can then verify.
++
++    If you don't know, you will learn what a "password hash" is in the <a href="/tutorial/security/simple-oauth2/#password-hashing" target="_blank">security chapters</a>.
+ 
+ ## Multiple models
+ 
+@@ -17,6 +19,39 @@ Here's a general idea of how the models could look like with their password fiel
+ {!./src/extra_models/tutorial001.py!}
+ ```
+ 
++#### About `**user_dict`
++
++`UserInDB(**user_dict)` means:
++    
++Pass the keys and values of the `user_dict` directly as key-value arguments, equivalent to:
++
++```Python
++UserInDB(
++    username = user_dict["username"],
++    password = user_dict["password"],
++    email = user_dict["email"],
++    full_name = user_dict["full_name"],
++)
++```
++
++And then adding the extra `hashed_password=hashed_password`, like in:
++
++```Python
++UserInDB(**user_in.dict(), hashed_password=hashed_password)
++```
++
++...ends up being like:
++
++```Python
++UserInDB(
++    username = user_dict["username"],
++    password = user_dict["password"],
++    email = user_dict["email"],
++    full_name = user_dict["full_name"],
++    hashed_password = hashed_password,
++)
++```
++
+ !!! warning
+     The supporting additional functions are just to demo a possible flow of the data, but they of course are not providing any real security.
+ 
+diff --git a/docs/tutorial/security/oauth2-jwt.md b/docs/tutorial/security/oauth2-jwt.md
+index 8544514a..17756468 100644
+--- a/docs/tutorial/security/oauth2-jwt.md
++++ b/docs/tutorial/security/oauth2-jwt.md
+@@ -52,7 +52,7 @@ The recommended algorithm is "Bcrypt".
+ 
+ So, install PassLib with Bcrypt:
+ 
+-```Python
++```bash
+ pip install passlib[bcrypt]
+ ```
+ 
+diff --git a/docs/tutorial/security/simple-oauth2.md b/docs/tutorial/security/simple-oauth2.md
+index 93cf5e99..3d5a1a54 100644
+--- a/docs/tutorial/security/simple-oauth2.md
++++ b/docs/tutorial/security/simple-oauth2.md
+@@ -48,7 +48,7 @@ Now let's use the utilities provided by **FastAPI** to handle this.
+ 
+ First, import `OAuth2PasswordRequestForm`, and use it as a dependency with `Depends` for the path `/token`:
+ 
+-```Python hl_lines="2 66"
++```Python hl_lines="2 73"
+ {!./src/security/tutorial003.py!}
+ ```
+ 
+@@ -80,7 +80,7 @@ If there is no such user, we return an error saying "incorrect username or passw
+ 
+ For the error, we use the exception `HTTPException` provided by Starlette directly:
+ 
+-```Python hl_lines="4 67 68 69"
++```Python hl_lines="4 74 75 76"
+ {!./src/security/tutorial003.py!}
+ ```
+ 
+@@ -94,7 +94,21 @@ You should never save plaintext passwords, so, we'll use the (fake) password has
+ 
+ If the passwords don't match, we return the same error.
+ 
+-```Python hl_lines="70 71 72 73"
++#### Password hashing
++
++"Hashing" means: converting some content (a password in this case) into a sequence of bytes (just a string) that look like gibberish.
++
++Whenever you pass exactly the same content (exactly the same password) you get exactly the same gibberish.
++
++But you cannot convert from the gibberish back to the password.
++
++##### What for?
++
++If your database is stolen, the thief won't have your users' plaintext passwords, only the hashes.
++
++So, the thief won't be able to try to use that password in another system (as many users use the same password everywhere, this would be dangerous).
++
++```Python hl_lines="77 78 79 80"
+ {!./src/security/tutorial003.py!}
+ ```
+ 
+@@ -129,7 +143,7 @@ For this simple example, we are going to just be completely insecure and return
+ 
+     But for now, let's focus on the specific details we need.
+ 
+-```Python hl_lines="75"
++```Python hl_lines="82"
+ {!./src/security/tutorial003.py!}
+ ```
+ 
+@@ -145,7 +159,7 @@ Both of these dependencies will just return an HTTP error if the user doesn't ex
+ 
+ So, in our endpoint, we will only get a user if the user exists, was correctly authenticated, and is active:
+ 
+-```Python hl_lines="50 51 52 53 54 55 56 59 60 61 62 79"
++```Python hl_lines="57 58 59 60 61 62 63 66 67 68 69 86"
+ {!./src/security/tutorial003.py!}
+ ```
+ 
+@@ -160,6 +174,7 @@ Click the "Authorize" button.
+ Use the credentials:
+ 
+ User: `johndoe`
++
+ Password: `secret`
+ 
+ <img src="/img/tutorial/security/image04.png">
+@@ -194,6 +209,24 @@ If you click the lock icon and logout, and then try the same operation again, yo
+ }
+ ```
+ 
++### Inactive user
++
++Now try with an inactive user, authenticate with:
++
++User: `alice`
++
++Password: `secret2`
++
++And try to use the operation `GET` with the path `/users/me`.
++
++You will get an "inactive user" error, like:
++
++```JSON
++{
++  "detail": "Inactive user"
++}
++```
++
+ ## Recap
+ 
+ You now have the tools to implement a complete security system based on `username` and `password` for your API.

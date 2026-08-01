@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/click",
+  "sha": "dfae0a101190258677261f534249f6d6c862894a",
+  "kind": "control_good",
+  "subject": "refactor try/except",
+  "evidence_subject": "refactor try/except",
+  "author": "David Lord",
+  "date": "2022-02-21T17:35:33-08:00",
+  "impl_files": [
+    "src/click/decorators.py"
+  ],
+  "test_files": [],
+  "diff_lines": 18
+}

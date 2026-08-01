@@ -1,0 +1,15 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "91a4b980b2381c77faede2f936da4bc9831802cd",
+  "kind": "control_good",
+  "subject": "BENCH: cover integer max/min and fmax/fmin tests",
+  "evidence_subject": "BENCH: cover integer max/min and fmax/fmin tests",
+  "author": "Sayed Adel",
+  "date": "2021-12-31T04:15:14+02:00",
+  "impl_files": [
+    "benchmarks/benchmarks/bench_reduce.py",
+    "benchmarks/benchmarks/bench_ufunc_strides.py"
+  ],
+  "test_files": [],
+  "diff_lines": 93
+}

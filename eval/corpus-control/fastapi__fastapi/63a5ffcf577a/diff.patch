@@ -1,0 +1,12 @@
+diff --git a/fastapi/__init__.py b/fastapi/__init__.py
+index 70f363c8..afdc9487 100644
+--- a/fastapi/__init__.py
++++ b/fastapi/__init__.py
+@@ -1,6 +1,6 @@
+ """FastAPI framework, high performance, easy to learn, fast to code, ready for production"""
+ 
+-__version__ = "0.86.0"
++__version__ = "0.87.0"
+ 
+ from starlette import status as status
+ 

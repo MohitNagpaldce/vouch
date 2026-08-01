@@ -1,0 +1,14 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "5422716d04959200b815621a4c100ac657c22f31",
+  "kind": "control_good",
+  "subject": "BLD: Move options to pyproject.toml (#49917)",
+  "evidence_subject": "BLD: Move options to pyproject.toml (#49917)",
+  "author": "Thomas Li",
+  "date": "2022-11-29T13:59:37-05:00",
+  "impl_files": [
+    "scripts/validate_min_versions_in_sync.py"
+  ],
+  "test_files": [],
+  "diff_lines": 410
+}

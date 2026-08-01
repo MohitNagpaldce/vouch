@@ -1,0 +1,14 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "77bcc98ff223d5f10f5c17dd0ff6fabd27706194",
+  "kind": "control_good",
+  "subject": "BENCH: Rework numpy stats reductions",
+  "evidence_subject": "BENCH: Rework numpy stats reductions",
+  "author": "Rohit Goswami",
+  "date": "2023-01-22T18:07:12+02:00",
+  "impl_files": [
+    "benchmarks/benchmarks/bench_reduce.py"
+  ],
+  "test_files": [],
+  "diff_lines": 49
+}

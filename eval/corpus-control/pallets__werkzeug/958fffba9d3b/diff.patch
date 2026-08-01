@@ -1,0 +1,131 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index c91272f8..f130e935 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -8,6 +8,9 @@ Unreleased
+ -   Drop support for Python 2 and 3.5. :pr:`1693`
+ -   Deprecate :func:`utils.format_string`, use :class:`string.Template`
+     instead. :issue:`1756`
++-   Deprecate :func:`utils.bind_arguments` and
++    :func:`utils.validate_arguments`, use :meth:`Signature.bind` and
++    :func:`inspect.signature` instead. :issue:`1757`
+ -   ``JSONMixin`` no longer uses simplejson if it's installed. To use
+     another JSON module, override ``JSONMixin.json_module``. :pr:`1766`
+ -   Add a ``url_scheme`` argument to :meth:`~routing.MapAdapter.build`
+diff --git a/src/werkzeug/_internal.py b/src/werkzeug/_internal.py
+index 172ff175..b4c916b4 100644
+--- a/src/werkzeug/_internal.py
++++ b/src/werkzeug/_internal.py
+@@ -161,7 +161,11 @@ def _log(type, message, *args, **kwargs):
+ 
+ 
+ def _parse_signature(func):
+-    """Return a signature object for the function."""
++    """Return a signature object for the function.
++
++    .. deprecated:: 2.0
++        Will be removed in 2.1 along with utils.bind/validate_arguments
++    """
+     # if we have a cached validator for this function, return it
+     parse = _signature_cache.get(func)
+     if parse is not None:
+diff --git a/src/werkzeug/utils.py b/src/werkzeug/utils.py
+index d2ab613c..f804d77b 100644
+--- a/src/werkzeug/utils.py
++++ b/src/werkzeug/utils.py
+@@ -628,7 +628,16 @@ def validate_arguments(func, args, kwargs, drop_extra=True):
+     :param drop_extra: set to `False` if you don't want extra arguments
+                        to be silently dropped.
+     :return: tuple in the form ``(args, kwargs)``.
++
++    .. deprecated:: 2.0
++        Will be removed in 2.1. Use :func:`inspect.signature` instead.
+     """
++    warnings.warn(
++        "'utils.validate_arguments' is deprecated and will be removed"
++        " in 2.1. Use 'inspect.signature' instead.",
++        DeprecationWarning,
++        stacklevel=2,
++    )
+     parser = _parse_signature(func)
+     args, kwargs, missing, extra, extra_positional = parser(args, kwargs)[:5]
+     if missing:
+@@ -649,7 +658,16 @@ def bind_arguments(func, args, kwargs):
+     :param args: tuple of positional arguments.
+     :param kwargs: a dict of keyword arguments.
+     :return: a :class:`dict` of bound keyword arguments.
++
++    .. deprecated:: 2.0
++        Will be removed in 2.1. Use :meth:`Signature.bind` instead.
+     """
++    warnings.warn(
++        "'utils.bind_arguments' is deprecated and will be removed in"
++        " 2.1. Use 'Signature.bind' instead.",
++        DeprecationWarning,
++        stacklevel=2,
++    )
+     (
+         args,
+         kwargs,
+@@ -680,8 +698,11 @@ def bind_arguments(func, args, kwargs):
+ 
+ 
+ class ArgumentValidationError(ValueError):
++    """Raised if :func:`validate_arguments` fails to validate
+ 
+-    """Raised if :func:`validate_arguments` fails to validate"""
++    .. deprecated:: 2.0
++        Will be removed in 2.1 along with utils.bind/validate_arguments.
++    """
+ 
+     def __init__(self, missing=None, extra=None, extra_positional=None):
+         self.missing = set(missing or ())
+diff --git a/tests/test_utils.py b/tests/test_utils.py
+index 9b7e21a5..a646a1f3 100644
+--- a/tests/test_utils.py
++++ b/tests/test_utils.py
+@@ -279,44 +279,6 @@ def test_html_builder():
+     )
+ 
+ 
+-def test_validate_arguments():
+-    def take_none():
+-        pass
+-
+-    def take_two(a, b):
+-        pass
+-
+-    def take_two_one_default(a, b=0):
+-        pass
+-
+-    assert utils.validate_arguments(take_two, (1, 2), {}) == ((1, 2), {})
+-    assert utils.validate_arguments(take_two, (1,), {"b": 2}) == ((1, 2), {})
+-    assert utils.validate_arguments(take_two_one_default, (1,), {}) == ((1, 0), {})
+-    assert utils.validate_arguments(take_two_one_default, (1, 2), {}) == ((1, 2), {})
+-
+-    pytest.raises(
+-        utils.ArgumentValidationError, utils.validate_arguments, take_two, (), {}
+-    )
+-
+-    assert utils.validate_arguments(take_none, (1, 2), {"c": 3}) == ((), {})
+-    pytest.raises(
+-        utils.ArgumentValidationError,
+-        utils.validate_arguments,
+-        take_none,
+-        (1,),
+-        {},
+-        drop_extra=False,
+-    )
+-    pytest.raises(
+-        utils.ArgumentValidationError,
+-        utils.validate_arguments,
+-        take_none,
+-        (),
+-        {"a": 1},
+-        drop_extra=False,
+-    )
+-
+-
+ def test_header_set_duplication_bug():
+     headers = Headers([("Content-Type", "text/html"), ("Foo", "bar"), ("Blub", "blah")])
+     headers["blub"] = "hehe"

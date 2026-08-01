@@ -1,0 +1,14 @@
+{
+  "repo": "psf/black",
+  "sha": "f61299a62a330dd26d180a8ea420916870f19730",
+  "kind": "control_good",
+  "subject": "Exclude __pypackages__ by default (GH-2836)",
+  "evidence_subject": "Exclude __pypackages__ by default (GH-2836)",
+  "author": "Jelle Zijlstra",
+  "date": "2022-01-30T12:01:56-08:00",
+  "impl_files": [
+    "src/black/const.py"
+  ],
+  "test_files": [],
+  "diff_lines": 26
+}

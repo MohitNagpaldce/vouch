@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "7b0c47fe1cd836e19242738fc53f40855c1d7971",
+  "kind": "control_good",
+  "subject": "release version 3.1.0",
+  "evidence_subject": "release version 3.1.0",
+  "author": "David Lord",
+  "date": "2022-03-24T07:10:11-07:00",
+  "impl_files": [
+    "src/jinja2/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 23
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "encode/httpx",
+  "sha": "3e12fd0656bb6dacd2d2cd2c7c8ed9723079eae3",
+  "kind": "control_good",
+  "subject": "Adding NetworkError to __init__ (#814)",
+  "evidence_subject": "Adding NetworkError to __init__ (#814)",
+  "author": "Primo\u017e Godec",
+  "date": "2020-02-12T16:19:48+01:00",
+  "impl_files": [
+    "httpx/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 20
+}

@@ -1,0 +1,16 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "7140d8e4b7de7ed29af0f0321eef47c7037ab07a",
+  "kind": "control_good",
+  "subject": "Make header parsing more RFC-7230-compliant",
+  "evidence_subject": "Make header parsing more RFC-7230-compliant",
+  "author": "Jesse Shapiro",
+  "date": "2018-01-23T09:45:10-05:00",
+  "impl_files": [
+    "urllib3/_collections.py"
+  ],
+  "test_files": [
+    "test/test_collections.py"
+  ],
+  "diff_lines": 78
+}

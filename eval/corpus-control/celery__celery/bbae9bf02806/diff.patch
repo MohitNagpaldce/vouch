@@ -1,0 +1,83 @@
+diff --git a/celery/app/control.py b/celery/app/control.py
+index fb7d5a0f7..bfe121798 100644
+--- a/celery/app/control.py
++++ b/celery/app/control.py
+@@ -81,6 +81,8 @@ class Inspect(object):
+     def active_queues(self):
+         return self._request('active_queues')
+ 
++    def conf(self):
++        return self._request('dump_conf')
+ 
+ class Control(object):
+     Mailbox = Mailbox
+diff --git a/celery/utils/__init__.py b/celery/utils/__init__.py
+index fdbb510c7..eac6214f9 100644
+--- a/celery/utils/__init__.py
++++ b/celery/utils/__init__.py
+@@ -15,6 +15,8 @@ import sys
+ import threading
+ import traceback
+ import warnings
++import types
++import datetime
+ 
+ from functools import partial, wraps
+ from inspect import getargspec
+@@ -181,6 +183,35 @@ def strtobool(term, table={'false': False, 'no': False, '0': False,
+     return term
+ 
+ 
++def jsonify(obj):
++    "Transforms object making it suitable for json serialization"
++    if isinstance(obj, (int, float, basestring, types.NoneType)):
++        return obj
++    elif isinstance(obj, (tuple, list)):
++        return map(jsonify, obj)
++    elif isinstance(obj, dict):
++        return dict([(k,jsonify(v)) for k,v in obj.iteritems()])
++    # See "Date Time String Format" in the ECMA-262 specification.
++    elif isinstance(obj, datetime.datetime):
++        r = obj.isoformat()
++        if obj.microsecond:
++            r = r[:23] + r[26:]
++        if r.endswith('+00:00'):
++            r = r[:-6] + 'Z'
++        return r
++    elif isinstance(obj, datetime.date):
++        return obj.isoformat()
++    elif isinstance(obj, datetime.time):
++        r = obj.isoformat()
++        if obj.microsecond:
++            r = r[:12]
++        return r
++    elif isinstance(obj, datetime.timedelta):
++        return str(obj)
++    else:
++        raise ValueError("Unsupported type: %s" % type(obj))
++
++
+ def gen_task_name(app, name, module_name):
+     try:
+         module = sys.modules[module_name]
+diff --git a/celery/worker/control.py b/celery/worker/control.py
+index dd8592c07..489adeef8 100644
+--- a/celery/worker/control.py
++++ b/celery/worker/control.py
+@@ -16,6 +16,7 @@ from celery.platforms import signals as _signals
+ from celery.utils import timeutils
+ from celery.utils.compat import UserDict
+ from celery.utils.log import get_logger
++from celery.utils import jsonify
+ 
+ from . import state
+ from .state import revoked
+@@ -283,3 +284,8 @@ def active_queues(panel):
+     """Returns the queues associated with each worker."""
+     return [dict(queue.as_dict(recurse=True))
+                     for queue in panel.consumer.task_consumer.queues]
++
++
++@Panel.register
++def dump_conf(panel, **kwargs):
++    return jsonify(dict(panel.app.conf))

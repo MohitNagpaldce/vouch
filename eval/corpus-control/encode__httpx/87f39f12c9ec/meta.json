@@ -1,0 +1,24 @@
+{
+  "repo": "encode/httpx",
+  "sha": "87f39f12c9ecdd0ebcd8d017235698e72567e9c7",
+  "kind": "control_good",
+  "subject": "add missing type hints to __init__(...) (#2938)",
+  "evidence_subject": "add missing type hints to __init__(...) (#2938)",
+  "author": "Petr Belskiy",
+  "date": "2023-11-17T16:58:51+03:00",
+  "impl_files": [
+    "httpx/_auth.py",
+    "httpx/_client.py",
+    "httpx/_config.py",
+    "httpx/_content.py",
+    "httpx/_decoders.py",
+    "httpx/_models.py",
+    "httpx/_transports/default.py"
+  ],
+  "test_files": [
+    "tests/client/test_async_client.py",
+    "tests/client/test_auth.py",
+    "tests/client/test_client.py"
+  ],
+  "diff_lines": 235
+}

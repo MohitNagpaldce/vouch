@@ -1,0 +1,15 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "f3f90c33966e3ba334c459ad89d607f820caa1f8",
+  "kind": "control_good",
+  "subject": "REF: use concat_compat in union_with_duplicates (#44125)",
+  "evidence_subject": "REF: use concat_compat in union_with_duplicates (#44125)",
+  "author": "jbrockmendel",
+  "date": "2021-10-20T18:49:59-07:00",
+  "impl_files": [
+    "pandas/core/algorithms.py",
+    "pandas/core/dtypes/concat.py"
+  ],
+  "test_files": [],
+  "diff_lines": 133
+}

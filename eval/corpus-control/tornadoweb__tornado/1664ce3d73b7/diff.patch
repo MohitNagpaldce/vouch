@@ -1,0 +1,65 @@
+diff --git a/docs/releases.rst b/docs/releases.rst
+index f61d1ccb..a9bfa1c5 100644
+--- a/docs/releases.rst
++++ b/docs/releases.rst
+@@ -4,6 +4,7 @@ Release notes
+ .. toctree::
+    :maxdepth: 2
+ 
++   releases/v4.4.2
+    releases/v4.4.1
+    releases/v4.4.0
+    releases/v4.3.0
+diff --git a/docs/releases/v4.4.2.rst b/docs/releases/v4.4.2.rst
+new file mode 100644
+index 00000000..66349a3f
+--- /dev/null
++++ b/docs/releases/v4.4.2.rst
+@@ -0,0 +1,22 @@
++What's new in Tornado 4.4.2
++===========================
++
++Oct 1, 2016
++------------
++
++Security fixes
++~~~~~~~~~~~~~~
++
++* A difference in cookie parsing between Tornado and web browsers
++  (especially when combined with Google Analytics) could allow an
++  attacker to set arbitrary cookies and bypass XSRF protection. The
++  cookie parser has been rewritten to fix this attack.
++
++Backwards-compatibility notes
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++* Cookies containing certain special characters (in particular semicolon
++  and square brackets) are now parsed differently.
++* If the cookie header contains a combination of valid and invalid cookies,
++  the valid ones will be returned (older versions of Tornado would reject the
++  entire header for a single invalid cookie).
+diff --git a/setup.py b/setup.py
+index 9eddaeff..8d810955 100644
+--- a/setup.py
++++ b/setup.py
+@@ -103,7 +103,7 @@ http://api.mongodb.org/python/current/installation.html#osx
+ 
+ kwargs = {}
+ 
+-version = "4.4.1"
++version = "4.4.2"
+ 
+ with open('README.rst') as f:
+     kwargs['long_description'] = f.read()
+diff --git a/tornado/__init__.py b/tornado/__init__.py
+index 9778f658..3b10da51 100644
+--- a/tornado/__init__.py
++++ b/tornado/__init__.py
+@@ -25,5 +25,5 @@ from __future__ import absolute_import, division, print_function, with_statement
+ # is zero for an official release, positive for a development branch,
+ # or negative for a release candidate or beta (after the base version
+ # number has been incremented)
+-version = "4.4.1"
+-version_info = (4, 4, 1, 0)
++version = "4.4.2"
++version_info = (4, 4, 2, 0)

@@ -1,0 +1,46 @@
+diff --git a/pydantic/networks.py b/pydantic/networks.py
+index 727e76344..11796b06a 100644
+--- a/pydantic/networks.py
++++ b/pydantic/networks.py
+@@ -4,7 +4,7 @@ from __future__ import annotations as _annotations
+ import dataclasses as _dataclasses
+ import re
+ from ipaddress import IPv4Address, IPv4Interface, IPv4Network, IPv6Address, IPv6Interface, IPv6Network
+-from typing import TYPE_CHECKING, Any
++from typing import TYPE_CHECKING, Any, Union
+ 
+ from pydantic_core import MultiHostUrl, PydanticCustomError, Url, core_schema
+ from typing_extensions import Annotated, TypeAlias
+@@ -124,7 +124,10 @@ RedisDsn = Annotated[
+     UrlConstraints(allowed_schemes=['redis', 'rediss'], default_host='localhost', default_port=6379, default_path='/0'),
+ ]
+ """A type that will accept any Redis DSN."""
+-MongoDsn = Annotated[MultiHostUrl, UrlConstraints(allowed_schemes=['mongodb', 'mongodb+srv'], default_port=27017)]
++MongoDsn = Union[
++    Annotated[MultiHostUrl, UrlConstraints(allowed_schemes=['mongodb'], default_port=27017)],
++    Annotated[MultiHostUrl, UrlConstraints(allowed_schemes=['mongodb+srv'])],
++]
+ """A type that will accept any MongoDB DSN."""
+ KafkaDsn = Annotated[Url, UrlConstraints(allowed_schemes=['kafka'], default_host='localhost', default_port=9092)]
+ """A type that will accept any Kafka DSN."""
+diff --git a/tests/test_networks.py b/tests/test_networks.py
+index 757c177e9..a999eeb16 100644
+--- a/tests/test_networks.py
++++ b/tests/test_networks.py
+@@ -615,6 +615,16 @@ def test_mongodb_dsns():
+     assert m.a.hosts() == [{'username': None, 'password': None, 'host': 'localhost', 'port': 27017}]
+ 
+ 
++def test_mongodsn_default_ports():
++    class Model(BaseModel):
++        a: MongoDsn
++
++    m1 = Model(a='mongodb://user:pass@localhost/app')
++    m2 = Model(a='mongodb+srv://user:pass@localhost/app')
++    assert str(m1.a) == 'mongodb://user:pass@localhost:27017/app'
++    assert str(m2.a) == 'mongodb+srv://user:pass@localhost/app'
++
++
+ def test_kafka_dsns():
+     class Model(BaseModel):
+         a: KafkaDsn

@@ -1,0 +1,17 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "958fffba9d3bbf81aa56c0be816943c0d29f177e",
+  "kind": "control_good",
+  "subject": "deprecate utils.bind/validate_arguments",
+  "evidence_subject": "deprecate utils.bind/validate_arguments",
+  "author": "northernSage",
+  "date": "2020-03-21T12:17:16-03:00",
+  "impl_files": [
+    "src/werkzeug/_internal.py",
+    "src/werkzeug/utils.py"
+  ],
+  "test_files": [
+    "tests/test_utils.py"
+  ],
+  "diff_lines": 131
+}

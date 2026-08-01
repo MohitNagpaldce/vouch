@@ -1,0 +1,20 @@
+{
+  "repo": "encode/httpx",
+  "sha": "f5c27ec7f48cf3b7367bdcdfb8f9c2ccf189929b",
+  "kind": "control_good",
+  "subject": "Use and pin black 20 (#1229)",
+  "evidence_subject": "Use and pin black 20 (#1229)",
+  "author": "Florimond Manca",
+  "date": "2020-08-27T15:57:53+02:00",
+  "impl_files": [
+    "httpx/_api.py",
+    "httpx/_client.py",
+    "httpx/_config.py"
+  ],
+  "test_files": [
+    "tests/client/test_auth.py",
+    "tests/models/test_responses.py",
+    "tests/test_utils.py"
+  ],
+  "diff_lines": 158
+}

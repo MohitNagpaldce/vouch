@@ -1,0 +1,14 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "a6ef76ed8833b2d15d9b667ed26dad760d853467",
+  "kind": "control_good",
+  "subject": "lint and improve images pipeline error logging",
+  "evidence_subject": "lint and improve images pipeline error logging",
+  "author": "Daniel Gra\u00f1a",
+  "date": "2013-01-02T14:13:32-02:00",
+  "impl_files": [
+    "scrapy/contrib/pipeline/images.py"
+  ],
+  "test_files": [],
+  "diff_lines": 160
+}

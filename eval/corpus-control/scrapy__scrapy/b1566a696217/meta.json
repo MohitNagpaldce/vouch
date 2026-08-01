@@ -1,0 +1,16 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "b1566a696217244d2d506ce8962418943d0b1edc",
+  "kind": "control_good",
+  "subject": "Remove deprecated Crawler.spiders property",
+  "evidence_subject": "Remove deprecated Crawler.spiders property",
+  "author": "nyov",
+  "date": "2020-03-02T23:01:26Z",
+  "impl_files": [
+    "scrapy/crawler.py"
+  ],
+  "test_files": [
+    "tests/test_crawler.py"
+  ],
+  "diff_lines": 97
+}

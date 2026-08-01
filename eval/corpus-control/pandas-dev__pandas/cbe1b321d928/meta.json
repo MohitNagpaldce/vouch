@@ -1,0 +1,30 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "cbe1b321d928bb00ab9809f109ab483db2bb6b2d",
+  "kind": "control_good",
+  "subject": "CLN: assorted (#56431)",
+  "evidence_subject": "CLN: assorted (#56431)",
+  "author": "jbrockmendel",
+  "date": "2023-12-13T09:53:51-08:00",
+  "impl_files": [
+    "pandas/core/dtypes/dtypes.py",
+    "pandas/core/frame.py",
+    "pandas/core/tools/datetimes.py",
+    "pandas/io/sas/sas7bdat.py",
+    "pandas/io/stata.py",
+    "pandas/plotting/_matplotlib/core.py"
+  ],
+  "test_files": [
+    "pandas/tests/arithmetic/test_datetime64.py",
+    "pandas/tests/arithmetic/test_timedelta64.py",
+    "pandas/tests/arrays/numpy_/test_numpy.py",
+    "pandas/tests/arrays/string_/test_string.py",
+    "pandas/tests/arrays/test_datetimelike.py",
+    "pandas/tests/indexes/datetimes/test_constructors.py",
+    "pandas/tests/io/parser/common/test_data_list.py",
+    "pandas/tests/io/sas/test_sas7bdat.py",
+    "pandas/tests/io/test_stata.py",
+    "pandas/tests/tools/test_to_datetime.py"
+  ],
+  "diff_lines": 459
+}

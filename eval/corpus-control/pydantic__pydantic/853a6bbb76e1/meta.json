@@ -1,0 +1,16 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "853a6bbb76e1cf146d85bc4ed1acbfffd67dea13",
+  "kind": "control_good",
+  "subject": "fix coverage for 'conset()' (#1704)",
+  "evidence_subject": "fix coverage for 'conset()' (#1704)",
+  "author": "Samuel Colvin",
+  "date": "2020-07-11T11:24:24+01:00",
+  "impl_files": [
+    "pydantic/types.py"
+  ],
+  "test_files": [
+    "tests/test_types.py"
+  ],
+  "diff_lines": 33
+}

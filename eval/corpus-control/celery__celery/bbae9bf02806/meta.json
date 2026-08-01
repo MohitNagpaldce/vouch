@@ -1,0 +1,16 @@
+{
+  "repo": "celery/celery",
+  "sha": "bbae9bf02806e56d94aad246dfcc4e207b1c833a",
+  "kind": "control_good",
+  "subject": "Implements Inspect.conf command for getting worker configuration",
+  "evidence_subject": "Implements Inspect.conf command for getting worker configuration",
+  "author": "Mher Movsisyan",
+  "date": "2012-07-19T11:38:41+04:00",
+  "impl_files": [
+    "celery/app/control.py",
+    "celery/utils/__init__.py",
+    "celery/worker/control.py"
+  ],
+  "test_files": [],
+  "diff_lines": 83
+}

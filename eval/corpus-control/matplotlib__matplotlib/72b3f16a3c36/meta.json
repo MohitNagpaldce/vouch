@@ -1,0 +1,16 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "72b3f16a3c36e503dfae10bf3ba1b216389858e5",
+  "kind": "control_good",
+  "subject": "Cleanup a few examples.",
+  "evidence_subject": "Cleanup a few examples.",
+  "author": "Antony Lee",
+  "date": "2022-12-12T19:14:08+01:00",
+  "impl_files": [
+    "examples/misc/demo_ribbon_box.py",
+    "examples/shapes_and_collections/collections.py",
+    "examples/shapes_and_collections/line_collection.py"
+  ],
+  "test_files": [],
+  "diff_lines": 135
+}

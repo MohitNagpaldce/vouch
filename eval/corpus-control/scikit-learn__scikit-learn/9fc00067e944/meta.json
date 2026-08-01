@@ -1,0 +1,16 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "9fc00067e944e9d70d503ed97bd1123c52f8894c",
+  "kind": "control_good",
+  "subject": "ENH 32-bit support for MLPClassifier and MLPRegressor (#17759)",
+  "evidence_subject": "ENH 32-bit support for MLPClassifier and MLPRegressor (#17759)",
+  "author": "Srimukh Sripada",
+  "date": "2020-07-04T08:55:38Z",
+  "impl_files": [
+    "sklearn/neural_network/_multilayer_perceptron.py"
+  ],
+  "test_files": [
+    "sklearn/neural_network/tests/test_mlp.py"
+  ],
+  "diff_lines": 197
+}

@@ -1,0 +1,17 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "929543cf54fff4cd5bc59f66f234fc8d81a941ed",
+  "kind": "control_good",
+  "subject": "Improve runtime errors for string constraints like `pattern` for incompatible types (#10158)",
+  "evidence_subject": "Improve runtime errors for string constraints like `pattern` for incompatible types (#10158)",
+  "author": "Sydney Runkle",
+  "date": "2024-08-16T10:56:26-05:00",
+  "impl_files": [
+    "pydantic/_internal/_known_annotated_metadata.py"
+  ],
+  "test_files": [
+    "tests/test_annotated.py",
+    "tests/test_types.py"
+  ],
+  "diff_lines": 103
+}

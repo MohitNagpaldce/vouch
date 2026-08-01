@@ -1,0 +1,88 @@
+diff --git a/autoload/black.vim b/autoload/black.vim
+index e87a1e4..eec4463 100644
+--- a/autoload/black.vim
++++ b/autoload/black.vim
+@@ -57,8 +57,8 @@ def _get_virtualenv_site_packages(venv_path, pyver):
+ 
+ def _initialize_black_env(upgrade=False):
+   pyver = sys.version_info[:3]
+-  if pyver < (3, 6, 2):
+-    print("Sorry, Black requires Python 3.6.2+ to run.")
++  if pyver < (3, 7):
++    print("Sorry, Black requires Python 3.7+ to run.")
+     return False
+ 
+   from pathlib import Path
+diff --git a/mypy.ini b/mypy.ini
+index 4811cc0..58bb753 100644
+--- a/mypy.ini
++++ b/mypy.ini
+@@ -2,7 +2,7 @@
+ # Specify the target platform details in config, so your developers are
+ # free to run mypy on Windows, Linux, or macOS and get consistent
+ # results.
+-python_version=3.6
++python_version=3.7
+ 
+ mypy_path=src
+ 
+@@ -19,11 +19,6 @@ no_implicit_reexport = False
+ # to avoid 'em in the first place.
+ warn_unreachable=True
+ 
+-[mypy-black]
+-# The following is because of `patch_click()`. Remove when
+-# we drop Python 3.6 support.
+-warn_unused_ignores=False
+-
+ [mypy-blib2to3.driver.*]
+ ignore_missing_imports = True
+ 
+diff --git a/src/black/__init__.py b/src/black/__init__.py
+index afd71e5..5293796 100644
+--- a/src/black/__init__.py
++++ b/src/black/__init__.py
+@@ -1382,9 +1382,9 @@ def patch_click() -> None:
+ 
+     for module in modules:
+         if hasattr(module, "_verify_python3_env"):
+-            module._verify_python3_env = lambda: None  # type: ignore
++            module._verify_python3_env = lambda: None
+         if hasattr(module, "_verify_python_env"):
+-            module._verify_python_env = lambda: None  # type: ignore
++            module._verify_python_env = lambda: None
+ 
+ 
+ def patched_main() -> None:
+diff --git a/src/black/concurrency.py b/src/black/concurrency.py
+index 10e288f..1598f51 100644
+--- a/src/black/concurrency.py
++++ b/src/black/concurrency.py
+@@ -47,12 +47,8 @@ def cancel(tasks: Iterable["asyncio.Task[Any]"]) -> None:
+ def shutdown(loop: asyncio.AbstractEventLoop) -> None:
+     """Cancel all pending tasks on `loop`, wait for them, and close the loop."""
+     try:
+-        if sys.version_info[:2] >= (3, 7):
+-            all_tasks = asyncio.all_tasks
+-        else:
+-            all_tasks = asyncio.Task.all_tasks
+         # This part is borrowed from asyncio/runners.py in Python 3.7b2.
+-        to_cancel = [task for task in all_tasks(loop) if not task.done()]
++        to_cancel = [task for task in asyncio.all_tasks(loop) if not task.done()]
+         if not to_cancel:
+             return
+ 
+diff --git a/src/black/parsing.py b/src/black/parsing.py
+index 64c0b1e..f7d9fdc 100644
+--- a/src/black/parsing.py
++++ b/src/black/parsing.py
+@@ -27,8 +27,7 @@
+ try:
+     from typed_ast import ast3
+ except ImportError:
+-    # Either our python version is too low, or we're on pypy
+-    if sys.version_info < (3, 7) or (sys.version_info < (3, 8) and not _IS_PYPY):
++    if sys.version_info < (3, 8) and not _IS_PYPY:
+         print(
+             "The typed_ast package is required but not installed.\n"
+             "You can upgrade to Python 3.8+ or install typed_ast with\n"

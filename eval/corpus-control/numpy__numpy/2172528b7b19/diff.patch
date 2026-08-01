@@ -1,0 +1,13 @@
+diff --git a/versioneer.py b/versioneer.py
+index e0ab54067..07ecc67bf 100644
+--- a/versioneer.py
++++ b/versioneer.py
+@@ -1973,7 +1973,7 @@ def run(self):
+ 
+     # sdist farms its file list building out to egg_info
+     if 'egg_info' in cmds:
+-        _sdist = cmds['egg_info']
++        _egg_info = cmds['egg_info']
+     else:
+         from setuptools.command.egg_info import egg_info as _egg_info
+ 

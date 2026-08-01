@@ -1,0 +1,51 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 54c09a67..dddddbdc 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -3,7 +3,7 @@
+ Version 1.1.1
+ -------------
+ 
+-Unreleased
++Released 2019-07-08
+ 
+ -   The ``flask.json_available`` flag was added back for compatibility
+     with some extensions. It will raise a deprecation warning when used,
+diff --git a/README.rst b/README.rst
+index 6e574323..ecfccedb 100644
+--- a/README.rst
++++ b/README.rst
+@@ -66,8 +66,8 @@ donate today`_.
+ Links
+ -----
+ 
+-* Website: https://www.palletsprojects.com/p/flask/
+-* Documentation: http://flask.pocoo.org/docs/
++* Website: https://palletsprojects.com/p/flask/
++* Documentation: https://flask.palletsprojects.com/
+ * Releases: https://pypi.org/project/Flask/
+ * Code: https://github.com/pallets/flask
+ * Issue tracker: https://github.com/pallets/flask/issues
+diff --git a/setup.py b/setup.py
+index fa680a75..8a0b8ad4 100644
+--- a/setup.py
++++ b/setup.py
+@@ -15,7 +15,7 @@ setup(
+     version=version,
+     url="https://palletsprojects.com/p/flask/",
+     project_urls={
+-        "Documentation": "http://flask.palletsprojects.com/",
++        "Documentation": "https://flask.palletsprojects.com/",
+         "Code": "https://github.com/pallets/flask",
+         "Issue tracker": "https://github.com/pallets/flask/issues",
+     },
+diff --git a/src/flask/__init__.py b/src/flask/__init__.py
+index be3bac39..687475bc 100644
+--- a/src/flask/__init__.py
++++ b/src/flask/__init__.py
+@@ -57,4 +57,4 @@ from .signals import template_rendered
+ from .templating import render_template
+ from .templating import render_template_string
+ 
+-__version__ = "1.1.1.dev"
++__version__ = "1.1.1"

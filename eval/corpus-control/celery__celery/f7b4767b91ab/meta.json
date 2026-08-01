@@ -1,0 +1,17 @@
+{
+  "repo": "celery/celery",
+  "sha": "f7b4767b91ab73724eb7d544a7556430b964ce59",
+  "kind": "control_good",
+  "subject": "Provide BROKER_FAILOVER_STRATEGY option in Celery.",
+  "evidence_subject": "Provide BROKER_FAILOVER_STRATEGY option in Celery.",
+  "author": "Matt Wise",
+  "date": "2013-11-06T09:30:42-08:00",
+  "impl_files": [
+    "celery/app/base.py",
+    "celery/app/defaults.py"
+  ],
+  "test_files": [
+    "celery/tests/app/test_app.py"
+  ],
+  "diff_lines": 126
+}

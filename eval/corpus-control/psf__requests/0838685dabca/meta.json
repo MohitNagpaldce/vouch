@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "0838685dabca56b3fc985b92feca9c739700129e",
+  "kind": "control_good",
+  "subject": "Replace tab with appropriate spaces.",
+  "evidence_subject": "Replace tab with appropriate spaces.",
+  "author": "Cory Benfield",
+  "date": "2016-05-12T10:57:52+01:00",
+  "impl_files": [
+    "requests/sessions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "6e51d121fc9add5677d8ce8107bd514d0dc7e77b",
+  "kind": "control_good",
+  "subject": "Backport PR #25183: FIX: do not use deprecated API internally",
+  "evidence_subject": "Backport PR #25183: FIX: do not use deprecated API internally",
+  "author": "Kyle Sunden",
+  "date": "2023-02-09T15:16:36-06:00",
+  "impl_files": [
+    "lib/matplotlib/backends/backend_nbagg.py"
+  ],
+  "test_files": [],
+  "diff_lines": 22
+}

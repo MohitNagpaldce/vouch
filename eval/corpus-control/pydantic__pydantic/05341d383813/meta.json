@@ -1,0 +1,16 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "05341d3838135fc25f419ae3b7b41bc961d1d26d",
+  "kind": "control_good",
+  "subject": "Fix default port for mongosrv DSNs (#6827)",
+  "evidence_subject": "Fix default port for mongosrv DSNs (#6827)",
+  "author": "David Montague",
+  "date": "2023-07-24T10:01:37-06:00",
+  "impl_files": [
+    "pydantic/networks.py"
+  ],
+  "test_files": [
+    "tests/test_networks.py"
+  ],
+  "diff_lines": 46
+}

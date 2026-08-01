@@ -1,0 +1,19 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "9bf84be39b362eb55d17f737154fb75ff1d4f5be",
+  "kind": "control_good",
+  "subject": "Minor cleanups.",
+  "evidence_subject": "Minor cleanups.",
+  "author": "Antony Lee",
+  "date": "2024-05-12T16:52:21+02:00",
+  "impl_files": [
+    "lib/matplotlib/dviread.py",
+    "lib/mpl_toolkits/axes_grid1/axes_grid.py",
+    "lib/mpl_toolkits/axisartist/grid_finder.py",
+    "lib/mpl_toolkits/mplot3d/art3d.py"
+  ],
+  "test_files": [
+    "lib/mpl_toolkits/mplot3d/tests/test_axes3d.py"
+  ],
+  "diff_lines": 121
+}

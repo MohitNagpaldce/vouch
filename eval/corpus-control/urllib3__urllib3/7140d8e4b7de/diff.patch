@@ -1,0 +1,78 @@
+diff --git a/test/test_collections.py b/test/test_collections.py
+index 3a960c57..7e425247 100644
+--- a/test/test_collections.py
++++ b/test/test_collections.py
+@@ -4,6 +4,7 @@ from urllib3._collections import (
+ )
+ import pytest
+ 
++from urllib3.exceptions import InvalidHeader
+ from urllib3.packages import six
+ xrange = six.moves.xrange
+ 
+@@ -340,8 +341,8 @@ Server: nginx
+ Content-Type: text/html; charset=windows-1251
+ Connection: keep-alive
+ X-Some-Multiline: asdf
+- asdf
+- asdf
++ asdf\t
++\t asdf
+ Set-Cookie: bb_lastvisit=1348253375; expires=Sat, 21-Sep-2013 18:49:35 GMT; path=/
+ Set-Cookie: bb_lastactivity=0; expires=Sat, 21-Sep-2013 18:49:35 GMT; path=/
+ www-authenticate: asdf
+@@ -356,6 +357,14 @@ www-authenticate: bla
+         assert len(cookies) == 2
+         assert cookies[0].startswith("bb_lastvisit")
+         assert cookies[1].startswith("bb_lastactivity")
+-        assert d['x-some-multiline'].split() == ['asdf', 'asdf', 'asdf']
++        assert d['x-some-multiline'] == 'asdf asdf asdf'
+         assert d['www-authenticate'] == 'asdf, bla'
+         assert d.getlist('www-authenticate') == ['asdf', 'bla']
++        with_invalid_multiline = """\tthis-is-not-a-header: but it has a pretend value
++Authorization: Bearer 123
++
++"""
++        buffer = six.moves.StringIO(with_invalid_multiline.replace('\n', '\r\n'))
++        msg = six.moves.http_client.HTTPMessage(buffer)
++        with pytest.raises(InvalidHeader):
++            HTTPHeaderDict.from_httplib(msg)
+diff --git a/urllib3/_collections.py b/urllib3/_collections.py
+index 5df2372c..cc6edf09 100644
+--- a/urllib3/_collections.py
++++ b/urllib3/_collections.py
+@@ -15,6 +15,7 @@ try:  # Python 2.7+
+     from collections import OrderedDict
+ except ImportError:
+     from .packages.ordered_dict import OrderedDict
++from .exceptions import InvalidHeader
+ from .packages.six import iterkeys, itervalues, PY3
+ 
+ 
+@@ -305,13 +306,22 @@ class HTTPHeaderDict(MutableMapping):
+         # python2.7 does not expose a proper API for exporting multiheaders
+         # efficiently. This function re-reads raw lines from the message
+         # object and extracts the multiheaders properly.
++        obs_fold_continued_leaders = (' ', '\t',)
+         headers = []
+ 
+         for line in message.headers:
+-            if line.startswith((' ', '\t')):
+-                key, value = headers[-1]
+-                headers[-1] = (key, value + '\r\n' + line.rstrip())
+-                continue
++            if line.startswith(obs_fold_continued_leaders):
++                if not headers:
++                    # We received a header line that starts with OWS as described
++                    # in RFC-7230 S3.2.4. This indicates a multiline header, but
++                    # there exists no previous header to which we can attach it.
++                    raise InvalidHeader(
++                        'Header continuation with no previous header: %s' % line
++                    )
++                else:
++                    key, value = headers[-1]
++                    headers[-1] = (key, value + ' ' + line.strip())
++                    continue
+ 
+             key, value = line.split(':', 1)
+             headers.append((key, value.strip()))

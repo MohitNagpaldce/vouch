@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/flask",
+  "sha": "d60f213fdbcf7fe0648a80fe6c23683377fd7c44",
+  "kind": "control_good",
+  "subject": "Bump version number to 1.0.1.dev",
+  "evidence_subject": "Bump version number to 1.0.1.dev",
+  "author": "David Lord",
+  "date": "2018-04-26T12:31:25-07:00",
+  "impl_files": [
+    "flask/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

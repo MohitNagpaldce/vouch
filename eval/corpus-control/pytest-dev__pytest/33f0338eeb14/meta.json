@@ -1,0 +1,14 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "33f0338eeb14e4b154122447d73f161b536d70f1",
+  "kind": "control_good",
+  "subject": "kill and wait for subprocess before raising TimeoutExpired",
+  "evidence_subject": "kill and wait for subprocess before raising TimeoutExpired",
+  "author": "Kyle Altendorf",
+  "date": "2018-10-04T21:57:29-04:00",
+  "impl_files": [
+    "src/_pytest/pytester.py"
+  ],
+  "test_files": [],
+  "diff_lines": 42
+}

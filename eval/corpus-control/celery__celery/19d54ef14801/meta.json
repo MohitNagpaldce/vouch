@@ -1,0 +1,15 @@
+{
+  "repo": "celery/celery",
+  "sha": "19d54ef14801b6bb9b80fdb4b2ef2d3f94f3f8fb",
+  "kind": "control_good",
+  "subject": "Repr of old task class now shows \"v2 compatible\"",
+  "evidence_subject": "Repr of old task class now shows \"v2 compatible\"",
+  "author": "Ask Solem",
+  "date": "2012-11-06T14:08:51Z",
+  "impl_files": [
+    "celery/app/task.py",
+    "celery/task/base.py"
+  ],
+  "test_files": [],
+  "diff_lines": 33
+}

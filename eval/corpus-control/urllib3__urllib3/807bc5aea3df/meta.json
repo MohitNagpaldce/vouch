@@ -1,0 +1,14 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "807bc5aea3df448d6225a133d8806aba8811f5c5",
+  "kind": "control_good",
+  "subject": "Switch to hasattr",
+  "evidence_subject": "Switch to hasattr",
+  "author": "lars4839",
+  "date": "2016-10-19T19:30:13-05:00",
+  "impl_files": [
+    "urllib3/util/selectors.py"
+  ],
+  "test_files": [],
+  "diff_lines": 16
+}

@@ -1,0 +1,33 @@
+diff --git a/aiohttp/client_reqrep.py b/aiohttp/client_reqrep.py
+index 39b93402..8af3e834 100644
+--- a/aiohttp/client_reqrep.py
++++ b/aiohttp/client_reqrep.py
+@@ -349,7 +349,7 @@ class ClientRequest:
+         parser HTTP version '1.1' => (1, 1)
+         """
+         if isinstance(version, str):
+-            v = [l.strip() for l in version.split('.', 1)]
++            v = [part.strip() for part in version.split('.', 1)]
+             try:
+                 version = http.HttpVersion(int(v[0]), int(v[1]))
+             except ValueError:
+diff --git a/requirements/flake.txt b/requirements/flake.txt
+index f16b41d0..306015f5 100644
+--- a/requirements/flake.txt
++++ b/requirements/flake.txt
+@@ -1,2 +1,2 @@
+-flake8==3.7.9
+-isort==4.3.21
++flake8==3.8.4
++isort==5.6.4
+diff --git a/requirements/lint.txt b/requirements/lint.txt
+index e868fadd..4148d96e 100644
+--- a/requirements/lint.txt
++++ b/requirements/lint.txt
+@@ -1,5 +1,5 @@
+ mypy==0.770; implementation_name=="cpython"
+-flake8==3.7.9
++flake8==3.8.4
+ flake8-pyi==20.5.0; python_version >= "3.6"
+ black==19.10b0; python_version >= "3.6"
+ isort==5.6.4

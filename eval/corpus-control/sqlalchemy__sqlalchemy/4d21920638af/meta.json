@@ -1,0 +1,14 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "4d21920638af4729b6ff09b1ac8c3a20878bd922",
+  "kind": "control_good",
+  "subject": "mariadb+pymsql -> mariadb+pymysql",
+  "evidence_subject": "mariadb+pymsql -> mariadb+pymysql",
+  "author": "Mike Bayer",
+  "date": "2021-04-07T11:03:06-04:00",
+  "impl_files": [
+    "lib/sqlalchemy/dialects/mysql/base.py"
+  ],
+  "test_files": [],
+  "diff_lines": 22
+}

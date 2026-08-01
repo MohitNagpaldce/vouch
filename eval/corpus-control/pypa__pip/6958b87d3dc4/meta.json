@@ -1,0 +1,23 @@
+{
+  "repo": "pypa/pip",
+  "sha": "6958b87d3dc42d175493395b748ee6271e29be36",
+  "kind": "control_good",
+  "subject": "Complete type annotations: `pip/_internal/models` (#10138)",
+  "evidence_subject": "Complete type annotations: `pip/_internal/models` (#10138)",
+  "author": "Diego Ramirez",
+  "date": "2021-07-11T22:43:52-05:00",
+  "impl_files": [
+    "src/pip/_internal/models/candidate.py",
+    "src/pip/_internal/models/direct_url.py",
+    "src/pip/_internal/models/format_control.py",
+    "src/pip/_internal/models/index.py",
+    "src/pip/_internal/models/link.py",
+    "src/pip/_internal/models/scheme.py",
+    "src/pip/_internal/models/search_scope.py",
+    "src/pip/_internal/models/selection_prefs.py",
+    "src/pip/_internal/models/target_python.py",
+    "src/pip/_internal/models/wheel.py"
+  ],
+  "test_files": [],
+  "diff_lines": 733
+}

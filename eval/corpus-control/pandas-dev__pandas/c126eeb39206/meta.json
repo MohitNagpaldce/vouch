@@ -1,0 +1,15 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "c126eeb39206e1fb68db19e9289f30b35e25fa9f",
+  "kind": "control_good",
+  "subject": "REF: Separate groupby, rolling, and window agg/apply list/dict-like (#53986)",
+  "evidence_subject": "REF: Separate groupby, rolling, and window agg/apply list/dict-like (#53986)",
+  "author": "Richard Shadrach",
+  "date": "2023-07-09T04:58:54-04:00",
+  "impl_files": [
+    "pandas/core/apply.py",
+    "pandas/core/common.py"
+  ],
+  "test_files": [],
+  "diff_lines": 554
+}

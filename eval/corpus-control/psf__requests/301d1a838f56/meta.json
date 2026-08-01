@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "301d1a838f56c6c8e5e886b7dde3de88656cfae4",
+  "kind": "control_good",
+  "subject": "Fix kennethreitz/requests#790",
+  "evidence_subject": "Fix kennethreitz/requests#790",
+  "author": "ayanamist",
+  "date": "2012-08-20T17:18:26+08:00",
+  "impl_files": [
+    "requests/auth.py"
+  ],
+  "test_files": [],
+  "diff_lines": 14
+}

@@ -1,0 +1,26 @@
+diff --git a/celery/app/control.py b/celery/app/control.py
+index fdd49a9d6..34076df0e 100644
+--- a/celery/app/control.py
++++ b/celery/app/control.py
+@@ -125,8 +125,7 @@ class Control(object):
+ 
+     def __init__(self, app=None):
+         self.app = app
+-        self.mailbox = self.Mailbox('celery', type='fanout',
+-                                    accept=self.app.conf.CELERY_ACCEPT_CONTENT)
++        self.mailbox = self.Mailbox('celery', type='fanout', accept=['json'])
+ 
+     @cached_property
+     def inspect(self):
+diff --git a/celery/worker/pidbox.py b/celery/worker/pidbox.py
+index 1165361e5..99c7a1a39 100644
+--- a/celery/worker/pidbox.py
++++ b/celery/worker/pidbox.py
+@@ -44,6 +44,7 @@ class Pidbox(object):
+     def start(self, c):
+         self.node.channel = c.connection.channel()
+         self.consumer = self.node.listen(callback=self.on_message)
++        self.consumer.on_decode_error = c.on_decode_error
+ 
+     def on_stop(self):
+         pass

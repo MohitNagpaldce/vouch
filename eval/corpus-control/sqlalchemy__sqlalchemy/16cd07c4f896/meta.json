@@ -1,0 +1,16 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "16cd07c4f896b03d0e73fc28b5279421dab53489",
+  "kind": "control_good",
+  "subject": "- Fixed bug where so-called \"literal render\" of :func:`.bindparam` constructs would fail if the bind were constructed with a callable, rather than a direct value.  This prevented ORM expressions from being rendered with the \"literal_binds\" compiler flag.",
+  "evidence_subject": "- Fixed bug where so-called \"literal render\" of :func:`.bindparam` constructs would fail if the bind were constructed with a callable, rather than a direct value.  This prevented ORM expressions from being rendered with the \"literal_binds\" compiler flag.",
+  "author": "Mike Bayer",
+  "date": "2014-02-05T12:03:46-05:00",
+  "impl_files": [
+    "lib/sqlalchemy/sql/compiler.py"
+  ],
+  "test_files": [
+    "test/sql/test_compiler.py"
+  ],
+  "diff_lines": 59
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/flask",
+  "sha": "8796b2a784bc45fcc6865cd80b2cba0601448727",
+  "kind": "control_good",
+  "subject": "Use TypeVar for setupmethod()",
+  "evidence_subject": "Use TypeVar for setupmethod()",
+  "author": "Alex Hedges",
+  "date": "2021-05-17T14:02:27-04:00",
+  "impl_files": [
+    "src/flask/scaffold.py"
+  ],
+  "test_files": [],
+  "diff_lines": 25
+}

@@ -1,0 +1,13 @@
+diff --git a/src/click/core.py b/src/click/core.py
+index 2e9c1ae..2d17f46 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -1028,7 +1028,7 @@ class Command:
+ 
+         # apply help_option decorator and pop resulting option
+         help_option(*help_option_names)(self)
+-        return self.params.pop() # type: ignore[return-value]
++        return self.params.pop()  # type: ignore[return-value]
+ 
+     def make_parser(self, ctx: Context) -> _OptionParser:
+         """Creates the underlying option parser for this command."""

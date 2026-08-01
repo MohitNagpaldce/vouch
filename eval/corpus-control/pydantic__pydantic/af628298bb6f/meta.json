@@ -1,0 +1,20 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "af628298bb6f8794ec3a150ae9e122684d080547",
+  "kind": "control_good",
+  "subject": "Improve usage errors (#5699)",
+  "evidence_subject": "Improve usage errors (#5699)",
+  "author": "Hasan Ramezani",
+  "date": "2023-05-08T18:04:13+03:30",
+  "impl_files": [
+    "pydantic/_internal/_decorators.py",
+    "pydantic/_internal/_generate_schema.py",
+    "pydantic/decorators.py",
+    "pydantic/errors.py"
+  ],
+  "test_files": [
+    "tests/test_serialize.py",
+    "tests/test_validators.py"
+  ],
+  "diff_lines": 773
+}

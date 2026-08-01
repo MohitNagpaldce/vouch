@@ -1,0 +1,27 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "9f723211348f14a650f87c9c991260b387b18cb0",
+  "kind": "control_good",
+  "subject": "Fix nearly all flake8 warnings except long lines.",
+  "evidence_subject": "Fix nearly all flake8 warnings except long lines.",
+  "author": "Ben Darnell",
+  "date": "2016-04-10T15:53:45-04:00",
+  "impl_files": [
+    "tornado/auth.py",
+    "tornado/concurrent.py",
+    "tornado/escape.py",
+    "tornado/http1connection.py",
+    "tornado/ioloop.py",
+    "tornado/locks.py",
+    "tornado/options.py",
+    "tornado/queues.py",
+    "tornado/web.py"
+  ],
+  "test_files": [
+    "tornado/test/ioloop_test.py",
+    "tornado/test/twisted_test.py",
+    "tornado/test/web_test.py",
+    "tornado/test/wsgi_test.py"
+  ],
+  "diff_lines": 282
+}

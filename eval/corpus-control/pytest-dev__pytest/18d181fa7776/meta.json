@@ -1,0 +1,14 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "18d181fa7776ced81249e18805c91c53c739834c",
+  "kind": "control_good",
+  "subject": "Remove dead code in _pytest.assertion.util._diff_text",
+  "evidence_subject": "Remove dead code in _pytest.assertion.util._diff_text",
+  "author": "Ran Benita",
+  "date": "2019-11-03T17:31:07+02:00",
+  "impl_files": [
+    "src/_pytest/assertion/util.py"
+  ],
+  "test_files": [],
+  "diff_lines": 38
+}

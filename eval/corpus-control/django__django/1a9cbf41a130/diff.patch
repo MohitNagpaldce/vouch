@@ -1,0 +1,63 @@
+diff --git a/django/db/backends/postgresql/creation.py b/django/db/backends/postgresql/creation.py
+index 8b6c4eff19..01e3b5d10a 100644
+--- a/django/db/backends/postgresql/creation.py
++++ b/django/db/backends/postgresql/creation.py
+@@ -3,6 +3,7 @@ import sys
+ from psycopg2 import errorcodes
+ 
+ from django.db.backends.base.creation import BaseDatabaseCreation
++from django.db.backends.utils import strip_quotes
+ 
+ 
+ class DatabaseCreation(BaseDatabaseCreation):
+@@ -28,8 +29,16 @@ class DatabaseCreation(BaseDatabaseCreation):
+             template=test_settings.get('TEMPLATE'),
+         )
+ 
++    def _database_exists(self, cursor, database_name):
++        cursor.execute('SELECT 1 FROM pg_catalog.pg_database WHERE datname = %s', [strip_quotes(database_name)])
++        return cursor.fetchone() is not None
++
+     def _execute_create_test_db(self, cursor, parameters, keepdb=False):
+         try:
++            if keepdb and self._database_exists(cursor, parameters['dbname']):
++                # If the database should be kept and it already exists, don't
++                # try to create a new one.
++                return
+             super()._execute_create_test_db(cursor, parameters, keepdb)
+         except Exception as e:
+             if getattr(e.__cause__, 'pgcode', '') != errorcodes.DUPLICATE_DATABASE:
+diff --git a/docs/releases/2.1.1.txt b/docs/releases/2.1.1.txt
+index b9ac90e33b..c83c03b9a5 100644
+--- a/docs/releases/2.1.1.txt
++++ b/docs/releases/2.1.1.txt
+@@ -14,3 +14,7 @@ Bugfixes
+ 
+ * Fixed a regression where ``QueryDict.urlencode()`` crashed if the dictionary
+   contains a non-string value (:ticket:`29627`).
++
++* Fixed a regression in Django 2.0 where using ``manage.py test --keepdb``
++  fails on PostgreSQL if the database exists and the user doesn't have
++  permission to create databases (:ticket:`29613`).
+diff --git a/tests/backends/postgresql/test_creation.py b/tests/backends/postgresql/test_creation.py
+index 9f51d5e6b2..7d6f319a80 100644
+--- a/tests/backends/postgresql/test_creation.py
++++ b/tests/backends/postgresql/test_creation.py
+@@ -89,7 +89,14 @@ class DatabaseCreationTests(SimpleTestCase):
+             creation._create_test_db(verbosity=0, autoclobber=False, keepdb=True)
+         # Simulate test database creation raising unexpected error
+         with self.patch_test_db_creation(self._execute_raise_permission_denied):
+-            with self.assertRaises(SystemExit):
+-                creation._create_test_db(verbosity=0, autoclobber=False, keepdb=False)
+-            with self.assertRaises(SystemExit):
++            with mock.patch.object(DatabaseCreation, '_database_exists', return_value=False):
++                with self.assertRaises(SystemExit):
++                    creation._create_test_db(verbosity=0, autoclobber=False, keepdb=False)
++                with self.assertRaises(SystemExit):
++                    creation._create_test_db(verbosity=0, autoclobber=False, keepdb=True)
++        # Simulate test database creation raising "insufficient privileges".
++        # An error shouldn't appear when keepdb is on and the database already
++        # exists.
++        with self.patch_test_db_creation(self._execute_raise_permission_denied):
++            with mock.patch.object(DatabaseCreation, '_database_exists', return_value=True):
+                 creation._create_test_db(verbosity=0, autoclobber=False, keepdb=True)

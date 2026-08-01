@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "1f31027bb3ad460864fbcbbb89eeb328c0a2f184",
+  "kind": "control_good",
+  "subject": "Refs #32096 -- Fixed crash of ArrayAgg/StringAgg/JSONBAgg with ordering over JSONField key transforms.",
+  "evidence_subject": "Refs #32096 -- Fixed crash of ArrayAgg/StringAgg/JSONBAgg with ordering over JSONField key transforms.",
+  "author": "Mariusz Felisiak",
+  "date": "2020-10-12T13:02:12+02:00",
+  "impl_files": [
+    "django/contrib/postgres/aggregates/mixins.py"
+  ],
+  "test_files": [
+    "tests/postgres_tests/test_aggregates.py"
+  ],
+  "diff_lines": 92
+}

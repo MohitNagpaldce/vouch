@@ -1,0 +1,18 @@
+{
+  "repo": "psf/black",
+  "sha": "b21c0c3d28d87bc944a1fdc979b30a0707b0df89",
+  "kind": "control_good",
+  "subject": "Deprecate Python 2 formatting support (#2523)",
+  "evidence_subject": "Deprecate Python 2 formatting support (#2523)",
+  "author": "Richard Si",
+  "date": "2021-10-31T19:46:12-04:00",
+  "impl_files": [
+    "src/black/__init__.py",
+    "src/black/mode.py",
+    "src/blib2to3/pgen2/token.py"
+  ],
+  "test_files": [
+    "tests/test_black.py"
+  ],
+  "diff_lines": 166
+}

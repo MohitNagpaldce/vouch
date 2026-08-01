@@ -1,0 +1,16 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "5d4a9ab26372efd255bbb29fde55c41395ed17b1",
+  "kind": "control_good",
+  "subject": "fix websocket handshake failure causes an exception",
+  "evidence_subject": "fix websocket handshake failure causes an exception",
+  "author": "Jungkook Park",
+  "date": "2017-09-22T02:14:51+09:00",
+  "impl_files": [
+    "tornado/websocket.py"
+  ],
+  "test_files": [
+    "tornado/test/websocket_test.py"
+  ],
+  "diff_lines": 37
+}

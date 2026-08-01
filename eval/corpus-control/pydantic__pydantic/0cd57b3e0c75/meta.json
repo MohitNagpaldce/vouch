@@ -1,0 +1,16 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "0cd57b3e0c75d9622012de542e5ddc110fe55743",
+  "kind": "control_good",
+  "subject": "Prevent multiple field serializers for a field in same class (#5378)",
+  "evidence_subject": "Prevent multiple field serializers for a field in same class (#5378)",
+  "author": "Hasan Ramezani",
+  "date": "2023-04-05T21:00:09+03:30",
+  "impl_files": [
+    "pydantic/_internal/_decorators.py"
+  ],
+  "test_files": [
+    "tests/test_serialize.py"
+  ],
+  "diff_lines": 107
+}

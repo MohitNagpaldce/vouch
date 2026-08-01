@@ -1,0 +1,23 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "053d45e79f394dc3dcd356505b7ed43fd0e82c0a",
+  "kind": "control_good",
+  "subject": "Splitted stats collector classes from stats collection facility (#204)",
+  "evidence_subject": "Splitted stats collector classes from stats collection facility (#204)",
+  "author": "Pablo Hoffman",
+  "date": "2010-08-22T01:24:07-03:00",
+  "impl_files": [
+    "scrapy/conf/default_settings.py",
+    "scrapy/contrib/corestats.py",
+    "scrapy/contrib/statscol.py",
+    "scrapy/contrib/statsmailer.py",
+    "scrapy/signals.py",
+    "scrapy/stats.py",
+    "scrapy/statscol.py"
+  ],
+  "test_files": [
+    "scrapy/tests/test_engine.py",
+    "scrapy/tests/test_stats.py"
+  ],
+  "diff_lines": 225
+}

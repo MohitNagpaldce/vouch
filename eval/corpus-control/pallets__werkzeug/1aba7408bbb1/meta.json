@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "1aba7408bbb1118ba86013f3e16585dbd3e56ede",
+  "kind": "control_good",
+  "subject": "release version 0.16.0",
+  "evidence_subject": "release version 0.16.0",
+  "author": "David Lord",
+  "date": "2019-09-19T07:49:17-07:00",
+  "impl_files": [
+    "src/werkzeug/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 26
+}

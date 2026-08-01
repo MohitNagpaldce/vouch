@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "056da86f6d547c727872f168608ab39a4fdbe16e",
+  "kind": "control_good",
+  "subject": "Use values() when the keys are not being used",
+  "evidence_subject": "Use values() when the keys are not being used",
+  "author": "Radu Voicilas",
+  "date": "2013-09-09T15:21:36+03:00",
+  "impl_files": [
+    "requests/sessions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

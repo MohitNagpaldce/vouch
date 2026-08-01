@@ -1,0 +1,16 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "495459dc880d1cb47cec30ae8a8be7111b3d9916",
+  "kind": "control_good",
+  "subject": "Fix parametrized mark over staticmethod decorator",
+  "evidence_subject": "Fix parametrized mark over staticmethod decorator",
+  "author": "eitanwass",
+  "date": "2024-12-02T21:52:06+02:00",
+  "impl_files": [
+    "src/_pytest/mark/structures.py"
+  ],
+  "test_files": [
+    "testing/test_mark.py"
+  ],
+  "diff_lines": 74
+}

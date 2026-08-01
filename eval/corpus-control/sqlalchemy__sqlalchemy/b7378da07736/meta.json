@@ -1,0 +1,14 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "b7378da077367c8eaa877362322fe08e3de59f0f",
+  "kind": "control_good",
+  "subject": "update enable_baked_queries flag doc",
+  "evidence_subject": "update enable_baked_queries flag doc",
+  "author": "Mike Bayer",
+  "date": "2021-08-22T14:52:50-04:00",
+  "impl_files": [
+    "lib/sqlalchemy/orm/session.py"
+  ],
+  "test_files": [],
+  "diff_lines": 29
+}

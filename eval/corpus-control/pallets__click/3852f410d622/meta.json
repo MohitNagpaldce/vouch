@@ -1,0 +1,17 @@
+{
+  "repo": "pallets/click",
+  "sha": "3852f410d6227bed2872768aa316d96a769382bb",
+  "kind": "control_good",
+  "subject": "ParameterSource is an Enum subclass",
+  "evidence_subject": "ParameterSource is an Enum subclass",
+  "author": "Alan Velasco",
+  "date": "2020-04-20T11:55:09-06:00",
+  "impl_files": [
+    "src/click/core.py"
+  ],
+  "test_files": [
+    "tests/test_context.py",
+    "tests/test_imports.py"
+  ],
+  "diff_lines": 313
+}

@@ -1,0 +1,38 @@
+diff --git a/lib/matplotlib/axes/_axes.py b/lib/matplotlib/axes/_axes.py
+index b46cbce39c..11edd908b2 100644
+--- a/lib/matplotlib/axes/_axes.py
++++ b/lib/matplotlib/axes/_axes.py
+@@ -3756,8 +3756,7 @@ class Axes(_AxesBase):
+                     f"'{dep_axis}err' must not contain None. "
+                     "Use NaN if you want to skip a value.")
+ 
+-            res = np.zeros(err.shape, dtype=bool)  # Default in case of nan
+-            if np.any(np.less(err, -err, out=res, where=(err == err))):
++            if np.any((err < -err) & (err == err)):
+                 # like err<0, but also works for timedelta and nan.
+                 raise ValueError(
+                     f"'{dep_axis}err' must not contain negative values")
+diff --git a/lib/matplotlib/tests/test_axes.py b/lib/matplotlib/tests/test_axes.py
+index 70d1671caf..64cfb3ab2e 100644
+--- a/lib/matplotlib/tests/test_axes.py
++++ b/lib/matplotlib/tests/test_axes.py
+@@ -4538,6 +4538,19 @@ def test_errorbar_nan(fig_test, fig_ref):
+     ax.errorbar([4], [3], [6], fmt="C0")
+ 
+ 
++@check_figures_equal()
++def test_errorbar_masked_negative(fig_test, fig_ref):
++    ax = fig_test.add_subplot()
++    xs = range(5)
++    mask = np.array([False, False, True, True, False])
++    ys = np.ma.array([1, 2, 2, 2, 3], mask=mask)
++    es = np.ma.array([4, 5, -1, -10, 6], mask=mask)
++    ax.errorbar(xs, ys, es)
++    ax = fig_ref.add_subplot()
++    ax.errorbar([0, 1], [1, 2], [4, 5])
++    ax.errorbar([4], [3], [6], fmt="C0")
++
++
+ @image_comparison(['hist_stacked_stepfilled.png', 'hist_stacked_stepfilled.png'])
+ def test_hist_stacked_stepfilled():
+     # make some data

@@ -1,0 +1,38 @@
+diff --git a/celery/contrib/testing/worker.py b/celery/contrib/testing/worker.py
+index 16d258289..09fecc0a7 100644
+--- a/celery/contrib/testing/worker.py
++++ b/celery/contrib/testing/worker.py
+@@ -119,7 +119,7 @@ def _start_worker_thread(app,
+         logfile=logfile,
+         # not allowed to override TestWorkController.on_consumer_ready
+         ready_callback=None,
+-        without_heartbeat=True,
++        without_heartbeat=kwargs.pop("without_heartbeat", True),
+         without_mingle=True,
+         without_gossip=True,
+         **kwargs)
+diff --git a/docs/userguide/testing.rst b/docs/userguide/testing.rst
+index 62db0a21e..3f2f15ba6 100644
+--- a/docs/userguide/testing.rst
++++ b/docs/userguide/testing.rst
+@@ -197,6 +197,20 @@ Example:
+     def test_other(celery_worker):
+         ...
+ 
++Heartbeats are disabled by default which means that the test worker doesn't
++send events for ``worker-online``, ``worker-offline`` and ``worker-heartbeat``.
++To enable heartbeats modify the :func:`celery_worker_parameters` fixture:
++
++.. code-block:: python
++
++    # Put this in your conftest.py
++    @pytest.fixture(scope="session")
++    def celery_worker_parameters():
++        return {"without_heartbeat": False}
++        ...
++
++
++
+ Session scope
+ ^^^^^^^^^^^^^
+ 

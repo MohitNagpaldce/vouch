@@ -1,0 +1,55 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a4f49c4..6fc5339 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+ 
+ ### Added
+ 
++* Change the type of `Extensions` from `Mapping[Str, Any]` to `MutableMapping[Str, Any]`. (#2803)
+ * Add `socket_options` argument to `httpx.HTTPTransport` and `httpx.AsyncHTTPTransport` classes. (#2716)
+ * The `Response.raise_for_status()` method now returns the response instance. For example: `data = httpx.get('...').raise_for_status().json()`. (#2776)
+ 
+diff --git a/httpx/_types.py b/httpx/_types.py
+index 6b610e1..83cf35a 100644
+--- a/httpx/_types.py
++++ b/httpx/_types.py
+@@ -16,6 +16,7 @@ from typing import (
+     Iterator,
+     List,
+     Mapping,
++    MutableMapping,
+     NamedTuple,
+     Optional,
+     Sequence,
+@@ -87,7 +88,7 @@ AuthTypes = Union[
+ 
+ RequestContent = Union[str, bytes, Iterable[bytes], AsyncIterable[bytes]]
+ ResponseContent = Union[str, bytes, Iterable[bytes], AsyncIterable[bytes]]
+-ResponseExtensions = Mapping[str, Any]
++ResponseExtensions = MutableMapping[str, Any]
+ 
+ RequestData = Mapping[str, Any]
+ 
+@@ -104,7 +105,7 @@ FileTypes = Union[
+ ]
+ RequestFiles = Union[Mapping[str, FileTypes], Sequence[Tuple[str, FileTypes]]]
+ 
+-RequestExtensions = Mapping[str, Any]
++RequestExtensions = MutableMapping[str, Any]
+ 
+ 
+ class SyncByteStream:
+diff --git a/pyproject.toml b/pyproject.toml
+index acd41ba..753e671 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -28,7 +28,7 @@ classifiers = [
+ ]
+ dependencies = [
+     "certifi",
+-    "httpcore>=0.17.2,<0.18.0",
++    "httpcore>=0.18.0,<0.19.0",
+     "idna",
+     "sniffio",
+ ]

@@ -1,0 +1,16 @@
+{
+  "repo": "psf/requests",
+  "sha": "3331e2aecdbf575dd60abef4df79c52d78610a83",
+  "kind": "control_good",
+  "subject": "Strip Authorization header whenever root URL changes",
+  "evidence_subject": "Strip Authorization header whenever root URL changes",
+  "author": "Bruce Merry",
+  "date": "2018-06-28T16:38:42+02:00",
+  "impl_files": [
+    "requests/sessions.py"
+  ],
+  "test_files": [
+    "tests/test_requests.py"
+  ],
+  "diff_lines": 38
+}

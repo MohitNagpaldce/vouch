@@ -1,0 +1,182 @@
+diff --git a/django/forms/boundfield.py b/django/forms/boundfield.py
+index 98ac5b8208..d56fa0ea3e 100644
+--- a/django/forms/boundfield.py
++++ b/django/forms/boundfield.py
+@@ -296,9 +296,10 @@ class BoundField(RenderableFieldMixin):
+             not attrs.get("aria-describedby")
+             and not widget.attrs.get("aria-describedby")
+             and self.field.help_text
+-            and self.id_for_label
++            and not self.use_fieldset
++            and self.auto_id
+         ):
+-            attrs["aria-describedby"] = f"{self.id_for_label}_helptext"
++            attrs["aria-describedby"] = f"{self.auto_id}_helptext"
+         return attrs
+ 
+     @property
+diff --git a/django/forms/jinja2/django/forms/field.html b/django/forms/jinja2/django/forms/field.html
+index c8943d9481..21035b72e4 100644
+--- a/django/forms/jinja2/django/forms/field.html
++++ b/django/forms/jinja2/django/forms/field.html
+@@ -4,7 +4,7 @@
+ {% else %}
+   {% if field.label %}{{ field.label_tag() }}{% endif %}
+ {% endif %}
+-{% if field.help_text %}<div class="helptext"{% if field.id_for_label %} id="{{ field.id_for_label}}_helptext"{% endif %}>{{ field.help_text|safe }}</div>{% endif %}
++{% if field.help_text %}<div class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</div>{% endif %}
+ {{ field.errors }}
+ {{ field }}
+ {% if field.use_fieldset %}</fieldset>{% endif %}
+diff --git a/django/forms/jinja2/django/forms/p.html b/django/forms/jinja2/django/forms/p.html
+index 4db46058b5..a7d0098b44 100644
+--- a/django/forms/jinja2/django/forms/p.html
++++ b/django/forms/jinja2/django/forms/p.html
+@@ -8,7 +8,7 @@
+     {% if field.label %}{{ field.label_tag() }}{% endif %}
+     {{ field }}
+     {% if field.help_text %}
+-      <span class="helptext"{% if field.id_for_label %} id="{{ field.id_for_label}}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
++      <span class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
+     {% endif %}
+     {% if loop.last %}
+       {% for field in hidden_fields %}{{ field }}{% endfor %}
+diff --git a/django/forms/jinja2/django/forms/table.html b/django/forms/jinja2/django/forms/table.html
+index 18fa63f8a7..a817d55522 100644
+--- a/django/forms/jinja2/django/forms/table.html
++++ b/django/forms/jinja2/django/forms/table.html
+@@ -16,7 +16,7 @@
+       {{ field }}
+       {% if field.help_text %}
+         <br>
+-        <span class="helptext"{% if field.id_for_label %} id="{{ field.id_for_label}}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
++        <span class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
+       {% endif %}
+       {% if loop.last %}
+         {% for field in hidden_fields %}{{ field }}{% endfor %}
+diff --git a/django/forms/jinja2/django/forms/ul.html b/django/forms/jinja2/django/forms/ul.html
+index 42c46847fd..9514e09729 100644
+--- a/django/forms/jinja2/django/forms/ul.html
++++ b/django/forms/jinja2/django/forms/ul.html
+@@ -12,7 +12,7 @@
+     {% if field.label %}{{ field.label_tag() }}{% endif %}
+     {{ field }}
+     {% if field.help_text %}
+-      <span class="helptext"{% if field.id_for_label %} id="{{ field.id_for_label}}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
++      <span class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
+     {% endif %}
+     {% if loop.last %}
+       {% for field in hidden_fields %}{{ field }}{% endfor %}
+diff --git a/django/forms/templates/django/forms/field.html b/django/forms/templates/django/forms/field.html
+index 72fb357b71..f8b0cdedd5 100644
+--- a/django/forms/templates/django/forms/field.html
++++ b/django/forms/templates/django/forms/field.html
+@@ -4,7 +4,7 @@
+ {% else %}
+   {% if field.label %}{{ field.label_tag }}{% endif %}
+ {% endif %}
+-{% if field.help_text %}<div class="helptext"{% if field.id_for_label %} id="{{ field.id_for_label}}_helptext"{% endif %}>{{ field.help_text|safe }}</div>{% endif %}
++{% if field.help_text %}<div class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</div>{% endif %}
+ {{ field.errors }}
+ {{ field }}
+ {% if field.use_fieldset %}</fieldset>{% endif %}
+diff --git a/django/forms/templates/django/forms/p.html b/django/forms/templates/django/forms/p.html
+index 829c42eca6..89f0a2ba03 100644
+--- a/django/forms/templates/django/forms/p.html
++++ b/django/forms/templates/django/forms/p.html
+@@ -8,7 +8,7 @@
+     {% if field.label %}{{ field.label_tag }}{% endif %}
+     {{ field }}
+     {% if field.help_text %}
+-      <span class="helptext"{% if field.id_for_label %} id="{{ field.id_for_label}}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
++      <span class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
+     {% endif %}
+     {% if forloop.last %}
+       {% for field in hidden_fields %}{{ field }}{% endfor %}
+diff --git a/django/forms/templates/django/forms/table.html b/django/forms/templates/django/forms/table.html
+index 5d41bc4402..4fbd3b9899 100644
+--- a/django/forms/templates/django/forms/table.html
++++ b/django/forms/templates/django/forms/table.html
+@@ -16,7 +16,7 @@
+       {{ field }}
+       {% if field.help_text %}
+         <br>
+-        <span class="helptext"{% if field.id_for_label %} id="{{ field.id_for_label}}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
++        <span class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
+       {% endif %}
+       {% if forloop.last %}
+         {% for field in hidden_fields %}{{ field }}{% endfor %}
+diff --git a/django/forms/templates/django/forms/ul.html b/django/forms/templates/django/forms/ul.html
+index 7383b96235..d78a79aeca 100644
+--- a/django/forms/templates/django/forms/ul.html
++++ b/django/forms/templates/django/forms/ul.html
+@@ -12,7 +12,7 @@
+     {% if field.label %}{{ field.label_tag }}{% endif %}
+     {{ field }}
+     {% if field.help_text %}
+-      <span class="helptext"{% if field.id_for_label %} id="{{ field.id_for_label}}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
++      <span class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
+     {% endif %}
+     {% if forloop.last %}
+       {% for field in hidden_fields %}{{ field }}{% endfor %}
+diff --git a/docs/ref/forms/fields.txt b/docs/ref/forms/fields.txt
+index df9732f1af..9dff2d4007 100644
+--- a/docs/ref/forms/fields.txt
++++ b/docs/ref/forms/fields.txt
+@@ -283,9 +283,9 @@ fields. We've specified ``auto_id=False`` to simplify the output:
+     <div>Sender:<div class="helptext">A valid email address, please.</div><input type="email" name="sender" required></div>
+     <div>Cc myself:<input type="checkbox" name="cc_myself"></div>
+ 
+-When a field has help text and :attr:`~django.forms.BoundField.id_for_label`
+-returns a value, we associate ``help_text`` with the input using the
+-``aria-describedby`` HTML attribute:
++When a field has help text and the widget is not rendered in a ``<fieldset>``,
++``aria-describedby`` is added to the ``<input>`` to associate it to the
++help text:
+ 
+ .. code-block:: pycon
+ 
+diff --git a/docs/releases/5.0.txt b/docs/releases/5.0.txt
+index db75a6b0a3..269e3b382e 100644
+--- a/docs/releases/5.0.txt
++++ b/docs/releases/5.0.txt
+@@ -61,7 +61,7 @@ For example, the template below:
+     <div>
+       {{ form.name.label_tag }}
+       {% if form.name.help_text %}
+-        <div class="helptext" id="{{ form.name.id_for_label }}_helptext">
++        <div class="helptext" id="{{ form.name.auto_id }}_helptext">
+           {{ form.name.help_text|safe }}
+         </div>
+       {% endif %}
+@@ -71,7 +71,7 @@ For example, the template below:
+         <div class="col">
+           {{ form.email.label_tag }}
+           {% if form.email.help_text %}
+-            <div class="helptext" id="{{ form.email.id_for_label }}_helptext">
++            <div class="helptext" id="{{ form.email.auto_id }}_helptext">
+               {{ form.email.help_text|safe }}
+             </div>
+           {% endif %}
+@@ -81,7 +81,7 @@ For example, the template below:
+         <div class="col">
+           {{ form.password.label_tag }}
+           {% if form.password.help_text %}
+-            <div class="helptext" id="{{ form.password.id_for_label }}_helptext">
++            <div class="helptext" id="{{ form.password.auto_id }}_helptext">
+               {{ form.password.help_text|safe }}
+             </div>
+           {% endif %}
+diff --git a/docs/topics/forms/index.txt b/docs/topics/forms/index.txt
+index 7b27e98996..55d032c9bb 100644
+--- a/docs/topics/forms/index.txt
++++ b/docs/topics/forms/index.txt
+@@ -723,7 +723,7 @@ loop:
+             {{ field.errors }}
+             {{ field.label_tag }} {{ field }}
+             {% if field.help_text %}
+-              <p class="help" id="{{ field.id_for_label }}_helptext">
++              <p class="help" id="{{ field.auto_id }}_helptext">
+                 {{ field.help_text|safe }}
+               </p>
+             {% endif %}

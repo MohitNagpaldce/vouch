@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "99435a4e69d0ab5c6dc3ba7b03fe9c7c375eff1d",
+  "kind": "control_good",
+  "subject": "simplify CodeType rewriting",
+  "evidence_subject": "simplify CodeType rewriting",
+  "author": "David Lord",
+  "date": "2021-11-09T07:10:53-08:00",
+  "impl_files": [
+    "src/jinja2/debug.py"
+  ],
+  "test_files": [],
+  "diff_lines": 119
+}

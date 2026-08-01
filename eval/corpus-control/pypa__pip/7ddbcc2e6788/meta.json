@@ -1,0 +1,14 @@
+{
+  "repo": "pypa/pip",
+  "sha": "7ddbcc2e67889b53a98aa115dfc01542a39c00ce",
+  "kind": "control_good",
+  "subject": "Return early for clarity",
+  "evidence_subject": "Return early for clarity",
+  "author": "Pradyun Gedam",
+  "date": "2020-07-17T03:25:53+05:30",
+  "impl_files": [
+    "src/pip/_internal/commands/install.py"
+  ],
+  "test_files": [],
+  "diff_lines": 21
+}

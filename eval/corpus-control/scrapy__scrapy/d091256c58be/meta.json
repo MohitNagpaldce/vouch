@@ -1,0 +1,14 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "d091256c58bef4736c419bddd473f977553f0fd1",
+  "kind": "control_good",
+  "subject": "Remove the deprecated sphinx-hoverxref (#6922)",
+  "evidence_subject": "Remove the deprecated sphinx-hoverxref (#6922)",
+  "author": "Adri\u00e1n Chaves",
+  "date": "2025-06-28T15:04:06+02:00",
+  "impl_files": [
+    "docs/conf.py"
+  ],
+  "test_files": [],
+  "diff_lines": 46
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "06badebe3b0985c9fe3365ab446f690d1af3a512",
+  "kind": "control_good",
+  "subject": "Fix for #304",
+  "evidence_subject": "Fix for #304",
+  "author": "Armin Ronacher",
+  "date": "2014-06-06T21:48:42+06:00",
+  "impl_files": [
+    "jinja2/lexer.py"
+  ],
+  "test_files": [],
+  "diff_lines": 29
+}

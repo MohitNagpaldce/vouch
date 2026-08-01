@@ -1,0 +1,14 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "2172528b7b196e470cf4d39b61e1067bdb7e0a9f",
+  "kind": "control_good",
+  "subject": "MAINT: Work around bug introduced by Versioneer 0.23",
+  "evidence_subject": "MAINT: Work around bug introduced by Versioneer 0.23",
+  "author": "Dimitri Papadopoulos",
+  "date": "2022-10-15T23:10:06+02:00",
+  "impl_files": [
+    "versioneer.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

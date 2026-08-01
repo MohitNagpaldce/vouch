@@ -1,0 +1,13 @@
+diff --git a/src/pip/_internal/cli/index_command.py b/src/pip/_internal/cli/index_command.py
+index d826df1ac..9991326f3 100644
+--- a/src/pip/_internal/cli/index_command.py
++++ b/src/pip/_internal/cli/index_command.py
+@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
+ 
+ def _create_truststore_ssl_context() -> Optional["SSLContext"]:
+     if sys.version_info < (3, 10):
+-        logger.warning("Disabling truststore because Python version isn't 3.10+")
++        logger.debug("Disabling truststore because Python version isn't 3.10+")
+         return None
+ 
+     try:

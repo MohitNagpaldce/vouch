@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "42b029552190f6639642d0f62d27abcd1ceed51e",
+  "kind": "control_good",
+  "subject": "__attrs__",
+  "evidence_subject": "__attrs__",
+  "author": "Kenneth Reitz",
+  "date": "2012-12-17T05:48:18-05:00",
+  "impl_files": [
+    "requests/sessions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 15
+}

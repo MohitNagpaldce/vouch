@@ -1,0 +1,19 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "f13935da53241cd53900df758e4853c07e23a9dc",
+  "kind": "control_good",
+  "subject": "Display --help/--version with ArgumentErrors",
+  "evidence_subject": "Display --help/--version with ArgumentErrors",
+  "author": "Daniel Hahler",
+  "date": "2019-01-17T22:06:45+01:00",
+  "impl_files": [
+    "src/_pytest/config/__init__.py",
+    "src/_pytest/config/argparsing.py",
+    "src/_pytest/helpconfig.py"
+  ],
+  "test_files": [
+    "testing/test_config.py",
+    "testing/test_parseopt.py"
+  ],
+  "diff_lines": 296
+}

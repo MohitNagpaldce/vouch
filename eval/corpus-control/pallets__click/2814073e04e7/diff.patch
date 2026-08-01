@@ -1,0 +1,70 @@
+diff --git a/setup.cfg b/setup.cfg
+index 45c6b89..06474f8 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -78,6 +78,7 @@ per-file-ignores =
+ [mypy]
+ files = src/click
+ python_version = 3.6
++show_error_codes = True
+ disallow_subclassing_any = True
+ disallow_untyped_calls = True
+ disallow_untyped_defs = True
+diff --git a/src/click/core.py b/src/click/core.py
+index f226354..8f539aa 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -2472,7 +2472,7 @@ class Option(Parameter):
+         elif prompt is False:
+             prompt_text = None
+         else:
+-            prompt_text = t.cast(str, prompt)
++            prompt_text = prompt
+ 
+         self.prompt = prompt_text
+         self.confirmation_prompt = confirmation_prompt
+diff --git a/src/click/termui.py b/src/click/termui.py
+index cf8d5f1..5dc4ba0 100644
+--- a/src/click/termui.py
++++ b/src/click/termui.py
+@@ -160,7 +160,6 @@ def prompt(
+         if confirmation_prompt is True:
+             confirmation_prompt = _("Repeat for confirmation")
+ 
+-        confirmation_prompt = t.cast(str, confirmation_prompt)
+         confirmation_prompt = _build_prompt(confirmation_prompt, prompt_suffix)
+ 
+     while True:
+@@ -182,7 +181,6 @@ def prompt(
+         if not confirmation_prompt:
+             return result
+         while True:
+-            confirmation_prompt = t.cast(str, confirmation_prompt)
+             value2 = prompt_func(confirmation_prompt)
+             if value2:
+                 break
+diff --git a/src/click/testing.py b/src/click/testing.py
+index d19b850..e395c2e 100644
+--- a/src/click/testing.py
++++ b/src/click/testing.py
+@@ -464,16 +464,16 @@ class CliRunner:
+             Added the ``temp_dir`` parameter.
+         """
+         cwd = os.getcwd()
+-        t = tempfile.mkdtemp(dir=temp_dir)
+-        os.chdir(t)
++        dt = tempfile.mkdtemp(dir=temp_dir)  # type: ignore[type-var]
++        os.chdir(dt)
+ 
+         try:
+-            yield t
++            yield t.cast(str, dt)
+         finally:
+             os.chdir(cwd)
+ 
+             if temp_dir is None:
+                 try:
+-                    shutil.rmtree(t)
++                    shutil.rmtree(dt)
+                 except OSError:  # noqa: B014
+                     pass

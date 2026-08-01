@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "52dcb4753ac0f33ca9cd1027fb8831fe86af8fc4",
+  "kind": "control_good",
+  "subject": "parametrize tests argument order consistent with existing filters add changelog",
+  "evidence_subject": "parametrize tests argument order consistent with existing filters add changelog",
+  "author": "David Lord",
+  "date": "2017-07-06T08:37:17-07:00",
+  "impl_files": [
+    "jinja2/filters.py"
+  ],
+  "test_files": [
+    "tests/test_filters.py"
+  ],
+  "diff_lines": 181
+}

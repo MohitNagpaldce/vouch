@@ -1,0 +1,14 @@
+{
+  "repo": "pypa/pip",
+  "sha": "8cd8c91491c904b2536bc79ec16ae6ac396b5818",
+  "kind": "control_good",
+  "subject": "[commands/cache] Reformat (more) documentation.",
+  "evidence_subject": "[commands/cache] Reformat (more) documentation.",
+  "author": "Ellen Marie Dash",
+  "date": "2020-03-05T08:25:41-05:00",
+  "impl_files": [
+    "src/pip/_internal/commands/cache.py"
+  ],
+  "test_files": [],
+  "diff_lines": 16
+}

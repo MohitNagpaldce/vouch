@@ -1,0 +1,14 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "de4c233008e8d122ba6690ec39cf743fcb4115b7",
+  "kind": "control_good",
+  "subject": "added-suggestion-to#20047",
+  "evidence_subject": "added-suggestion-to#20047",
+  "author": "Sista Seetaram",
+  "date": "2021-10-06T17:10:10+05:30",
+  "impl_files": [
+    "numpy/lib/function_base.py"
+  ],
+  "test_files": [],
+  "diff_lines": 19
+}

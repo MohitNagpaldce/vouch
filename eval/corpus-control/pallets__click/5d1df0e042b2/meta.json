@@ -1,0 +1,17 @@
+{
+  "repo": "pallets/click",
+  "sha": "5d1df0e042b2f8b0dee8f6dd9ce74edce331a950",
+  "kind": "control_good",
+  "subject": "Underscores are now replaced by dashes in commands",
+  "evidence_subject": "Underscores are now replaced by dashes in commands",
+  "author": "Armin Ronacher",
+  "date": "2018-03-31T12:56:16+02:00",
+  "impl_files": [
+    "click/decorators.py"
+  ],
+  "test_files": [
+    "tests/test_commands.py",
+    "tests/test_formatting.py"
+  ],
+  "diff_lines": 108
+}

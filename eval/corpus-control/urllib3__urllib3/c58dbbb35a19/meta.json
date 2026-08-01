@@ -1,0 +1,14 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "c58dbbb35a19877a8f367c1eaa99ca43c2148f59",
+  "kind": "control_good",
+  "subject": "Add explicit support for Python 3.11 to packaging metadata",
+  "evidence_subject": "Add explicit support for Python 3.11 to packaging metadata",
+  "author": "Seth Michael Larson",
+  "date": "2022-01-05T20:50:29-06:00",
+  "impl_files": [
+    "setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 12
+}

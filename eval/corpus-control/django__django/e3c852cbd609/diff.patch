@@ -1,0 +1,67 @@
+diff --git a/django/db/backends/mysql/base.py b/django/db/backends/mysql/base.py
+index 3b1cc84f82..abf8f55736 100644
+--- a/django/db/backends/mysql/base.py
++++ b/django/db/backends/mysql/base.py
+@@ -221,9 +221,6 @@ class DatabaseWrapper(BaseDatabaseWrapper):
+                         isolation_level,
+                         ', '.join("'%s'" % s for s in sorted(self.isolation_levels))
+                     ))
+-            # The variable assignment form of setting transaction isolation
+-            # levels will be used, e.g. "set transaction_isolation='repeatable-read'".
+-            isolation_level = isolation_level.replace(' ', '-')
+         self.isolation_level = isolation_level
+         kwargs.update(options)
+         return kwargs
+@@ -231,10 +228,6 @@ class DatabaseWrapper(BaseDatabaseWrapper):
+     def get_new_connection(self, conn_params):
+         return Database.connect(**conn_params)
+ 
+-    @cached_property
+-    def transaction_isolation_variable(self):
+-        return 'tx_isolation' if self.mysql_version < (5, 7, 20) else 'transaction_isolation'
+-
+     def init_connection_state(self):
+         assignments = []
+         if self.features.is_sql_auto_is_null_enabled:
+@@ -242,14 +235,14 @@ class DatabaseWrapper(BaseDatabaseWrapper):
+             # a recently inserted row will return when the field is tested
+             # for NULL. Disabling this brings this aspect of MySQL in line
+             # with SQL standards.
+-            assignments.append('SQL_AUTO_IS_NULL = 0')
++            assignments.append('SET SQL_AUTO_IS_NULL = 0')
+ 
+         if self.isolation_level:
+-            assignments.append("%s = '%s'" % (self.transaction_isolation_variable, self.isolation_level))
++            assignments.append('SET SESSION TRANSACTION ISOLATION LEVEL %s' % self.isolation_level.upper())
+ 
+         if assignments:
+             with self.cursor() as cursor:
+-                cursor.execute('SET ' + ', '.join(assignments))
++                cursor.execute('; '.join(assignments))
+ 
+     def create_cursor(self, name=None):
+         cursor = self.connection.cursor()
+diff --git a/tests/backends/mysql/tests.py b/tests/backends/mysql/tests.py
+index 467cd5abc5..02fc312abc 100644
+--- a/tests/backends/mysql/tests.py
++++ b/tests/backends/mysql/tests.py
+@@ -20,7 +20,7 @@ class IsolationLevelTests(TestCase):
+     read_committed = 'read committed'
+     repeatable_read = 'repeatable read'
+     isolation_values = {
+-        level: level.replace(' ', '-').upper()
++        level: level.upper()
+         for level in (read_committed, repeatable_read)
+     }
+ 
+@@ -38,8 +38,8 @@ class IsolationLevelTests(TestCase):
+     @staticmethod
+     def get_isolation_level(connection):
+         with connection.cursor() as cursor:
+-            cursor.execute("SELECT @@session.%s" % connection.transaction_isolation_variable)
+-            return cursor.fetchone()[0]
++            cursor.execute("SHOW VARIABLES WHERE variable_name IN ('transaction_isolation', 'tx_isolation')")
++            return cursor.fetchone()[1].replace('-', ' ')
+ 
+     def test_auto_is_null_auto_config(self):
+         query = 'set sql_auto_is_null = 0'

@@ -1,0 +1,14 @@
+{
+  "repo": "encode/httpx",
+  "sha": "07f786c2f871d230f9c93b5f351b4aa305ee1599",
+  "kind": "control_good",
+  "subject": "Version 0.21.3 (#2017)",
+  "evidence_subject": "Version 0.21.3 (#2017)",
+  "author": "Tom Christie",
+  "date": "2022-01-06T14:36:58Z",
+  "impl_files": [
+    "httpx/__version__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 26
+}

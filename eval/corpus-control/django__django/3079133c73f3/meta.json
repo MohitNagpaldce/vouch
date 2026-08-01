@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "3079133c73f3b8b0e929673b06b62dce1f54be71",
+  "kind": "control_good",
+  "subject": "Fixed #33514 -- Added fallbacks to subsequent language codes in Select2 translations.",
+  "evidence_subject": "Fixed #33514 -- Added fallbacks to subsequent language codes in Select2 translations.",
+  "author": "My-Name-Is-Nabil",
+  "date": "2022-02-18T03:21:35+02:00",
+  "impl_files": [
+    "django/contrib/admin/widgets.py"
+  ],
+  "test_files": [
+    "tests/admin_widgets/test_autocomplete_widget.py"
+  ],
+  "diff_lines": 51
+}

@@ -1,0 +1,17 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "b650c3c1181a7f496a02afeab1d82c1404b03584",
+  "kind": "control_good",
+  "subject": "Implement --setup-show cli flag",
+  "evidence_subject": "Implement --setup-show cli flag",
+  "author": "Steffen Allner",
+  "date": "2016-07-03T22:30:51+02:00",
+  "impl_files": [
+    "_pytest/runner.py",
+    "_pytest/setuponly.py",
+    "_pytest/setupplan.py",
+    "testing/python/setup_only.py"
+  ],
+  "test_files": [],
+  "diff_lines": 154
+}

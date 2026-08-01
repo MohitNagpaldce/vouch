@@ -1,0 +1,18 @@
+{
+  "repo": "pypa/pip",
+  "sha": "ad2b07898df8d62e9abd642c965f3dc5f38c965e",
+  "kind": "control_good",
+  "subject": "Fix pip-install to respect --ignore-requires-python.",
+  "evidence_subject": "Fix pip-install to respect --ignore-requires-python.",
+  "author": "Chris Jerdonek",
+  "date": "2019-05-21T11:10:59-07:00",
+  "impl_files": [
+    "src/pip/_internal/cli/base_command.py",
+    "src/pip/_internal/commands/install.py",
+    "src/pip/_internal/index.py"
+  ],
+  "test_files": [
+    "tests/unit/test_index.py"
+  ],
+  "diff_lines": 214
+}

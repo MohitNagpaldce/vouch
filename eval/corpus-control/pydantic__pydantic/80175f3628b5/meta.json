@@ -1,0 +1,16 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "80175f3628b5e69959be37572c6bfbe1f0569b98",
+  "kind": "control_good",
+  "subject": "fix: ensure to always return one of the values in `Literal` field type (#2181)",
+  "evidence_subject": "fix: ensure to always return one of the values in `Literal` field type (#2181)",
+  "author": "Eric Jolibois",
+  "date": "2021-01-01T16:15:38+01:00",
+  "impl_files": [
+    "pydantic/validators.py"
+  ],
+  "test_files": [
+    "tests/test_validators.py"
+  ],
+  "diff_lines": 73
+}

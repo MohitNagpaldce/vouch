@@ -1,0 +1,14 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "df698f80732508af50b24ecc1b4bd34c470aaba8",
+  "kind": "control_good",
+  "subject": "Add an explanatory docstring to _array_api/__init__.py",
+  "evidence_subject": "Add an explanatory docstring to _array_api/__init__.py",
+  "author": "Aaron Meurer",
+  "date": "2021-01-13T14:00:38-07:00",
+  "impl_files": [
+    "numpy/_array_api/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 74
+}

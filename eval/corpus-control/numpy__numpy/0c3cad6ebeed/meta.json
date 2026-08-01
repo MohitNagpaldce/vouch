@@ -1,0 +1,18 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "0c3cad6ebeed0bb4f1caa97b1d969e3142bdc236",
+  "kind": "control_good",
+  "subject": "API: Add matmul to linalg",
+  "evidence_subject": "API: Add matmul to linalg",
+  "author": "Mateusz Sok\u00f3\u0142",
+  "date": "2023-11-15T11:45:10+01:00",
+  "impl_files": [
+    "numpy/linalg/__init__.py",
+    "numpy/linalg/_linalg.py"
+  ],
+  "test_files": [
+    "numpy/_core/tests/test_numeric.py",
+    "numpy/linalg/tests/test_linalg.py"
+  ],
+  "diff_lines": 315
+}

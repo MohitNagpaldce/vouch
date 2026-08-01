@@ -1,0 +1,14 @@
+diff --git a/_pytest/pytester.py b/_pytest/pytester.py
+index 6dd6772b2..0ee0047e0 100644
+--- a/_pytest/pytester.py
++++ b/_pytest/pytester.py
+@@ -107,7 +107,8 @@ class LsofFdLeakChecker(object):
+             error.extend([str(f) for f in lines2])
+             error.append(error[0])
+             error.append("*** function %s:%s: %s " % item.location)
+-            pytest.fail("\n".join(error), pytrace=False)
++            error.append("See issue #2366")
++            item.warn('', "\n".join(error))
+ 
+ 
+ # XXX copied from execnet's conftest.py - needs to be merged

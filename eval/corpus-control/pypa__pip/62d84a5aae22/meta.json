@@ -1,0 +1,17 @@
+{
+  "repo": "pypa/pip",
+  "sha": "62d84a5aae229aa13c3ca41b6c1a91706e9daccd",
+  "kind": "control_good",
+  "subject": "Add manylinux2014 support",
+  "evidence_subject": "Add manylinux2014 support",
+  "author": "mayeut",
+  "date": "2019-09-26T00:03:39+02:00",
+  "impl_files": [
+    "src/pip/_internal/pep425tags.py"
+  ],
+  "test_files": [
+    "tests/functional/test_download.py",
+    "tests/unit/test_pep425tags.py"
+  ],
+  "diff_lines": 211
+}

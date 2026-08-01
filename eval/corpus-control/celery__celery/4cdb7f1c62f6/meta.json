@@ -1,0 +1,14 @@
+{
+  "repo": "celery/celery",
+  "sha": "4cdb7f1c62f6510962c30c47d691203c2d8b5eac",
+  "kind": "control_good",
+  "subject": "Improves info message after add_consumer",
+  "evidence_subject": "Improves info message after add_consumer",
+  "author": "Ask Solem",
+  "date": "2013-12-06T17:43:42Z",
+  "impl_files": [
+    "celery/worker/consumer.py"
+  ],
+  "test_files": [],
+  "diff_lines": 16
+}

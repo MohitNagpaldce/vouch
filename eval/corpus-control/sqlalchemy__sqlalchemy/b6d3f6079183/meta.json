@@ -1,0 +1,16 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "b6d3f60791834ead92564fc58afebc2c3eb4a2ff",
+  "kind": "control_good",
+  "subject": "Parse for Postgresql version w/ \"beta\"",
+  "evidence_subject": "Parse for Postgresql version w/ \"beta\"",
+  "author": "Mike Bayer",
+  "date": "2017-06-07T12:30:22-04:00",
+  "impl_files": [
+    "lib/sqlalchemy/dialects/postgresql/base.py"
+  ],
+  "test_files": [
+    "test/dialect/postgresql/test_dialect.py"
+  ],
+  "diff_lines": 55
+}

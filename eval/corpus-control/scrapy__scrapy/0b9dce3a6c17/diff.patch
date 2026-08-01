@@ -1,0 +1,216 @@
+diff --git a/docs/topics/settings.rst b/docs/topics/settings.rst
+index 371f21c72..5cc87bb64 100644
+--- a/docs/topics/settings.rst
++++ b/docs/topics/settings.rst
+@@ -438,9 +438,10 @@ or even enable client-side authentication (and various other things).
+     which uses the platform's certificates to validate remote endpoints.
+     **This is only available if you use Twisted>=14.0.**
+ 
+-If you do use a custom ContextFactory, make sure it accepts a ``method``
+-parameter at init (this is the ``OpenSSL.SSL`` method mapping
+-:setting:`DOWNLOADER_CLIENT_TLS_METHOD`).
++If you do use a custom ContextFactory, make sure its ``__init__` method accepts
++a ``method`` parameter (this is the ``OpenSSL.SSL`` method mapping
++:setting:`DOWNLOADER_CLIENT_TLS_METHOD`) and a ``settings`` parameter (this is
++the Scrapy settings object).
+ 
+ .. setting:: DOWNLOADER_CLIENT_TLS_METHOD
+ 
+@@ -468,6 +469,20 @@ This setting must be one of these string values:
+     We recommend that you use PyOpenSSL>=0.13 and Twisted>=0.13
+     or above (Twisted>=14.0 if you can).
+ 
++.. setting:: DOWNLOADER_CLIENT_TLS_VERBOSE_LOGGING
++
++DOWNLOADER_CLIENT_TLS_VERBOSE_LOGGING
++-------------------------------------
++
++Default: ``False``
++
++Setting this to ``True`` will enable DEBUG level messages about TLS connection
++parameters after establishing HTTPS connections. The kind of information logged
++depends on the versions of OpenSSL and pyOpenSSL.
++
++This setting is only used for the default
++:setting:`DOWNLOADER_CLIENTCONTEXTFACTORY`.
++
+ .. setting:: DOWNLOADER_MIDDLEWARES
+ 
+ DOWNLOADER_MIDDLEWARES
+diff --git a/scrapy/core/downloader/contextfactory.py b/scrapy/core/downloader/contextfactory.py
+index 783d4c383..80c784f5a 100644
+--- a/scrapy/core/downloader/contextfactory.py
++++ b/scrapy/core/downloader/contextfactory.py
+@@ -2,6 +2,7 @@ from OpenSSL import SSL
+ from twisted.internet.ssl import ClientContextFactory
+ 
+ from scrapy import twisted_version
++from scrapy.utils.misc import create_instance
+ 
+ if twisted_version >= (14, 0, 0):
+ 
+@@ -28,9 +29,17 @@ if twisted_version >= (14, 0, 0):
+          understand the SSLv3, TLSv1, TLSv1.1 and TLSv1.2 protocols.'
+         """
+ 
+-        def __init__(self, method=SSL.SSLv23_METHOD, *args, **kwargs):
++        def __init__(self, method=SSL.SSLv23_METHOD, settings=None, *args, **kwargs):
+             super(ScrapyClientContextFactory, self).__init__(*args, **kwargs)
+             self._ssl_method = method
++            if settings:
++                self.tls_verbose_logging = settings['DOWNLOADER_CLIENT_TLS_VERBOSE_LOGGING']
++            else:
++                self.tls_verbose_logging = False
++
++        @classmethod
++        def from_settings(cls, settings, method=SSL.SSLv23_METHOD, *args, **kwargs):
++            return cls(method=method, settings=settings, *args, **kwargs)
+ 
+         def getCertificateOptions(self):
+             # setting verify=True will require you to provide CAs
+@@ -56,7 +65,8 @@ if twisted_version >= (14, 0, 0):
+             return self.getCertificateOptions().getContext()
+ 
+         def creatorForNetloc(self, hostname, port):
+-            return ScrapyClientTLSOptions(hostname.decode("ascii"), self.getContext())
++            return ScrapyClientTLSOptions(hostname.decode("ascii"), self.getContext(),
++                                          verbose_logging=self.tls_verbose_logging)
+ 
+ 
+     @implementer(IPolicyForHTTPS)
+diff --git a/scrapy/core/downloader/handlers/http10.py b/scrapy/core/downloader/handlers/http10.py
+index d875fb1e4..be7298531 100644
+--- a/scrapy/core/downloader/handlers/http10.py
++++ b/scrapy/core/downloader/handlers/http10.py
+@@ -1,7 +1,7 @@
+ """Download handlers for http and https schemes
+ """
+ from twisted.internet import reactor
+-from scrapy.utils.misc import load_object
++from scrapy.utils.misc import load_object, create_instance
+ from scrapy.utils.python import to_unicode
+ 
+ 
+@@ -11,6 +11,7 @@ class HTTP10DownloadHandler(object):
+     def __init__(self, settings):
+         self.HTTPClientFactory = load_object(settings['DOWNLOADER_HTTPCLIENTFACTORY'])
+         self.ClientContextFactory = load_object(settings['DOWNLOADER_CLIENTCONTEXTFACTORY'])
++        self._settings = settings
+ 
+     def download_request(self, request, spider):
+         """Return a deferred for the HTTP download"""
+@@ -21,7 +22,7 @@ class HTTP10DownloadHandler(object):
+     def _connect(self, factory):
+         host, port = to_unicode(factory.host), factory.port
+         if factory.scheme == b'https':
+-            return reactor.connectSSL(host, port, factory,
+-                                      self.ClientContextFactory())
++            client_context_factory = create_instance(self.ClientContextFactory, settings=self._settings, crawler=None)
++            return reactor.connectSSL(host, port, factory, client_context_factory)
+         else:
+             return reactor.connectTCP(host, port, factory)
+diff --git a/scrapy/core/downloader/handlers/http11.py b/scrapy/core/downloader/handlers/http11.py
+index 0673188a1..9b0c7977d 100644
+--- a/scrapy/core/downloader/handlers/http11.py
++++ b/scrapy/core/downloader/handlers/http11.py
+@@ -25,7 +25,7 @@ from scrapy.http import Headers
+ from scrapy.responsetypes import responsetypes
+ from scrapy.core.downloader.webclient import _parse
+ from scrapy.core.downloader.tls import openssl_methods
+-from scrapy.utils.misc import load_object
++from scrapy.utils.misc import load_object, create_instance
+ from scrapy.utils.python import to_bytes, to_unicode
+ from scrapy import twisted_version
+ 
+@@ -44,14 +44,15 @@ class HTTP11DownloadHandler(object):
+         self._contextFactoryClass = load_object(settings['DOWNLOADER_CLIENTCONTEXTFACTORY'])
+         # try method-aware context factory
+         try:
+-            self._contextFactory = self._contextFactoryClass(method=self._sslMethod)
++            self._contextFactory = create_instance(self._contextFactoryClass, settings=settings, crawler=None,
++                                                   method=self._sslMethod)
+         except TypeError:
+             # use context factory defaults
+-            self._contextFactory = self._contextFactoryClass()
++            self._contextFactory = create_instance(self._contextFactoryClass, settings=settings, crawler=None)
+             msg = """
+  '%s' does not accept `method` argument (type OpenSSL.SSL method,\
+- e.g. OpenSSL.SSL.SSLv23_METHOD).\
+- Please upgrade your context factory class to handle it or ignore it.""" % (
++ e.g. OpenSSL.SSL.SSLv23_METHOD) and/or `settings` argument.\
++ Please upgrade your context factory class to handle them or ignore them.""" % (
+                 settings['DOWNLOADER_CLIENTCONTEXTFACTORY'],)
+             warnings.warn(msg)
+         self._default_maxsize = settings.getint('DOWNLOAD_MAXSIZE')
+diff --git a/scrapy/core/downloader/tls.py b/scrapy/core/downloader/tls.py
+index 7e5882663..74be85d52 100644
+--- a/scrapy/core/downloader/tls.py
++++ b/scrapy/core/downloader/tls.py
+@@ -70,30 +70,35 @@ if twisted_version >= (14, 0, 0):
+         logging warnings. Also, HTTPS connection parameters logging is added.
+         """
+ 
++        def __init__(self, hostname, ctx, verbose_logging=False):
++            super().__init__(hostname, ctx)
++            self.verbose_logging = verbose_logging
++
+         def _identityVerifyingInfoCallback(self, connection, where, ret):
+             if where & SSL_CB_HANDSHAKE_START:
+                 set_tlsext_host_name(connection, self._hostnameBytes)
+             elif where & SSL_CB_HANDSHAKE_DONE:
+-                if hasattr(connection, 'get_cipher_name'):  # requires pyOPenSSL 0.15
+-                    if hasattr(connection, 'get_protocol_version_name'):  # requires pyOPenSSL 16.0.0
+-                        logger.debug('SSL connection to %s using protocol %s, cipher %s',
+-                                     self._hostnameASCII,
+-                                     connection.get_protocol_version_name(),
+-                                     connection.get_cipher_name(),
+-                                     )
+-                    else:
+-                        logger.debug('SSL connection to %s using cipher %s',
+-                                     self._hostnameASCII,
+-                                     connection.get_cipher_name(),
+-                                     )
+-                server_cert = connection.get_peer_certificate()
+-                logger.debug('SSL connection certificate: issuer "%s", subject "%s"',
+-                             x509name_to_string(server_cert.get_issuer()),
+-                             x509name_to_string(server_cert.get_subject()),
+-                             )
+-                key_info = get_temp_key_info(connection._ssl)
+-                if key_info:
+-                    logger.debug('SSL temp key: %s', key_info)
++                if self.verbose_logging:
++                    if hasattr(connection, 'get_cipher_name'):  # requires pyOPenSSL 0.15
++                        if hasattr(connection, 'get_protocol_version_name'):  # requires pyOPenSSL 16.0.0
++                            logger.debug('SSL connection to %s using protocol %s, cipher %s',
++                                         self._hostnameASCII,
++                                         connection.get_protocol_version_name(),
++                                         connection.get_cipher_name(),
++                                         )
++                        else:
++                            logger.debug('SSL connection to %s using cipher %s',
++                                         self._hostnameASCII,
++                                         connection.get_cipher_name(),
++                                         )
++                    server_cert = connection.get_peer_certificate()
++                    logger.debug('SSL connection certificate: issuer "%s", subject "%s"',
++                                 x509name_to_string(server_cert.get_issuer()),
++                                 x509name_to_string(server_cert.get_subject()),
++                                 )
++                    key_info = get_temp_key_info(connection._ssl)
++                    if key_info:
++                        logger.debug('SSL temp key: %s', key_info)
+ 
+                 try:
+                     verifyHostname(connection, self._hostnameASCII)
+diff --git a/scrapy/settings/default_settings.py b/scrapy/settings/default_settings.py
+index 10b6cf9bc..af8305b25 100644
+--- a/scrapy/settings/default_settings.py
++++ b/scrapy/settings/default_settings.py
+@@ -87,6 +87,7 @@ DOWNLOADER_HTTPCLIENTFACTORY = 'scrapy.core.downloader.webclient.ScrapyHTTPClien
+ DOWNLOADER_CLIENTCONTEXTFACTORY = 'scrapy.core.downloader.contextfactory.ScrapyClientContextFactory'
+ DOWNLOADER_CLIENT_TLS_METHOD = 'TLS' # Use highest TLS/SSL protocol version supported by the platform,
+                                      # also allowing negotiation
++DOWNLOADER_CLIENT_TLS_VERBOSE_LOGGING = False
+ 
+ DOWNLOADER_MIDDLEWARES = {}
+ 

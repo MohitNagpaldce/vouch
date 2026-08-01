@@ -1,0 +1,99 @@
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 285b11e9..be1fbae1 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -45,8 +45,7 @@ repos:
+     exclude: >-
+       ^docs/[^/]*\.svg$
+   - id: requirements-txt-fixer
+-    exclude: >-
+-      ^requirements/.*\.txt$
++    files: requirements/.*\.in$
+   - id: trailing-whitespace
+   - id: file-contents-sorter
+     args: ['--ignore-case']
+diff --git a/Makefile b/Makefile
+index 9bfea912..dee93c62 100644
+--- a/Makefile
++++ b/Makefile
+@@ -187,7 +187,4 @@ install-dev: .develop
+ .PHONY: sync-direct-runtime-deps
+ sync-direct-runtime-deps:
+ 	@echo Updating 'requirements/runtime-deps.in' from 'setup.cfg'... >&2
+-	@echo '# Extracted from `setup.cfg` via `make sync-direct-runtime-deps`' > requirements/runtime-deps.in
+-	@echo >> requirements/runtime-deps.in
+-	@python -c 'from configparser import ConfigParser; from itertools import chain; from pathlib import Path; cfg = ConfigParser(); cfg.read_string(Path("setup.cfg").read_text()); print("\n".join(line.strip() for line in chain(cfg["options"].get("install_requires").splitlines(), "\n".join(cfg["options.extras_require"].values()).splitlines()) if line.strip()))' \
+-		>> requirements/runtime-deps.in
++	@python requirements/sync-direct-runtime-deps.py
+diff --git a/requirements/runtime-deps.in b/requirements/runtime-deps.in
+index 50d5aa42..9ff34a79 100644
+--- a/requirements/runtime-deps.in
++++ b/requirements/runtime-deps.in
+@@ -1,10 +1,10 @@
+ # Extracted from `setup.cfg` via `make sync-direct-runtime-deps`
+ 
+-multidict >=4.5, < 7.0
+-async-timeout >= 4.0, < 5.0 ; python_version < "3.11"
+-yarl >= 1.0, < 2.0
+-frozenlist >= 1.1.1
+-aiosignal >= 1.1.2
+ aiodns >= 1.1; sys_platform=="linux" or sys_platform=="darwin"
++aiosignal >= 1.1.2
++async-timeout >= 4.0, < 5.0 ; python_version < "3.11"
+ Brotli; platform_python_implementation == 'CPython'
+ brotlicffi; platform_python_implementation != 'CPython'
++frozenlist >= 1.1.1
++multidict >=4.5, < 7.0
++yarl >= 1.0, < 2.0
+diff --git a/requirements/sync-direct-runtime-deps.py b/requirements/sync-direct-runtime-deps.py
+new file mode 100755
+index 00000000..adc28bdd
+--- /dev/null
++++ b/requirements/sync-direct-runtime-deps.py
+@@ -0,0 +1,16 @@
++#!/usr/bin/env python
++"""Sync direct runtime dependencies from setup.cfg to runtime-deps.in."""
++
++from configparser import ConfigParser
++from pathlib import Path
++
++cfg = ConfigParser()
++cfg.read(Path("setup.cfg"))
++reqs = cfg["options"]["install_requires"] + cfg.items("options.extras_require")[0][1]
++reqs = sorted(reqs.split("\n"), key=str.casefold)
++reqs.remove("")
++
++with open(Path("requirements", "runtime-deps.in"), "w") as outfile:
++    header = "# Extracted from `setup.cfg` via `make sync-direct-runtime-deps`\n\n"
++    outfile.write(header)
++    outfile.write("\n".join(reqs) + "\n")
+diff --git a/requirements/test.in b/requirements/test.in
+index 417d4595..5c1edf5d 100644
+--- a/requirements/test.in
++++ b/requirements/test.in
+@@ -1,5 +1,5 @@
+--r base.in
+ -c broken-projects.in
++-r base.in
+ 
+ coverage
+ mypy; implementation_name == "cpython"
+diff --git a/setup.cfg b/setup.cfg
+index 4b63cf03..13efc0b7 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -47,11 +47,11 @@ zip_safe = False
+ include_package_data = True
+ 
+ install_requires =
+-  multidict >=4.5, < 7.0
++  aiosignal >= 1.1.2
+   async-timeout >= 4.0, < 5.0 ; python_version < "3.11"
+-  yarl >= 1.0, < 2.0
+   frozenlist >= 1.1.1
+-  aiosignal >= 1.1.2
++  multidict >=4.5, < 7.0
++  yarl >= 1.0, < 2.0
+ 
+ [options.exclude_package_data]
+ * =

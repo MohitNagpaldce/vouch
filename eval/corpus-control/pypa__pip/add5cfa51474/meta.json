@@ -1,0 +1,16 @@
+{
+  "repo": "pypa/pip",
+  "sha": "add5cfa514740baebf9b3a58572e829c4b006b38",
+  "kind": "control_good",
+  "subject": "Replace compat shim with shutil.get_terminal_size()",
+  "evidence_subject": "Replace compat shim with shutil.get_terminal_size()",
+  "author": "Hugo van Kemenade",
+  "date": "2020-12-22T22:20:46+02:00",
+  "impl_files": [
+    "src/pip/_internal/cli/parser.py",
+    "src/pip/_internal/commands/search.py",
+    "src/pip/_internal/utils/compat.py"
+  ],
+  "test_files": [],
+  "diff_lines": 102
+}

@@ -1,0 +1,16 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "bf7ef3e4c3ea70a60f6e5f9e5c8a6d842e2b72b9",
+  "kind": "control_good",
+  "subject": "Move methods to a new scrapy.utils.versions",
+  "evidence_subject": "Move methods to a new scrapy.utils.versions",
+  "author": "Paul Tremberth",
+  "date": "2017-07-27T20:07:14+02:00",
+  "impl_files": [
+    "scrapy/commands/version.py",
+    "scrapy/utils/log.py",
+    "scrapy/utils/versions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 126
+}

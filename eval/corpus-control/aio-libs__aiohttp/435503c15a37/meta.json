@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "435503c15a3772d9fcd9b422ab824162334acaf4",
+  "kind": "control_good",
+  "subject": "Fix minor repeat of of (#3848)",
+  "evidence_subject": "Fix minor repeat of of (#3848)",
+  "author": "Sebastien Williams-Wynn",
+  "date": "2019-06-16T10:51:30+01:00",
+  "impl_files": [
+    "aiohttp/client_reqrep.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

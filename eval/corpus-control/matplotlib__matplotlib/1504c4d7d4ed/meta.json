@@ -1,0 +1,22 @@
+{
+  "repo": "matplotlib/matplotlib",
+  "sha": "1504c4d7d4ed3121c6aa0e8060325ddf1bd10d06",
+  "kind": "control_good",
+  "subject": "DOC: fix various typos",
+  "evidence_subject": "DOC: fix various typos",
+  "author": "luz paz",
+  "date": "2022-03-01T16:36:14-05:00",
+  "impl_files": [
+    "lib/matplotlib/axes/_base.py",
+    "lib/matplotlib/collections.py",
+    "lib/matplotlib/figure.py",
+    "lib/matplotlib/layout_engine.py",
+    "lib/matplotlib/widgets.py",
+    "tutorials/introductory/quick_start.py"
+  ],
+  "test_files": [
+    "lib/matplotlib/tests/test_constrainedlayout.py",
+    "lib/matplotlib/tests/test_widgets.py"
+  ],
+  "diff_lines": 137
+}

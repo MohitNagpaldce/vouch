@@ -1,0 +1,16 @@
+{
+  "repo": "celery/celery",
+  "sha": "b8402e30ab325f5d99becc1c5de3b3e5266b9637",
+  "kind": "control_good",
+  "subject": "Improve celery command to use base.Command",
+  "evidence_subject": "Improve celery command to use base.Command",
+  "author": "Ask Solem",
+  "date": "2012-04-28T15:35:44+01:00",
+  "impl_files": [
+    "celery/__main__.py",
+    "celery/bin/base.py",
+    "celery/bin/celery.py"
+  ],
+  "test_files": [],
+  "diff_lines": 138
+}

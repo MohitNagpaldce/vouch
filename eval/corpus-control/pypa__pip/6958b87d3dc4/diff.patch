@@ -1,0 +1,733 @@
+diff --git a/news/10138.trivial.rst b/news/10138.trivial.rst
+new file mode 100644
+index 000000000..524867fd0
+--- /dev/null
++++ b/news/10138.trivial.rst
+@@ -0,0 +1 @@
++Convert type commentaries to annotations on ``pip/_internal/models``.
+diff --git a/src/pip/_internal/models/candidate.py b/src/pip/_internal/models/candidate.py
+index 3b91704a2..c673d8d05 100644
+--- a/src/pip/_internal/models/candidate.py
++++ b/src/pip/_internal/models/candidate.py
+@@ -10,8 +10,7 @@ class InstallationCandidate(KeyBasedCompareMixin):
+ 
+     __slots__ = ["name", "version", "link"]
+ 
+-    def __init__(self, name, version, link):
+-        # type: (str, str, Link) -> None
++    def __init__(self, name: str, version: str, link: Link) -> None:
+         self.name = name
+         self.version = parse_version(version)
+         self.link = link
+@@ -21,14 +20,12 @@ class InstallationCandidate(KeyBasedCompareMixin):
+             defining_class=InstallationCandidate
+         )
+ 
+-    def __repr__(self):
+-        # type: () -> str
++    def __repr__(self) -> str:
+         return "<InstallationCandidate({!r}, {!r}, {!r})>".format(
+             self.name, self.version, self.link,
+         )
+ 
+-    def __str__(self):
+-        # type: () -> str
++    def __str__(self) -> str:
+         return '{!r} candidate (version {} at {})'.format(
+             self.name, self.version, self.link,
+         )
+diff --git a/src/pip/_internal/models/direct_url.py b/src/pip/_internal/models/direct_url.py
+index 345dbaf10..3f9b6993e 100644
+--- a/src/pip/_internal/models/direct_url.py
++++ b/src/pip/_internal/models/direct_url.py
+@@ -22,8 +22,9 @@ class DirectUrlValidationError(Exception):
+     pass
+ 
+ 
+-def _get(d, expected_type, key, default=None):
+-    # type: (Dict[str, Any], Type[T], str, Optional[T]) -> Optional[T]
++def _get(
++    d: Dict[str, Any], expected_type: Type[T], key: str, default: Optional[T] = None
++) -> Optional[T]:
+     """Get value from dictionary and verify expected type."""
+     if key not in d:
+         return default
+@@ -37,16 +38,16 @@ def _get(d, expected_type, key, default=None):
+     return value
+ 
+ 
+-def _get_required(d, expected_type, key, default=None):
+-    # type: (Dict[str, Any], Type[T], str, Optional[T]) -> T
++def _get_required(
++    d: Dict[str, Any], expected_type: Type[T], key: str, default: Optional[T] = None
++) -> T:
+     value = _get(d, expected_type, key, default)
+     if value is None:
+         raise DirectUrlValidationError(f"{key} must have a value")
+     return value
+ 
+ 
+-def _exactly_one_of(infos):
+-    # type: (Iterable[Optional[InfoType]]) -> InfoType
++def _exactly_one_of(infos: Iterable[Optional["InfoType"]]) -> "InfoType":
+     infos = [info for info in infos if info is not None]
+     if not infos:
+         raise DirectUrlValidationError(
+@@ -60,8 +61,7 @@ def _exactly_one_of(infos):
+     return infos[0]
+ 
+ 
+-def _filter_none(**kwargs):
+-    # type: (Any) -> Dict[str, Any]
++def _filter_none(**kwargs: Any) -> Dict[str, Any]:
+     """Make dict excluding None values."""
+     return {k: v for k, v in kwargs.items() if v is not None}
+ 
+@@ -71,12 +71,12 @@ class VcsInfo:
+ 
+     def __init__(
+         self,
+-        vcs,  # type: str
+-        commit_id,  # type: str
+-        requested_revision=None,  # type: Optional[str]
+-        resolved_revision=None,  # type: Optional[str]
+-        resolved_revision_type=None,  # type: Optional[str]
+-    ):
++        vcs: str,
++        commit_id: str,
++        requested_revision: Optional[str] = None,
++        resolved_revision: Optional[str] = None,
++        resolved_revision_type: Optional[str] = None,
++    ) -> None:
+         self.vcs = vcs
+         self.requested_revision = requested_revision
+         self.commit_id = commit_id
+@@ -84,8 +84,7 @@ class VcsInfo:
+         self.resolved_revision_type = resolved_revision_type
+ 
+     @classmethod
+-    def _from_dict(cls, d):
+-        # type: (Optional[Dict[str, Any]]) -> Optional[VcsInfo]
++    def _from_dict(cls, d: Optional[Dict[str, Any]]) -> Optional["VcsInfo"]:
+         if d is None:
+             return None
+         return cls(
+@@ -96,8 +95,7 @@ class VcsInfo:
+             resolved_revision_type=_get(d, str, "resolved_revision_type"),
+         )
+ 
+-    def _to_dict(self):
+-        # type: () -> Dict[str, Any]
++    def _to_dict(self) -> Dict[str, Any]:
+         return _filter_none(
+             vcs=self.vcs,
+             requested_revision=self.requested_revision,
+@@ -112,19 +110,17 @@ class ArchiveInfo:
+ 
+     def __init__(
+         self,
+-        hash=None,  # type: Optional[str]
+-    ):
++        hash: Optional[str] = None,
++    ) -> None:
+         self.hash = hash
+ 
+     @classmethod
+-    def _from_dict(cls, d):
+-        # type: (Optional[Dict[str, Any]]) -> Optional[ArchiveInfo]
++    def _from_dict(cls, d: Optional[Dict[str, Any]]) -> Optional["ArchiveInfo"]:
+         if d is None:
+             return None
+         return cls(hash=_get(d, str, "hash"))
+ 
+-    def _to_dict(self):
+-        # type: () -> Dict[str, Any]
++    def _to_dict(self) -> Dict[str, Any]:
+         return _filter_none(hash=self.hash)
+ 
+ 
+@@ -133,21 +129,19 @@ class DirInfo:
+ 
+     def __init__(
+         self,
+-        editable=False,  # type: bool
+-    ):
++        editable: bool = False,
++    ) -> None:
+         self.editable = editable
+ 
+     @classmethod
+-    def _from_dict(cls, d):
+-        # type: (Optional[Dict[str, Any]]) -> Optional[DirInfo]
++    def _from_dict(cls, d: Optional[Dict[str, Any]]) -> Optional["DirInfo"]:
+         if d is None:
+             return None
+         return cls(
+             editable=_get_required(d, bool, "editable", default=False)
+         )
+ 
+-    def _to_dict(self):
+-        # type: () -> Dict[str, Any]
++    def _to_dict(self) -> Dict[str, Any]:
+         return _filter_none(editable=self.editable or None)
+ 
+ 
+@@ -158,16 +152,15 @@ class DirectUrl:
+ 
+     def __init__(
+         self,
+-        url,  # type: str
+-        info,  # type: InfoType
+-        subdirectory=None,  # type: Optional[str]
+-    ):
++        url: str,
++        info: InfoType,
++        subdirectory: Optional[str] = None,
++    ) -> None:
+         self.url = url
+         self.info = info
+         self.subdirectory = subdirectory
+ 
+-    def _remove_auth_from_netloc(self, netloc):
+-        # type: (str) -> str
++    def _remove_auth_from_netloc(self, netloc: str) -> str:
+         if "@" not in netloc:
+             return netloc
+         user_pass, netloc_no_user_pass = netloc.split("@", 1)
+@@ -182,8 +175,7 @@ class DirectUrl:
+         return netloc_no_user_pass
+ 
+     @property
+-    def redacted_url(self):
+-        # type: () -> str
++    def redacted_url(self) -> str:
+         """url with user:password part removed unless it is formed with
+         environment variables as specified in PEP 610, or it is ``git``
+         in the case of a git URL.
+@@ -195,13 +187,11 @@ class DirectUrl:
+         )
+         return surl
+ 
+-    def validate(self):
+-        # type: () -> None
++    def validate(self) -> None:
+         self.from_dict(self.to_dict())
+ 
+     @classmethod
+-    def from_dict(cls, d):
+-        # type: (Dict[str, Any]) -> DirectUrl
++    def from_dict(cls, d: Dict[str, Any]) -> "DirectUrl":
+         return DirectUrl(
+             url=_get_required(d, str, "url"),
+             subdirectory=_get(d, str, "subdirectory"),
+@@ -214,8 +204,7 @@ class DirectUrl:
+             ),
+         )
+ 
+-    def to_dict(self):
+-        # type: () -> Dict[str, Any]
++    def to_dict(self) -> Dict[str, Any]:
+         res = _filter_none(
+             url=self.redacted_url,
+             subdirectory=self.subdirectory,
+@@ -224,10 +213,8 @@ class DirectUrl:
+         return res
+ 
+     @classmethod
+-    def from_json(cls, s):
+-        # type: (str) -> DirectUrl
++    def from_json(cls, s: str) -> "DirectUrl":
+         return cls.from_dict(json.loads(s))
+ 
+-    def to_json(self):
+-        # type: () -> str
++    def to_json(self) -> str:
+         return json.dumps(self.to_dict(), sort_keys=True)
+diff --git a/src/pip/_internal/models/format_control.py b/src/pip/_internal/models/format_control.py
+index cf262af29..010c3620d 100644
+--- a/src/pip/_internal/models/format_control.py
++++ b/src/pip/_internal/models/format_control.py
+@@ -11,8 +11,11 @@ class FormatControl:
+ 
+     __slots__ = ["no_binary", "only_binary"]
+ 
+-    def __init__(self, no_binary=None, only_binary=None):
+-        # type: (Optional[Set[str]], Optional[Set[str]]) -> None
++    def __init__(
++        self,
++        no_binary: Optional[Set[str]] = None,
++        only_binary: Optional[Set[str]] = None
++    ) -> None:
+         if no_binary is None:
+             no_binary = set()
+         if only_binary is None:
+@@ -21,8 +24,7 @@ class FormatControl:
+         self.no_binary = no_binary
+         self.only_binary = only_binary
+ 
+-    def __eq__(self, other):
+-        # type: (object) -> bool
++    def __eq__(self, other: object) -> bool:
+         if not isinstance(other, self.__class__):
+             return NotImplemented
+ 
+@@ -34,8 +36,7 @@ class FormatControl:
+             for k in self.__slots__
+         )
+ 
+-    def __repr__(self):
+-        # type: () -> str
++    def __repr__(self) -> str:
+         return "{}({}, {})".format(
+             self.__class__.__name__,
+             self.no_binary,
+@@ -43,8 +44,7 @@ class FormatControl:
+         )
+ 
+     @staticmethod
+-    def handle_mutual_excludes(value, target, other):
+-        # type: (str, Set[str], Set[str]) -> None
++    def handle_mutual_excludes(value: str, target: Set[str], other: Set[str]) -> None:
+         if value.startswith('-'):
+             raise CommandError(
+                 "--no-binary / --only-binary option requires 1 argument."
+@@ -66,8 +66,7 @@ class FormatControl:
+             other.discard(name)
+             target.add(name)
+ 
+-    def get_allowed_formats(self, canonical_name):
+-        # type: (str) -> FrozenSet[str]
++    def get_allowed_formats(self, canonical_name: str) -> FrozenSet[str]:
+         result = {"binary", "source"}
+         if canonical_name in self.only_binary:
+             result.discard('source')
+@@ -79,8 +78,7 @@ class FormatControl:
+             result.discard('binary')
+         return frozenset(result)
+ 
+-    def disallow_binaries(self):
+-        # type: () -> None
++    def disallow_binaries(self) -> None:
+         self.handle_mutual_excludes(
+             ':all:', self.no_binary, self.only_binary,
+         )
+diff --git a/src/pip/_internal/models/index.py b/src/pip/_internal/models/index.py
+index b148abb42..1874a5b60 100644
+--- a/src/pip/_internal/models/index.py
++++ b/src/pip/_internal/models/index.py
+@@ -8,8 +8,7 @@ class PackageIndex:
+     __slots__ = ['url', 'netloc', 'simple_url', 'pypi_url',
+                  'file_storage_domain']
+ 
+-    def __init__(self, url, file_storage_domain):
+-        # type: (str, str) -> None
++    def __init__(self, url: str, file_storage_domain: str) -> None:
+         super().__init__()
+         self.url = url
+         self.netloc = urllib.parse.urlsplit(url).netloc
+@@ -21,8 +20,7 @@ class PackageIndex:
+         # block such packages themselves
+         self.file_storage_domain = file_storage_domain
+ 
+-    def _url_for_path(self, path):
+-        # type: (str) -> str
++    def _url_for_path(self, path: str) -> str:
+         return urllib.parse.urljoin(self.url, path)
+ 
+ 
+diff --git a/src/pip/_internal/models/link.py b/src/pip/_internal/models/link.py
+index ebee38395..411cfb624 100644
+--- a/src/pip/_internal/models/link.py
++++ b/src/pip/_internal/models/link.py
+@@ -33,13 +33,12 @@ class Link(KeyBasedCompareMixin):
+ 
+     def __init__(
+         self,
+-        url,                   # type: str
+-        comes_from=None,       # type: Optional[Union[str, HTMLPage]]
+-        requires_python=None,  # type: Optional[str]
+-        yanked_reason=None,    # type: Optional[str]
+-        cache_link_parsing=True,  # type: bool
+-    ):
+-        # type: (...) -> None
++        url: str,
++        comes_from: Optional[Union[str, "HTMLPage"]] = None,
++        requires_python: Optional[str] = None,
++        yanked_reason: Optional[str] = None,
++        cache_link_parsing: bool = True,
++    ) -> None:
+         """
+         :param url: url of the resource pointed to (href of the link)
+         :param comes_from: instance of HTMLPage where the link was found,
+@@ -78,8 +77,7 @@ class Link(KeyBasedCompareMixin):
+ 
+         self.cache_link_parsing = cache_link_parsing
+ 
+-    def __str__(self):
+-        # type: () -> str
++    def __str__(self) -> str:
+         if self.requires_python:
+             rp = f' (requires-python:{self.requires_python})'
+         else:
+@@ -90,18 +88,15 @@ class Link(KeyBasedCompareMixin):
+         else:
+             return redact_auth_from_url(str(self._url))
+ 
+-    def __repr__(self):
+-        # type: () -> str
++    def __repr__(self) -> str:
+         return f'<Link {self}>'
+ 
+     @property
+-    def url(self):
+-        # type: () -> str
++    def url(self) -> str:
+         return self._url
+ 
+     @property
+-    def filename(self):
+-        # type: () -> str
++    def filename(self) -> str:
+         path = self.path.rstrip('/')
+         name = posixpath.basename(path)
+         if not name:
+@@ -115,48 +110,40 @@ class Link(KeyBasedCompareMixin):
+         return name
+ 
+     @property
+-    def file_path(self):
+-        # type: () -> str
++    def file_path(self) -> str:
+         return url_to_path(self.url)
+ 
+     @property
+-    def scheme(self):
+-        # type: () -> str
++    def scheme(self) -> str:
+         return self._parsed_url.scheme
+ 
+     @property
+-    def netloc(self):
+-        # type: () -> str
++    def netloc(self) -> str:
+         """
+         This can contain auth information.
+         """
+         return self._parsed_url.netloc
+ 
+     @property
+-    def path(self):
+-        # type: () -> str
++    def path(self) -> str:
+         return urllib.parse.unquote(self._parsed_url.path)
+ 
+-    def splitext(self):
+-        # type: () -> Tuple[str, str]
++    def splitext(self) -> Tuple[str, str]:
+         return splitext(posixpath.basename(self.path.rstrip('/')))
+ 
+     @property
+-    def ext(self):
+-        # type: () -> str
++    def ext(self) -> str:
+         return self.splitext()[1]
+ 
+     @property
+-    def url_without_fragment(self):
+-        # type: () -> str
++    def url_without_fragment(self) -> str:
+         scheme, netloc, path, query, fragment = self._parsed_url
+         return urllib.parse.urlunsplit((scheme, netloc, path, query, ''))
+ 
+     _egg_fragment_re = re.compile(r'[#&]egg=([^&]*)')
+ 
+     @property
+-    def egg_fragment(self):
+-        # type: () -> Optional[str]
++    def egg_fragment(self) -> Optional[str]:
+         match = self._egg_fragment_re.search(self._url)
+         if not match:
+             return None
+@@ -165,8 +152,7 @@ class Link(KeyBasedCompareMixin):
+     _subdirectory_fragment_re = re.compile(r'[#&]subdirectory=([^&]*)')
+ 
+     @property
+-    def subdirectory_fragment(self):
+-        # type: () -> Optional[str]
++    def subdirectory_fragment(self) -> Optional[str]:
+         match = self._subdirectory_fragment_re.search(self._url)
+         if not match:
+             return None
+@@ -177,59 +163,49 @@ class Link(KeyBasedCompareMixin):
+     )
+ 
+     @property
+-    def hash(self):
+-        # type: () -> Optional[str]
++    def hash(self) -> Optional[str]:
+         match = self._hash_re.search(self._url)
+         if match:
+             return match.group(2)
+         return None
+ 
+     @property
+-    def hash_name(self):
+-        # type: () -> Optional[str]
++    def hash_name(self) -> Optional[str]:
+         match = self._hash_re.search(self._url)
+         if match:
+             return match.group(1)
+         return None
+ 
+     @property
+-    def show_url(self):
+-        # type: () -> str
++    def show_url(self) -> str:
+         return posixpath.basename(self._url.split('#', 1)[0].split('?', 1)[0])
+ 
+     @property
+-    def is_file(self):
+-        # type: () -> bool
++    def is_file(self) -> bool:
+         return self.scheme == 'file'
+ 
+-    def is_existing_dir(self):
+-        # type: () -> bool
++    def is_existing_dir(self) -> bool:
+         return self.is_file and os.path.isdir(self.file_path)
+ 
+     @property
+-    def is_wheel(self):
+-        # type: () -> bool
++    def is_wheel(self) -> bool:
+         return self.ext == WHEEL_EXTENSION
+ 
+     @property
+-    def is_vcs(self):
+-        # type: () -> bool
++    def is_vcs(self) -> bool:
+         from pip._internal.vcs import vcs
+ 
+         return self.scheme in vcs.all_schemes
+ 
+     @property
+-    def is_yanked(self):
+-        # type: () -> bool
++    def is_yanked(self) -> bool:
+         return self.yanked_reason is not None
+ 
+     @property
+-    def has_hash(self):
+-        # type: () -> bool
++    def has_hash(self) -> bool:
+         return self.hash_name is not None
+ 
+-    def is_hash_allowed(self, hashes):
+-        # type: (Optional[Hashes]) -> bool
++    def is_hash_allowed(self, hashes: Optional[Hashes]) -> bool:
+         """
+         Return True if the link has a hash and it is allowed.
+         """
+@@ -243,6 +219,5 @@ class Link(KeyBasedCompareMixin):
+ 
+ 
+ # TODO: Relax this comparison logic to ignore, for example, fragments.
+-def links_equivalent(link1, link2):
+-    # type: (Link, Link) -> bool
++def links_equivalent(link1: Link, link2: Link) -> bool:
+     return link1 == link2
+diff --git a/src/pip/_internal/models/scheme.py b/src/pip/_internal/models/scheme.py
+index 697cd19b4..9a8dafba3 100644
+--- a/src/pip/_internal/models/scheme.py
++++ b/src/pip/_internal/models/scheme.py
+@@ -18,12 +18,12 @@ class Scheme:
+ 
+     def __init__(
+         self,
+-        platlib,  # type: str
+-        purelib,  # type: str
+-        headers,  # type: str
+-        scripts,  # type: str
+-        data,  # type: str
+-    ):
++        platlib: str,
++        purelib: str,
++        headers: str,
++        scripts: str,
++        data: str,
++    ) -> None:
+         self.platlib = platlib
+         self.purelib = purelib
+         self.headers = headers
+diff --git a/src/pip/_internal/models/search_scope.py b/src/pip/_internal/models/search_scope.py
+index a3f0a5c0f..2e4a08c1c 100644
+--- a/src/pip/_internal/models/search_scope.py
++++ b/src/pip/_internal/models/search_scope.py
+@@ -25,10 +25,9 @@ class SearchScope:
+     @classmethod
+     def create(
+         cls,
+-        find_links,  # type: List[str]
+-        index_urls,  # type: List[str]
+-    ):
+-        # type: (...) -> SearchScope
++        find_links: List[str],
++        index_urls: List[str],
++    ) -> "SearchScope":
+         """
+         Create a SearchScope object after normalizing the `find_links`.
+         """
+@@ -65,15 +64,13 @@ class SearchScope:
+ 
+     def __init__(
+         self,
+-        find_links,  # type: List[str]
+-        index_urls,  # type: List[str]
+-    ):
+-        # type: (...) -> None
++        find_links: List[str],
++        index_urls: List[str],
++    ) -> None:
+         self.find_links = find_links
+         self.index_urls = index_urls
+ 
+-    def get_formatted_locations(self):
+-        # type: () -> str
++    def get_formatted_locations(self) -> str:
+         lines = []
+         redacted_index_urls = []
+         if self.index_urls and self.index_urls != [PyPI.simple_url]:
+@@ -106,16 +103,14 @@ class SearchScope:
+             )
+         return '\n'.join(lines)
+ 
+-    def get_index_urls_locations(self, project_name):
+-        # type: (str) -> List[str]
++    def get_index_urls_locations(self, project_name: str) -> List[str]:
+         """Returns the locations found via self.index_urls
+ 
+         Checks the url_name on the main (first in the list) index and
+         use this url_name to produce all locations
+         """
+ 
+-        def mkurl_pypi_url(url):
+-            # type: (str) -> str
++        def mkurl_pypi_url(url: str) -> str:
+             loc = posixpath.join(
+                 url,
+                 urllib.parse.quote(canonicalize_name(project_name)))
+diff --git a/src/pip/_internal/models/selection_prefs.py b/src/pip/_internal/models/selection_prefs.py
+index edc1cf799..1fd79cba9 100644
+--- a/src/pip/_internal/models/selection_prefs.py
++++ b/src/pip/_internal/models/selection_prefs.py
+@@ -18,11 +18,11 @@ class SelectionPreferences:
+     # people when reading the code.
+     def __init__(
+         self,
+-        allow_yanked,  # type: bool
+-        allow_all_prereleases=False,  # type: bool
+-        format_control=None,          # type: Optional[FormatControl]
+-        prefer_binary=False,          # type: bool
+-        ignore_requires_python=None,  # type: Optional[bool]
++        allow_yanked: bool,
++        allow_all_prereleases: bool = False,
++        format_control: Optional[FormatControl] = None,
++        prefer_binary: bool = False,
++        ignore_requires_python: Optional[bool] = None,
+     ):
+         # type: (...) -> None
+         """Create a SelectionPreferences object.
+diff --git a/src/pip/_internal/models/target_python.py b/src/pip/_internal/models/target_python.py
+index b91e349f5..ac69e152b 100644
+--- a/src/pip/_internal/models/target_python.py
++++ b/src/pip/_internal/models/target_python.py
+@@ -26,12 +26,11 @@ class TargetPython:
+ 
+     def __init__(
+         self,
+-        platforms=None,  # type: Optional[List[str]]
+-        py_version_info=None,  # type: Optional[Tuple[int, ...]]
+-        abis=None,  # type: Optional[List[str]]
+-        implementation=None,  # type: Optional[str]
+-    ):
+-        # type: (...) -> None
++        platforms: Optional[List[str]] = None,
++        py_version_info: Optional[Tuple[int, ...]] = None,
++        abis: Optional[List[str]] = None,
++        implementation: Optional[str] = None,
++    ) -> None:
+         """
+         :param platforms: A list of strings or None. If None, searches for
+             packages that are supported by the current system. Otherwise, will
+@@ -65,8 +64,7 @@ class TargetPython:
+         # This is used to cache the return value of get_tags().
+         self._valid_tags = None  # type: Optional[List[Tag]]
+ 
+-    def format_given(self):
+-        # type: () -> str
++    def format_given(self) -> str:
+         """
+         Format the given, non-None attributes for display.
+         """
+@@ -87,8 +85,7 @@ class TargetPython:
+             if value is not None
+         )
+ 
+-    def get_tags(self):
+-        # type: () -> List[Tag]
++    def get_tags(self) -> List[Tag]:
+         """
+         Return the supported PEP 425 tags to check wheel candidates against.
+ 
+diff --git a/src/pip/_internal/models/wheel.py b/src/pip/_internal/models/wheel.py
+index 827ebca91..a79a86106 100644
+--- a/src/pip/_internal/models/wheel.py
++++ b/src/pip/_internal/models/wheel.py
+@@ -19,8 +19,7 @@ class Wheel:
+         re.VERBOSE
+     )
+ 
+-    def __init__(self, filename):
+-        # type: (str) -> None
++    def __init__(self, filename: str) -> None:
+         """
+         :raises InvalidWheelFilename: when the filename is invalid for a wheel
+         """
+@@ -45,13 +44,11 @@ class Wheel:
+             for y in self.abis for z in self.plats
+         }
+ 
+-    def get_formatted_file_tags(self):
+-        # type: () -> List[str]
++    def get_formatted_file_tags(self) -> List[str]:
+         """Return the wheel's tags as a sorted list of strings."""
+         return sorted(str(tag) for tag in self.file_tags)
+ 
+-    def support_index_min(self, tags):
+-        # type: (List[Tag]) -> int
++    def support_index_min(self, tags: List[Tag]) -> int:
+         """Return the lowest index that one of the wheel's file_tag combinations
+         achieves in the given list of supported tags.
+ 
+@@ -66,8 +63,9 @@ class Wheel:
+         """
+         return min(tags.index(tag) for tag in self.file_tags if tag in tags)
+ 
+-    def find_most_preferred_tag(self, tags, tag_to_priority):
+-        # type: (List[Tag], Dict[Tag, int]) -> int
++    def find_most_preferred_tag(
++        self, tags: List[Tag], tag_to_priority: Dict[Tag, int]
++    ) -> int:
+         """Return the priority of the most preferred tag that one of the wheel's file
+         tag combinations achieves in the given list of supported tags using the given
+         tag_to_priority mapping, where lower priorities are more-preferred.
+@@ -86,8 +84,7 @@ class Wheel:
+             tag_to_priority[tag] for tag in self.file_tags if tag in tag_to_priority
+         )
+ 
+-    def supported(self, tags):
+-        # type: (Iterable[Tag]) -> bool
++    def supported(self, tags: Iterable[Tag]) -> bool:
+         """Return whether the wheel is compatible with one of the given tags.
+ 
+         :param tags: the PEP 425 tags to check the wheel against.

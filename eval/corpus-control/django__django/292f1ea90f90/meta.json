@@ -1,0 +1,14 @@
+{
+  "repo": "django/django",
+  "sha": "292f1ea90f90ff140617299a25884c8fda24aa64",
+  "kind": "control_good",
+  "subject": "Refs #32819 -- Used auto_id instead of id_for_label as unique identifier for the field.",
+  "evidence_subject": "Refs #32819 -- Used auto_id instead of id_for_label as unique identifier for the field.",
+  "author": "David Smith",
+  "date": "2023-11-15T20:51:00Z",
+  "impl_files": [
+    "django/forms/boundfield.py"
+  ],
+  "test_files": [],
+  "diff_lines": 182
+}

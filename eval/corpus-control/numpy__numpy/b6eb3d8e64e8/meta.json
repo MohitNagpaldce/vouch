@@ -1,0 +1,16 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "b6eb3d8e64e8408cdcac80caacbda9b978545ee0",
+  "kind": "control_good",
+  "subject": "BUG: fix np.ma.masked_where(copy=False) when input has no mask (#18967)",
+  "evidence_subject": "BUG: fix np.ma.masked_where(copy=False) when input has no mask (#18967)",
+  "author": "Constanza",
+  "date": "2021-05-10T07:25:02+02:00",
+  "impl_files": [
+    "numpy/ma/core.py"
+  ],
+  "test_files": [
+    "numpy/ma/tests/test_core.py"
+  ],
+  "diff_lines": 44
+}

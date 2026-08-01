@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "eb122eb719f0d2f3b35db700eade79866f846d93",
+  "kind": "control_good",
+  "subject": "Added a deprecation warning",
+  "evidence_subject": "Added a deprecation warning",
+  "author": "Armin Ronacher",
+  "date": "2013-06-05T09:11:38+01:00",
+  "impl_files": [
+    "werkzeug/contrib/jsrouting.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

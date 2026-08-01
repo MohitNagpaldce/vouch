@@ -1,0 +1,56 @@
+diff --git a/tornado/process.py b/tornado/process.py
+index f580e192..daa9677b 100644
+--- a/tornado/process.py
++++ b/tornado/process.py
+@@ -50,7 +50,14 @@ except NameError:
+ 
+ 
+ # Re-export this exception for convenience.
+-CalledProcessError = subprocess.CalledProcessError
++try:
++    CalledProcessError = subprocess.CalledProcessError
++except AttributeError:
++    # The subprocess module exists in Google App Engine, but is empty.
++    # This module isn't very useful in that case, but it should
++    # at least be importable.
++    if 'APPENGINE_RUNTIME' not in os.environ:
++        raise
+ 
+ 
+ def cpu_count():
+diff --git a/tornado/test/locale_test.py b/tornado/test/locale_test.py
+index 44726644..e2578386 100644
+--- a/tornado/test/locale_test.py
++++ b/tornado/test/locale_test.py
+@@ -7,7 +7,7 @@ import tempfile
+ 
+ import tornado.locale
+ from tornado.escape import utf8, to_unicode
+-from tornado.test.util import unittest
++from tornado.test.util import unittest, skipOnAppEngine
+ from tornado.util import u, unicode_type
+ 
+ 
+@@ -37,6 +37,8 @@ class TranslationLoaderTest(unittest.TestCase):
+         self.assertTrue(isinstance(locale, tornado.locale.CSVLocale))
+         self.assertEqual(locale.translate("school"), u("\u00e9cole"))
+ 
++    # tempfile.mkdtemp is not available on app engine.
++    @skipOnAppEngine
+     def test_csv_bom(self):
+         with open(os.path.join(os.path.dirname(__file__), 'csv_translations',
+                                'fr_FR.csv'), 'rb') as f:
+diff --git a/tornado/test/util.py b/tornado/test/util.py
+index b8feff4f..cfa7c81d 100644
+--- a/tornado/test/util.py
++++ b/tornado/test/util.py
+@@ -26,6 +26,9 @@ skipIfNonUnix = unittest.skipIf(os.name != 'posix' or sys.platform == 'cygwin',
+ skipOnTravis = unittest.skipIf('TRAVIS' in os.environ,
+                                'timing tests unreliable on travis')
+ 
++skipOnAppEngine = unittest.skipIf('APPENGINE_RUNTIME' in os.environ,
++                                  'not available on Google App Engine')
++
+ # Set the environment variable NO_NETWORK=1 to disable any tests that
+ # depend on an external network.
+ skipIfNoNetwork = unittest.skipIf('NO_NETWORK' in os.environ,

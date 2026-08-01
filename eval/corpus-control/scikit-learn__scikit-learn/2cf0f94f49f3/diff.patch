@@ -1,0 +1,120 @@
+diff --git a/doc/whats_new/v1.2.rst b/doc/whats_new/v1.2.rst
+index e7900c097..5add43d14 100644
+--- a/doc/whats_new/v1.2.rst
++++ b/doc/whats_new/v1.2.rst
+@@ -119,6 +119,9 @@ Changelog
+ :mod:`sklearn.tree`
+ ...................
+ 
++- |Enhancement| :func:`tree.plot_tree`, :func:`tree.export_graphviz` now uses
++  a lower case `x[i]` to represent feature `i`. :pr:`23480` by `Thomas Fan`_.
++
+ - |Fix| Fixed invalid memory access bug during fit in
+   :class:`tree.DecisionTreeRegressor` and :class:`tree.DecisionTreeClassifier`.
+   :pr:`23273` by `Thomas Fan`_.
+diff --git a/sklearn/tree/_export.py b/sklearn/tree/_export.py
+index 4e2e8b58c..e3be3795e 100644
+--- a/sklearn/tree/_export.py
++++ b/sklearn/tree/_export.py
+@@ -115,7 +115,7 @@ def plot_tree(
+ 
+     feature_names : list of strings, default=None
+         Names of each of the features.
+-        If None, generic names will be used ("X[0]", "X[1]", ...).
++        If None, generic names will be used ("x[0]", "x[1]", ...).
+ 
+     class_names : list of str or bool, default=None
+         Names of each of the target classes in ascending numerical order.
+@@ -291,7 +291,7 @@ class _BaseTreeExporter:
+             if self.feature_names is not None:
+                 feature = self.feature_names[tree.feature[node_id]]
+             else:
+-                feature = "X%s%s%s" % (
++                feature = "x%s%s%s" % (
+                     characters[1],
+                     tree.feature[node_id],
+                     characters[2],
+@@ -789,7 +789,7 @@ def export_graphviz(
+ 
+     feature_names : list of str, default=None
+         Names of each of the features.
+-        If None generic names will be used ("feature_0", "feature_1", ...).
++        If None, generic names will be used ("x[0]", "x[1]", ...).
+ 
+     class_names : list of str or bool, default=None
+         Names of each of the target classes in ascending numerical order.
+diff --git a/sklearn/tree/tests/test_export.py b/sklearn/tree/tests/test_export.py
+index d3b082a92..657860a43 100644
+--- a/sklearn/tree/tests/test_export.py
++++ b/sklearn/tree/tests/test_export.py
+@@ -35,7 +35,7 @@ def test_graphviz_toy():
+         "digraph Tree {\n"
+         'node [shape=box, fontname="helvetica"] ;\n'
+         'edge [fontname="helvetica"] ;\n'
+-        '0 [label="X[0] <= 0.0\\ngini = 0.5\\nsamples = 6\\n'
++        '0 [label="x[0] <= 0.0\\ngini = 0.5\\nsamples = 6\\n'
+         'value = [3, 3]"] ;\n'
+         '1 [label="gini = 0.0\\nsamples = 3\\nvalue = [3, 0]"] ;\n'
+         "0 -> 1 [labeldistance=2.5, labelangle=45, "
+@@ -75,7 +75,7 @@ def test_graphviz_toy():
+         "digraph Tree {\n"
+         'node [shape=box, fontname="helvetica"] ;\n'
+         'edge [fontname="helvetica"] ;\n'
+-        '0 [label="X[0] <= 0.0\\ngini = 0.5\\nsamples = 6\\n'
++        '0 [label="x[0] <= 0.0\\ngini = 0.5\\nsamples = 6\\n'
+         'value = [3, 3]\\nclass = yes"] ;\n'
+         '1 [label="gini = 0.0\\nsamples = 3\\nvalue = [3, 0]\\n'
+         'class = yes"] ;\n'
+@@ -106,7 +106,7 @@ def test_graphviz_toy():
+         'node [shape=box, style="filled, rounded", color="black", '
+         'fontname="sans"] ;\n'
+         'edge [fontname="sans"] ;\n'
+-        "0 [label=<X<SUB>0</SUB> &le; 0.0<br/>samples = 100.0%<br/>"
++        "0 [label=<x<SUB>0</SUB> &le; 0.0<br/>samples = 100.0%<br/>"
+         'value = [0.5, 0.5]>, fillcolor="#ffffff"] ;\n'
+         "1 [label=<samples = 50.0%<br/>value = [1.0, 0.0]>, "
+         'fillcolor="#e58139"] ;\n'
+@@ -127,7 +127,7 @@ def test_graphviz_toy():
+         "digraph Tree {\n"
+         'node [shape=box, fontname="helvetica"] ;\n'
+         'edge [fontname="helvetica"] ;\n'
+-        '0 [label="X[0] <= 0.0\\ngini = 0.5\\nsamples = 6\\n'
++        '0 [label="x[0] <= 0.0\\ngini = 0.5\\nsamples = 6\\n'
+         'value = [3, 3]\\nclass = y[0]"] ;\n'
+         '1 [label="(...)"] ;\n'
+         "0 -> 1 ;\n"
+@@ -147,7 +147,7 @@ def test_graphviz_toy():
+         'node [shape=box, style="filled", color="black", '
+         'fontname="helvetica"] ;\n'
+         'edge [fontname="helvetica"] ;\n'
+-        '0 [label="node #0\\nX[0] <= 0.0\\ngini = 0.5\\n'
++        '0 [label="node #0\\nx[0] <= 0.0\\ngini = 0.5\\n'
+         'samples = 6\\nvalue = [3, 3]", fillcolor="#ffffff"] ;\n'
+         '1 [label="(...)", fillcolor="#C0C0C0"] ;\n'
+         "0 -> 1 ;\n"
+@@ -170,14 +170,14 @@ def test_graphviz_toy():
+         'node [shape=box, style="filled", color="black", '
+         'fontname="helvetica"] ;\n'
+         'edge [fontname="helvetica"] ;\n'
+-        '0 [label="X[0] <= 0.0\\nsamples = 6\\n'
++        '0 [label="x[0] <= 0.0\\nsamples = 6\\n'
+         "value = [[3.0, 1.5, 0.0]\\n"
+         '[3.0, 1.0, 0.5]]", fillcolor="#ffffff"] ;\n'
+         '1 [label="samples = 3\\nvalue = [[3, 0, 0]\\n'
+         '[3, 0, 0]]", fillcolor="#e58139"] ;\n'
+         "0 -> 1 [labeldistance=2.5, labelangle=45, "
+         'headlabel="True"] ;\n'
+-        '2 [label="X[0] <= 1.5\\nsamples = 3\\n'
++        '2 [label="x[0] <= 1.5\\nsamples = 3\\n'
+         "value = [[0.0, 1.5, 0.0]\\n"
+         '[0.0, 1.0, 0.5]]", fillcolor="#f1bd97"] ;\n'
+         "0 -> 2 [labeldistance=2.5, labelangle=-45, "
+@@ -215,7 +215,7 @@ def test_graphviz_toy():
+         "graph [ranksep=equally, splines=polyline] ;\n"
+         'edge [fontname="sans"] ;\n'
+         "rankdir=LR ;\n"
+-        '0 [label="X[0] <= 0.0\\nsquared_error = 1.0\\nsamples = 6\\n'
++        '0 [label="x[0] <= 0.0\\nsquared_error = 1.0\\nsamples = 6\\n'
+         'value = 0.0", fillcolor="#f2c09c"] ;\n'
+         '1 [label="squared_error = 0.0\\nsamples = 3\\'
+         'nvalue = -1.0", '

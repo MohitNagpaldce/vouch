@@ -1,0 +1,14 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "d2e72206507494f96d304a660d492f4b65942a44",
+  "kind": "control_good",
+  "subject": "DOC Add info when `scoring = None` in `cross_validate` (#30303)",
+  "evidence_subject": "DOC Add info when `scoring = None` in `cross_validate` (#30303)",
+  "author": "Lucy Liu",
+  "date": "2024-11-20T20:28:33+11:00",
+  "impl_files": [
+    "sklearn/model_selection/_validation.py"
+  ],
+  "test_files": [],
+  "diff_lines": 14
+}

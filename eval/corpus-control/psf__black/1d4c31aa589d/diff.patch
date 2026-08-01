@@ -1,0 +1,400 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index c4ae056..f7d02af 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -12,7 +12,8 @@
+ 
+ ### Preview style
+ 
+-<!-- Changes that affect Black's preview style -->
++- Multiline dictionaries and lists that are the sole argument to a function are now
++  indented less (#3964)
+ 
+ ### Configuration
+ 
+diff --git a/docs/the_black_code_style/future_style.md b/docs/the_black_code_style/future_style.md
+index 367ff98..e73c16b 100644
+--- a/docs/the_black_code_style/future_style.md
++++ b/docs/the_black_code_style/future_style.md
+@@ -113,6 +113,32 @@ my_dict = {
+ }
+ ```
+ 
++### Improved multiline dictionary and list indentation for sole function parameter
++
++For better readability and less verticality, _Black_ now pairs parantheses ("(", ")")
++with braces ("{", "}") and square brackets ("[", "]") on the same line for single
++parameter function calls. For example:
++
++```python
++foo(
++    [
++        1,
++        2,
++        3,
++    ]
++)
++```
++
++will be changed to:
++
++```python
++foo([
++    1,
++    2,
++    3,
++])
++```
++
+ ### Improved multiline string handling
+ 
+ _Black_ is smarter when formatting multiline strings, especially in function arguments,
+diff --git a/src/black/linegen.py b/src/black/linegen.py
+index 2bfe587..5f5a691 100644
+--- a/src/black/linegen.py
++++ b/src/black/linegen.py
+@@ -815,6 +815,19 @@ def _first_right_hand_split(
+     tail_leaves.reverse()
+     body_leaves.reverse()
+     head_leaves.reverse()
++
++    if Preview.hug_parens_with_braces_and_square_brackets in line.mode:
++        if (
++            tail_leaves[0].type == token.RPAR
++            and tail_leaves[0].value
++            and tail_leaves[0].opening_bracket is head_leaves[-1]
++            and body_leaves[-1].type in [token.RBRACE, token.RSQB]
++            and body_leaves[-1].opening_bracket is body_leaves[0]
++        ):
++            head_leaves = head_leaves + body_leaves[:1]
++            tail_leaves = body_leaves[-1:] + tail_leaves
++            body_leaves = body_leaves[1:-1]
++
+     head = bracket_split_build_line(
+         head_leaves, line, opening_bracket, component=_BracketSplitComponent.head
+     )
+diff --git a/src/black/mode.py b/src/black/mode.py
+index 4effeef..99b2a84 100644
+--- a/src/black/mode.py
++++ b/src/black/mode.py
+@@ -190,6 +190,7 @@ class Preview(Enum):
+     module_docstring_newlines = auto()
+     accept_raw_docstrings = auto()
+     fix_power_op_line_length = auto()
++    hug_parens_with_braces_and_square_brackets = auto()
+     allow_empty_first_line_before_new_block_or_comment = auto()
+ 
+ 
+diff --git a/tests/data/cases/preview_hug_parens_with_braces_and_square_brackets.py b/tests/data/cases/preview_hug_parens_with_braces_and_square_brackets.py
+new file mode 100644
+index 0000000..98ed342
+--- /dev/null
++++ b/tests/data/cases/preview_hug_parens_with_braces_and_square_brackets.py
+@@ -0,0 +1,273 @@
++# flags: --preview
++def foo_brackets(request):
++    return JsonResponse(
++        {
++            "var_1": foo,
++            "var_2": bar,
++        }
++    )
++
++def foo_square_brackets(request):
++    return JsonResponse(
++        [
++            "var_1",
++            "var_2",
++        ]
++    )
++
++func({"a": 37, "b": 42, "c": 927, "aaaaaaaaaaaaaaaaaaaaaaaaa": 11111111111111111111111111111111111111111})
++
++func(["random_string_number_one","random_string_number_two","random_string_number_three","random_string_number_four"])
++
++func(
++    {
++        # expand me
++        'a':37,
++        'b':42,
++        'c':927
++    }
++)
++
++func(
++    [
++        'a',
++        'b',
++        'c',
++    ]
++)
++
++func(  # a
++    [  # b
++        "c",  # c
++        "d",  # d
++        "e",  # e
++    ]  # f
++)  # g
++
++func(  # a
++    {  # b
++        "c": 1,  # c
++        "d": 2,  # d
++        "e": 3,  # e
++    }  # f
++)  # g
++
++func(
++    # preserve me
++    [
++        "c",
++        "d",
++        "e",
++    ]
++)
++
++func(
++    [  # preserve me but hug brackets
++        "c",
++        "d",
++        "e",
++    ]
++)
++
++func(
++    [
++        # preserve me but hug brackets
++        "c",
++        "d",
++        "e",
++    ]
++)
++
++func(
++    [
++        "c",
++        # preserve me but hug brackets
++        "d",
++        "e",
++    ]
++)
++
++func(
++    [
++        "c",
++        "d",
++        "e",
++        # preserve me but hug brackets
++    ]
++)
++
++func(
++    [
++        "c",
++        "d",
++        "e",
++    ]  # preserve me but hug brackets
++)
++
++func(
++    [
++        "c",
++        "d",
++        "e",
++    ]
++    # preserve me
++)
++
++func([x for x in "short line"])
++func([x for x in "long line long line long line long line long line long line long line"])
++func([x for x in [x for x in "long line long line long line long line long line long line long line"]])
++
++func({"short line"})
++func({"long line", "long long line", "long long long line", "long long long long line", "long long long long long line"})
++func({{"long line", "long long line", "long long long line", "long long long long line", "long long long long long line"}})
++
++foooooooooooooooooooo(
++    [{c: n + 1 for c in range(256)} for n in range(100)] + [{}], {size}
++)
++
++baaaaaaaaaaaaar(
++    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], {x}, "a string", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
++)
++
++# output
++def foo_brackets(request):
++    return JsonResponse({
++        "var_1": foo,
++        "var_2": bar,
++    })
++
++
++def foo_square_brackets(request):
++    return JsonResponse([
++        "var_1",
++        "var_2",
++    ])
++
++
++func({
++    "a": 37,
++    "b": 42,
++    "c": 927,
++    "aaaaaaaaaaaaaaaaaaaaaaaaa": 11111111111111111111111111111111111111111,
++})
++
++func([
++    "random_string_number_one",
++    "random_string_number_two",
++    "random_string_number_three",
++    "random_string_number_four",
++])
++
++func({
++    # expand me
++    "a": 37,
++    "b": 42,
++    "c": 927,
++})
++
++func([
++    "a",
++    "b",
++    "c",
++])
++
++func([  # a  # b
++    "c",  # c
++    "d",  # d
++    "e",  # e
++])  # f  # g
++
++func({  # a  # b
++    "c": 1,  # c
++    "d": 2,  # d
++    "e": 3,  # e
++})  # f  # g
++
++func(
++    # preserve me
++    [
++        "c",
++        "d",
++        "e",
++    ]
++)
++
++func([  # preserve me but hug brackets
++    "c",
++    "d",
++    "e",
++])
++
++func([
++    # preserve me but hug brackets
++    "c",
++    "d",
++    "e",
++])
++
++func([
++    "c",
++    # preserve me but hug brackets
++    "d",
++    "e",
++])
++
++func([
++    "c",
++    "d",
++    "e",
++    # preserve me but hug brackets
++])
++
++func([
++    "c",
++    "d",
++    "e",
++])  # preserve me but hug brackets
++
++func(
++    [
++        "c",
++        "d",
++        "e",
++    ]
++    # preserve me
++)
++
++func([x for x in "short line"])
++func([
++    x for x in "long line long line long line long line long line long line long line"
++])
++func([
++    x
++    for x in [
++        x
++        for x in "long line long line long line long line long line long line long line"
++    ]
++])
++
++func({"short line"})
++func({
++    "long line",
++    "long long line",
++    "long long long line",
++    "long long long long line",
++    "long long long long long line",
++})
++func({
++    {
++        "long line",
++        "long long line",
++        "long long long line",
++        "long long long long line",
++        "long long long long long line",
++    }
++})
++
++foooooooooooooooooooo(
++    [{c: n + 1 for c in range(256)} for n in range(100)] + [{}], {size}
++)
++
++baaaaaaaaaaaaar(
++    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], {x}, "a string", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
++)
+diff --git a/tests/data/cases/preview_long_strings__regression.py b/tests/data/cases/preview_long_strings__regression.py
+index 436157f..313d898 100644
+--- a/tests/data/cases/preview_long_strings__regression.py
++++ b/tests/data/cases/preview_long_strings__regression.py
+@@ -962,19 +962,17 @@ def who(self):
+         )
+ 
+ 
+-xxxxxxx_xxxxxx_xxxxxxx = xxx(
+-    [
+-        xxxxxxxxxxxx(
+-            xxxxxx_xxxxxxx=(
+-                '((x.aaaaaaaaa = "xxxxxx.xxxxxxxxxxxxxxxxxxxxx") || (x.xxxxxxxxx ='
+-                ' "xxxxxxxxxxxx")) && '
+-                # xxxxx xxxxxxxxxxxx xxxx xxx (xxxxxxxxxxxxxxxx) xx x xxxxxxxxx xx xxxxxx.
+-                "(x.bbbbbbbbbbbb.xxx != "
+-                '"xxx:xxx:xxx::cccccccccccc:xxxxxxx-xxxx/xxxxxxxxxxx/xxxxxxxxxxxxxxxxx") && '
+-            )
++xxxxxxx_xxxxxx_xxxxxxx = xxx([
++    xxxxxxxxxxxx(
++        xxxxxx_xxxxxxx=(
++            '((x.aaaaaaaaa = "xxxxxx.xxxxxxxxxxxxxxxxxxxxx") || (x.xxxxxxxxx ='
++            ' "xxxxxxxxxxxx")) && '
++            # xxxxx xxxxxxxxxxxx xxxx xxx (xxxxxxxxxxxxxxxx) xx x xxxxxxxxx xx xxxxxx.
++            "(x.bbbbbbbbbbbb.xxx != "
++            '"xxx:xxx:xxx::cccccccccccc:xxxxxxx-xxxx/xxxxxxxxxxx/xxxxxxxxxxxxxxxxx") && '
+         )
+-    ]
+-)
++    )
++])
+ 
+ if __name__ == "__main__":
+     for i in range(4, 8):

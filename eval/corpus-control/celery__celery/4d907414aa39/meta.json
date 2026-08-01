@@ -1,0 +1,19 @@
+{
+  "repo": "celery/celery",
+  "sha": "4d907414aa3932ec102ada8d48fa2471673ff43a",
+  "kind": "control_good",
+  "subject": "Add CosmosDB storage backend (#5185)",
+  "evidence_subject": "Add CosmosDB storage backend (#5185)",
+  "author": "Clemens Wolff",
+  "date": "2018-11-21T06:10:07-05:00",
+  "impl_files": [
+    "celery/app/backends.py",
+    "celery/app/defaults.py",
+    "celery/backends/cosmosdbsql.py",
+    "setup.py"
+  ],
+  "test_files": [
+    "t/unit/backends/test_cosmosdbsql.py"
+  ],
+  "diff_lines": 557
+}

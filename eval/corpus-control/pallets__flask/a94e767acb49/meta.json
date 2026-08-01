@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/flask",
+  "sha": "a94e767acb499bc7c86844d502fd799e3360c534",
+  "kind": "control_good",
+  "subject": "AppGroups produce more AppGroups",
+  "evidence_subject": "AppGroups produce more AppGroups",
+  "author": "Armin Ronacher",
+  "date": "2014-08-28T09:35:06+02:00",
+  "impl_files": [
+    "flask/cli.py"
+  ],
+  "test_files": [],
+  "diff_lines": 19
+}

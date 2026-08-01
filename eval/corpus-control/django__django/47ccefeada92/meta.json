@@ -1,0 +1,14 @@
+{
+  "repo": "django/django",
+  "sha": "47ccefeada926ffbccaa354dec7a987a7e7ca701",
+  "kind": "control_good",
+  "subject": "Refs #28459 -- Improved performance of BaseExpression.convert_value().",
+  "evidence_subject": "Refs #28459 -- Improved performance of BaseExpression.convert_value().",
+  "author": "Sergey Fedoseev",
+  "date": "2017-08-12T03:34:50+05:00",
+  "impl_files": [
+    "django/db/models/expressions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 59
+}

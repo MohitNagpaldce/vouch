@@ -1,0 +1,16 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "5fa45314abd726ff9b1f01301179871aae91f7eb",
+  "kind": "control_good",
+  "subject": "Generate client certs dynamically using trustme (#1791)",
+  "evidence_subject": "Generate client certs dynamically using trustme (#1791)",
+  "author": "Quentin Pradet",
+  "date": "2020-01-25T22:24:07+04:00",
+  "impl_files": [
+    "dummyserver/server.py"
+  ],
+  "test_files": [
+    "test/with_dummyserver/test_socketlevel.py"
+  ],
+  "diff_lines": 254
+}

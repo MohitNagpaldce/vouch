@@ -1,0 +1,14 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "b242b9dd200cbb3f60247e523adae43a303d8122",
+  "kind": "control_good",
+  "subject": "ENH Pass only bootstrap to `_parallel_build_trees` (#22106)",
+  "evidence_subject": "ENH Pass only bootstrap to `_parallel_build_trees` (#22106)",
+  "author": "Pieter Gijsbers",
+  "date": "2021-12-31T21:31:37+01:00",
+  "impl_files": [
+    "sklearn/ensemble/_forest.py"
+  ],
+  "test_files": [],
+  "diff_lines": 49
+}

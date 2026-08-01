@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "97c05a64ca87253e9789ebaab4b6d20a1b2370cf",
+  "kind": "control_good",
+  "subject": "Refs #373 -- Added additional validations to tuple lookups.",
+  "evidence_subject": "Refs #373 -- Added additional validations to tuple lookups.",
+  "author": "Bendeguz Csirmaz",
+  "date": "2024-09-27T00:04:33+08:00",
+  "impl_files": [
+    "django/db/models/fields/tuple_lookups.py"
+  ],
+  "test_files": [
+    "tests/foreign_object/test_tuple_lookups.py"
+  ],
+  "diff_lines": 212
+}

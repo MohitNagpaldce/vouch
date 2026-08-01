@@ -1,0 +1,16 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "115322d459e0c6cd7bfd52c93ea87786e44c71d5",
+  "kind": "control_good",
+  "subject": "Fix issue not allowing validate_call decorator to be dynamically assigned to a class method. (#8249)",
+  "evidence_subject": "Fix issue not allowing validate_call decorator to be dynamically assigned to a class method. (#8249)",
+  "author": "Justin Sexton",
+  "date": "2023-11-29T11:03:04-06:00",
+  "impl_files": [
+    "pydantic/_internal/_validate_call.py"
+  ],
+  "test_files": [
+    "tests/test_validate_call.py"
+  ],
+  "diff_lines": 39
+}

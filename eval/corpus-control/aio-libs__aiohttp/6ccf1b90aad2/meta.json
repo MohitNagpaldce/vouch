@@ -1,0 +1,19 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "6ccf1b90aad22f6a61dc32119c2f04279a5e273d",
+  "kind": "control_good",
+  "subject": "Add SSL related params to ClientSession.request (#2184)",
+  "evidence_subject": "Add SSL related params to ClientSession.request (#2184)",
+  "author": "Cecile Tonglet",
+  "date": "2017-09-15T16:18:12+02:00",
+  "impl_files": [
+    "aiohttp/client.py",
+    "aiohttp/client_reqrep.py",
+    "aiohttp/connector.py"
+  ],
+  "test_files": [
+    "tests/test_client_request.py",
+    "tests/test_proxy.py"
+  ],
+  "diff_lines": 551
+}

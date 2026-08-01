@@ -1,0 +1,14 @@
+{
+  "repo": "pydantic/pydantic",
+  "sha": "628bf1c90fd6f78cbc53b780e3e62507f40f6c5d",
+  "kind": "control_good",
+  "subject": "Improve type hints in json_schema module (#8000)",
+  "evidence_subject": "Improve type hints in json_schema module (#8000)",
+  "author": "David Montague",
+  "date": "2023-11-03T12:55:09-06:00",
+  "impl_files": [
+    "pydantic/json_schema.py"
+  ],
+  "test_files": [],
+  "diff_lines": 61
+}

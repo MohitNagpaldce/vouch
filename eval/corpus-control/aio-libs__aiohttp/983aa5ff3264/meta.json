@@ -1,0 +1,17 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "983aa5ff32645cb88b2729a9a002d103df3274c4",
+  "kind": "control_good",
+  "subject": "raise 413 from request.post() not ValueError (#3093)",
+  "evidence_subject": "raise 413 from request.post() not ValueError (#3093)",
+  "author": "Samuel Colvin",
+  "date": "2018-06-19T14:04:11+01:00",
+  "impl_files": [
+    "aiohttp/web_exceptions.py",
+    "aiohttp/web_request.py"
+  ],
+  "test_files": [
+    "tests/test_web_functional.py"
+  ],
+  "diff_lines": 160
+}

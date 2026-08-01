@@ -1,0 +1,16 @@
+{
+  "repo": "celery/celery",
+  "sha": "ee9e6d0e7d0edd6121a9551ad45eee7f15caf567",
+  "kind": "control_good",
+  "subject": "kombu.syn moved to kombu.compat",
+  "evidence_subject": "kombu.syn moved to kombu.compat",
+  "author": "Ask Solem",
+  "date": "2016-10-05T17:06:33-07:00",
+  "impl_files": [
+    "celery/backends/async.py",
+    "celery/worker/__init__.py",
+    "celery/worker/consumer/consumer.py"
+  ],
+  "test_files": [],
+  "diff_lines": 39
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "40b0f34a6eaa5ea3ad7587b97f07a87ef4c1b9d6",
+  "kind": "control_good",
+  "subject": "DOC: Corrects scalar string documentation in regards to trailing null codepoints.",
+  "evidence_subject": "DOC: Corrects scalar string documentation in regards to trailing null codepoints.",
+  "author": "Tajbinjohn",
+  "date": "2023-04-23T18:18:01-04:00",
+  "impl_files": [
+    "numpy/core/_add_newdocs_scalars.py"
+  ],
+  "test_files": [],
+  "diff_lines": 17
+}

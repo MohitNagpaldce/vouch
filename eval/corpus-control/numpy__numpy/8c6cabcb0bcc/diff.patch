@@ -1,0 +1,39 @@
+diff --git a/numpy/_core/tests/_natype.py b/numpy/_core/tests/_natype.py
+index 4bbf061285..e8c2bc2248 100644
+--- a/numpy/_core/tests/_natype.py
++++ b/numpy/_core/tests/_natype.py
+@@ -183,7 +183,7 @@ def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+         )
+         if result is NotImplemented:
+             # For a NumPy ufunc that's not a binop, like np.logaddexp
+-            index = [i for i, x in enumerate(inputs) if x is pd_NA][0]
++            index = next(i for i, x in enumerate(inputs) if x is pd_NA)
+             result = np.broadcast_arrays(*inputs)[index]
+             if result.ndim == 0:
+                 result = result.item()
+diff --git a/numpy/f2py/auxfuncs.py b/numpy/f2py/auxfuncs.py
+index 9fd4b41264..e52840690e 100644
+--- a/numpy/f2py/auxfuncs.py
++++ b/numpy/f2py/auxfuncs.py
+@@ -416,7 +416,7 @@ def getdimension(var):
+     dimpattern = r"\((.*?)\)"
+     if 'attrspec' in var.keys():
+         if any('dimension' in s for s in var['attrspec']):
+-            return [re.findall(dimpattern, v) for v in var['attrspec']][0]
++            return next(re.findall(dimpattern, v) for v in var['attrspec'])
+ 
+ 
+ def isrequired(var):
+diff --git a/tools/wheels/check_license.py b/tools/wheels/check_license.py
+index 99db0744d9..3610558ce9 100644
+--- a/tools/wheels/check_license.py
++++ b/tools/wheels/check_license.py
+@@ -35,7 +35,7 @@ def main():
+ 
+     # LICENSE.txt is installed in the .dist-info directory, so find it there
+     sitepkgs = pathlib.Path(mod.__file__).parent.parent
+-    distinfo_path = list(sitepkgs.glob("numpy-*.dist-info"))[0]
++    distinfo_path = next(iter(sitepkgs.glob("numpy-*.dist-info")))
+ 
+     # Check license text
+     license_txt = distinfo_path / "LICENSE.txt"

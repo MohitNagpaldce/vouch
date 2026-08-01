@@ -1,0 +1,15 @@
+{
+  "repo": "psf/black",
+  "sha": "5543d1b55a2a485f2aaf32156ea97f4728264137",
+  "kind": "control_good",
+  "subject": "Added decent coloring (#2712)",
+  "evidence_subject": "Added decent coloring (#2712)",
+  "author": "VanSHOE",
+  "date": "2022-01-14T08:01:08+05:30",
+  "impl_files": [
+    "src/black/__init__.py",
+    "src/black/report.py"
+  ],
+  "test_files": [],
+  "diff_lines": 45
+}

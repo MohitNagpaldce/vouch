@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "b025006f598f0f480eb1ac8a339b79e55153e3b4",
+  "kind": "control_good",
+  "subject": "routing.build: Allow multiple values for the same field",
+  "evidence_subject": "routing.build: Allow multiple values for the same field",
+  "author": "veelai",
+  "date": "2015-01-29T14:41:52+01:00",
+  "impl_files": [
+    "werkzeug/routing.py"
+  ],
+  "test_files": [
+    "tests/test_routing.py"
+  ],
+  "diff_lines": 46
+}

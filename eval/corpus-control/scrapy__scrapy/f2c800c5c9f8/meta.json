@@ -1,0 +1,14 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "f2c800c5c9f88b4b583181e9cf49eb3cd8d538f0",
+  "kind": "control_good",
+  "subject": "Improve open_in_browser base tag injection (#5319)",
+  "evidence_subject": "Improve open_in_browser base tag injection (#5319)",
+  "author": "Samuel Marchal",
+  "date": "2021-11-15T11:14:54+01:00",
+  "impl_files": [
+    "scrapy/utils/response.py"
+  ],
+  "test_files": [],
+  "diff_lines": 27
+}

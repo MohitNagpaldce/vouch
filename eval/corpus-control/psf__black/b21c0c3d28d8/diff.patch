@@ -1,0 +1,166 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index 4c04ecc..9990d8c 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -10,6 +10,7 @@
+ - Bumped typed-ast version minimum to 1.4.3 for 3.10 compatiblity (#2519)
+ - Fixed a Python 3.10 compatibility issue where the loop argument was still being passed
+   even though it has been removed (#2580)
++- Deprecate Python 2 formatting support (#2523)
+ 
+ ### _Blackd_
+ 
+diff --git a/docs/faq.md b/docs/faq.md
+index 9fe5392..77f9df5 100644
+--- a/docs/faq.md
++++ b/docs/faq.md
+@@ -74,13 +74,17 @@ disabled-by-default counterpart W504. E203 should be disabled while changes are
+ 
+ ## Does Black support Python 2?
+ 
++```{warning}
++Python 2 support has been deprecated since 21.10b0.
++
++This support will be dropped in the first stable release, expected for January 2022.
++See [The Black Code Style](the_black_code_style/index.rst) for details.
++```
++
+ For formatting, yes! [Install](getting_started.md#installation) with the `python2` extra
+ to format Python 2 files too! In terms of running _Black_ though, Python 3.6 or newer is
+ required.
+ 
+-Note that this support will be dropped in the first stable release, expected for
+-January 2022. See [The Black Code Style](the_black_code_style/index.rst) for details.
+-
+ ## Why does my linter or typechecker complain after I format my code?
+ 
+ Some linters and other tools use magical comments (e.g., `# noqa`, `# type: ignore`) to
+diff --git a/src/black/__init__.py b/src/black/__init__.py
+index c503c1a..831cda9 100644
+--- a/src/black/__init__.py
++++ b/src/black/__init__.py
+@@ -1061,6 +1061,15 @@ def f(
+         versions = mode.target_versions
+     else:
+         versions = detect_target_versions(src_node)
++
++    # TODO: fully drop support and this code hopefully in January 2022 :D
++    if TargetVersion.PY27 in mode.target_versions or versions == {TargetVersion.PY27}:
++        msg = (
++            "DEPRECATION: Python 2 support will be removed in the first stable release"
++            "expected in January 2022."
++        )
++        err(msg, fg="yellow", bold=True)
++
+     normalize_fmt_off(src_node)
+     lines = LineGenerator(
+         mode=mode,
+@@ -1103,7 +1112,7 @@ def decode_bytes(src: bytes) -> Tuple[FileContent, Encoding, NewLine]:
+         return tiow.read(), encoding, newline
+ 
+ 
+-def get_features_used(node: Node) -> Set[Feature]:
++def get_features_used(node: Node) -> Set[Feature]:  # noqa: C901
+     """Return a set of (relatively) new Python features used in this file.
+ 
+     Currently looking for:
+@@ -1113,6 +1122,7 @@ def get_features_used(node: Node) -> Set[Feature]:
+     - positional only arguments in function signatures and lambdas;
+     - assignment expression;
+     - relaxed decorator syntax;
++    - print / exec statements;
+     """
+     features: Set[Feature] = set()
+     for n in node.pre_order():
+@@ -1161,6 +1171,11 @@ def get_features_used(node: Node) -> Set[Feature]:
+                         if argch.type in STARS:
+                             features.add(feature)
+ 
++        elif n.type == token.PRINT_STMT:
++            features.add(Feature.PRINT_STMT)
++        elif n.type == token.EXEC_STMT:
++            features.add(Feature.EXEC_STMT)
++
+     return features
+ 
+ 
+diff --git a/src/black/mode.py b/src/black/mode.py
+index 0b7624e..374c47a 100644
+--- a/src/black/mode.py
++++ b/src/black/mode.py
+@@ -41,9 +41,17 @@ class Feature(Enum):
+     RELAXED_DECORATORS = 10
+     FORCE_OPTIONAL_PARENTHESES = 50
+ 
++    # temporary for Python 2 deprecation
++    PRINT_STMT = 200
++    EXEC_STMT = 201
++
+ 
+ VERSION_TO_FEATURES: Dict[TargetVersion, Set[Feature]] = {
+-    TargetVersion.PY27: {Feature.ASYNC_IDENTIFIERS},
++    TargetVersion.PY27: {
++        Feature.ASYNC_IDENTIFIERS,
++        Feature.PRINT_STMT,
++        Feature.EXEC_STMT,
++    },
+     TargetVersion.PY33: {Feature.UNICODE_LITERALS, Feature.ASYNC_IDENTIFIERS},
+     TargetVersion.PY34: {Feature.UNICODE_LITERALS, Feature.ASYNC_IDENTIFIERS},
+     TargetVersion.PY35: {
+diff --git a/src/blib2to3/pgen2/token.py b/src/blib2to3/pgen2/token.py
+index 1e0dec9..349ba80 100644
+--- a/src/blib2to3/pgen2/token.py
++++ b/src/blib2to3/pgen2/token.py
+@@ -74,6 +74,9 @@
+ COLONEQUAL: Final = 59
+ N_TOKENS: Final = 60
+ NT_OFFSET: Final = 256
++# temporary for Python 2 deprecation
++PRINT_STMT: Final = 316
++EXEC_STMT: Final = 288
+ # --end constants--
+ 
+ tok_name: Final[Dict[int, str]] = {}
+diff --git a/tests/test_black.py b/tests/test_black.py
+index 5647a00..b96a543 100644
+--- a/tests/test_black.py
++++ b/tests/test_black.py
+@@ -1401,14 +1401,14 @@ def test_docstring_reformat_for_py27(self) -> None:
+         )
+         expected = 'def foo():\n    """Testing\n    Testing"""\n    print "Foo"\n'
+ 
+-        result = CliRunner().invoke(
++        result = BlackRunner().invoke(
+             black.main,
+             ["-", "-q", "--target-version=py27"],
+             input=BytesIO(source),
+         )
+ 
+         self.assertEqual(result.exit_code, 0)
+-        actual = result.output
++        actual = result.stdout
+         self.assertFormatEqual(actual, expected)
+ 
+     @staticmethod
+@@ -2017,6 +2017,21 @@ def test_get_sources_with_stdin_filename_and_force_exclude(self) -> None:
+         )
+ 
+ 
++@pytest.mark.parametrize("explicit", [True, False], ids=["explicit", "autodetection"])
++def test_python_2_deprecation_with_target_version(explicit: bool) -> None:
++    args = [
++        "--config",
++        str(THIS_DIR / "empty.toml"),
++        str(DATA_DIR / "python2.py"),
++        "--check",
++    ]
++    if explicit:
++        args.append("--target-version=py27")
++    with cache_dir():
++        result = BlackRunner().invoke(black.main, args)
++    assert "DEPRECATION: Python 2 support will be removed" in result.stderr
++
++
+ with open(black.__file__, "r", encoding="utf-8") as _bf:
+     black_source_lines = _bf.readlines()
+ 

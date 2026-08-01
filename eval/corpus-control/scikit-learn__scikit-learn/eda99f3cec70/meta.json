@@ -1,0 +1,14 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "eda99f3cec70ba90303de0ef3ab7f988657fadb9",
+  "kind": "control_good",
+  "subject": "ENH Convert y in GradientBoosting to float64 instead of float32 (#13524)",
+  "evidence_subject": "ENH Convert y in GradientBoosting to float64 instead of float32 (#13524)",
+  "author": "Adrin Jalali",
+  "date": "2019-04-09T13:20:06+02:00",
+  "impl_files": [
+    "sklearn/ensemble/gradient_boosting.py"
+  ],
+  "test_files": [],
+  "diff_lines": 42
+}

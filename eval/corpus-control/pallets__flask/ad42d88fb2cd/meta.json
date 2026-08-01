@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/flask",
+  "sha": "ad42d88fb2cda12a21c4fb6f002f425f233d1fe3",
+  "kind": "control_good",
+  "subject": "Remove useless pass",
+  "evidence_subject": "Remove useless pass",
+  "author": "Sven-Hendrik Haase",
+  "date": "2017-03-16T14:42:09+01:00",
+  "impl_files": [
+    "flask/cli.py"
+  ],
+  "test_files": [],
+  "diff_lines": 12
+}

@@ -1,0 +1,15 @@
+{
+  "repo": "fastapi/fastapi",
+  "sha": "97fdbdd0d8b3e24b3d850865033f6746ee13f82c",
+  "kind": "control_good",
+  "subject": "\ud83d\udcdd Update exclude-parameters-from-openapi documentation links (#13600)",
+  "evidence_subject": "\ud83d\udcdd Update exclude-parameters-from-openapi documentation links (#13600)",
+  "author": "Timon",
+  "date": "2025-06-17T10:05:34+02:00",
+  "impl_files": [
+    "fastapi/applications.py",
+    "fastapi/routing.py"
+  ],
+  "test_files": [],
+  "diff_lines": 170
+}

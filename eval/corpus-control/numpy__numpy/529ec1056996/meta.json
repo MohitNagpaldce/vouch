@@ -1,0 +1,14 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "529ec1056996956e682c874bbf401d239b265f74",
+  "kind": "control_good",
+  "subject": "REV: :rewind: Revert changes in ma.extras._covhelper for casting.",
+  "evidence_subject": "REV: :rewind: Revert changes in ma.extras._covhelper for casting.",
+  "author": "Christopher Titchen",
+  "date": "2024-03-28T16:29:36Z",
+  "impl_files": [
+    "numpy/ma/extras.py"
+  ],
+  "test_files": [],
+  "diff_lines": 24
+}

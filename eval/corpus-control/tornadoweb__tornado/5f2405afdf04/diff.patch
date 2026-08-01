@@ -1,0 +1,83 @@
+diff --git a/tornado/platform/asyncio.py b/tornado/platform/asyncio.py
+index 5e9c776d..de8f057f 100644
+--- a/tornado/platform/asyncio.py
++++ b/tornado/platform/asyncio.py
+@@ -32,6 +32,7 @@ import socket
+ import sys
+ import threading
+ import typing
++import warnings
+ from tornado.gen import convert_yielded
+ from tornado.ioloop import IOLoop, _Selectable
+ 
+@@ -391,8 +392,25 @@ class AnyThreadEventLoopPolicy(_BasePolicy):  # type: ignore
+ 
+     .. versionadded:: 5.0
+ 
++    .. deprecated:: 6.2
++
++        ``AnyThreadEventLoopPolicy`` affects the implicit creation
++        of an event loop, which is deprecated in Python 3.10 and
++        will be removed in a future version of Python. At that time
++        ``AnyThreadEventLoopPolicy`` will no longer be useful.
++        If you are relying on it, use `asyncio.new_event_loop`
++        or `asyncio.run` explicitly in any non-main threads that
++        need event loops.
+     """
+ 
++    def __init__(self) -> None:
++        super().__init__()
++        warnings.warn(
++            "AnyThreadEventLoopPolicy is deprecated, use asyncio.run "
++            "or asyncio.new_event_loop instead",
++            DeprecationWarning,
++        )
++
+     def get_event_loop(self) -> asyncio.AbstractEventLoop:
+         try:
+             return super().get_event_loop()
+diff --git a/tornado/test/asyncio_test.py b/tornado/test/asyncio_test.py
+index 3f9f3389..72a08539 100644
+--- a/tornado/test/asyncio_test.py
++++ b/tornado/test/asyncio_test.py
+@@ -12,6 +12,7 @@
+ 
+ import asyncio
+ import unittest
++import warnings
+ 
+ from concurrent.futures import ThreadPoolExecutor
+ from tornado import gen
+@@ -171,17 +172,21 @@ class AnyThreadEventLoopPolicyTest(unittest.TestCase):
+         return future.result()
+ 
+     def run_policy_test(self, accessor, expected_type):
+-        # With the default policy, non-main threads don't get an event
+-        # loop.
+-        self.assertRaises(
+-            (RuntimeError, AssertionError), self.executor.submit(accessor).result
+-        )
+-        # Set the policy and we can get a loop.
+-        asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
+-        self.assertIsInstance(self.executor.submit(accessor).result(), expected_type)
+-        # Clean up to silence leak warnings. Always use asyncio since
+-        # IOLoop doesn't (currently) close the underlying loop.
+-        self.executor.submit(lambda: asyncio.get_event_loop().close()).result()  # type: ignore
++        with warnings.catch_warnings():
++            warnings.simplefilter("ignore", DeprecationWarning)
++            # With the default policy, non-main threads don't get an event
++            # loop.
++            self.assertRaises(
++                (RuntimeError, AssertionError), self.executor.submit(accessor).result
++            )
++            # Set the policy and we can get a loop.
++            asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
++            self.assertIsInstance(
++                self.executor.submit(accessor).result(), expected_type
++            )
++            # Clean up to silence leak warnings. Always use asyncio since
++            # IOLoop doesn't (currently) close the underlying loop.
++            self.executor.submit(lambda: asyncio.get_event_loop().close()).result()  # type: ignore
+ 
+     def test_asyncio_accessor(self):
+         self.run_policy_test(asyncio.get_event_loop, asyncio.AbstractEventLoop)

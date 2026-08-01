@@ -1,0 +1,14 @@
+{
+  "repo": "encode/httpx",
+  "sha": "25b40db757c96475cbbed11829493114359306ee",
+  "kind": "control_good",
+  "subject": "Drop Request.read() (#679)",
+  "evidence_subject": "Drop Request.read() (#679)",
+  "author": "Tom Christie",
+  "date": "2019-12-29T15:02:03Z",
+  "impl_files": [
+    "httpx/models.py"
+  ],
+  "test_files": [],
+  "diff_lines": 17
+}

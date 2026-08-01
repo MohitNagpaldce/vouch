@@ -1,0 +1,236 @@
+diff --git a/docs/usage/model_config.md b/docs/usage/model_config.md
+index f9ad9c6f0..3f0a84ed6 100644
+--- a/docs/usage/model_config.md
++++ b/docs/usage/model_config.md
+@@ -165,6 +165,10 @@ and has a type that is not in this tuple (or otherwise recognized by pydantic),
+ : a `tuple` of strings that prevent model to have field which conflict with them (default: `('model_', )`).
+ see [the dedicated section](#protected-namespaces)
+ 
++**`hide_input_in_errors`**
++: whether to show input value and input type in `ValidationError` representation defaults to `False`.
++see [the dedicated section](#hide-input-in-errors)
++
+ ## Change behaviour globally
+ 
+ If you wish to change the behaviour of _pydantic_ globally, you can create your own custom `BaseModel`
+@@ -389,3 +393,49 @@ except NameError as e:
+     print(e)
+     #> Field "also_protect_field" has conflict with protected namespace "also_protect_"
+ ```
++
++## Hide Input in Errors
++_Pydantic_ shows input value and input type when it raises `ValidationError` during the validation.
++
++
++```py
++from pydantic import BaseModel, ValidationError
++
++
++class Model(BaseModel):
++    a: str
++
++
++try:
++    Model(a=123)
++except ValidationError as e:
++    print(e)
++    """
++    1 validation error for Model
++    a
++      Input should be a valid string [type=string_type, input_value=123, input_type=int]
++    """
++```
++
++You can hide the input value and type by setting the `hide_input_in_errors` config to `True`.
++
++```py
++from pydantic import BaseModel, ConfigDict, ValidationError
++
++
++class Model(BaseModel):
++    a: str
++
++    model_config = ConfigDict(hide_input_in_errors=True)
++
++
++try:
++    Model(a=123)
++except ValidationError as e:
++    print(e)
++    """
++    1 validation error for Model
++    a
++      Input should be a valid string [type=string_type]
++    """
++```
+diff --git a/pydantic/_internal/_config.py b/pydantic/_internal/_config.py
+index 946834382..75cdd12f5 100644
+--- a/pydantic/_internal/_config.py
++++ b/pydantic/_internal/_config.py
+@@ -54,6 +54,7 @@ class ConfigWrapper:
+     validate_default: bool
+     validate_return: bool
+     protected_namespaces: tuple[str, ...]
++    hide_input_in_errors: bool
+ 
+     def __init__(self, config: ConfigDict | dict[str, Any] | type[Any] | None, *, check: bool = True):
+         if check:
+@@ -135,6 +136,7 @@ class ConfigWrapper:
+                 validate_default=self.config_dict.get('validate_default'),
+                 str_max_length=self.config_dict.get('str_max_length'),
+                 str_min_length=self.config_dict.get('str_min_length'),
++                hide_input_in_errors=self.config_dict.get('hide_input_in_errors'),
+             )
+         )
+         return core_config
+@@ -171,6 +173,7 @@ config_defaults = ConfigDict(
+     validate_default=False,
+     validate_return=False,
+     protected_namespaces=('model_',),
++    hide_input_in_errors=False,
+ )
+ 
+ 
+diff --git a/pydantic/config.py b/pydantic/config.py
+index a1e4c0d44..ef93fdcf2 100644
+--- a/pydantic/config.py
++++ b/pydantic/config.py
+@@ -70,6 +70,7 @@ class ConfigDict(TypedDict, total=False):
+         ser_json_bytes (Literal['utf8', 'base64']): The encoding of JSON serialized bytes. Defaults to 'utf8'.
+         validate_default (bool): Whether to validate default values during validation. Defaults to False.
+         protected_namespaces (tuple[str, ..]): A list of protected namespaces. Defaults to ('model_', ).
++        hide_input_in_errors (bool): Whether to hide inputs when printing errors. Defaults to False.
+     """
+ 
+     title: str | None
+@@ -104,6 +105,7 @@ class ConfigDict(TypedDict, total=False):
+     # whether to validate the return value from call validator
+     validate_return: bool
+     protected_namespaces: tuple[str, ...]
++    hide_input_in_errors: bool
+ 
+ 
+ __getattr__ = getattr_migration(__name__)
+diff --git a/tests/test_config.py b/tests/test_config.py
+index a12c45b39..eb4921db0 100644
+--- a/tests/test_config.py
++++ b/tests/test_config.py
+@@ -551,3 +551,21 @@ def test_config_is_not_inherited_in_model_fields():
+     m = Outer.model_validate(dict(x=['Abc'], inner=dict(a='Def')))
+ 
+     assert m.model_dump() == {'x': ['abc'], 'inner': {'a': 'Def'}}
++
++
++@pytest.mark.parametrize(
++    'config,input_str',
++    (
++        ({}, 'type=string_type, input_value=123, input_type=int'),
++        ({'hide_input_in_errors': False}, 'type=string_type, input_value=123, input_type=int'),
++        ({'hide_input_in_errors': True}, 'type=string_type'),
++    ),
++)
++def test_hide_input_in_errors(config, input_str):
++    class Model(BaseModel):
++        x: str
++
++        model_config = ConfigDict(**config)
++
++    with pytest.raises(ValidationError, match=re.escape(f'Input should be a valid string [{input_str}]')):
++        Model(x=123)
+diff --git a/tests/test_errors.py b/tests/test_errors.py
+index c5ccc3426..7ffc9bcf2 100644
+--- a/tests/test_errors.py
++++ b/tests/test_errors.py
+@@ -1,6 +1,8 @@
++import re
++
+ import pytest
+ 
+-from pydantic import BaseModel, PydanticUserError
++from pydantic import BaseModel, PydanticUserError, ValidationError
+ from pydantic.version import VERSION
+ 
+ 
+@@ -13,3 +15,16 @@ def test_user_error_url():
+         'Pydantic models should inherit from BaseModel, BaseModel cannot be instantiated directly\n\n'
+         f'For further information visit https://errors.pydantic.dev/{VERSION}/u/base-model-instantiated'
+     )
++
++
++@pytest.mark.parametrize(
++    'hide_input_in_errors,input_str',
++    ((False, 'type=greater_than, input_value=4, input_type=int'), (True, 'type=greater_than')),
++)
++def test_raise_validation_error_hide_input(hide_input_in_errors, input_str):
++    with pytest.raises(ValidationError, match=re.escape(f'Input should be greater than 5 [{input_str}]')):
++        raise ValidationError.from_exception_data(
++            'Foobar',
++            [{'type': 'greater_than', 'loc': ('a', 2), 'input': 4, 'ctx': {'gt': 5}}],
++            hide_input_in_errors=hide_input_in_errors,
++        )
+diff --git a/tests/test_types.py b/tests/test_types.py
+index 9c86da376..b5659fa63 100644
+--- a/tests/test_types.py
++++ b/tests/test_types.py
+@@ -2063,6 +2063,24 @@ def test_invalid_iterable():
+     ]
+ 
+ 
++@pytest.mark.parametrize(
++    'config,input_str',
++    (
++        ({}, 'type=iterable_type, input_value=5, input_type=int'),
++        ({'hide_input_in_errors': False}, 'type=iterable_type, input_value=5, input_type=int'),
++        ({'hide_input_in_errors': True}, 'type=iterable_type'),
++    ),
++)
++def test_iterable_error_hide_input(config, input_str):
++    class Model(BaseModel):
++        it: Iterable[int]
++
++        model_config = ConfigDict(**config)
++
++    with pytest.raises(ValidationError, match=re.escape(f'Input should be iterable [{input_str}]')):
++        Model(it=5)
++
++
+ def test_infinite_iterable_validate_first():
+     class Model(BaseModel):
+         it: Iterable[int]
+diff --git a/tests/test_validators.py b/tests/test_validators.py
+index fa903be31..bdc3a35be 100644
+--- a/tests/test_validators.py
++++ b/tests/test_validators.py
+@@ -2527,3 +2527,32 @@ def test_validator_with_underscore_name() -> None:
+         _normalize_name = field_validator('name')(f)
+ 
+     assert Model(name='Adrian').name == 'adrian'
++
++
++@pytest.mark.parametrize(
++    'mode,config,input_str',
++    (
++        ('before', {}, "type=value_error, input_value='123', input_type=str"),
++        ('before', {'hide_input_in_errors': False}, "type=value_error, input_value='123', input_type=str"),
++        ('before', {'hide_input_in_errors': True}, 'type=value_error'),
++        ('after', {}, "type=value_error, input_value='123', input_type=str"),
++        ('after', {'hide_input_in_errors': False}, "type=value_error, input_value='123', input_type=str"),
++        ('after', {'hide_input_in_errors': True}, 'type=value_error'),
++        ('plain', {}, "type=value_error, input_value='123', input_type=str"),
++        ('plain', {'hide_input_in_errors': False}, "type=value_error, input_value='123', input_type=str"),
++        ('plain', {'hide_input_in_errors': True}, 'type=value_error'),
++    ),
++)
++def test_validator_function_error_hide_input(mode, config, input_str):
++    class Model(BaseModel):
++        x: str
++
++        model_config = ConfigDict(**config)
++
++        @field_validator('x', mode=mode)
++        @classmethod
++        def check_a1(cls, v: str) -> str:
++            raise ValueError('foo')
++
++    with pytest.raises(ValidationError, match=re.escape(f'Value error, foo [{input_str}]')):
++        Model(x='123')

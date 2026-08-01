@@ -1,0 +1,18 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "38b9ec51e52fdcab11bbe322cc66392c599ca183",
+  "kind": "control_good",
+  "subject": "Added a configuration flag for enable request task handler cancelling when client connection closing. (#7056)",
+  "evidence_subject": "Added a configuration flag for enable request task handler cancelling when client connection closing. (#7056)",
+  "author": "Mosquito",
+  "date": "2022-12-11T19:22:21+03:00",
+  "impl_files": [
+    "aiohttp/web.py",
+    "aiohttp/web_protocol.py",
+    "aiohttp/web_server.py"
+  ],
+  "test_files": [
+    "tests/test_web_server.py"
+  ],
+  "diff_lines": 215
+}

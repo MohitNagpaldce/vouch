@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "16c93c21922480006d1da4f33579623300cb4d96",
+  "kind": "control_good",
+  "subject": "Address 'filename*N*=' continuation parameters according to RFC 2231.",
+  "evidence_subject": "Address 'filename*N*=' continuation parameters according to RFC 2231.",
+  "author": "Taizo Ito",
+  "date": "2014-07-04T16:31:45+09:00",
+  "impl_files": [
+    "werkzeug/formparser.py"
+  ],
+  "test_files": [
+    "tests/test_formparser.py"
+  ],
+  "diff_lines": 64
+}

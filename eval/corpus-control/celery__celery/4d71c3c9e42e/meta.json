@@ -1,0 +1,15 @@
+{
+  "repo": "celery/celery",
+  "sha": "4d71c3c9e42ecdba23feafdec2434a33c27b9cb9",
+  "kind": "control_good",
+  "subject": "Pidbox now always sets accept encoding to json only.  Closes #1870",
+  "evidence_subject": "Pidbox now always sets accept encoding to json only.  Closes #1870",
+  "author": "Ask Solem",
+  "date": "2014-02-21T15:42:27Z",
+  "impl_files": [
+    "celery/app/control.py",
+    "celery/worker/pidbox.py"
+  ],
+  "test_files": [],
+  "diff_lines": 26
+}

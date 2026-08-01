@@ -1,0 +1,14 @@
+{
+  "repo": "celery/celery",
+  "sha": "ad3ec276e0ce5b18ccc545400c5ea1b04522cb72",
+  "kind": "control_good",
+  "subject": "Allow heartbeats to be sent in tests (#6632)",
+  "evidence_subject": "Allow heartbeats to be sent in tests (#6632)",
+  "author": "Dani Hodovic",
+  "date": "2021-02-24T07:18:22+02:00",
+  "impl_files": [
+    "celery/contrib/testing/worker.py"
+  ],
+  "test_files": [],
+  "diff_lines": 38
+}

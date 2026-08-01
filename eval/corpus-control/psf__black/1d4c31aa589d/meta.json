@@ -1,0 +1,18 @@
+{
+  "repo": "psf/black",
+  "sha": "1d4c31aa589dc0c8633af7531f8cc09192917b38",
+  "kind": "control_good",
+  "subject": "[925] Improve multiline dictionary and list indentation for sole function parameter (#3964)",
+  "evidence_subject": "[925] Improve multiline dictionary and list indentation for sole function parameter (#3964)",
+  "author": "Henri Holopainen",
+  "date": "2023-10-25T18:35:37+03:00",
+  "impl_files": [
+    "src/black/linegen.py",
+    "src/black/mode.py"
+  ],
+  "test_files": [
+    "tests/data/cases/preview_hug_parens_with_braces_and_square_brackets.py",
+    "tests/data/cases/preview_long_strings__regression.py"
+  ],
+  "diff_lines": 400
+}

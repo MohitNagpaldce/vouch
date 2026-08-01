@@ -1,0 +1,21 @@
+{
+  "repo": "pandas-dev/pandas",
+  "sha": "a38a24e69fd614cdab024f88e6f56bfaa5cb4e80",
+  "kind": "control_good",
+  "subject": "Use ea interface to calculate accumulator functions for datetimelike (#50297)",
+  "evidence_subject": "Use ea interface to calculate accumulator functions for datetimelike (#50297)",
+  "author": "Patrick Hoefler",
+  "date": "2023-01-14T00:53:44+01:00",
+  "impl_files": [
+    "pandas/core/array_algos/datetimelike_accumulations.py",
+    "pandas/core/arrays/datetimelike.py",
+    "pandas/core/arrays/timedeltas.py",
+    "pandas/core/nanops.py"
+  ],
+  "test_files": [
+    "pandas/tests/arrays/datetimes/test_cumulative.py",
+    "pandas/tests/arrays/timedeltas/test_cumulative.py",
+    "pandas/tests/series/test_cumulative.py"
+  ],
+  "diff_lines": 330
+}

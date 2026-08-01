@@ -1,0 +1,14 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "3c759c599090cc3a695d84e737e320767d45cb96",
+  "kind": "control_good",
+  "subject": "CI Remove unused mkl_no_coverage lock file (#28061)",
+  "evidence_subject": "CI Remove unused mkl_no_coverage lock file (#28061)",
+  "author": "Lo\u00efc Est\u00e8ve",
+  "date": "2024-01-04T20:58:45+01:00",
+  "impl_files": [
+    "build_tools/update_environments_and_lock_files.py"
+  ],
+  "test_files": [],
+  "diff_lines": 223
+}

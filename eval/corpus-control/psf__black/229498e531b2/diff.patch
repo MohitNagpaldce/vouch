@@ -1,0 +1,25 @@
+diff --git a/.flake8 b/.flake8
+index 4866133..ae11a13 100644
+--- a/.flake8
++++ b/.flake8
+@@ -1,5 +1,5 @@
+ [flake8]
+-extend-ignore = E203, E266, E501
++ignore = E203, E266, E501, W503
+ # line length is intentionally set to 80 here because black uses Bugbear
+ # See https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#line-length for more details
+ max-line-length = 80
+diff --git a/src/black/output.py b/src/black/output.py
+index 6831524..c253c85 100644
+--- a/src/black/output.py
++++ b/src/black/output.py
+@@ -45,7 +45,8 @@ def diff(a: str, b: str, a_name: str, b_name: str) -> str:
+         a_lines, b_lines, fromfile=a_name, tofile=b_name, n=5
+     ):
+         # Work around https://bugs.python.org/issue2142
+-        # See https://www.gnu.org/software/diffutils/manual/html_node/Incomplete-Lines.html
++        # See:
++        # https://www.gnu.org/software/diffutils/manual/html_node/Incomplete-Lines.html
+         if line[-1] == "\n":
+             diff_lines.append(line)
+         else:

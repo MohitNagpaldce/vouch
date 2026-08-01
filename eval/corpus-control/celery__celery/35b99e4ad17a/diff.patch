@@ -1,0 +1,13 @@
+diff --git a/celery/worker/consumer.py b/celery/worker/consumer.py
+index c10d576ba..a5bb52013 100644
+--- a/celery/worker/consumer.py
++++ b/celery/worker/consumer.py
+@@ -686,7 +686,7 @@ class Control(bootsteps.StartStopStep):
+ 
+     def include_if(self, c):
+         return (c.app.conf.CELERY_ENABLE_REMOTE_CONTROL and
+-                'fanout' in c.conninfo.transport.implements.exchange_type)
++                c.conninfo.supports_exchange_type('fanout'))
+ 
+ 
+ class Gossip(bootsteps.ConsumerStep):

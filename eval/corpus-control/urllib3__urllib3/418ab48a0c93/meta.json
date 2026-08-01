@@ -1,0 +1,16 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "418ab48a0c93a91424699499d3061207ac318e7c",
+  "kind": "control_good",
+  "subject": "Don't check for None as value to method on read error",
+  "evidence_subject": "Don't check for None as value to method on read error",
+  "author": "Alexandre Dias",
+  "date": "2016-12-13T11:37:04Z",
+  "impl_files": [
+    "urllib3/util/retry.py"
+  ],
+  "test_files": [
+    "test/test_retry.py"
+  ],
+  "diff_lines": 146
+}

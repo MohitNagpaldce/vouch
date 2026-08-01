@@ -1,0 +1,57 @@
+diff --git a/docs/api.md b/docs/api.md
+index dbc3d52..f5286dd 100644
+--- a/docs/api.md
++++ b/docs/api.md
+@@ -110,6 +110,7 @@ True
+ ```
+ 
+ * `def __init__(url)`
++* `.scheme` - **str**
+ * `.is_ssl` - **bool**
+ * `.host` - **str**
+ * `.port` - **int**
+diff --git a/httpx/dispatch/connection_pool.py b/httpx/dispatch/connection_pool.py
+index b6c0457..374c76a 100644
+--- a/httpx/dispatch/connection_pool.py
++++ b/httpx/dispatch/connection_pool.py
+@@ -26,10 +26,8 @@ class ConnectionStore:
+     """
+ 
+     def __init__(self) -> None:
+-        self.all = {}  # type: typing.Dict[HTTPConnection, float]
+-        self.by_origin = (
+-            {}
+-        )  # type: typing.Dict[Origin, typing.Dict[HTTPConnection, float]]
++        self.all: typing.Dict[HTTPConnection, float] = {}
++        self.by_origin: typing.Dict[Origin, typing.Dict[HTTPConnection, float]] = {}
+ 
+     def pop_by_origin(
+         self, origin: Origin, http2_only: bool = False
+diff --git a/httpx/models.py b/httpx/models.py
+index bea47fa..4cb44a4 100644
+--- a/httpx/models.py
++++ b/httpx/models.py
+@@ -233,6 +233,7 @@ class Origin:
+     def __init__(self, url: URLTypes) -> None:
+         if not isinstance(url, URL):
+             url = URL(url)
++        self.scheme = url.scheme
+         self.is_ssl = url.is_ssl
+         self.host = url.host
+         self.port = url.port
+@@ -240,13 +241,13 @@ class Origin:
+     def __eq__(self, other: typing.Any) -> bool:
+         return (
+             isinstance(other, self.__class__)
+-            and self.is_ssl == other.is_ssl
++            and self.scheme == other.scheme
+             and self.host == other.host
+             and self.port == other.port
+         )
+ 
+     def __hash__(self) -> int:
+-        return hash((self.is_ssl, self.host, self.port))
++        return hash((self.scheme, self.host, self.port))
+ 
+ 
+ class QueryParams(typing.Mapping[str, str]):

@@ -1,0 +1,49 @@
+diff --git a/maint_tools/test_docstrings.py b/maint_tools/test_docstrings.py
+index a625b588b..5a0c5b415 100644
+--- a/maint_tools/test_docstrings.py
++++ b/maint_tools/test_docstrings.py
+@@ -22,7 +22,6 @@ DOCSTRING_IGNORE_LIST = [
+     "MultiTaskLassoCV",
+     "OrthogonalMatchingPursuit",
+     "OrthogonalMatchingPursuitCV",
+-    "PLSCanonical",
+     "PLSRegression",
+     "PLSSVD",
+     "PassiveAggressiveClassifier",
+diff --git a/sklearn/cross_decomposition/_pls.py b/sklearn/cross_decomposition/_pls.py
+index e36b79648..66dc4e74a 100644
+--- a/sklearn/cross_decomposition/_pls.py
++++ b/sklearn/cross_decomposition/_pls.py
+@@ -680,7 +680,7 @@ class PLSCanonical(_PLS):
+         will compute the whole SVD.
+ 
+     max_iter : int, default=500
+-        the maximum number of iterations of the power method when
++        The maximum number of iterations of the power method when
+         `algorithm='nipals'`. Ignored otherwise.
+ 
+     tol : float, default=1e-06
+@@ -748,6 +748,11 @@ class PLSCanonical(_PLS):
+ 
+         .. versionadded:: 1.0
+ 
++    See Also
++    --------
++    CCA : Canonical Correlation Analysis.
++    PLSSVD : Partial Least Square SVD.
++
+     Examples
+     --------
+     >>> from sklearn.cross_decomposition import PLSCanonical
+@@ -757,11 +762,6 @@ class PLSCanonical(_PLS):
+     >>> plsca.fit(X, Y)
+     PLSCanonical()
+     >>> X_c, Y_c = plsca.transform(X, Y)
+-
+-    See Also
+-    --------
+-    CCA
+-    PLSSVD
+     """
+ 
+     # This implementation provides the same results that the "plspm" package

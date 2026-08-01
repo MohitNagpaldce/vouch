@@ -1,0 +1,102 @@
+diff --git a/autoload/black.vim b/autoload/black.vim
+index 5aec872..c682d51 100644
+--- a/autoload/black.vim
++++ b/autoload/black.vim
+@@ -9,7 +9,7 @@ def strtobool(text):
+     return True
+   if text.lower() in ['n', 'no', 'f', 'false', 'off', '0']:
+     return False
+-  raise ValueError(f"{text} is not convertable to boolean")
++  raise ValueError(f"{text} is not convertible to boolean")
+ 
+ class Flag(collections.namedtuple("FlagBase", "name, cast")):
+   @property
+diff --git a/docs/contributing/issue_triage.md b/docs/contributing/issue_triage.md
+index aa3e49a..89cfff7 100644
+--- a/docs/contributing/issue_triage.md
++++ b/docs/contributing/issue_triage.md
+@@ -59,7 +59,7 @@ the details are different:
+ 1. _the issue is waiting for triage_
+ 2. **identified** - has been marked with a type label and other relevant labels
+ 3. **discussion** - the merits of the suggested changes are currently being discussed, a
+-   PR would be acceptable but would be at sigificant risk of being rejected
++   PR would be acceptable but would be at significant risk of being rejected
+ 4. **accepted & awaiting PR** - it's been determined the suggested changes are OK and a
+    PR would be welcomed (`S: accepted`)
+ 5. **closed**: - the issue has been resolved, reasons include:
+diff --git a/src/blib2to3/pgen2/driver.py b/src/blib2to3/pgen2/driver.py
+index daf271d..1741b33 100644
+--- a/src/blib2to3/pgen2/driver.py
++++ b/src/blib2to3/pgen2/driver.py
+@@ -107,7 +107,7 @@ def __next__(self) -> Any:
+ 
+     def can_advance(self, to: int) -> bool:
+         # Try to eat, fail if it can't. The eat operation is cached
+-        # so there wont be any additional cost of eating here
++        # so there won't be any additional cost of eating here
+         try:
+             self.eat(to)
+         except StopIteration:
+diff --git a/tests/data/preview/long_strings.py b/tests/data/preview/long_strings.py
+index b7a0a42..c68da3a 100644
+--- a/tests/data/preview/long_strings.py
++++ b/tests/data/preview/long_strings.py
+@@ -26,15 +26,15 @@
+     ("This is a really long string that can't be expected to fit in one line and is used as a dict's key"): ["value1", "value2"],
+ }
+ 
+-L1 = ["The is a short string", "This is a really long string that can't possibly be expected to fit all together on one line. Also it is inside a list literal, so it's expected to be wrapped in parens when spliting to avoid implicit str concatenation.", short_call("arg", {"key": "value"}), "This is another really really (not really) long string that also can't be expected to fit on one line and is, like the other string, inside a list literal.", ("parens should be stripped for short string in list")]
++L1 = ["The is a short string", "This is a really long string that can't possibly be expected to fit all together on one line. Also it is inside a list literal, so it's expected to be wrapped in parens when splitting to avoid implicit str concatenation.", short_call("arg", {"key": "value"}), "This is another really really (not really) long string that also can't be expected to fit on one line and is, like the other string, inside a list literal.", ("parens should be stripped for short string in list")]
+ 
+ L2 = ["This is a really long string that can't be expected to fit in one line and is the only child of a list literal."]
+ 
+-S1 = {"The is a short string", "This is a really long string that can't possibly be expected to fit all together on one line. Also it is inside a set literal, so it's expected to be wrapped in parens when spliting to avoid implicit str concatenation.", short_call("arg", {"key": "value"}), "This is another really really (not really) long string that also can't be expected to fit on one line and is, like the other string, inside a set literal.", ("parens should be stripped for short string in set")}
++S1 = {"The is a short string", "This is a really long string that can't possibly be expected to fit all together on one line. Also it is inside a set literal, so it's expected to be wrapped in parens when splitting to avoid implicit str concatenation.", short_call("arg", {"key": "value"}), "This is another really really (not really) long string that also can't be expected to fit on one line and is, like the other string, inside a set literal.", ("parens should be stripped for short string in set")}
+ 
+ S2 = {"This is a really long string that can't be expected to fit in one line and is the only child of a set literal."}
+ 
+-T1 = ("The is a short string", "This is a really long string that can't possibly be expected to fit all together on one line. Also it is inside a tuple literal, so it's expected to be wrapped in parens when spliting to avoid implicit str concatenation.", short_call("arg", {"key": "value"}), "This is another really really (not really) long string that also can't be expected to fit on one line and is, like the other string, inside a tuple literal.", ("parens should be stripped for short string in list"))
++T1 = ("The is a short string", "This is a really long string that can't possibly be expected to fit all together on one line. Also it is inside a tuple literal, so it's expected to be wrapped in parens when splitting to avoid implicit str concatenation.", short_call("arg", {"key": "value"}), "This is another really really (not really) long string that also can't be expected to fit on one line and is, like the other string, inside a tuple literal.", ("parens should be stripped for short string in list"))
+ 
+ T2 = ("This is a really long string that can't be expected to fit in one line and is the only child of a tuple literal.",)
+ 
+@@ -410,7 +410,7 @@ def foo():
+     (
+         "This is a really long string that can't possibly be expected to fit all"
+         " together on one line. Also it is inside a list literal, so it's expected to"
+-        " be wrapped in parens when spliting to avoid implicit str concatenation."
++        " be wrapped in parens when splitting to avoid implicit str concatenation."
+     ),
+     short_call("arg", {"key": "value"}),
+     (
+@@ -431,7 +431,7 @@ def foo():
+     (
+         "This is a really long string that can't possibly be expected to fit all"
+         " together on one line. Also it is inside a set literal, so it's expected to be"
+-        " wrapped in parens when spliting to avoid implicit str concatenation."
++        " wrapped in parens when splitting to avoid implicit str concatenation."
+     ),
+     short_call("arg", {"key": "value"}),
+     (
+@@ -452,7 +452,7 @@ def foo():
+     (
+         "This is a really long string that can't possibly be expected to fit all"
+         " together on one line. Also it is inside a tuple literal, so it's expected to"
+-        " be wrapped in parens when spliting to avoid implicit str concatenation."
++        " be wrapped in parens when splitting to avoid implicit str concatenation."
+     ),
+     short_call("arg", {"key": "value"}),
+     (
+diff --git a/tests/data/simple_cases/comments4.py b/tests/data/simple_cases/comments4.py
+index 2147d41..9f4f39d 100644
+--- a/tests/data/simple_cases/comments4.py
++++ b/tests/data/simple_cases/comments4.py
+@@ -85,7 +85,7 @@ def foo2(list_a, list_b):
+ 
+ def foo3(list_a, list_b):
+     return (
+-        # Standlone comment but weirdly placed.
++        # Standalone comment but weirdly placed.
+         User.query.filter(User.foo == "bar")
+         .filter(
+             db.or_(User.field_a.astext.in_(list_a), User.field_b.astext.in_(list_b))

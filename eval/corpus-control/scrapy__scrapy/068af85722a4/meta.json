@@ -1,0 +1,14 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "068af85722a41a1361e170f104e64fccfff662b7",
+  "kind": "control_good",
+  "subject": "Add release notes for Scrapy 2.8 (#5799)",
+  "evidence_subject": "Add release notes for Scrapy 2.8 (#5799)",
+  "author": "Adri\u00e1n Chaves",
+  "date": "2023-02-02T04:54:02+01:00",
+  "impl_files": [
+    "scrapy/http/request/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 354
+}

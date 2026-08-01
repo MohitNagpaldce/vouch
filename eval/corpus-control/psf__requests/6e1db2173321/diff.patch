@@ -1,0 +1,45 @@
+diff --git a/requests/adapters.py b/requests/adapters.py
+index d17d9e69..8225d735 100644
+--- a/requests/adapters.py
++++ b/requests/adapters.py
+@@ -17,7 +17,7 @@ from .packages.urllib3.response import HTTPResponse
+ from .packages.urllib3.util import Timeout as TimeoutSauce
+ from .compat import urlparse, basestring, urldefrag
+ from .utils import (DEFAULT_CA_BUNDLE_PATH, get_encoding_from_headers,
+-                    prepend_scheme_if_needed, get_auth_from_url)
++                    prepend_scheme_if_needed, get_auth_from_url, urldefragauth)
+ from .structures import CaseInsensitiveDict
+ from .packages.urllib3.exceptions import ConnectTimeoutError
+ from .packages.urllib3.exceptions import HTTPError as _HTTPError
+@@ -270,7 +270,7 @@ class HTTPAdapter(BaseAdapter):
+         proxy = proxies.get(scheme)
+ 
+         if proxy and scheme != 'https':
+-            url, _ = urldefrag(request.url)
++            url = urldefragauth(request.url)
+         else:
+             url = request.path_url
+ 
+diff --git a/requests/utils.py b/requests/utils.py
+index 539a68a0..44ab005d 100644
+--- a/requests/utils.py
++++ b/requests/utils.py
+@@ -672,3 +672,18 @@ def to_native_string(string, encoding='ascii'):
+             out = string.decode(encoding)
+ 
+     return out
++
++
++def urldefragauth(url):
++    """
++    Given a url remove the fragment and the authentication part
++    """
++    scheme, netloc, path, params, query, fragment = urlparse(url)
++
++    # see func:`prepend_scheme_if_needed`
++    if not netloc:
++        netloc, path = path, netloc
++
++    netloc = netloc.rsplit('@', 1)[-1]
++
++    return urlunparse((scheme, netloc, path, params, query, ''))

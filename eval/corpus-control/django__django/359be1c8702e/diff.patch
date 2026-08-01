@@ -1,0 +1,75 @@
+diff --git a/django/core/cache/backends/filebased.py b/django/core/cache/backends/filebased.py
+index 2a8b24ddfc..bff912d85d 100644
+--- a/django/core/cache/backends/filebased.py
++++ b/django/core/cache/backends/filebased.py
+@@ -35,14 +35,13 @@ class FileBasedCache(BaseCache):
+ 
+     def get(self, key, default=None, version=None):
+         fname = self._key_to_file(key, version)
+-        if os.path.exists(fname):
+-            try:
+-                with io.open(fname, 'rb') as f:
+-                    if not self._is_expired(f):
+-                        return pickle.loads(zlib.decompress(f.read()))
+-            except IOError as e:
+-                if e.errno == errno.ENOENT:
+-                    pass  # Cache file was removed after the exists check
++        try:
++            with io.open(fname, 'rb') as f:
++                if not self._is_expired(f):
++                    return pickle.loads(zlib.decompress(f.read()))
++        except IOError as e:
++            if e.errno == errno.ENOENT:
++                pass  # Cache file doesn't exist.
+         return default
+ 
+     def set(self, key, value, timeout=DEFAULT_TIMEOUT, version=None):
+diff --git a/django/core/files/storage.py b/django/core/files/storage.py
+index b5348948fe..e0a7ed9734 100644
+--- a/django/core/files/storage.py
++++ b/django/core/files/storage.py
+@@ -380,15 +380,13 @@ class FileSystemStorage(Storage):
+         assert name, "The name argument is not allowed to be empty."
+         name = self.path(name)
+         # If the file exists, delete it from the filesystem.
+-        # Note that there is a race between os.path.exists and os.remove:
+-        # if os.remove fails with ENOENT, the file was removed
+-        # concurrently, and we can continue normally.
+-        if os.path.exists(name):
+-            try:
+-                os.remove(name)
+-            except OSError as e:
+-                if e.errno != errno.ENOENT:
+-                    raise
++        # If os.remove() fails with ENOENT, the file may have been removed
++        # concurrently, and it's safe to continue normally.
++        try:
++            os.remove(name)
++        except OSError as e:
++            if e.errno != errno.ENOENT:
++                raise
+ 
+     def exists(self, name):
+         return os.path.exists(self.path(name))
+diff --git a/tests/staticfiles_tests/storage.py b/tests/staticfiles_tests/storage.py
+index 8c474591f3..cf648f06f2 100644
+--- a/tests/staticfiles_tests/storage.py
++++ b/tests/staticfiles_tests/storage.py
+@@ -48,12 +48,11 @@ class PathNotImplementedStorage(storage.Storage):
+ 
+     def delete(self, name):
+         name = self._path(name)
+-        if os.path.exists(name):
+-            try:
+-                os.remove(name)
+-            except OSError as e:
+-                if e.errno != errno.ENOENT:
+-                    raise
++        try:
++            os.remove(name)
++        except OSError as e:
++            if e.errno != errno.ENOENT:
++                raise
+ 
+     def path(self, name):
+         raise NotImplementedError

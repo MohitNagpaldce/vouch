@@ -1,0 +1,14 @@
+{
+  "repo": "numpy/numpy",
+  "sha": "b58fbd24783b29d377427e837d189fa039422c9a",
+  "kind": "control_good",
+  "subject": "Correct disallow things like a[(0, 1), (0, 1)] in the array API namespace",
+  "evidence_subject": "Correct disallow things like a[(0, 1), (0, 1)] in the array API namespace",
+  "author": "Aaron Meurer",
+  "date": "2021-07-15T16:36:26-06:00",
+  "impl_files": [
+    "numpy/_array_api/_array_object.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

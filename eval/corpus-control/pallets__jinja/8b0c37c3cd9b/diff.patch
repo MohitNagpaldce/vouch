@@ -1,0 +1,26 @@
+diff --git a/jinja2/__init__.py b/jinja2/__init__.py
+index 6fa11c3..f790135 100644
+--- a/jinja2/__init__.py
++++ b/jinja2/__init__.py
+@@ -27,7 +27,7 @@
+     :license: BSD, see LICENSE for more details.
+ """
+ __docformat__ = 'restructuredtext en'
+-__version__ = '2.7.1'
++__version__ = '2.7.2-dev'
+ 
+ # high level interface
+ from jinja2.environment import Environment, Template
+diff --git a/setup.py b/setup.py
+index 4171fc1..f7d06fe 100644
+--- a/setup.py
++++ b/setup.py
+@@ -57,7 +57,7 @@ else:
+ 
+ setup(
+     name='Jinja2',
+-    version='2.7.1',
++    version='2.7.2-dev',
+     url='http://jinja.pocoo.org/',
+     license='BSD',
+     author='Armin Ronacher',

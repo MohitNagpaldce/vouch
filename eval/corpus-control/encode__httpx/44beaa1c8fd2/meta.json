@@ -1,0 +1,15 @@
+{
+  "repo": "encode/httpx",
+  "sha": "44beaa1c8fd2e2882dc6565c026c2fc1385c8d40",
+  "kind": "control_good",
+  "subject": "Make Origin use scheme, not is_ssl (#168)",
+  "evidence_subject": "Make Origin use scheme, not is_ssl (#168)",
+  "author": "Stephen Brown II",
+  "date": "2019-07-28T21:43:06-05:00",
+  "impl_files": [
+    "httpx/dispatch/connection_pool.py",
+    "httpx/models.py"
+  ],
+  "test_files": [],
+  "diff_lines": 57
+}

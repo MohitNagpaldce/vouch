@@ -1,0 +1,16 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "7558722808f9accedbbd7473657c1852b039e5ce",
+  "kind": "control_good",
+  "subject": "Add test/test_connection.py",
+  "evidence_subject": "Add test/test_connection.py",
+  "author": "Marc Abramowitz",
+  "date": "2016-03-17T13:42:17-07:00",
+  "impl_files": [
+    "urllib3/connection.py"
+  ],
+  "test_files": [
+    "test/test_connection.py"
+  ],
+  "diff_lines": 66
+}

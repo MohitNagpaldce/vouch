@@ -1,0 +1,296 @@
+diff --git a/changelog/2753.feature.rst b/changelog/2753.feature.rst
+new file mode 100644
+index 000000000..067e0cad7
+--- /dev/null
++++ b/changelog/2753.feature.rst
+@@ -0,0 +1 @@
++Usage errors from argparse are mapped to pytest's ``UsageError``.
+diff --git a/changelog/4651.bugfix.rst b/changelog/4651.bugfix.rst
+new file mode 100644
+index 000000000..f9c639f3e
+--- /dev/null
++++ b/changelog/4651.bugfix.rst
+@@ -0,0 +1 @@
++``--help`` and ``--version`` are handled with ``UsageError``.
+diff --git a/src/_pytest/config/__init__.py b/src/_pytest/config/__init__.py
+index 26999e125..c6ebe8ad8 100644
+--- a/src/_pytest/config/__init__.py
++++ b/src/_pytest/config/__init__.py
+@@ -648,8 +648,27 @@ class Config(object):
+         return self.pluginmanager.get_plugin("terminalreporter")._tw
+ 
+     def pytest_cmdline_parse(self, pluginmanager, args):
+-        # REF1 assert self == pluginmanager.config, (self, pluginmanager.config)
+-        self.parse(args)
++        try:
++            self.parse(args)
++        except UsageError:
++
++            # Handle --version and --help here in a minimal fashion.
++            # This gets done via helpconfig normally, but its
++            # pytest_cmdline_main is not called in case of errors.
++            if getattr(self.option, "version", False) or "--version" in args:
++                from _pytest.helpconfig import showversion
++
++                showversion(self)
++            elif (
++                getattr(self.option, "help", False) or "--help" in args or "-h" in args
++            ):
++                self._parser._getparser().print_help()
++                sys.stdout.write(
++                    "\nNOTE: displaying only minimal help due to UsageError.\n\n"
++                )
++
++            raise
++
+         return self
+ 
+     def notify_exception(self, excinfo, option=None):
+@@ -760,21 +779,32 @@ class Config(object):
+         for name in _iter_rewritable_modules(package_files):
+             hook.mark_rewrite(name)
+ 
+-    def _validate_args(self, args):
++    def _validate_args(self, args, via):
+         """Validate known args."""
+-        self._parser.parse_known_and_unknown_args(
+-            args, namespace=copy.copy(self.option)
+-        )
++        self._parser._config_source_hint = via
++        try:
++            self._parser.parse_known_and_unknown_args(
++                args, namespace=copy.copy(self.option)
++            )
++        finally:
++            del self._parser._config_source_hint
++
+         return args
+ 
+     def _preparse(self, args, addopts=True):
+         if addopts:
+             env_addopts = os.environ.get("PYTEST_ADDOPTS", "")
+             if len(env_addopts):
+-                args[:] = self._validate_args(shlex.split(env_addopts)) + args
++                args[:] = (
++                    self._validate_args(shlex.split(env_addopts), "via PYTEST_ADDOPTS")
++                    + args
++                )
+         self._initini(args)
+         if addopts:
+-            args[:] = self._validate_args(self.getini("addopts")) + args
++            args[:] = (
++                self._validate_args(self.getini("addopts"), "via addopts config") + args
++            )
++
+         self._checkversion()
+         self._consider_importhook(args)
+         self.pluginmanager.consider_preparse(args)
+diff --git a/src/_pytest/config/argparsing.py b/src/_pytest/config/argparsing.py
+index 51f708335..cc48ed337 100644
+--- a/src/_pytest/config/argparsing.py
++++ b/src/_pytest/config/argparsing.py
+@@ -1,12 +1,10 @@
+ import argparse
+-import sys as _sys
+ import warnings
+-from gettext import gettext as _
+ 
+ import py
+ import six
+ 
+-from ..main import EXIT_USAGEERROR
++from _pytest.config.exceptions import UsageError
+ 
+ FILE_OR_DIR = "file_or_dir"
+ 
+@@ -337,14 +335,13 @@ class MyOptionParser(argparse.ArgumentParser):
+         self.extra_info = extra_info
+ 
+     def error(self, message):
+-        """error(message: string)
+-
+-        Prints a usage message incorporating the message to stderr and
+-        exits.
+-        Overrides the method in parent class to change exit code"""
+-        self.print_usage(_sys.stderr)
+-        args = {"prog": self.prog, "message": message}
+-        self.exit(EXIT_USAGEERROR, _("%(prog)s: error: %(message)s\n") % args)
++        """Transform argparse error message into UsageError."""
++        msg = "%s: error: %s" % (self.prog, message)
++
++        if hasattr(self._parser, "_config_source_hint"):
++            msg = "%s (%s)" % (msg, self._parser._config_source_hint)
++
++        raise UsageError(self.format_usage() + msg)
+ 
+     def parse_args(self, args=None, namespace=None):
+         """allow splitting of positional arguments"""
+diff --git a/src/_pytest/helpconfig.py b/src/_pytest/helpconfig.py
+index 5e60d2a7f..d5c4c043a 100644
+--- a/src/_pytest/helpconfig.py
++++ b/src/_pytest/helpconfig.py
+@@ -118,16 +118,20 @@ def pytest_cmdline_parse():
+         config.add_cleanup(unset_tracing)
+ 
+ 
++def showversion(config):
++    p = py.path.local(pytest.__file__)
++    sys.stderr.write(
++        "This is pytest version %s, imported from %s\n" % (pytest.__version__, p)
++    )
++    plugininfo = getpluginversioninfo(config)
++    if plugininfo:
++        for line in plugininfo:
++            sys.stderr.write(line + "\n")
++
++
+ def pytest_cmdline_main(config):
+     if config.option.version:
+-        p = py.path.local(pytest.__file__)
+-        sys.stderr.write(
+-            "This is pytest version %s, imported from %s\n" % (pytest.__version__, p)
+-        )
+-        plugininfo = getpluginversioninfo(config)
+-        if plugininfo:
+-            for line in plugininfo:
+-                sys.stderr.write(line + "\n")
++        showversion(config)
+         return 0
+     elif config.option.help:
+         config._do_configure()
+diff --git a/testing/test_config.py b/testing/test_config.py
+index b0b09f44a..f9f22a63e 100644
+--- a/testing/test_config.py
++++ b/testing/test_config.py
+@@ -8,10 +8,12 @@ import textwrap
+ import _pytest._code
+ import pytest
+ from _pytest.config import _iter_rewritable_modules
++from _pytest.config.exceptions import UsageError
+ from _pytest.config.findpaths import determine_setup
+ from _pytest.config.findpaths import get_common_ancestor
+ from _pytest.config.findpaths import getcfg
+ from _pytest.main import EXIT_NOTESTSCOLLECTED
++from _pytest.main import EXIT_USAGEERROR
+ 
+ 
+ class TestParseIni(object):
+@@ -1031,9 +1033,12 @@ class TestOverrideIniArgs(object):
+ 
+         monkeypatch.setenv("PYTEST_ADDOPTS", "-o")
+         config = get_config()
+-        with pytest.raises(SystemExit) as excinfo:
++        with pytest.raises(UsageError) as excinfo:
+             config._preparse(["cache_dir=ignored"], addopts=True)
+-        assert excinfo.value.args[0] == _pytest.main.EXIT_USAGEERROR
++        assert (
++            "error: argument -o/--override-ini: expected one argument (via PYTEST_ADDOPTS)"
++            in excinfo.value.args[0]
++        )
+ 
+     def test_addopts_from_ini_not_concatenated(self, testdir):
+         """addopts from ini should not take values from normal args (#4265)."""
+@@ -1046,7 +1051,7 @@ class TestOverrideIniArgs(object):
+         result = testdir.runpytest("cache_dir=ignored")
+         result.stderr.fnmatch_lines(
+             [
+-                "%s: error: argument -o/--override-ini: expected one argument"
++                "%s: error: argument -o/--override-ini: expected one argument (via addopts config)"
+                 % (testdir.request.config._parser.optparser.prog,)
+             ]
+         )
+@@ -1083,3 +1088,68 @@ class TestOverrideIniArgs(object):
+         result = testdir.runpytest("-o", "foo=1", "-o", "bar=0", "test_foo.py")
+         assert "ERROR:" not in result.stderr.str()
+         result.stdout.fnmatch_lines(["collected 1 item", "*= 1 passed in *="])
++
++
++def test_help_via_addopts(testdir):
++    testdir.makeini(
++        """
++        [pytest]
++        addopts = --unknown-option-should-allow-for-help --help
++    """
++    )
++    result = testdir.runpytest()
++    assert result.ret == 0
++    result.stdout.fnmatch_lines(
++        [
++            "usage: *",
++            "positional arguments:",
++            # Displays full/default help.
++            "to see available markers type: pytest --markers",
++        ]
++    )
++
++
++def test_help_and_version_after_argument_error(testdir):
++    testdir.makeconftest(
++        """
++        def validate(arg):
++            raise argparse.ArgumentTypeError("argerror")
++
++        def pytest_addoption(parser):
++            group = parser.getgroup('cov')
++            group.addoption(
++                "--invalid-option-should-allow-for-help",
++                type=validate,
++            )
++        """
++    )
++    testdir.makeini(
++        """
++        [pytest]
++        addopts = --invalid-option-should-allow-for-help
++    """
++    )
++    result = testdir.runpytest("--help")
++    result.stdout.fnmatch_lines(
++        [
++            "usage: *",
++            "positional arguments:",
++            "NOTE: displaying only minimal help due to UsageError.",
++        ]
++    )
++    result.stderr.fnmatch_lines(
++        [
++            "ERROR: usage: *",
++            "%s: error: argument --invalid-option-should-allow-for-help: expected one argument"
++            % (testdir.request.config._parser.optparser.prog,),
++        ]
++    )
++    # Does not display full/default help.
++    assert "to see available markers type: pytest --markers" not in result.stdout.lines
++    assert result.ret == EXIT_USAGEERROR
++
++    result = testdir.runpytest("--version")
++    result.stderr.fnmatch_lines(
++        ["*pytest*{}*imported from*".format(pytest.__version__)]
++    )
++    assert result.ret == EXIT_USAGEERROR
+diff --git a/testing/test_parseopt.py b/testing/test_parseopt.py
+index baf58a4f5..e25705d00 100644
+--- a/testing/test_parseopt.py
++++ b/testing/test_parseopt.py
+@@ -11,6 +11,7 @@ import py
+ 
+ import pytest
+ from _pytest.config import argparsing as parseopt
++from _pytest.config.exceptions import UsageError
+ 
+ 
+ @pytest.fixture
+@@ -19,11 +20,9 @@ def parser():
+ 
+ 
+ class TestParser(object):
+-    def test_no_help_by_default(self, capsys):
++    def test_no_help_by_default(self):
+         parser = parseopt.Parser(usage="xyz")
+-        pytest.raises(SystemExit, lambda: parser.parse(["-h"]))
+-        out, err = capsys.readouterr()
+-        assert err.find("error: unrecognized arguments") != -1
++        pytest.raises(UsageError, lambda: parser.parse(["-h"]))
+ 
+     def test_custom_prog(self, parser):
+         """Custom prog can be set for `argparse.ArgumentParser`."""

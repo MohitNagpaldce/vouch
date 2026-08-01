@@ -1,0 +1,83 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 83663627..c0defd8e 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -55,6 +55,10 @@ jobs:
+             os: ubuntu-latest
+             experimental: false
+             nox-session: google_brotli
++          - python-version: 2.7
++            os: ubuntu-latest
++            experimental: false
++            nox-session: unsupported_python2
+ 
+     runs-on: ${{ matrix.os }}
+     name: ${{ fromJson('{"macos-latest":"macOS","windows-latest":"Windows","ubuntu-latest":"Ubuntu"}')[matrix.os] }} ${{ matrix.python-version }} ${{ matrix.nox-session}}
+diff --git a/noxfile.py b/noxfile.py
+index 1d7346da..ee2f6232 100644
+--- a/noxfile.py
++++ b/noxfile.py
+@@ -69,6 +69,20 @@ def test(session):
+     tests_impl(session)
+ 
+ 
++@nox.session(python=["2.7"])
++def unsupported_python2(session):
++    # Can't check both returncode and output with session.run
++    process = subprocess.run(
++        ["python", "setup.py", "install"],
++        env={**session.env},
++        text=True,
++        capture_output=True,
++    )
++    assert process.returncode == 1
++    print(process.stderr)
++    assert "Unsupported Python version" in process.stderr
++
++
+ @nox.session(python=["3"])
+ def google_brotli(session):
+     # https://pypi.org/project/Brotli/ is the Google version of brotli, so
+diff --git a/setup.py b/setup.py
+index 50dd1235..cc0b4e5a 100755
+--- a/setup.py
++++ b/setup.py
+@@ -4,9 +4,38 @@
+ import codecs
+ import os
+ import re
++import sys
+ 
+ from setuptools import setup
+ 
++CURRENT_PYTHON = sys.version_info[:2]
++REQUIRED_PYTHON = (3, 6)
++
++# This check and everything above must remain compatible with Python 2.7.
++if CURRENT_PYTHON < REQUIRED_PYTHON:
++    sys.stderr.write(
++        """
++==========================
++Unsupported Python version
++==========================
++This version of urllib3 requires Python {}.{}, but you're trying to
++install it on Python {}.{}.
++This may be because you are using a version of pip that doesn't
++understand the python_requires classifier. Make sure you
++have pip >= 9.0 and setuptools >= 24.2, then try again:
++    $ python -m pip install --upgrade pip setuptools
++    $ python -m pip install urllib3
++This will install the latest version of urllib3 which works on your
++version of Python. If you can't upgrade your pip (or Python), request
++an older version of urllib3:
++    $ python -m pip install "urllib3<2"
++""".format(
++            *(REQUIRED_PYTHON + CURRENT_PYTHON)
++        )
++    )
++    sys.exit(1)
++
++
+ base_path = os.path.dirname(__file__)
+ 
+ # Get the version (borrowed from SQLAlchemy)

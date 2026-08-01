@@ -1,0 +1,17 @@
+diff --git a/httpx/models.py b/httpx/models.py
+index 0a44d32..e217f01 100644
+--- a/httpx/models.py
++++ b/httpx/models.py
+@@ -649,12 +649,6 @@ class Request:
+         url = str(self.url)
+         return f"<{class_name}({self.method!r}, {url!r})>"
+ 
+-    async def read(self) -> bytes:
+-        """
+-        Read and return the request content.
+-        """
+-        return b"".join([part async for part in self.stream])
+-
+ 
+ class Response:
+     def __init__(

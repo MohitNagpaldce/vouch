@@ -1,0 +1,13 @@
+diff --git a/celery/worker/request.py b/celery/worker/request.py
+index 9fb6e97dd..c2f2e5957 100644
+--- a/celery/worker/request.py
++++ b/celery/worker/request.py
+@@ -303,7 +303,7 @@ class Request(object):
+         task_ready(self)
+         if soft:
+             warn('Soft time limit (%ss) exceeded for %s[%s]',
+-                 soft, self.name, self.id)
++                 timeout, self.name, self.id)
+             exc = SoftTimeLimitExceeded(soft)
+         else:
+             error('Hard time limit (%ss) exceeded for %s[%s]',

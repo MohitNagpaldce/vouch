@@ -1,0 +1,53 @@
+diff --git a/doc/source/whatsnew/v3.0.0.rst b/doc/source/whatsnew/v3.0.0.rst
+index c2a56afbc5..3b5183c43b 100644
+--- a/doc/source/whatsnew/v3.0.0.rst
++++ b/doc/source/whatsnew/v3.0.0.rst
+@@ -630,6 +630,7 @@ I/O
+ - Bug in :meth:`read_csv` where the order of the ``na_values`` makes an inconsistency when ``na_values`` is a list non-string values. (:issue:`59303`)
+ - Bug in :meth:`read_excel` raising ``ValueError`` when passing array of boolean values when ``dtype="boolean"``. (:issue:`58159`)
+ - Bug in :meth:`read_json` not validating the ``typ`` argument to not be exactly ``"frame"`` or ``"series"`` (:issue:`59124`)
++- Bug in :meth:`read_json` where extreme value integers in string format were incorrectly parsed as a different integer number (:issue:`20608`)
+ - Bug in :meth:`read_stata` raising ``KeyError`` when input file is stored in big-endian format and contains strL data. (:issue:`58638`)
+ - Bug in :meth:`read_stata` where extreme value integers were incorrectly interpreted as missing for format versions 111 and prior (:issue:`58130`)
+ - Bug in :meth:`read_stata` where the missing code for double was not recognised for format versions 105 and prior (:issue:`58149`)
+diff --git a/pandas/io/json/_json.py b/pandas/io/json/_json.py
+index d077b9e0c4..e9c9f5ba22 100644
+--- a/pandas/io/json/_json.py
++++ b/pandas/io/json/_json.py
+@@ -1168,6 +1168,7 @@ class Parser:
+         """
+         Try to parse a Series into a column by inferring dtype.
+         """
++        org_data = data
+         # don't try to coerce, unless a force conversion
+         if use_dtypes:
+             if not self.dtype:
+@@ -1222,7 +1223,7 @@ class Parser:
+         if len(data) and data.dtype in ("float", "object"):
+             # coerce ints if we can
+             try:
+-                new_data = data.astype("int64")
++                new_data = org_data.astype("int64")
+                 if (new_data == data).all():
+                     data = new_data
+                     converted = True
+diff --git a/pandas/tests/io/json/test_pandas.py b/pandas/tests/io/json/test_pandas.py
+index 1c54232b8b..d3328d1dfc 100644
+--- a/pandas/tests/io/json/test_pandas.py
++++ b/pandas/tests/io/json/test_pandas.py
+@@ -2286,3 +2286,15 @@ def test_read_json_lines_rangeindex():
+     result = read_json(StringIO(data), lines=True).index
+     expected = RangeIndex(2)
+     tm.assert_index_equal(result, expected, exact=True)
++
++
++def test_large_number():
++    # GH#20608
++    result = read_json(
++        StringIO('["9999999999999999"]'),
++        orient="values",
++        typ="series",
++        convert_dates=False,
++    )
++    expected = Series([9999999999999999])
++    tm.assert_series_equal(result, expected)

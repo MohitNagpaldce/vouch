@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "8f3d8f2d764dbf01483b7ea0f937c6cba592da06",
+  "kind": "control_good",
+  "subject": "Fix #1947: don't raise DeprecationWarning inside on_startup() handler for run_app()",
+  "evidence_subject": "Fix #1947: don't raise DeprecationWarning inside on_startup() handler for run_app()",
+  "author": "Andrew Svetlov",
+  "date": "2017-06-15T01:34:42+03:00",
+  "impl_files": [
+    "aiohttp/web.py"
+  ],
+  "test_files": [],
+  "diff_lines": 35
+}

@@ -1,0 +1,227 @@
+diff --git a/galleries/examples/text_labels_and_annotations/line_with_text.py b/galleries/examples/text_labels_and_annotations/line_with_text.py
+index 8a62733b13..389554bd5a 100644
+--- a/galleries/examples/text_labels_and_annotations/line_with_text.py
++++ b/galleries/examples/text_labels_and_annotations/line_with_text.py
+@@ -28,9 +28,11 @@ class MyLine(lines.Line2D):
+         self.text.set_figure(figure)
+         super().set_figure(figure)
+ 
+-    def set_axes(self, axes):
+-        self.text.set_axes(axes)
+-        super().set_axes(axes)
++    # Override the axes property setter to set Axes on our children as well.
++    @lines.Line2D.axes.setter
++    def axes(self, new_axes):
++        self.text.axes = new_axes
++        lines.Line2D.axes.fset(self, new_axes)  # Call the superclass property setter.
+ 
+     def set_transform(self, transform):
+         # 2 pixel offset
+diff --git a/galleries/examples/userdemo/connectionstyle_demo.py b/galleries/examples/userdemo/connectionstyle_demo.py
+index 50ca108fc9..e34c63a570 100644
+--- a/galleries/examples/userdemo/connectionstyle_demo.py
++++ b/galleries/examples/userdemo/connectionstyle_demo.py
+@@ -48,7 +48,7 @@ demo_con_style(axs[2, 4], "bar,angle=180,fraction=-0.2")
+ 
+ for ax in axs.flat:
+     ax.set(xlim=(0, 1), ylim=(0, 1.25), xticks=[], yticks=[], aspect=1.25)
+-fig.set_constrained_layout_pads(wspace=0, hspace=0, w_pad=0, h_pad=0)
++fig.get_layout_engine().set(wspace=0, hspace=0, w_pad=0, h_pad=0)
+ 
+ plt.show()
+ 
+diff --git a/galleries/users_explain/artists/paths.py b/galleries/users_explain/artists/paths.py
+index d505711fd1..b096d05d07 100644
+--- a/galleries/users_explain/artists/paths.py
++++ b/galleries/users_explain/artists/paths.py
+@@ -18,6 +18,8 @@ codes.  For example to draw the unit rectangle from (0, 0) to (1, 1), we
+ could use this code:
+ """
+ 
++import numpy as np
++
+ import matplotlib.pyplot as plt
+ 
+ import matplotlib.patches as patches
+@@ -191,11 +193,6 @@ plt.show()
+ #       edgecolor='yellow', alpha=0.5)
+ #     ax.add_patch(patch)
+ 
+-import numpy as np
+-
+-import matplotlib.patches as patches
+-import matplotlib.path as path
+-
+ fig, ax = plt.subplots()
+ # Fixing random state for reproducibility
+ np.random.seed(19680801)
+@@ -213,9 +210,9 @@ nrects = len(left)
+ 
+ nverts = nrects*(1+3+1)
+ verts = np.zeros((nverts, 2))
+-codes = np.ones(nverts, int) * path.Path.LINETO
+-codes[0::5] = path.Path.MOVETO
+-codes[4::5] = path.Path.CLOSEPOLY
++codes = np.full(nverts, Path.LINETO, dtype=int)
++codes[0::5] = Path.MOVETO
++codes[4::5] = Path.CLOSEPOLY
+ verts[0::5, 0] = left
+ verts[0::5, 1] = bottom
+ verts[1::5, 0] = left
+@@ -225,7 +222,7 @@ verts[2::5, 1] = top
+ verts[3::5, 0] = right
+ verts[3::5, 1] = bottom
+ 
+-barpath = path.Path(verts, codes)
++barpath = Path(verts, codes)
+ patch = patches.PathPatch(barpath, facecolor='green',
+                           edgecolor='yellow', alpha=0.5)
+ ax.add_patch(patch)
+diff --git a/galleries/users_explain/axes/arranging_axes.py b/galleries/users_explain/axes/arranging_axes.py
+index 9288eede9f..79b69f4bf3 100644
+--- a/galleries/users_explain/axes/arranging_axes.py
++++ b/galleries/users_explain/axes/arranging_axes.py
+@@ -152,8 +152,8 @@ def annotate_axes(ax, text, fontsize=18):
+ fig, axd = plt.subplot_mosaic([['upper left', 'upper right'],
+                                ['lower left', 'lower right']],
+                               figsize=(5.5, 3.5), layout="constrained")
+-for k in axd:
+-    annotate_axes(axd[k], f'axd["{k}"]', fontsize=14)
++for k, ax in axd.items():
++    annotate_axes(ax, f'axd[{k!r}]', fontsize=14)
+ fig.suptitle('plt.subplot_mosaic()')
+ 
+ # %%
+@@ -200,8 +200,8 @@ fig.suptitle('Fixed aspect Axes: compressed')
+ fig, axd = plt.subplot_mosaic([['upper left', 'right'],
+                                ['lower left', 'right']],
+                               figsize=(5.5, 3.5), layout="constrained")
+-for k in axd:
+-    annotate_axes(axd[k], f'axd["{k}"]', fontsize=14)
++for k, ax in axd.items():
++    annotate_axes(ax, f'axd[{k!r}]', fontsize=14)
+ fig.suptitle('plt.subplot_mosaic()')
+ 
+ # %%
+@@ -223,8 +223,8 @@ fig, axd = plt.subplot_mosaic([['upper left', 'right'],
+                                ['lower left', 'right']],
+                               gridspec_kw=gs_kw, figsize=(5.5, 3.5),
+                               layout="constrained")
+-for k in axd:
+-    annotate_axes(axd[k], f'axd["{k}"]', fontsize=14)
++for k, ax in axd.items():
++    annotate_axes(ax, f'axd[{k!r}]', fontsize=14)
+ fig.suptitle('plt.subplot_mosaic()')
+ 
+ # %%
+@@ -262,8 +262,8 @@ outer = [['upper left',  inner],
+           ['lower left', 'lower right']]
+ 
+ fig, axd = plt.subplot_mosaic(outer, layout="constrained")
+-for k in axd:
+-    annotate_axes(axd[k], f'axd["{k}"]')
++for k, ax in axd.items():
++    annotate_axes(ax, f'axd[{k!r}]')
+ 
+ # %%
+ # Low-level and advanced grid methods
+diff --git a/galleries/users_explain/axes/axes_scales.py b/galleries/users_explain/axes/axes_scales.py
+index 567f3c5762..6b16383507 100644
+--- a/galleries/users_explain/axes/axes_scales.py
++++ b/galleries/users_explain/axes/axes_scales.py
+@@ -98,25 +98,23 @@ print(mscale.get_scale_names())
+ # %%
+ #
+ 
+-todo = ['asinh', 'symlog', 'log', 'logit', ]
+ fig, axs = plt.subplot_mosaic([['asinh', 'symlog'],
+                                ['log', 'logit']], layout='constrained')
+ 
+ x = np.arange(0, 1000)
+ 
+-for td in todo:
+-    ax = axs[td]
+-    if td in ['asinh', 'symlog']:
++for name, ax in axs.items():
++    if name in ['asinh', 'symlog']:
+         yy = x - np.mean(x)
+-    elif td in ['logit']:
++    elif name in ['logit']:
+         yy = (x-np.min(x))
+         yy = yy / np.max(np.abs(yy))
+     else:
+         yy = x
+ 
+     ax.plot(yy, yy)
+-    ax.set_yscale(td)
+-    ax.set_title(td)
++    ax.set_yscale(name)
++    ax.set_title(name)
+ 
+ # %%
+ # Optional arguments for scales
+@@ -131,9 +129,8 @@ for td in todo:
+ fig, axs = plt.subplot_mosaic([['log', 'symlog']], layout='constrained',
+                               figsize=(6.4, 3))
+ 
+-for td in axs:
+-    ax = axs[td]
+-    if td in ['log']:
++for name, ax in axs.items():
++    if name in ['log']:
+         ax.plot(x, x)
+         ax.set_yscale('log', base=2)
+         ax.set_title('log base=2')
+diff --git a/galleries/users_explain/figure/figure_intro.rst b/galleries/users_explain/figure/figure_intro.rst
+index 87bec6236d..745b015664 100644
+--- a/galleries/users_explain/figure/figure_intro.rst
++++ b/galleries/users_explain/figure/figure_intro.rst
+@@ -139,8 +139,8 @@ More complex grids can be achieved with `.pyplot.subplot_mosaic` (which wraps
+ 
+     fig, axs = plt.subplot_mosaic([['A', 'right'], ['B', 'right']],
+                                   figsize=(4, 3), layout='constrained')
+-    for ax_name in axs:
+-        axs[ax_name].text(0.5, 0.5, ax_name, ha='center', va='center')
++    for ax_name, ax in axs.items():
++        ax.text(0.5, 0.5, ax_name, ha='center', va='center')
+ 
+ Sometimes we want to have a nested layout in a Figure, with two or more sets of
+ Axes that do not share the same subplot grid.
+diff --git a/lib/matplotlib/figure.py b/lib/matplotlib/figure.py
+index da03778b92..fe997d3537 100644
+--- a/lib/matplotlib/figure.py
++++ b/lib/matplotlib/figure.py
+@@ -2466,8 +2466,7 @@ None}, default: None
+               to avoid overlapping axes decorations.  Can handle complex plot
+               layouts and colorbars, and is thus recommended.
+ 
+-              See :ref:`constrainedlayout_guide`
+-              for examples.
++              See :ref:`constrainedlayout_guide` for examples.
+ 
+             - 'compressed': uses the same algorithm as 'constrained', but
+               removes extra space between fixed-aspect-ratio Axes.  Best for
+@@ -2475,8 +2474,9 @@ None}, default: None
+ 
+             - 'tight': Use the tight layout mechanism. This is a relatively
+               simple algorithm that adjusts the subplot parameters so that
+-              decorations do not overlap. See `.set_tight_layout` for
+-              further details.
++              decorations do not overlap.
++
++              See :ref:`tight_layout_guide` for examples.
+ 
+             - 'none': Do not use a layout engine.
+ 
+diff --git a/lib/matplotlib/legend.py b/lib/matplotlib/legend.py
+index 7ed8e5a444..c52bdbf01d 100644
+--- a/lib/matplotlib/legend.py
++++ b/lib/matplotlib/legend.py
+@@ -642,7 +642,6 @@ class Legend(Artist):
+         """
+         a.set_figure(self.figure)
+         if self.isaxes:
+-            # a.set_axes(self.axes)
+             a.axes = self.axes
+ 
+         a.set_transform(self.get_transform())

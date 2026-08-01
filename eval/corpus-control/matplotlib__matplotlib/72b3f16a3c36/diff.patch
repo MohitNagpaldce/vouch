@@ -1,0 +1,135 @@
+diff --git a/examples/misc/demo_ribbon_box.py b/examples/misc/demo_ribbon_box.py
+index 9e350182e3..ea4fa579e8 100644
+--- a/examples/misc/demo_ribbon_box.py
++++ b/examples/misc/demo_ribbon_box.py
+@@ -24,7 +24,7 @@ class RibbonBox:
+     nx = original_image.shape[1]
+ 
+     def __init__(self, color):
+-        rgb = mcolors.to_rgba(color)[:3]
++        rgb = mcolors.to_rgb(color)
+         self.im = np.dstack(
+             [self.b_and_h - self.color * (1 - np.array(rgb)), self.alpha])
+ 
+diff --git a/examples/shapes_and_collections/collections.py b/examples/shapes_and_collections/collections.py
+index 161e2f1d28..b7ce0d6340 100644
+--- a/examples/shapes_and_collections/collections.py
++++ b/examples/shapes_and_collections/collections.py
+@@ -11,14 +11,14 @@ and `.PolyCollection`.
+ The third subplot will make regular polygons, with the same
+ type of scaling and positioning as in the first two.
+ 
+-The last subplot illustrates the use of "offsets=(xo, yo)",
++The last subplot illustrates the use of ``offsets=(xo, yo)``,
+ that is, a single tuple instead of a list of tuples, to generate
+ successively offset curves, with the offset given in data
+ units.  This behavior is available only for the LineCollection.
+ """
+ 
+ import matplotlib.pyplot as plt
+-from matplotlib import collections, colors, transforms
++from matplotlib import collections, transforms
+ import numpy as np
+ 
+ nverts = 50
+@@ -38,8 +38,7 @@ rs = np.random.RandomState(19680801)
+ xyo = rs.randn(npts, 2)
+ 
+ # Make a list of colors cycling through the default series.
+-colors = [colors.to_rgba(c)
+-          for c in plt.rcParams['axes.prop_cycle'].by_key()['color']]
++colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+ 
+ fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
+ fig.subplots_adjust(top=0.92, left=0.07, right=0.97,
+diff --git a/examples/shapes_and_collections/line_collection.py b/examples/shapes_and_collections/line_collection.py
+index 9adfd8024e..c0c44a7d8b 100644
+--- a/examples/shapes_and_collections/line_collection.py
++++ b/examples/shapes_and_collections/line_collection.py
+@@ -1,23 +1,17 @@
+ """
+-===============
+-Line Collection
+-===============
++=============================================
++Plotting multiple lines with a LineCollection
++=============================================
+ 
+-Plotting lines with Matplotlib.
+-
+-`~matplotlib.collections.LineCollection` allows one to plot multiple
+-lines on a figure. Below we show off some of its properties.
++Matplotlib can efficiently draw multiple lines at once using a
++`~.LineCollection`, as showcased below.
+ """
+ 
+ import matplotlib.pyplot as plt
+ from matplotlib.collections import LineCollection
+-from matplotlib import colors as mcolors
+ 
+ import numpy as np
+ 
+-# In order to efficiently plot many lines in a single set of axes,
+-# Matplotlib has the ability to add the lines all at once. Here is a
+-# simple example showing how it is done.
+ 
+ x = np.arange(100)
+ # Here are many sets of y to plot vs. x
+@@ -30,7 +24,7 @@ segs[:, :, 0] = x
+ # Mask some values to test masked array support:
+ segs = np.ma.masked_where((segs > 50) & (segs < 60), segs)
+ 
+-# We need to set the plot limits.
++# We need to set the plot limits, they will not autoscale
+ fig, ax = plt.subplots()
+ ax.set_xlim(x.min(), x.max())
+ ax.set_ylim(ys.min(), ys.max())
+@@ -41,8 +35,7 @@ ax.set_ylim(ys.min(), ys.max())
+ # onoffseq is an even length tuple of on and off ink in points.  If linestyle
+ # is omitted, 'solid' is used.
+ # See `matplotlib.collections.LineCollection` for more information.
+-colors = [mcolors.to_rgba(c)
+-          for c in plt.rcParams['axes.prop_cycle'].by_key()['color']]
++colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+ 
+ line_segments = LineCollection(segs, linewidths=(0.5, 1, 1.5, 2),
+                                colors=colors, linestyle='solid')
+@@ -51,32 +44,22 @@ ax.set_title('Line collection with masked arrays')
+ plt.show()
+ 
+ ###############################################################################
+-# In order to efficiently plot many lines in a single set of axes,
+-# Matplotlib has the ability to add the lines all at once. Here is a
+-# simple example showing how it is done.
++# In the following example, instead of passing a list of colors
++# (``colors=colors``), we pass an array of values (``array=x``) that get
++# colormapped.
+ 
+ N = 50
+ x = np.arange(N)
+-# Here are many sets of y to plot vs. x
+-ys = [x + i for i in x]
++ys = [x + i for i in x]  # Many sets of y to plot vs. x
++segs = [np.column_stack([x, y]) for y in ys]
+ 
+-# We need to set the plot limits, they will not autoscale
+ fig, ax = plt.subplots()
+ ax.set_xlim(np.min(x), np.max(x))
+ ax.set_ylim(np.min(ys), np.max(ys))
+ 
+-# colors is sequence of rgba tuples
+-# linestyle is a string or dash tuple. Legal string values are
+-#          solid|dashed|dashdot|dotted.  The dash tuple is (offset, onoffseq)
+-#          where onoffseq is an even length tuple of on and off ink in points.
+-#          If linestyle is omitted, 'solid' is used
+-# See `matplotlib.collections.LineCollection` for more information
+-
+-# Make a sequence of (x, y) pairs.
+-line_segments = LineCollection([np.column_stack([x, y]) for y in ys],
++line_segments = LineCollection(segs, array=x,
+                                linewidths=(0.5, 1, 1.5, 2),
+                                linestyles='solid')
+-line_segments.set_array(x)
+ ax.add_collection(line_segments)
+ axcb = fig.colorbar(line_segments)
+ axcb.set_label('Line Number')

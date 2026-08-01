@@ -1,0 +1,14 @@
+{
+  "repo": "urllib3/urllib3",
+  "sha": "9ef451dd51c8417b42cb44526ff9e3698df6749c",
+  "kind": "control_good",
+  "subject": "Catch exceptions when draining the connection before retry/redirect",
+  "evidence_subject": "Catch exceptions when draining the connection before retry/redirect",
+  "author": "Matt Billenstein",
+  "date": "2017-06-20T17:14:49+02:00",
+  "impl_files": [
+    "urllib3/connectionpool.py"
+  ],
+  "test_files": [],
+  "diff_lines": 20
+}

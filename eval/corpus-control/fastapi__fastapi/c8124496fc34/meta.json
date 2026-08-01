@@ -1,0 +1,14 @@
+{
+  "repo": "fastapi/fastapi",
+  "sha": "c8124496fc34c024e411f293d3893219005d409f",
+  "kind": "control_good",
+  "subject": "\u267b Simplify conditional assignment in `fastapi/dependencies/utils.py` (#4597)",
+  "evidence_subject": "\u267b Simplify conditional assignment in `fastapi/dependencies/utils.py` (#4597)",
+  "author": "Muzaffer Cikay",
+  "date": "2022-08-26T16:16:17+03:00",
+  "impl_files": [
+    "fastapi/dependencies/utils.py"
+  ],
+  "test_files": [],
+  "diff_lines": 16
+}

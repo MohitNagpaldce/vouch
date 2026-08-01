@@ -1,0 +1,17 @@
+{
+  "repo": "psf/black",
+  "sha": "6ffc5f7b01eab341f1b2cd373b6faed0072a2351",
+  "kind": "control_good",
+  "subject": "Correct spelling mistakes (#3599)",
+  "evidence_subject": "Correct spelling mistakes (#3599)",
+  "author": "Casey Korver",
+  "date": "2023-03-11T09:43:31-06:00",
+  "impl_files": [
+    "src/blib2to3/pgen2/driver.py"
+  ],
+  "test_files": [
+    "tests/data/preview/long_strings.py",
+    "tests/data/simple_cases/comments4.py"
+  ],
+  "diff_lines": 102
+}

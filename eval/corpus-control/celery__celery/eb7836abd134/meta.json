@@ -1,0 +1,17 @@
+{
+  "repo": "celery/celery",
+  "sha": "eb7836abd13443e620c299d1bb85383a227750be",
+  "kind": "control_good",
+  "subject": "Fixes #5617 (#5664)",
+  "evidence_subject": "Fixes #5617 (#5664)",
+  "author": "Shekhar Kamble",
+  "date": "2019-08-13T17:19:04+05:30",
+  "impl_files": [
+    "celery/app/amqp.py",
+    "celery/utils/collections.py"
+  ],
+  "test_files": [
+    "t/unit/app/test_amqp.py"
+  ],
+  "diff_lines": 87
+}

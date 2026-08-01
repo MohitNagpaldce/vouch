@@ -1,0 +1,16 @@
+{
+  "repo": "psf/requests",
+  "sha": "ead8fba84b12e7496c65272a07de47d553aa0ca0",
+  "kind": "control_good",
+  "subject": "Fixes DeprecationWarnings in Python 3.6 due to invalid escape sequences. Fixes #3954",
+  "evidence_subject": "Fixes DeprecationWarnings in Python 3.6 due to invalid escape sequences. Fixes #3954",
+  "author": "Ruben Dura Tari",
+  "date": "2017-04-05T15:51:58+01:00",
+  "impl_files": [
+    "requests/api.py",
+    "requests/models.py",
+    "requests/sessions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 147
+}

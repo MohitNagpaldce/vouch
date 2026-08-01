@@ -1,0 +1,13 @@
+diff --git a/lib/sqlalchemy/orm/session.py b/lib/sqlalchemy/orm/session.py
+index b89edca44..2a531b118 100644
+--- a/lib/sqlalchemy/orm/session.py
++++ b/lib/sqlalchemy/orm/session.py
+@@ -3766,7 +3766,7 @@ class sessionmaker(_SessionClassMethods):
+ 
+         Session = sessionmaker(engine)
+ 
+-        wih Session.begin() as session:
++        with Session.begin() as session:
+             session.add(some_object)
+             session.add(some_other_object)
+         # commits transaction, closes session

@@ -1,0 +1,16 @@
+{
+  "repo": "fastapi/fastapi",
+  "sha": "ca27317b654e8265b8783df22e88a439adf96e8a",
+  "kind": "control_good",
+  "subject": ":sparkles: Add param functions, to override types, to make mypy happy (#226)",
+  "evidence_subject": ":sparkles: Add param functions, to override types, to make mypy happy (#226)",
+  "author": "Sebasti\u00e1n Ram\u00edrez",
+  "date": "2019-05-15T21:25:11+04:00",
+  "impl_files": [
+    "fastapi/__init__.py",
+    "fastapi/dependencies/utils.py",
+    "fastapi/param_functions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 288
+}

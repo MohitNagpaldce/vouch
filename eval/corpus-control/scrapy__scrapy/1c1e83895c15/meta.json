@@ -1,0 +1,16 @@
+{
+  "repo": "scrapy/scrapy",
+  "sha": "1c1e83895c15dc491c6c133982cde22d778dcae6",
+  "kind": "control_good",
+  "subject": "Fix _pop_command_name (#6606)",
+  "evidence_subject": "Fix _pop_command_name (#6606)",
+  "author": "anubhav",
+  "date": "2025-01-14T21:10:24+05:30",
+  "impl_files": [
+    "scrapy/cmdline.py"
+  ],
+  "test_files": [
+    "tests/test_commands.py"
+  ],
+  "diff_lines": 61
+}

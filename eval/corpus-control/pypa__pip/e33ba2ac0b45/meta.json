@@ -1,0 +1,14 @@
+{
+  "repo": "pypa/pip",
+  "sha": "e33ba2ac0b45c8a970d815bf7235504dd04fcde7",
+  "kind": "control_good",
+  "subject": "Abort when --no-binary/--only-binary receives bad arg",
+  "evidence_subject": "Abort when --no-binary/--only-binary receives bad arg",
+  "author": "keanemind",
+  "date": "2018-10-03T23:55:22-05:00",
+  "impl_files": [
+    "src/pip/_internal/cli/cmdoptions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 22
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "b947e476e7f891a80e894af02b6ae1e6ddce940e",
+  "kind": "control_good",
+  "subject": "Avoid calling the drain helper in `WebSocketWriter` if the protocol is not paused (#9796)",
+  "evidence_subject": "Avoid calling the drain helper in `WebSocketWriter` if the protocol is not paused (#9796)",
+  "author": "J. Nick Koston",
+  "date": "2024-11-11T03:42:12Z",
+  "impl_files": [
+    "aiohttp/_websocket/writer.py"
+  ],
+  "test_files": [],
+  "diff_lines": 21
+}

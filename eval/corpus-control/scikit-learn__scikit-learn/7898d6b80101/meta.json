@@ -1,0 +1,20 @@
+{
+  "repo": "scikit-learn/scikit-learn",
+  "sha": "7898d6b80101caa1e8d4a3911eca242f3b86dde5",
+  "kind": "control_good",
+  "subject": "DOC improve random_state docstrings in the linear_model module (#11900)",
+  "evidence_subject": "DOC improve random_state docstrings in the linear_model module (#11900)",
+  "author": "Sarat Addepalli",
+  "date": "2020-01-08T21:39:33+05:30",
+  "impl_files": [
+    "sklearn/linear_model/_coordinate_descent.py",
+    "sklearn/linear_model/_passive_aggressive.py",
+    "sklearn/linear_model/_perceptron.py",
+    "sklearn/linear_model/_ransac.py",
+    "sklearn/linear_model/_sag.py",
+    "sklearn/linear_model/_stochastic_gradient.py",
+    "sklearn/linear_model/_theil_sen.py"
+  ],
+  "test_files": [],
+  "diff_lines": 312
+}

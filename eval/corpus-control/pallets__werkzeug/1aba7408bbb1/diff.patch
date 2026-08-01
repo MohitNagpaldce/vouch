@@ -1,0 +1,26 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index b3b177f5..5586909d 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -3,7 +3,7 @@
+ Version 0.16.0
+ --------------
+ 
+-Unreleased
++Released 2019-09-19
+ 
+ -   Deprecate most top-level attributes provided by the ``werkzeug``
+     module in favor of direct imports. The deprecated imports will be
+diff --git a/src/werkzeug/__init__.py b/src/werkzeug/__init__.py
+index 49907e93..d53bb391 100644
+--- a/src/werkzeug/__init__.py
++++ b/src/werkzeug/__init__.py
+@@ -14,7 +14,7 @@ library.
+ """
+ from types import ModuleType
+ 
+-__version__ = "0.16.0.dev0"
++__version__ = "0.16.0"
+ 
+ __all__ = ["run_simple", "Client", "Request", "Response", "__version__"]
+ 
