@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/click",
+  "sha": "cb37854c9b43d9fd3c99a3a830f4580517c1b32e",
+  "kind": "control_good",
+  "subject": "use importlib.metadata for version_option",
+  "evidence_subject": "use importlib.metadata for version_option",
+  "author": "Mwiza Simbeye",
+  "date": "2020-06-11T00:33:34+02:00",
+  "impl_files": [
+    "src/click/decorators.py"
+  ],
+  "test_files": [],
+  "diff_lines": 105
+}

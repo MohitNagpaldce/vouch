@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/flask",
+  "sha": "a293b99b219c13ea94b33a2470a545e07c73b804",
+  "kind": "control_good",
+  "subject": "Fixed the last changeset.",
+  "evidence_subject": "Fixed the last changeset.",
+  "author": "Armin Ronacher",
+  "date": "2014-04-11T13:31:57+02:00",
+  "impl_files": [
+    "flask/helpers.py"
+  ],
+  "test_files": [],
+  "diff_lines": 15
+}

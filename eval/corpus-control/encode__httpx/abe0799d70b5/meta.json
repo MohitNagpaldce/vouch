@@ -1,0 +1,17 @@
+{
+  "repo": "encode/httpx",
+  "sha": "abe0799d70b5c31341d28a23c7ff0d796a792854",
+  "kind": "control_good",
+  "subject": "Refactor netrc handling (#558)",
+  "evidence_subject": "Refactor netrc handling (#558)",
+  "author": "Tom Christie",
+  "date": "2019-11-28T12:31:15Z",
+  "impl_files": [
+    "httpx/client.py",
+    "httpx/utils.py"
+  ],
+  "test_files": [
+    "tests/test_utils.py"
+  ],
+  "diff_lines": 167
+}

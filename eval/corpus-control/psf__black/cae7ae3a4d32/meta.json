@@ -1,0 +1,16 @@
+{
+  "repo": "psf/black",
+  "sha": "cae7ae3a4d32dc51e0752d4a4e885a7792a0286d",
+  "kind": "control_good",
+  "subject": "Soft comparison of --required-version (#2832)",
+  "evidence_subject": "Soft comparison of --required-version (#2832)",
+  "author": "Fr\u00e9d\u00e9rik Paradis",
+  "date": "2022-01-30T16:42:56-05:00",
+  "impl_files": [
+    "src/black/__init__.py"
+  ],
+  "test_files": [
+    "tests/test_black.py"
+  ],
+  "diff_lines": 64
+}

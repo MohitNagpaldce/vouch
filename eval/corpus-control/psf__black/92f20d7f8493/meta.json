@@ -1,0 +1,16 @@
+{
+  "repo": "psf/black",
+  "sha": "92f20d7f8493f9d0f27531f68b776fb435d53d2e",
+  "kind": "control_good",
+  "subject": "Removed adding a space into empty docstrings. (#2249)",
+  "evidence_subject": "Removed adding a space into empty docstrings. (#2249)",
+  "author": "Mark Bell",
+  "date": "2021-05-25T23:43:28+01:00",
+  "impl_files": [
+    "src/black/linegen.py"
+  ],
+  "test_files": [
+    "tests/data/docstring.py"
+  ],
+  "diff_lines": 89
+}

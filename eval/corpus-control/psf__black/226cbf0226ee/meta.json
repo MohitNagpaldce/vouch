@@ -1,0 +1,16 @@
+{
+  "repo": "psf/black",
+  "sha": "226cbf0226ee3bc26972357ba54c36409e9a84ae",
+  "kind": "control_good",
+  "subject": "Fix unsafe cast in linegen.py w/ await yield handling (#3533)",
+  "evidence_subject": "Fix unsafe cast in linegen.py w/ await yield handling (#3533)",
+  "author": "Jelle Zijlstra",
+  "date": "2023-01-30T18:53:14-08:00",
+  "impl_files": [
+    "src/black/linegen.py"
+  ],
+  "test_files": [
+    "tests/data/preview/remove_await_parens.py"
+  ],
+  "diff_lines": 70
+}

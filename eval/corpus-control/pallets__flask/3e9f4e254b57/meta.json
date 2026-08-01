@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/flask",
+  "sha": "3e9f4e254b5757d80218c0d8077bd44465365489",
+  "kind": "control_good",
+  "subject": "Updated a comment that was misleading with recent flask sqlalchemy installations",
+  "evidence_subject": "Updated a comment that was misleading with recent flask sqlalchemy installations",
+  "author": "Armin Ronacher",
+  "date": "2012-10-08T07:05:32+02:00",
+  "impl_files": [
+    "flask/ctx.py"
+  ],
+  "test_files": [],
+  "diff_lines": 23
+}

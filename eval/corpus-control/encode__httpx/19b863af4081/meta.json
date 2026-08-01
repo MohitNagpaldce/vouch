@@ -1,0 +1,18 @@
+{
+  "repo": "encode/httpx",
+  "sha": "19b863af408123783d5f9916e71688b32ba558c8",
+  "kind": "control_good",
+  "subject": "Header refinements (#1248)",
+  "evidence_subject": "Header refinements (#1248)",
+  "author": "Tom Christie",
+  "date": "2020-09-02T21:32:48+01:00",
+  "impl_files": [
+    "httpx/_client.py",
+    "httpx/_models.py"
+  ],
+  "test_files": [
+    "tests/client/test_headers.py",
+    "tests/models/test_requests.py"
+  ],
+  "diff_lines": 201
+}

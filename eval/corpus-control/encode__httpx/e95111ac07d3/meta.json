@@ -1,0 +1,17 @@
+{
+  "repo": "encode/httpx",
+  "sha": "e95111ac07d31817ff9189379dc052c5d867bfe5",
+  "kind": "control_good",
+  "subject": "Add OpenConnection base class (#616)",
+  "evidence_subject": "Add OpenConnection base class (#616)",
+  "author": "Florimond Manca",
+  "date": "2019-12-09T11:34:02+01:00",
+  "impl_files": [
+    "httpx/dispatch/base.py",
+    "httpx/dispatch/connection.py",
+    "httpx/dispatch/http11.py",
+    "httpx/dispatch/http2.py"
+  ],
+  "test_files": [],
+  "diff_lines": 225
+}

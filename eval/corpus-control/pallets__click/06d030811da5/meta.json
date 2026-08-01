@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/click",
+  "sha": "06d030811da54f0c336a59c85818fe26313e1dda",
+  "kind": "control_good",
+  "subject": "enable colored output on Jupyter notebooks on UNIX",
+  "evidence_subject": "enable colored output on Jupyter notebooks on UNIX",
+  "author": "Ronny Pfannschmidt",
+  "date": "2018-12-20T08:10:48+01:00",
+  "impl_files": [
+    "click/_compat.py"
+  ],
+  "test_files": [
+    "tests/test_compat.py"
+  ],
+  "diff_lines": 81
+}

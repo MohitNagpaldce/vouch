@@ -1,0 +1,46 @@
+diff --git a/httpx/__init__.py b/httpx/__init__.py
+index b464daa..6859964 100644
+--- a/httpx/__init__.py
++++ b/httpx/__init__.py
+@@ -27,6 +27,7 @@ from .exceptions import (
+     ConnectTimeout,
+     CookieConflict,
+     DecodingError,
++    HTTPError,
+     InvalidURL,
+     NotRedirectResponse,
+     PoolTimeout,
+@@ -97,6 +98,7 @@ __all__ = [
+     "ConnectTimeout",
+     "CookieConflict",
+     "DecodingError",
++    "HTTPError",
+     "InvalidURL",
+     "NotRedirectResponse",
+     "PoolTimeout",
+diff --git a/tests/client/test_async_client.py b/tests/client/test_async_client.py
+index 37f0390..eaac5ef 100644
+--- a/tests/client/test_async_client.py
++++ b/tests/client/test_async_client.py
+@@ -95,7 +95,7 @@ async def test_raise_for_status(server, backend):
+             )
+ 
+             if 400 <= status_code < 600:
+-                with pytest.raises(httpx.exceptions.HTTPError) as exc_info:
++                with pytest.raises(httpx.HTTPError) as exc_info:
+                     response.raise_for_status()
+                 assert exc_info.value.response == response
+             else:
+diff --git a/tests/client/test_client.py b/tests/client/test_client.py
+index 9183692..4cca746 100644
+--- a/tests/client/test_client.py
++++ b/tests/client/test_client.py
+@@ -88,7 +88,7 @@ def test_raise_for_status(server):
+                 "GET", server.url.copy_with(path="/status/{}".format(status_code))
+             )
+             if 400 <= status_code < 600:
+-                with pytest.raises(httpx.exceptions.HTTPError) as exc_info:
++                with pytest.raises(httpx.HTTPError) as exc_info:
+                     response.raise_for_status()
+                 assert exc_info.value.response == response
+             else:

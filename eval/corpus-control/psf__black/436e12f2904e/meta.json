@@ -1,0 +1,14 @@
+{
+  "repo": "psf/black",
+  "sha": "436e12f2904e68acb57a059b1c44f1e0321e2d3f",
+  "kind": "control_good",
+  "subject": "Add script to ease migration to black (#3038)",
+  "evidence_subject": "Add script to ease migration to black (#3038)",
+  "author": "Holger Brunn",
+  "date": "2022-06-01T20:20:02+02:00",
+  "impl_files": [
+    "scripts/migrate-black.py"
+  ],
+  "test_files": [],
+  "diff_lines": 114
+}

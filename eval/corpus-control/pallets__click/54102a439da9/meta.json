@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/click",
+  "sha": "54102a439da9da4a2c84cd893b12020865b9afd3",
+  "kind": "control_good",
+  "subject": "show_default uses default_map",
+  "evidence_subject": "show_default uses default_map",
+  "author": "Joachim Jablon",
+  "date": "2020-05-10T00:53:26+02:00",
+  "impl_files": [
+    "src/click/core.py"
+  ],
+  "test_files": [
+    "tests/test_options.py"
+  ],
+  "diff_lines": 77
+}

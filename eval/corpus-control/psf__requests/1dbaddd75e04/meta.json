@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "1dbaddd75e04365a822cf4bcf05f332a5f845ed6",
+  "kind": "control_good",
+  "subject": "for RFC-7616 add SHA-256 and SHA-512",
+  "evidence_subject": "for RFC-7616 add SHA-256 and SHA-512",
+  "author": "David Poole",
+  "date": "2017-11-08T18:32:59-07:00",
+  "impl_files": [
+    "requests/auth.py"
+  ],
+  "test_files": [],
+  "diff_lines": 23
+}

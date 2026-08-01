@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "7b68c124d549853a1045cbeb5a16461799279780",
+  "kind": "control_good",
+  "subject": "Sphinx throws an error if you don't escape ** in **kwargs",
+  "evidence_subject": "Sphinx throws an error if you don't escape ** in **kwargs",
+  "author": "Ian Danforth",
+  "date": "2012-03-18T18:09:58-07:00",
+  "impl_files": [
+    "requests/api.py"
+  ],
+  "test_files": [],
+  "diff_lines": 67
+}

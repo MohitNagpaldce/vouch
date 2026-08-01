@@ -1,0 +1,16 @@
+{
+  "repo": "psf/requests",
+  "sha": "f40bd0f7074ccda6be66c77f39442770d7669af0",
+  "kind": "control_good",
+  "subject": "Docs: Fix links to `timeouts` section by using :ref: instead of",
+  "evidence_subject": "Docs: Fix links to `timeouts` section by using :ref: instead of",
+  "author": "Lukas Graf",
+  "date": "2015-08-15T11:45:44+02:00",
+  "impl_files": [
+    "requests/adapters.py",
+    "requests/api.py",
+    "requests/sessions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 45
+}

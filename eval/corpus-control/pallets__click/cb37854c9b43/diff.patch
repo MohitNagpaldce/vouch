@@ -1,0 +1,105 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 2256649..efc3914 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -13,6 +13,9 @@ Unreleased
+ -   Add an optional parameter to ``ProgressBar.update`` to set the
+     ``current_item``. :issue:`1226`, :pr:`1332`
+ -   Include ``--help`` option in completion. :pr:`1504`
++-   ``version_option`` uses ``importlib.metadata`` (or the
++    ``importlib_metadata`` backport) instead of ``pkg_resources``.
++    :issue:`1582`
+ 
+ 
+ Version 7.1.2
+diff --git a/requirements/dev.txt b/requirements/dev.txt
+index eb890d6..cbb09ec 100644
+--- a/requirements/dev.txt
++++ b/requirements/dev.txt
+@@ -19,6 +19,7 @@ filelock==3.0.12          # via tox, virtualenv
+ identify==1.4.16          # via pre-commit
+ idna==2.9                 # via requests
+ imagesize==1.2.0          # via sphinx
++importlib-metadata==1.6.1  # via -r requirements/tests.in
+ jinja2==2.11.2            # via sphinx
+ markupsafe==1.1.1         # via jinja2
+ more-itertools==8.3.0     # via pytest
+@@ -51,6 +52,7 @@ tox==3.15.2               # via -r requirements/dev.in
+ urllib3==1.25.9           # via requests
+ virtualenv==20.0.21       # via pre-commit, tox
+ wcwidth==0.1.9            # via pytest
++zipp==3.1.0               # via importlib-metadata
+ 
+ # The following packages are considered to be unsafe in a requirements file:
+ # pip
+diff --git a/requirements/tests.in b/requirements/tests.in
+index 808be05..721be61 100644
+--- a/requirements/tests.in
++++ b/requirements/tests.in
+@@ -1,2 +1,3 @@
+ pytest
+ colorama
++importlib_metadata
+diff --git a/requirements/tests.txt b/requirements/tests.txt
+index f371702..c40d6c7 100644
+--- a/requirements/tests.txt
++++ b/requirements/tests.txt
+@@ -6,6 +6,7 @@
+ #
+ attrs==19.3.0             # via pytest
+ colorama==0.4.3           # via -r requirements/tests.in
++importlib-metadata==1.6.1  # via -r requirements/tests.in
+ more-itertools==8.3.0     # via pytest
+ packaging==20.4           # via pytest
+ pluggy==0.13.1            # via pytest
+@@ -14,3 +15,4 @@ pyparsing==2.4.7          # via packaging
+ pytest==5.4.3             # via -r requirements/tests.in
+ six==1.15.0               # via packaging
+ wcwidth==0.1.9            # via pytest
++zipp==3.1.0               # via importlib-metadata
+diff --git a/src/click/decorators.py b/src/click/decorators.py
+index 3013305..ad61111 100644
+--- a/src/click/decorators.py
++++ b/src/click/decorators.py
+@@ -1,5 +1,4 @@
+ import inspect
+-import sys
+ from functools import update_wrapper
+ 
+ from .core import Argument
+@@ -260,11 +259,6 @@ def version_option(version=None, *param_decls, **attrs):
+                     (``'%(prog)s, version %(version)s'``)
+     :param others: everything else is forwarded to :func:`option`.
+     """
+-    if version is None:
+-        if hasattr(sys, "_getframe"):
+-            module = sys._getframe(1).f_globals.get("__name__")
+-        else:
+-            module = ""
+ 
+     def decorator(f):
+         prog_name = attrs.pop("prog_name", None)
+@@ -279,16 +273,14 @@ def version_option(version=None, *param_decls, **attrs):
+             ver = version
+             if ver is None:
+                 try:
+-                    import pkg_resources
++                    from importlib.metadata import version as get_version
+                 except ImportError:
+-                    pass
+-                else:
+-                    for dist in pkg_resources.working_set:
+-                        scripts = dist.get_entry_map().get("console_scripts") or {}
+-                        for entry_point in scripts.values():
+-                            if entry_point.module_name == module:
+-                                ver = dist.version
+-                                break
++                    try:
++                        from importlib_metadata import version as get_version
++                    except ImportError:
++                        get_version = None
++                if get_version is not None:
++                    ver = get_version(prog)
+                 if ver is None:
+                     raise RuntimeError("Could not determine version")
+             echo(message % {"prog": prog, "version": ver}, color=ctx.color)

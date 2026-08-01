@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "672e66ba5fa94f6d55638067f9476cc1da396650",
+  "kind": "control_good",
+  "subject": "compat",
+  "evidence_subject": "compat",
+  "author": "Kenneth Reitz",
+  "date": "2012-01-23T00:34:31-05:00",
+  "impl_files": [
+    "requests/compat.py"
+  ],
+  "test_files": [],
+  "diff_lines": 81
+}

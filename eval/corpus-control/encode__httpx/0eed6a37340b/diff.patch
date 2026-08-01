@@ -1,0 +1,297 @@
+diff --git a/docs/exceptions.md b/docs/exceptions.md
+index db0d36c..1bc8610 100644
+--- a/docs/exceptions.md
++++ b/docs/exceptions.md
+@@ -76,7 +76,6 @@ except httpx.HTTPStatusError as exc:
+         * TooManyRedirects
+     * HTTPStatusError
+ * InvalidURL
+-* NotRedirectResponse
+ * CookieConflict
+ * StreamError
+     * StreamConsumed
+@@ -154,9 +153,6 @@ except httpx.HTTPStatusError as exc:
+ ::: httpx.InvalidURL
+     :docstring:
+ 
+-::: httpx.NotRedirectResponse
+-    :docstring:
+-
+ ::: httpx.CookieConflict
+     :docstring:
+ 
+diff --git a/httpx/__init__.py b/httpx/__init__.py
+index 3e1fdc4..489ffea 100644
+--- a/httpx/__init__.py
++++ b/httpx/__init__.py
+@@ -14,7 +14,6 @@ from ._exceptions import (
+     InvalidURL,
+     LocalProtocolError,
+     NetworkError,
+-    NotRedirectResponse,
+     PoolTimeout,
+     ProtocolError,
+     ProxyError,
+@@ -67,7 +66,6 @@ __all__ = [
+     "Limits",
+     "LocalProtocolError",
+     "NetworkError",
+-    "NotRedirectResponse",
+     "options",
+     "patch",
+     "PoolTimeout",
+diff --git a/httpx/_client.py b/httpx/_client.py
+index 46d121e..d15c004 100644
+--- a/httpx/_client.py
++++ b/httpx/_client.py
+@@ -1,6 +1,5 @@
+ import datetime
+ import enum
+-import functools
+ import typing
+ import warnings
+ from types import TracebackType
+@@ -848,13 +847,6 @@ class Client(BaseClient):
+ 
+             if not allow_redirects:
+                 response.next_request = request
+-                response.call_next = functools.partial(
+-                    self._send_handling_redirects,
+-                    request=request,
+-                    timeout=timeout,
+-                    allow_redirects=False,
+-                    history=history,
+-                )
+                 return response
+ 
+     def _send_single_request(self, request: Request, timeout: Timeout) -> Response:
+@@ -1494,13 +1486,6 @@ class AsyncClient(BaseClient):
+ 
+             if not allow_redirects:
+                 response.next_request = request
+-                response.call_next = functools.partial(
+-                    self._send_handling_redirects,
+-                    request=request,
+-                    timeout=timeout,
+-                    allow_redirects=False,
+-                    history=history,
+-                )
+                 return response
+ 
+     async def _send_single_request(
+diff --git a/httpx/_exceptions.py b/httpx/_exceptions.py
+index 3aabb00..bade9f9 100644
+--- a/httpx/_exceptions.py
++++ b/httpx/_exceptions.py
+@@ -24,7 +24,6 @@ Our exception hierarchy:
+     + RequestBodyUnavailable
+   x HTTPStatusError
+ * InvalidURL
+-* NotRedirectResponse
+ * CookieConflict
+ * StreamError
+   x StreamConsumed
+@@ -233,18 +232,6 @@ class InvalidURL(Exception):
+         super().__init__(message)
+ 
+ 
+-class NotRedirectResponse(Exception):
+-    """
+-    Response was not a redirect response.
+-
+-    May be raised if `response.next()` is called without first
+-    properly checking `response.is_redirect`.
+-    """
+-
+-    def __init__(self, message: str) -> None:
+-        super().__init__(message)
+-
+-
+ class CookieConflict(Exception):
+     """
+     Attempted to lookup a cookie by name, but multiple cookies existed.
+diff --git a/httpx/_models.py b/httpx/_models.py
+index f3301dd..a1140e1 100644
+--- a/httpx/_models.py
++++ b/httpx/_models.py
+@@ -27,7 +27,6 @@ from ._exceptions import (
+     DecodingError,
+     HTTPStatusError,
+     InvalidURL,
+-    NotRedirectResponse,
+     RequestNotRead,
+     ResponseClosed,
+     ResponseNotRead,
+@@ -1183,19 +1182,6 @@ class Response:
+                 yield part
+         self.close()
+ 
+-    def next(self) -> "Response":
+-        """
+-        Get the next response from a redirect response.
+-        """
+-        if not self.is_redirect:
+-            message = (
+-                "Called .next(), but the response was not a redirect. "
+-                "Calling code should check `response.is_redirect` first."
+-            )
+-            raise NotRedirectResponse(message)
+-        assert self.call_next is not None
+-        return self.call_next()
+-
+     def close(self) -> None:
+         """
+         Close the response and release the connection.
+@@ -1268,18 +1254,6 @@ class Response:
+                 yield part
+         await self.aclose()
+ 
+-    async def anext(self) -> "Response":
+-        """
+-        Get the next response from a redirect response.
+-        """
+-        if not self.is_redirect:
+-            raise NotRedirectResponse(
+-                "Called .anext(), but the response was not a redirect. "
+-                "Calling code should check `response.is_redirect` first."
+-            )
+-        assert self.call_next is not None
+-        return await self.call_next()
+-
+     async def aclose(self) -> None:
+         """
+         Close the response and release the connection.
+diff --git a/tests/client/test_async_client.py b/tests/client/test_async_client.py
+index 9aa995c..44ff90f 100644
+--- a/tests/client/test_async_client.py
++++ b/tests/client/test_async_client.py
+@@ -19,9 +19,6 @@ async def test_get(server):
+     assert repr(response) == "<Response [200 OK]>"
+     assert response.elapsed > timedelta(seconds=0)
+ 
+-    with pytest.raises(httpx.NotRedirectResponse):
+-        await response.anext()
+-
+ 
+ @pytest.mark.parametrize(
+     "url",
+diff --git a/tests/client/test_client.py b/tests/client/test_client.py
+index b56ac5a..f1e0ec4 100644
+--- a/tests/client/test_client.py
++++ b/tests/client/test_client.py
+@@ -23,9 +23,6 @@ def test_get(server):
+     assert repr(response) == "<Response [200 OK]>"
+     assert response.elapsed > timedelta(0)
+ 
+-    with pytest.raises(httpx.NotRedirectResponse):
+-        response.next()
+-
+ 
+ @pytest.mark.parametrize(
+     "url",
+diff --git a/tests/client/test_redirects.py b/tests/client/test_redirects.py
+index 3d5ed11..df43f53 100644
+--- a/tests/client/test_redirects.py
++++ b/tests/client/test_redirects.py
+@@ -11,10 +11,7 @@ def redirects(request: httpx.Request) -> httpx.Response:
+             f"Scheme {request.url.scheme!r} not supported."
+         )
+ 
+-    if request.url.path == "/no_redirect":
+-        return httpx.Response(200)
+-
+-    elif request.url.path == "/redirect_301":
++    if request.url.path == "/redirect_301":
+         status_code = httpx.codes.MOVED_PERMANENTLY
+         content = b"<a href='https://example.org/'>here</a>"
+         headers = {"location": "https://example.org/"}
+@@ -118,15 +115,6 @@ def redirects(request: httpx.Request) -> httpx.Response:
+     return httpx.Response(200, html="<html><body>Hello, world!</body></html>")
+ 
+ 
+-def test_no_redirect():
+-    client = httpx.Client(transport=MockTransport(redirects))
+-    url = "https://example.com/no_redirect"
+-    response = client.get(url)
+-    assert response.status_code == 200
+-    with pytest.raises(httpx.NotRedirectResponse):
+-        response.next()
+-
+-
+ def test_redirect_301():
+     client = httpx.Client(transport=MockTransport(redirects))
+     response = client.post("https://example.org/redirect_301")
+@@ -151,30 +139,30 @@ def test_redirect_303():
+     assert len(response.history) == 1
+ 
+ 
+-def test_disallow_redirects():
++def test_next_request():
+     client = httpx.Client(transport=MockTransport(redirects))
+-    response = client.post("https://example.org/redirect_303", allow_redirects=False)
++    request = client.build_request("POST", "https://example.org/redirect_303")
++    response = client.send(request, allow_redirects=False)
+     assert response.status_code == httpx.codes.SEE_OTHER
+     assert response.url == "https://example.org/redirect_303"
+-    assert response.is_redirect is True
+-    assert len(response.history) == 0
++    assert response.next_request is not None
+ 
+-    response = response.next()
++    response = client.send(response.next_request, allow_redirects=False)
+     assert response.status_code == httpx.codes.OK
+     assert response.url == "https://example.org/"
+-    assert response.is_redirect is False
+-    assert len(response.history) == 1
++    assert response.next_request is None
+ 
+ 
+-def test_next_request():
+-    client = httpx.Client(transport=MockTransport(redirects))
++@pytest.mark.usefixtures("async_environment")
++async def test_async_next_request():
++    client = httpx.AsyncClient(transport=MockTransport(redirects))
+     request = client.build_request("POST", "https://example.org/redirect_303")
+-    response = client.send(request, allow_redirects=False)
++    response = await client.send(request, allow_redirects=False)
+     assert response.status_code == httpx.codes.SEE_OTHER
+     assert response.url == "https://example.org/redirect_303"
+     assert response.next_request is not None
+ 
+-    response = client.send(response.next_request, allow_redirects=False)
++    response = await client.send(response.next_request, allow_redirects=False)
+     assert response.status_code == httpx.codes.OK
+     assert response.url == "https://example.org/"
+     assert response.next_request is None
+@@ -251,31 +239,12 @@ async def test_async_too_many_redirects():
+             await client.get("https://example.org/multiple_redirects?count=21")
+ 
+ 
+-@pytest.mark.usefixtures("async_environment")
+-async def test_async_too_many_redirects_calling_next():
+-    async with httpx.AsyncClient(transport=MockTransport(redirects)) as client:
+-        url = "https://example.org/multiple_redirects?count=21"
+-        response = await client.get(url, allow_redirects=False)
+-        with pytest.raises(httpx.TooManyRedirects):
+-            while response.is_redirect:
+-                response = await response.anext()
+-
+-
+ def test_sync_too_many_redirects():
+     client = httpx.Client(transport=MockTransport(redirects))
+     with pytest.raises(httpx.TooManyRedirects):
+         client.get("https://example.org/multiple_redirects?count=21")
+ 
+ 
+-def test_sync_too_many_redirects_calling_next():
+-    client = httpx.Client(transport=MockTransport(redirects))
+-    url = "https://example.org/multiple_redirects?count=21"
+-    response = client.get(url, allow_redirects=False)
+-    with pytest.raises(httpx.TooManyRedirects):
+-        while response.is_redirect:
+-            response = response.next()
+-
+-
+ def test_redirect_loop():
+     client = httpx.Client(transport=MockTransport(redirects))
+     with pytest.raises(httpx.TooManyRedirects):

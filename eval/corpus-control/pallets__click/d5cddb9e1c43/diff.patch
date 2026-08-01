@@ -1,0 +1,39 @@
+diff --git a/click/_compat.py b/click/_compat.py
+index 312e729..d072224 100644
+--- a/click/_compat.py
++++ b/click/_compat.py
+@@ -12,7 +12,7 @@ CYGWIN = sys.platform.startswith('cygwin')
+ DEFAULT_COLUMNS = 80
+ 
+ 
+-_ansi_re = re.compile('\033\[((?:\d|;)*)([a-zA-Z])')
++_ansi_re = re.compile(r'\033\[((?:\d|;)*)([a-zA-Z])')
+ 
+ 
+ def get_filesystem_encoding():
+diff --git a/click/core.py b/click/core.py
+index b307407..8358172 100644
+--- a/click/core.py
++++ b/click/core.py
+@@ -1230,7 +1230,7 @@ class CommandCollection(MultiCommand):
+ 
+ 
+ class Parameter(object):
+-    """A parameter to a command comes in two versions: they are either
++    r"""A parameter to a command comes in two versions: they are either
+     :class:`Option`\s or :class:`Argument`\s.  Other subclasses are currently
+     not supported by design as some of the internals for parsing are
+     intentionally not finalized.
+diff --git a/click/decorators.py b/click/decorators.py
+index 64af015..c0b9e85 100644
+--- a/click/decorators.py
++++ b/click/decorators.py
+@@ -90,7 +90,7 @@ def _make_command(f, name, attrs, cls):
+ 
+ 
+ def command(name=None, cls=None, **attrs):
+-    """Creates a new :class:`Command` and uses the decorated function as
++    r"""Creates a new :class:`Command` and uses the decorated function as
+     callback.  This will also automatically attach all decorated
+     :func:`option`\s and :func:`argument`\s as parameters to the command.
+ 

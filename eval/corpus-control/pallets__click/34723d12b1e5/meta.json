@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/click",
+  "sha": "34723d12b1e5abe1459813ce0596535da53b55d8",
+  "kind": "control_good",
+  "subject": "Fix _pipepager()/_tempfilepage() to work with multi-call binaries",
+  "evidence_subject": "Fix _pipepager()/_tempfilepage() to work with multi-call binaries",
+  "author": "Jean-Louis Fuchs",
+  "date": "2025-05-25T23:16:10+02:00",
+  "impl_files": [
+    "src/click/_termui_impl.py"
+  ],
+  "test_files": [],
+  "diff_lines": 31
+}

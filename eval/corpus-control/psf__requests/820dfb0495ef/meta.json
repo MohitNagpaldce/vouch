@@ -1,0 +1,25 @@
+{
+  "repo": "psf/requests",
+  "sha": "820dfb0495ef379f140ad3c78c30e0a16c7e9fa8",
+  "kind": "control_good",
+  "subject": "Making the code more PEP8 compliant",
+  "evidence_subject": "Making the code more PEP8 compliant",
+  "author": "Radu Voicilas",
+  "date": "2012-10-09T00:41:42+03:00",
+  "impl_files": [
+    "requests/auth.py",
+    "requests/compat.py",
+    "requests/cookies.py",
+    "requests/hooks.py",
+    "requests/models.py",
+    "requests/utils.py"
+  ],
+  "test_files": [
+    "tests/informal/test_leaked_connections.py",
+    "tests/test_proxies.py",
+    "tests/test_requests.py",
+    "tests/test_requests_ext.py",
+    "tests/test_requests_https.py"
+  ],
+  "diff_lines": 234
+}

@@ -1,0 +1,18 @@
+{
+  "repo": "pallets/flask",
+  "sha": "daf1510a4bda652ac2cfca03ec5567b03ddf8bf1",
+  "kind": "control_good",
+  "subject": "use template_filter without parens",
+  "evidence_subject": "use template_filter without parens",
+  "author": "kadai0308",
+  "date": "2025-05-17T12:17:18+08:00",
+  "impl_files": [
+    "src/flask/sansio/app.py",
+    "src/flask/sansio/blueprints.py"
+  ],
+  "test_files": [
+    "tests/test_blueprints.py",
+    "tests/test_templating.py"
+  ],
+  "diff_lines": 493
+}

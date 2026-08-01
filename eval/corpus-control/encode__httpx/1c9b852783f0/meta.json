@@ -1,0 +1,15 @@
+{
+  "repo": "encode/httpx",
+  "sha": "1c9b852783f065db1b495b587c1c986246355198",
+  "kind": "control_good",
+  "subject": "Improve type hinting for `HTTPError.request` (#886)",
+  "evidence_subject": "Improve type hinting for `HTTPError.request` (#886)",
+  "author": "Florimond Manca",
+  "date": "2020-03-29T13:12:05+02:00",
+  "impl_files": [
+    "httpx/_client.py",
+    "httpx/_exceptions.py"
+  ],
+  "test_files": [],
+  "diff_lines": 49
+}

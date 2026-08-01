@@ -1,0 +1,21 @@
+{
+  "repo": "encode/httpx",
+  "sha": "0eed6a37340ba9d073da69574409be0d817ecae7",
+  "kind": "control_good",
+  "subject": "Drop `.next()`/`.anext()` in favour of `response.next_request` (#1339)",
+  "evidence_subject": "Drop `.next()`/`.anext()` in favour of `response.next_request` (#1339)",
+  "author": "Tom Christie",
+  "date": "2020-10-06T14:53:07+01:00",
+  "impl_files": [
+    "httpx/__init__.py",
+    "httpx/_client.py",
+    "httpx/_exceptions.py",
+    "httpx/_models.py"
+  ],
+  "test_files": [
+    "tests/client/test_async_client.py",
+    "tests/client/test_client.py",
+    "tests/client/test_redirects.py"
+  ],
+  "diff_lines": 297
+}

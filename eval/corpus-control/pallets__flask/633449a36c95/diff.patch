@@ -1,0 +1,34 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 1af03f26..3785f737 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -15,6 +15,8 @@ Unreleased
+ -   ``app.json_encoder`` and ``json_decoder`` are only passed to
+     ``dumps`` and ``loads`` if they have custom behavior. This improves
+     performance, mainly on PyPy. :issue:`4349`
++-   Fix error message for ``after_this_request`` when it used outside
++    request context. :issue:`4333`
+ 
+ 
+ Version 2.0.2
+diff --git a/src/flask/ctx.py b/src/flask/ctx.py
+index 5c064635..5149c821 100644
+--- a/src/flask/ctx.py
++++ b/src/flask/ctx.py
+@@ -130,7 +130,15 @@ def after_this_request(f: AfterRequestCallable) -> AfterRequestCallable:
+ 
+     .. versionadded:: 0.9
+     """
+-    _request_ctx_stack.top._after_request_functions.append(f)
++    top = _request_ctx_stack.top
++    if top is None:
++        raise RuntimeError(
++            "This decorator can only be used at local scopes "
++            "when a request context is on the stack. For instance within "
++            "view functions."
++        )
++    top._after_request_functions.append(f)
++
+     return f
+ 
+ 

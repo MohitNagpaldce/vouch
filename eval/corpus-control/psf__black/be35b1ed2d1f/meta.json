@@ -1,0 +1,14 @@
+{
+  "repo": "psf/black",
+  "sha": "be35b1ed2d1f9453090bb29ac24abe997815ff70",
+  "kind": "control_good",
+  "subject": "Declare support for Python 3.8 (#1069)",
+  "evidence_subject": "Declare support for Python 3.8 (#1069)",
+  "author": "Hugo van Kemenade",
+  "date": "2019-10-15T20:08:44+03:00",
+  "impl_files": [
+    "setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 25
+}

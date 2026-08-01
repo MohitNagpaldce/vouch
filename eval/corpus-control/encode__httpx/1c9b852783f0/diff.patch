@@ -1,0 +1,49 @@
+diff --git a/httpx/_client.py b/httpx/_client.py
+index 3976522..50279b0 100644
+--- a/httpx/_client.py
++++ b/httpx/_client.py
+@@ -680,8 +680,8 @@ class Client(BaseClient):
+             # Add the original request to any HTTPError unless
+             # there'a already a request attached in the case of
+             # a ProxyError.
+-            if exc.request is None:
+-                exc.request = request
++            if exc._request is None:
++                exc._request = request
+             raise
+ 
+         self.cookies.extract_cookies(response)
+@@ -1198,8 +1198,8 @@ class AsyncClient(BaseClient):
+             # Add the original request to any HTTPError unless
+             # there'a already a request attached in the case of
+             # a ProxyError.
+-            if exc.request is None:
+-                exc.request = request
++            if exc._request is None:
++                exc._request = request
+             raise
+ 
+         self.cookies.extract_cookies(response)
+diff --git a/httpx/_exceptions.py b/httpx/_exceptions.py
+index d1597c0..9b6bd22 100644
+--- a/httpx/_exceptions.py
++++ b/httpx/_exceptions.py
+@@ -12,9 +12,16 @@ class HTTPError(Exception):
+     def __init__(
+         self, *args: typing.Any, request: "Request" = None, response: "Response" = None
+     ) -> None:
+-        self.response = response
+-        self.request = request or getattr(self.response, "request", None)
+         super().__init__(*args)
++        self._request = request or (response.request if response is not None else None)
++        self.response = response
++
++    @property
++    def request(self) -> "Request":
++        # NOTE: this property exists so that a `Request` is exposed to type
++        # checkers, instead of `Optional[Request]`.
++        assert self._request is not None  # Populated by the client.
++        return self._request
+ 
+ 
+ # Timeout exceptions...

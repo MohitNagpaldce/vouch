@@ -1,0 +1,67 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index f640750..66fb7ff 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -952,12 +952,10 @@ Released 2014-08-22
+     function.
+ -   Fixed default parameters not being handled properly by the context
+     invoke method. This is a backwards incompatible change if the
+-    function was used improperly. See :ref:`upgrade-to-3.2` for more
+-    information.
++    function was used improperly.
+ -   Removed the ``invoked_subcommands`` attribute largely. It is not
+     possible to provide it to work error free due to how the parsing
+-    works so this API has been deprecated. See :ref:`upgrade-to-3.2` for
+-    more information.
++    works so this API has been deprecated.
+ -   Restored the functionality of ``invoked_subcommand`` which was
+     broken as a regression in 3.1.
+ 
+diff --git a/docs/options.rst b/docs/options.rst
+index 2c51ddc..39f66c4 100644
+--- a/docs/options.rst
++++ b/docs/options.rst
+@@ -594,10 +594,6 @@ What it looks like:
+     invoke(hello)
+     invoke(hello, args=['--version'])
+ 
+-.. admonition:: Callback Signature Changes
+-
+-    In Click 2.0 the signature for callbacks changed.  For more
+-    information about these changes see :ref:`upgrade-to-2.0`.
+ 
+ Yes Parameters
+ --------------
+@@ -637,10 +633,6 @@ replaced with the :func:`confirmation_option` decorator:
+     def dropdb():
+         click.echo('Dropped all tables!')
+ 
+-.. admonition:: Callback Signature Changes
+-
+-    In Click 2.0 the signature for callbacks changed.  For more
+-    information about these changes see :ref:`upgrade-to-2.0`.
+ 
+ Values from Environment Variables
+ ---------------------------------
+diff --git a/src/click/core.py b/src/click/core.py
+index e2ff365..094dfed 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -756,14 +756,12 @@ class Context:
+             (options and click arguments) must be keyword arguments and Click
+             will fill in defaults.
+ 
+-        Note that before Click 3.2 keyword arguments were not properly filled
+-        in against the intention of this code and no context was created.  For
+-        more information about this change and why it was done in a bugfix
+-        release see :ref:`upgrade-to-3.2`.
+-
+         .. versionchanged:: 8.0
+             All ``kwargs`` are tracked in :attr:`params` so they will be
+             passed if :meth:`forward` is called at multiple levels.
++
++        .. versionchanged:: 3.2
++            A new context is created, and missing arguments use default values.
+         """
+         if isinstance(__callback, Command):
+             other_cmd = __callback

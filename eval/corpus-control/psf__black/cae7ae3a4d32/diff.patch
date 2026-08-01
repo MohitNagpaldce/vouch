@@ -1,0 +1,64 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index a840e01..7d74e56 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -5,6 +5,7 @@
+ ### Configuration
+ 
+ - Do not format `__pypackages__` directories by default (#2836)
++- Add support for specifying stable version with `--required-version` (#2832).
+ 
+ ## 22.1.0
+ 
+diff --git a/src/black/__init__.py b/src/black/__init__.py
+index 6a703e4..8c28b6b 100644
+--- a/src/black/__init__.py
++++ b/src/black/__init__.py
+@@ -291,7 +291,8 @@ def validate_regex(
+     type=str,
+     help=(
+         "Require a specific version of Black to be running (useful for unifying results"
+-        " across many environments e.g. with a pyproject.toml file)."
++        " across many environments e.g. with a pyproject.toml file). It can be"
++        " either a major version number or an exact version."
+     ),
+ )
+ @click.option(
+@@ -474,7 +475,11 @@ def main(
+                 out(f"Using configuration in '{config}'.", fg="blue")
+ 
+     error_msg = "Oh no! 💥 💔 💥"
+-    if required_version and required_version != __version__:
++    if (
++        required_version
++        and required_version != __version__
++        and required_version != __version__.split(".")[0]
++    ):
+         err(
+             f"{error_msg} The required version `{required_version}` does not match"
+             f" the running version `{__version__}`!"
+diff --git a/tests/test_black.py b/tests/test_black.py
+index 2dd284f..b04c0a6 100644
+--- a/tests/test_black.py
++++ b/tests/test_black.py
+@@ -1198,6 +1198,20 @@ def test_required_version_matches_version(self) -> None:
+             ignore_config=True,
+         )
+ 
++    def test_required_version_matches_partial_version(self) -> None:
++        self.invokeBlack(
++            ["--required-version", black.__version__.split(".")[0], "-c", "0"],
++            exit_code=0,
++            ignore_config=True,
++        )
++
++    def test_required_version_does_not_match_on_minor_version(self) -> None:
++        self.invokeBlack(
++            ["--required-version", black.__version__.split(".")[0] + ".999", "-c", "0"],
++            exit_code=1,
++            ignore_config=True,
++        )
++
+     def test_required_version_does_not_match_version(self) -> None:
+         result = BlackRunner().invoke(
+             black.main,

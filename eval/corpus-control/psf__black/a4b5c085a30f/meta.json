@@ -1,0 +1,14 @@
+{
+  "repo": "psf/black",
+  "sha": "a4b5c085a30f32fddce46ed50f3378ef32c43d5d",
+  "kind": "control_good",
+  "subject": "Move should_explode handling to bracket_split_build_line",
+  "evidence_subject": "Move should_explode handling to bracket_split_build_line",
+  "author": "\u0141ukasz Langa",
+  "date": "2018-09-26T08:53:56-07:00",
+  "impl_files": [
+    "black.py"
+  ],
+  "test_files": [],
+  "diff_lines": 52
+}

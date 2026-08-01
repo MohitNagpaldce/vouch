@@ -1,0 +1,32 @@
+{
+  "pallets/click": {
+    "merged_then_reverted": 0,
+    "regression_fix": 0,
+    "control_good": 8,
+    "skipped": 11
+  },
+  "pallets/flask": {
+    "merged_then_reverted": 0,
+    "regression_fix": 0,
+    "control_good": 7,
+    "skipped": 18
+  },
+  "psf/black": {
+    "merged_then_reverted": 0,
+    "regression_fix": 0,
+    "control_good": 8,
+    "skipped": 12
+  },
+  "encode/httpx": {
+    "merged_then_reverted": 0,
+    "regression_fix": 0,
+    "control_good": 8,
+    "skipped": 11
+  },
+  "psf/requests": {
+    "merged_then_reverted": 0,
+    "regression_fix": 0,
+    "control_good": 8,
+    "skipped": 12
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/click",
+  "sha": "a3277513d7340d8a0e29076fe2769a8837f756ae",
+  "kind": "control_good",
+  "subject": "remove old upgrading notes",
+  "evidence_subject": "remove old upgrading notes",
+  "author": "David Lord",
+  "date": "2023-08-30T08:40:12-07:00",
+  "impl_files": [
+    "src/click/core.py"
+  ],
+  "test_files": [],
+  "diff_lines": 67
+}

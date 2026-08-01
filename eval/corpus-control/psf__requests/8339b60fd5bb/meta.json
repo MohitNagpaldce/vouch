@@ -1,0 +1,14 @@
+{
+  "repo": "psf/requests",
+  "sha": "8339b60fd5bbe0ef9dae1764b3964f515364a54f",
+  "kind": "control_good",
+  "subject": "Made more better",
+  "evidence_subject": "Made more better",
+  "author": "Michael DeLay",
+  "date": "2014-10-10T09:58:30-07:00",
+  "impl_files": [
+    "requests/utils.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

@@ -1,0 +1,493 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 37e777dc..ee63af47 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -5,6 +5,8 @@ Unreleased
+ 
+ -   Drop support for Python 3.9. :pr:`5730`
+ -   Remove previously deprecated code: ``__version__``. :pr:`5648`
++-   ``template_filter``, ``template_test``, and ``template_global`` decorators
++    can be used without parentheses. :issue:`5729`
+ 
+ 
+ Version 3.1.1
+diff --git a/docs/templating.rst b/docs/templating.rst
+index 23cfee4c..e5cb955a 100644
+--- a/docs/templating.rst
++++ b/docs/templating.rst
+@@ -145,7 +145,11 @@ that.  You can either put them by hand into the
+ :attr:`~flask.Flask.jinja_env` of the application or use the
+ :meth:`~flask.Flask.template_filter` decorator.
+ 
+-The two following examples work the same and both reverse an object::
++The following examples work the same and all reverse an object::
++
++    @app.template_filter # use the function name as filter name
++    def reverse_filter(s):
++        return s[::-1]
+ 
+     @app.template_filter('reverse')
+     def reverse_filter(s):
+diff --git a/src/flask/sansio/app.py b/src/flask/sansio/app.py
+index 745fe636..b8a1c4cf 100644
+--- a/src/flask/sansio/app.py
++++ b/src/flask/sansio/app.py
+@@ -662,20 +662,36 @@ class App(Scaffold):
+ 
+     @setupmethod
+     def template_filter(
+-        self, name: str | None = None
+-    ) -> t.Callable[[T_template_filter], T_template_filter]:
++        self, name: t.Callable[..., t.Any] | str | None = None
++    ) -> t.Callable[[T_template_filter], T_template_filter] | T_template_filter:
+         """A decorator that is used to register custom template filter.
+         You can specify a name for the filter, otherwise the function
+         name will be used. Example::
+ 
+-          @app.template_filter()
+-          def reverse(s):
+-              return s[::-1]
++            @app.template_filter()
++            def reverse(s):
++                return s[::-1]
++
++        The decorator also can be used without parentheses::
++
++            @app.template_filter
++            def reverse(s):
++                return s[::-1]
+ 
+         :param name: the optional name of the filter, otherwise the
+                      function name will be used.
+         """
+ 
++        if callable(name):
++            # If name is callable, it is the function to register.
++            # This is a shortcut for the common case of
++            # @app.template_filter
++            # def func():
++
++            func = name
++            self.add_template_filter(func)
++            return func
++
+         def decorator(f: T_template_filter) -> T_template_filter:
+             self.add_template_filter(f, name=name)
+             return f
+@@ -696,27 +712,47 @@ class App(Scaffold):
+ 
+     @setupmethod
+     def template_test(
+-        self, name: str | None = None
+-    ) -> t.Callable[[T_template_test], T_template_test]:
++        self, name: t.Callable[..., t.Any] | str | None = None
++    ) -> t.Callable[[T_template_test], T_template_test] | T_template_filter:
+         """A decorator that is used to register custom template test.
+         You can specify a name for the test, otherwise the function
+         name will be used. Example::
+ 
+-          @app.template_test()
+-          def is_prime(n):
+-              if n == 2:
+-                  return True
+-              for i in range(2, int(math.ceil(math.sqrt(n))) + 1):
+-                  if n % i == 0:
+-                      return False
++            @app.template_test()
++            def is_prime(n):
++                if n == 2:
++                    return True
++                for i in range(2, int(math.ceil(math.sqrt(n))) + 1):
++                    if n % i == 0:
++                        return False
+               return True
+ 
++        The decorator also can be used without parentheses::
++
++            @app.template_test
++            def is_prime(n):
++                if n == 2:
++                    return True
++                for i in range(2, int(math.ceil(math.sqrt(n))) + 1):
++                    if n % i == 0:
++                        return False
++
+         .. versionadded:: 0.10
+ 
+         :param name: the optional name of the test, otherwise the
+                      function name will be used.
+         """
+ 
++        if callable(name):
++            # If name is callable, it is the function to register.
++            # This is a shortcut for the common case of
++            # @app.template_test
++            # def func():
++
++            func = name
++            self.add_template_test(func)
++            return func
++
+         def decorator(f: T_template_test) -> T_template_test:
+             self.add_template_test(f, name=name)
+             return f
+@@ -739,8 +775,8 @@ class App(Scaffold):
+ 
+     @setupmethod
+     def template_global(
+-        self, name: str | None = None
+-    ) -> t.Callable[[T_template_global], T_template_global]:
++        self, name: t.Callable[..., t.Any] | str | None = None
++    ) -> t.Callable[[T_template_global], T_template_global] | T_template_filter:
+         """A decorator that is used to register a custom template global function.
+         You can specify a name for the global function, otherwise the function
+         name will be used. Example::
+@@ -749,12 +785,28 @@ class App(Scaffold):
+             def double(n):
+                 return 2 * n
+ 
++        The decorator also can be used without parentheses::
++
++            @app.template_global
++            def double(n):
++                return 2 * n
++
+         .. versionadded:: 0.10
+ 
+         :param name: the optional name of the global function, otherwise the
+                      function name will be used.
+         """
+ 
++        if callable(name):
++            # If name is callable, it is the function to register.
++            # This is a shortcut for the common case of
++            # @app.template_global
++            # def func():
++
++            func = name
++            self.add_template_global(func)
++            return func
++
+         def decorator(f: T_template_global) -> T_template_global:
+             self.add_template_global(f, name=name)
+             return f
+diff --git a/src/flask/sansio/blueprints.py b/src/flask/sansio/blueprints.py
+index 4f912cca..37da2b3c 100644
+--- a/src/flask/sansio/blueprints.py
++++ b/src/flask/sansio/blueprints.py
+@@ -442,8 +442,8 @@ class Blueprint(Scaffold):
+ 
+     @setupmethod
+     def app_template_filter(
+-        self, name: str | None = None
+-    ) -> t.Callable[[T_template_filter], T_template_filter]:
++        self, name: t.Callable[..., t.Any] | str | None = None
++    ) -> t.Callable[[T_template_filter], T_template_filter] | T_template_filter:
+         """Register a template filter, available in any template rendered by the
+         application. Equivalent to :meth:`.Flask.template_filter`.
+ 
+@@ -451,6 +451,16 @@ class Blueprint(Scaffold):
+                      function name will be used.
+         """
+ 
++        if callable(name):
++            # If name is callable, it is the function to register.
++            # This is a shortcut for the common case of
++            # @bp.add_template_filter
++            # def func():
++
++            func = name
++            self.add_app_template_filter(func)
++            return func
++
+         def decorator(f: T_template_filter) -> T_template_filter:
+             self.add_app_template_filter(f, name=name)
+             return f
+@@ -476,8 +486,8 @@ class Blueprint(Scaffold):
+ 
+     @setupmethod
+     def app_template_test(
+-        self, name: str | None = None
+-    ) -> t.Callable[[T_template_test], T_template_test]:
++        self, name: t.Callable[..., t.Any] | str | None = None
++    ) -> t.Callable[[T_template_test], T_template_test] | T_template_filter:
+         """Register a template test, available in any template rendered by the
+         application. Equivalent to :meth:`.Flask.template_test`.
+ 
+@@ -487,6 +497,16 @@ class Blueprint(Scaffold):
+                      function name will be used.
+         """
+ 
++        if callable(name):
++            # If name is callable, it is the function to register.
++            # This is a shortcut for the common case of
++            # @bp.add_template_test
++            # def func():
++
++            func = name
++            self.add_app_template_test(func)
++            return func
++
+         def decorator(f: T_template_test) -> T_template_test:
+             self.add_app_template_test(f, name=name)
+             return f
+@@ -514,8 +534,8 @@ class Blueprint(Scaffold):
+ 
+     @setupmethod
+     def app_template_global(
+-        self, name: str | None = None
+-    ) -> t.Callable[[T_template_global], T_template_global]:
++        self, name: t.Callable[..., t.Any] | str | None = None
++    ) -> t.Callable[[T_template_global], T_template_global] | T_template_filter:
+         """Register a template global, available in any template rendered by the
+         application. Equivalent to :meth:`.Flask.template_global`.
+ 
+@@ -524,6 +544,15 @@ class Blueprint(Scaffold):
+         :param name: the optional name of the global, otherwise the
+                      function name will be used.
+         """
++        if callable(name):
++            # If name is callable, it is the function to register.
++            # This is a shortcut for the common case of
++            # @bp.add_template_global
++            # def func():
++
++            func = name
++            self.add_app_template_global(func)
++            return func
+ 
+         def decorator(f: T_template_global) -> T_template_global:
+             self.add_app_template_global(f, name=name)
+diff --git a/tests/test_blueprints.py b/tests/test_blueprints.py
+index e3e2905a..ed1683c4 100644
+--- a/tests/test_blueprints.py
++++ b/tests/test_blueprints.py
+@@ -366,11 +366,35 @@ def test_template_filter(app):
+     def my_reverse(s):
+         return s[::-1]
+ 
++    @bp.app_template_filter
++    def my_reverse_2(s):
++        return s[::-1]
++
++    @bp.app_template_filter("my_reverse_custom_name_3")
++    def my_reverse_3(s):
++        return s[::-1]
++
++    @bp.app_template_filter(name="my_reverse_custom_name_4")
++    def my_reverse_4(s):
++        return s[::-1]
++
+     app.register_blueprint(bp, url_prefix="/py")
+     assert "my_reverse" in app.jinja_env.filters.keys()
+     assert app.jinja_env.filters["my_reverse"] == my_reverse
+     assert app.jinja_env.filters["my_reverse"]("abcd") == "dcba"
+ 
++    assert "my_reverse_2" in app.jinja_env.filters.keys()
++    assert app.jinja_env.filters["my_reverse_2"] == my_reverse_2
++    assert app.jinja_env.filters["my_reverse_2"]("abcd") == "dcba"
++
++    assert "my_reverse_custom_name_3" in app.jinja_env.filters.keys()
++    assert app.jinja_env.filters["my_reverse_custom_name_3"] == my_reverse_3
++    assert app.jinja_env.filters["my_reverse_custom_name_3"]("abcd") == "dcba"
++
++    assert "my_reverse_custom_name_4" in app.jinja_env.filters.keys()
++    assert app.jinja_env.filters["my_reverse_custom_name_4"] == my_reverse_4
++    assert app.jinja_env.filters["my_reverse_custom_name_4"]("abcd") == "dcba"
++
+ 
+ def test_add_template_filter(app):
+     bp = flask.Blueprint("bp", __name__)
+@@ -502,11 +526,35 @@ def test_template_test(app):
+     def is_boolean(value):
+         return isinstance(value, bool)
+ 
++    @bp.app_template_test
++    def boolean_2(value):
++        return isinstance(value, bool)
++
++    @bp.app_template_test("my_boolean_custom_name")
++    def boolean_3(value):
++        return isinstance(value, bool)
++
++    @bp.app_template_test(name="my_boolean_custom_name_2")
++    def boolean_4(value):
++        return isinstance(value, bool)
++
+     app.register_blueprint(bp, url_prefix="/py")
+     assert "is_boolean" in app.jinja_env.tests.keys()
+     assert app.jinja_env.tests["is_boolean"] == is_boolean
+     assert app.jinja_env.tests["is_boolean"](False)
+ 
++    assert "boolean_2" in app.jinja_env.tests.keys()
++    assert app.jinja_env.tests["boolean_2"] == boolean_2
++    assert app.jinja_env.tests["boolean_2"](False)
++
++    assert "my_boolean_custom_name" in app.jinja_env.tests.keys()
++    assert app.jinja_env.tests["my_boolean_custom_name"] == boolean_3
++    assert app.jinja_env.tests["my_boolean_custom_name"](False)
++
++    assert "my_boolean_custom_name_2" in app.jinja_env.tests.keys()
++    assert app.jinja_env.tests["my_boolean_custom_name_2"] == boolean_4
++    assert app.jinja_env.tests["my_boolean_custom_name_2"](False)
++
+ 
+ def test_add_template_test(app):
+     bp = flask.Blueprint("bp", __name__)
+@@ -679,6 +727,18 @@ def test_template_global(app):
+     def get_answer():
+         return 42
+ 
++    @bp.app_template_global
++    def get_stuff_1():
++        return "get_stuff_1"
++
++    @bp.app_template_global("my_get_stuff_custom_name_2")
++    def get_stuff_2():
++        return "get_stuff_2"
++
++    @bp.app_template_global(name="my_get_stuff_custom_name_3")
++    def get_stuff_3():
++        return "get_stuff_3"
++
+     # Make sure the function is not in the jinja_env already
+     assert "get_answer" not in app.jinja_env.globals.keys()
+     app.register_blueprint(bp)
+@@ -688,10 +748,31 @@ def test_template_global(app):
+     assert app.jinja_env.globals["get_answer"] is get_answer
+     assert app.jinja_env.globals["get_answer"]() == 42
+ 
++    assert "get_stuff_1" in app.jinja_env.globals.keys()
++    assert app.jinja_env.globals["get_stuff_1"] == get_stuff_1
++    assert app.jinja_env.globals["get_stuff_1"](), "get_stuff_1"
++
++    assert "my_get_stuff_custom_name_2" in app.jinja_env.globals.keys()
++    assert app.jinja_env.globals["my_get_stuff_custom_name_2"] == get_stuff_2
++    assert app.jinja_env.globals["my_get_stuff_custom_name_2"](), "get_stuff_2"
++
++    assert "my_get_stuff_custom_name_3" in app.jinja_env.globals.keys()
++    assert app.jinja_env.globals["my_get_stuff_custom_name_3"] == get_stuff_3
++    assert app.jinja_env.globals["my_get_stuff_custom_name_3"](), "get_stuff_3"
++
+     with app.app_context():
+         rv = flask.render_template_string("{{ get_answer() }}")
+         assert rv == "42"
+ 
++        rv = flask.render_template_string("{{ get_stuff_1() }}")
++        assert rv == "get_stuff_1"
++
++        rv = flask.render_template_string("{{ my_get_stuff_custom_name_2() }}")
++        assert rv == "get_stuff_2"
++
++        rv = flask.render_template_string("{{ my_get_stuff_custom_name_3() }}")
++        assert rv == "get_stuff_3"
++
+ 
+ def test_request_processing(app, client):
+     bp = flask.Blueprint("bp", __name__)
+diff --git a/tests/test_templating.py b/tests/test_templating.py
+index c9fb3754..85549df0 100644
+--- a/tests/test_templating.py
++++ b/tests/test_templating.py
+@@ -129,6 +129,30 @@ def test_template_filter(app):
+     assert app.jinja_env.filters["my_reverse"] == my_reverse
+     assert app.jinja_env.filters["my_reverse"]("abcd") == "dcba"
+ 
++    @app.template_filter
++    def my_reverse_2(s):
++        return s[::-1]
++
++    assert "my_reverse_2" in app.jinja_env.filters.keys()
++    assert app.jinja_env.filters["my_reverse_2"] == my_reverse_2
++    assert app.jinja_env.filters["my_reverse_2"]("abcd") == "dcba"
++
++    @app.template_filter("my_reverse_custom_name_3")
++    def my_reverse_3(s):
++        return s[::-1]
++
++    assert "my_reverse_custom_name_3" in app.jinja_env.filters.keys()
++    assert app.jinja_env.filters["my_reverse_custom_name_3"] == my_reverse_3
++    assert app.jinja_env.filters["my_reverse_custom_name_3"]("abcd") == "dcba"
++
++    @app.template_filter(name="my_reverse_custom_name_4")
++    def my_reverse_4(s):
++        return s[::-1]
++
++    assert "my_reverse_custom_name_4" in app.jinja_env.filters.keys()
++    assert app.jinja_env.filters["my_reverse_custom_name_4"] == my_reverse_4
++    assert app.jinja_env.filters["my_reverse_custom_name_4"]("abcd") == "dcba"
++
+ 
+ def test_add_template_filter(app):
+     def my_reverse(s):
+@@ -223,6 +247,30 @@ def test_template_test(app):
+     assert app.jinja_env.tests["boolean"] == boolean
+     assert app.jinja_env.tests["boolean"](False)
+ 
++    @app.template_test
++    def boolean_2(value):
++        return isinstance(value, bool)
++
++    assert "boolean_2" in app.jinja_env.tests.keys()
++    assert app.jinja_env.tests["boolean_2"] == boolean_2
++    assert app.jinja_env.tests["boolean_2"](False)
++
++    @app.template_test("my_boolean_custom_name")
++    def boolean_3(value):
++        return isinstance(value, bool)
++
++    assert "my_boolean_custom_name" in app.jinja_env.tests.keys()
++    assert app.jinja_env.tests["my_boolean_custom_name"] == boolean_3
++    assert app.jinja_env.tests["my_boolean_custom_name"](False)
++
++    @app.template_test(name="my_boolean_custom_name_2")
++    def boolean_4(value):
++        return isinstance(value, bool)
++
++    assert "my_boolean_custom_name_2" in app.jinja_env.tests.keys()
++    assert app.jinja_env.tests["my_boolean_custom_name_2"] == boolean_4
++    assert app.jinja_env.tests["my_boolean_custom_name_2"](False)
++
+ 
+ def test_add_template_test(app):
+     def boolean(value):
+@@ -320,6 +368,39 @@ def test_add_template_global(app, app_ctx):
+     rv = flask.render_template_string("{{ get_stuff() }}")
+     assert rv == "42"
+ 
++    @app.template_global
++    def get_stuff_1():
++        return "get_stuff_1"
++
++    assert "get_stuff_1" in app.jinja_env.globals.keys()
++    assert app.jinja_env.globals["get_stuff_1"] == get_stuff_1
++    assert app.jinja_env.globals["get_stuff_1"](), "get_stuff_1"
++
++    rv = flask.render_template_string("{{ get_stuff_1() }}")
++    assert rv == "get_stuff_1"
++
++    @app.template_global("my_get_stuff_custom_name_2")
++    def get_stuff_2():
++        return "get_stuff_2"
++
++    assert "my_get_stuff_custom_name_2" in app.jinja_env.globals.keys()
++    assert app.jinja_env.globals["my_get_stuff_custom_name_2"] == get_stuff_2
++    assert app.jinja_env.globals["my_get_stuff_custom_name_2"](), "get_stuff_2"
++
++    rv = flask.render_template_string("{{ my_get_stuff_custom_name_2() }}")
++    assert rv == "get_stuff_2"
++
++    @app.template_global(name="my_get_stuff_custom_name_3")
++    def get_stuff_3():
++        return "get_stuff_3"
++
++    assert "my_get_stuff_custom_name_3" in app.jinja_env.globals.keys()
++    assert app.jinja_env.globals["my_get_stuff_custom_name_3"] == get_stuff_3
++    assert app.jinja_env.globals["my_get_stuff_custom_name_3"](), "get_stuff_3"
++
++    rv = flask.render_template_string("{{ my_get_stuff_custom_name_3() }}")
++    assert rv == "get_stuff_3"
++
+ 
+ def test_custom_template_loader(client):
+     class MyFlask(flask.Flask):

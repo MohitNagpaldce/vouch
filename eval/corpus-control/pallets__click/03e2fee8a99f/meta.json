@@ -1,0 +1,19 @@
+{
+  "repo": "pallets/click",
+  "sha": "03e2fee8a99f08976aef0d38cb3fa372a94c928a",
+  "kind": "control_good",
+  "subject": "mark cli messages for translation",
+  "evidence_subject": "mark cli messages for translation",
+  "author": "Saif807380",
+  "date": "2021-04-01T17:11:37+05:30",
+  "impl_files": [
+    "src/click/core.py",
+    "src/click/decorators.py",
+    "src/click/exceptions.py",
+    "src/click/termui.py"
+  ],
+  "test_files": [
+    "tests/test_imports.py"
+  ],
+  "diff_lines": 212
+}

@@ -1,0 +1,234 @@
+diff --git a/requests/auth.py b/requests/auth.py
+index 6c5264e4..65568f52 100644
+--- a/requests/auth.py
++++ b/requests/auth.py
+@@ -94,7 +94,7 @@ class OAuth1(AuthBase):
+             # to preserve body.
+             r.url, r.headers, _ = self.client.sign(
+                 unicode(r.full_url), unicode(r.method), None, r.headers)
+-        elif decoded_body != None and contenttype in (CONTENT_TYPE_FORM_URLENCODED, ''):
++        elif decoded_body is not None and contenttype in (CONTENT_TYPE_FORM_URLENCODED, ''):
+             # Normal signing
+             if not contenttype:
+                 r.headers['Content-Type'] = CONTENT_TYPE_FORM_URLENCODED
+diff --git a/requests/compat.py b/requests/compat.py
+index 351b7c6e..69dd25c5 100644
+--- a/requests/compat.py
++++ b/requests/compat.py
+@@ -115,5 +115,5 @@ elif is_py3:
+     builtin_str = str
+     str = str
+     bytes = bytes
+-    basestring = (str,bytes)
++    basestring = (str, bytes)
+     numeric_types = (int, float)
+diff --git a/requests/cookies.py b/requests/cookies.py
+index 241ca679..c3c2debb 100644
+--- a/requests/cookies.py
++++ b/requests/cookies.py
+@@ -235,7 +235,7 @@ class RequestsCookieJar(cookielib.CookieJar, collections.MutableMapping):
+         Python dict of name-value pairs of cookies that meet the requirements."""
+         dictionary = {}
+         for cookie in iter(self):
+-            if (domain == None or cookie.domain == domain) and (path == None
++            if (domain is None or cookie.domain == domain) and (path is None
+                                                 or cookie.path == path):
+                 dictionary[cookie.name] = cookie.value
+         return dictionary
+@@ -279,7 +279,7 @@ class RequestsCookieJar(cookielib.CookieJar, collections.MutableMapping):
+             if cookie.name == name:
+                 if domain is None or cookie.domain == domain:
+                     if path is None or cookie.path == path:
+-                        if toReturn != None:  # if there are multiple cookies that meet passed in criteria
++                        if toReturn is not None:  # if there are multiple cookies that meet passed in criteria
+                             raise CookieConflictError('There are multiple cookies with name, %r' % (name))
+                         toReturn = cookie.value  # we will eventually return this as long as no cookie conflict
+ 
+@@ -324,8 +324,7 @@ def create_cookie(name, value, **kwargs):
+         comment=None,
+         comment_url=None,
+         rest={'HttpOnly': None},
+-        rfc2109=False,
+-        )
++        rfc2109=False,)
+ 
+     badargs = set(kwargs) - set(result)
+     if badargs:
+@@ -360,8 +359,7 @@ def morsel_to_cookie(morsel):
+         comment=morsel['comment'],
+         comment_url=bool(morsel['comment']),
+         rest={'HttpOnly': morsel['httponly']},
+-        rfc2109=False,
+-        )
++        rfc2109=False,)
+     return c
+ 
+ 
+diff --git a/requests/hooks.py b/requests/hooks.py
+index 9e0ce346..9a35fb16 100644
+--- a/requests/hooks.py
++++ b/requests/hooks.py
+@@ -45,5 +45,4 @@ def dispatch_hook(key, hooks, hook_data):
+             if _hook_data is not None:
+                 hook_data = _hook_data
+ 
+-
+     return hook_data
+diff --git a/requests/models.py b/requests/models.py
+index 78311491..f02cec33 100644
+--- a/requests/models.py
++++ b/requests/models.py
+@@ -111,7 +111,7 @@ class Request(object):
+         # Dictionary mapping protocol to the URL of the proxy (e.g. {'http': 'foo.bar:3128'})
+         self.proxies = dict(proxies or [])
+ 
+-        for proxy_type,uri_ref in list(self.proxies.items()):
++        for proxy_type, uri_ref in list(self.proxies.items()):
+             if not uri_ref:
+                 del self.proxies[proxy_type]
+ 
+diff --git a/requests/utils.py b/requests/utils.py
+index 63b281a2..7c895c4b 100644
+--- a/requests/utils.py
++++ b/requests/utils.py
+@@ -378,13 +378,15 @@ def stream_decode_response_unicode(iterator, r):
+     if rv:
+         yield rv
+ 
++
+ def iter_slices(string, slice_length):
+     """Iterate over slices of a string."""
+     pos = 0
+     while pos < len(string):
+-        yield string[pos:pos+slice_length]
++        yield string[pos:pos + slice_length]
+         pos += slice_length
+ 
++
+ def get_unicode_from_response(r):
+     """Returns the requested content back in unicode.
+ 
+@@ -543,6 +545,7 @@ def default_user_agent():
+             '%s/%s' % (platform.system(), platform.release()),
+         ])
+ 
++
+ def parse_header_links(value):
+     """Return a dict of parsed link headers proxies.
+ 
+diff --git a/tests/informal/test_leaked_connections.py b/tests/informal/test_leaked_connections.py
+index 438a6cee..37d964cf 100644
+--- a/tests/informal/test_leaked_connections.py
++++ b/tests/informal/test_leaked_connections.py
+@@ -4,7 +4,11 @@ it verifies that Requests does not leak connections when
+ the body of the request is not read.
+ """
+ 
+-import gc, os, subprocess, requests, sys
++import gc
++import os
++import requests
++import subprocess
++import sys
+ 
+ 
+ def main():
+diff --git a/tests/test_proxies.py b/tests/test_proxies.py
+index 8ab124b2..5aa5bf36 100644
+--- a/tests/test_proxies.py
++++ b/tests/test_proxies.py
+@@ -1,7 +1,9 @@
+ #!/usr/bin/env python
+ # -*- coding: utf-8 -*-
+ 
+-import sys, os, unittest
++import os
++import sys
++import unittest
+ 
+ # Path hack.
+ sys.path.insert(0, os.path.abspath('..'))
+@@ -14,13 +16,13 @@ class HTTPSProxyTest(unittest.TestCase):
+     smoke_url = "https://github.com"
+ 
+     def test_empty_https_proxy(self):
+-        proxy = {"https" : "" }
+-        result = requests.get(self.smoke_url, verify=False, proxies = proxy)
++        proxy = {"https": ""}
++        result = requests.get(self.smoke_url, verify=False, proxies=proxy)
+         self.assertEqual(result.status_code, 200)
+ 
+     def test_empty_http_proxy(self):
+-        proxy = {"http" : "" }
+-        result = requests.get(self.smoke_url, proxies = proxy)
++        proxy = {"http": ""}
++        result = requests.get(self.smoke_url, proxies=proxy)
+         self.assertEqual(result.status_code, 200)
+ 
+ if __name__ == '__main__':
+diff --git a/tests/test_requests.py b/tests/test_requests.py
+index 3d6f49c2..9ed4ad03 100755
+--- a/tests/test_requests.py
++++ b/tests/test_requests.py
+@@ -51,6 +51,7 @@ class TestSetup(object):
+             # time.sleep(1)
+             _httpbin = True
+ 
++
+ class TestBaseMixin(object):
+ 
+     def assertCookieHas(self, cookie, **kwargs):
+@@ -60,6 +61,7 @@ class TestBaseMixin(object):
+             message = 'Failed comparison for %s: %s != %s' % (attr, cookie_attr, expected_value)
+             self.assertEqual(cookie_attr, expected_value, message)
+ 
++
+ class RequestsTestSuite(TestSetup, TestBaseMixin, unittest.TestCase):
+     """Requests test cases."""
+ 
+@@ -903,7 +905,7 @@ class RequestsTestSuite(TestSetup, TestBaseMixin, unittest.TestCase):
+     def test_connection_error_with_safe_mode(self):
+         config = {'safe_mode': True}
+         r = get('http://localhost:1/nope', allow_redirects=False, config=config)
+-        assert r.content == None
++        assert r.content is None
+ 
+     # def test_invalid_content(self):
+     #     # WARNING: if you're using a terrible DNS provider (comcast),
+@@ -1038,7 +1040,6 @@ class RequestsTestSuite(TestSetup, TestBaseMixin, unittest.TestCase):
+         s.config['danger_mode'] = True
+         s.get(httpbin('redirect', '4'))
+ 
+-
+     def test_empty_response(self):
+         r = requests.get(httpbin('status', '404'))
+         r.text
+diff --git a/tests/test_requests_ext.py b/tests/test_requests_ext.py
+index 208803a7..e3cdd04e 100644
+--- a/tests/test_requests_ext.py
++++ b/tests/test_requests_ext.py
+@@ -2,7 +2,8 @@
+ # -*- coding: utf-8 -*-
+ 
+ # Path hack.
+-import sys, os
++import os
++import sys
+ sys.path.insert(0, os.path.abspath('..'))
+ 
+ import unittest
+diff --git a/tests/test_requests_https.py b/tests/test_requests_https.py
+index 1691a8c0..2da09824 100755
+--- a/tests/test_requests_https.py
++++ b/tests/test_requests_https.py
+@@ -1,8 +1,8 @@
+ #!/usr/bin/env python
+ # -*- coding: utf-8 -*-
+ 
+-import sys, os
+-import json
++import os
++import sys
+ import unittest
+ 
+ # Path hack.

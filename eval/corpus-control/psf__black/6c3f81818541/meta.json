@@ -1,0 +1,16 @@
+{
+  "repo": "psf/black",
+  "sha": "6c3f8181854160f3db354f6f6ef3315ef05db8e7",
+  "kind": "control_good",
+  "subject": "Fix bug where black tries to split string on escaped space (#1799)",
+  "evidence_subject": "Fix bug where black tries to split string on escaped space (#1799)",
+  "author": "Bryan Bugyi",
+  "date": "2020-10-31T13:42:36-04:00",
+  "impl_files": [
+    "src/black/__init__.py"
+  ],
+  "test_files": [
+    "tests/data/long_strings__regression.py"
+  ],
+  "diff_lines": 91
+}

@@ -1,0 +1,17 @@
+{
+  "repo": "encode/httpx",
+  "sha": "a0282569d5f74bb6ef7a8f5e88ac37257acbe6f2",
+  "kind": "control_good",
+  "subject": "Make HTTPError importable from the top-level (#421)",
+  "evidence_subject": "Make HTTPError importable from the top-level (#421)",
+  "author": "Josep Cugat",
+  "date": "2019-10-01T20:37:05+02:00",
+  "impl_files": [
+    "httpx/__init__.py"
+  ],
+  "test_files": [
+    "tests/client/test_async_client.py",
+    "tests/client/test_client.py"
+  ],
+  "diff_lines": 46
+}

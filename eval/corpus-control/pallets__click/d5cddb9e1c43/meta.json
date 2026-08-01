@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/click",
+  "sha": "d5cddb9e1c433a5fd65739d98d8415dd62d276f7",
+  "kind": "control_good",
+  "subject": "Escape Sequences with r'' (#807)",
+  "evidence_subject": "Escape Sequences with r'' (#807)",
+  "author": "Cooper Lees",
+  "date": "2018-01-04T13:28:09-08:00",
+  "impl_files": [
+    "click/_compat.py",
+    "click/core.py",
+    "click/decorators.py"
+  ],
+  "test_files": [],
+  "diff_lines": 39
+}

@@ -1,0 +1,17 @@
+{
+  "repo": "encode/httpx",
+  "sha": "e1afbfa7b45d1ce717a7d9588c6c8114ee0a091b",
+  "kind": "control_good",
+  "subject": "Wrap network errors in HTTPX-specific exceptions (#707)",
+  "evidence_subject": "Wrap network errors in HTTPX-specific exceptions (#707)",
+  "author": "Florimond Manca",
+  "date": "2020-01-07T11:01:11+01:00",
+  "impl_files": [
+    "httpx/backends/asyncio.py",
+    "httpx/backends/trio.py",
+    "httpx/exceptions.py",
+    "httpx/utils.py"
+  ],
+  "test_files": [],
+  "diff_lines": 238
+}

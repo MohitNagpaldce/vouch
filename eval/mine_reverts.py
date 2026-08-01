@@ -72,21 +72,43 @@ def touched_py(diff: str) -> tuple[list[str], list[str]]:
     return impl, tests
 
 
-def mine_repo(slug: str, repo: Path, out: Path, limit: int) -> dict:
-    stats = {"merged_then_reverted": 0, "regression_fix": 0, "skipped": 0}
-    log = git(repo, "log", "--format=%H%x01%s%x01%b%x02", "-n", "20000")
+def mine_repo(slug: str, repo: Path, out: Path, limit: int, control: bool = False) -> dict:
+    stats = {"merged_then_reverted": 0, "regression_fix": 0, "control_good": 0, "skipped": 0}
+    log = git(repo, "log", "--format=%H%x01%s%x01%b%x01%at%x02", "-n", "20000")
     entries = [e.split("\x01") for e in log.split("\x02") if e.strip()]
 
+    bad_shas: set[str] = set()
     candidates: list[tuple[str, str, str]] = []  # (sha, kind, subject)
     for entry in entries:
-        if len(entry) != 3:
+        if len(entry) != 4:
             continue
-        sha, subject, body = (x.strip() for x in entry)
+        sha, subject, body, ts = (x.strip() for x in entry)
         m = REVERT_RE.search(body)
         if subject.lower().startswith("revert") and m:
             candidates.append((m.group(1), "merged_then_reverted", subject))
+            bad_shas.update({sha, m.group(1)})
         elif REGRESSION_RE.search(subject):
             candidates.append((sha, "regression_fix", subject))
+            bad_shas.add(sha)
+
+    if control:
+        # presumed-good arm: aged ≥ 1 year, never reverted, not a revert/fix
+        # itself; deterministic stride sampling for reproducibility
+        import time as _time
+
+        year_ago = _time.time() - 365 * 86400
+        good = [
+            (sha, "control_good", subject)
+            for sha, subject, body, ts in (
+                tuple(x.strip() for x in e) for e in entries if len(e) == 4
+            )
+            if sha not in bad_shas
+            and ts.isdigit()
+            and int(ts) < year_ago
+            and not subject.lower().startswith(("revert", "merge"))
+        ]
+        stride = max(1, len(good) // (limit * 3))  # oversample; size filters prune
+        candidates = good[::stride]
 
     kept = 0
     for sha, kind, subject in candidates:
@@ -137,6 +159,8 @@ def main() -> None:
     ap.add_argument("--out", default="eval/corpus")
     ap.add_argument("--limit", type=int, default=50, help="max samples per repo")
     ap.add_argument("--workdir", default="", help="clone cache dir (default: temp)")
+    ap.add_argument("--control", action="store_true",
+                    help="mine presumed-GOOD commits (aged, never reverted) instead")
     args = ap.parse_args()
 
     out = Path(args.out)
@@ -149,14 +173,14 @@ def main() -> None:
         print(f"mining {slug} ...")
         try:
             repo = clone(slug, workdir)
-            all_stats[slug] = mine_repo(slug, repo, out, args.limit)
+            all_stats[slug] = mine_repo(slug, repo, out, args.limit, control=args.control)
         except Exception as exc:
             all_stats[slug] = {"error": str(exc)}
         print(f"  {all_stats[slug]}")
 
     (out / "stats.json").write_text(json.dumps(all_stats, indent=2) + "\n")
     total = sum(
-        s.get("reverted", 0) + s.get("regression_fix", 0) + s.get("merged_then_reverted", 0)
+        s.get("regression_fix", 0) + s.get("merged_then_reverted", 0) + s.get("control_good", 0)
         for s in all_stats.values()
     )
     print(f"\ncorpus samples: {total} → {out}")
