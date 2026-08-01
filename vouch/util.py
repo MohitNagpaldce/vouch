@@ -41,13 +41,19 @@ def run_pytest(
     targets: list[str] | None = None,
     timeout: float = 300.0,
     extra: list[str] | None = None,
+    env: dict[str, str] | None = None,
 ) -> tuple[int, str]:
     """Run pytest; returns (exit_code, output). Exit code 124 on timeout."""
+    import os
+
     cmd = [python, "-m", "pytest", "-x", "-q", "--no-header", "-p", "no:cacheprovider"]
     cmd += extra or []
     cmd += targets or []
+    full_env = {**os.environ, **(env or {})}
     try:
-        proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+        proc = subprocess.run(
+            cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout, env=full_env
+        )
         return proc.returncode, proc.stdout + proc.stderr
     except subprocess.TimeoutExpired:
         return 124, f"timeout after {timeout}s"

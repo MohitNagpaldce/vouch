@@ -1,0 +1,59 @@
+name: "Vouch — verification gate for AI-generated code"
+description: >
+  Gates AI-authored pull requests with diff-scoped mutation testing, tautology
+  probes, dependency reality checks, and optional cross-model review. Emits a
+  VBOM attestation as a workflow artifact.
+author: "Mohit Nagpal"
+branding:
+  icon: "shield"
+  color: "purple"
+
+inputs:
+  base:
+    description: "Base ref to diff against"
+    default: "origin/main"
+  all-code:
+    description: "Verify every PR, not only diffs with detected AI provenance"
+    default: "false"
+  verifiers:
+    description: "Comma-separated verifier override (default: from vouch.toml tier)"
+    default: ""
+  vbom-path:
+    description: "Where to write the VBOM attestation"
+    default: "vbom.json"
+  anthropic-api-key:
+    description: "API key enabling the cross-model review verifier"
+    default: ""
+  openai-api-key:
+    description: "API key enabling the cross-model review verifier"
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install vouch
+      shell: bash
+      run: pip install --quiet "git+https://github.com/MohitNagpaldce/vouch" pytest pytest-cov coverage
+
+    - name: Fetch base ref
+      shell: bash
+      run: git fetch --no-tags --depth=200 origin +refs/heads/*:refs/remotes/origin/*
+
+    - name: Run vouch
+      shell: bash
+      env:
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
+        OPENAI_API_KEY: ${{ inputs.openai-api-key }}
+      run: |
+        FLAGS=""
+        [ "${{ inputs.all-code }}" = "true" ] && FLAGS="$FLAGS --all-code"
+        [ -n "${{ inputs.verifiers }}" ] && FLAGS="$FLAGS --verifiers ${{ inputs.verifiers }}"
+        vouch check --base "${{ inputs.base }}" --vbom "${{ inputs.vbom-path }}" $FLAGS
+
+    - name: Upload VBOM attestation
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: vbom
+        path: ${{ inputs.vbom-path }}
+        if-no-files-found: ignore
