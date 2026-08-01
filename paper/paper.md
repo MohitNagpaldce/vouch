@@ -32,11 +32,15 @@ regressions at zero model cost; (2) where the full gate was runnable it blocked
 the bad change — in the strongest case, mutation testing found 11/11 injected
 faults undetected because no test executed any changed line, and the tautology
 probe proved the accompanying test passed *without* the change; (3) adversarial
-LLM review, measured with a control arm for the first time to our knowledge,
-flags 80% of known-bad diffs but also 54% of known-good ones — a real but weak
-discriminator that cannot gate alone, quantifying why execution-grounded
-verifiers must anchor the composition. Vouch is available as a CLI, GitHub
-Action, and coding-agent hook.
+LLM review, measured with a control arm across two model families for the
+first time to our knowledge, discriminates weakly alone (Gemini: 80%
+sensitivity at 54% false-positive rate; GPT-5.1: 51% at 31%) but exhibits a
+striking cross-family structure — false positives are nested across families
+while true positives are complementary — so the two-family union gains nine
+points of sensitivity for free (89%) while requiring cross-family agreement
+fails to reduce false alarms, informing both why execution-grounded verifiers
+must anchor the gate and how review should be ensembled within it. Vouch is
+available as a CLI, GitHub Action, and coding-agent hook.
 
 **Keywords:** AI-generated code, mutation testing, test adequacy, code review
 agents, software supply chain, attestation
@@ -360,11 +364,14 @@ authoring model does not control, composed by policy, attested portably. The
 first controlled measurements say the cheap signals are shockingly informative
 (45% of real bad merges shipped with no test evidence at all), the execution-
 grounded verifiers block real bad changes with ground-truth observations, and
-the fashionable one — adversarial LLM review — flags 80% of bad changes *and*
-54% of good ones, which is precisely why it must be composed rather than
-trusted. Vouch and its corpus are open source; the VBOM format is offered as a
-starting point for verification evidence as a first-class supply-chain
-artifact.
+the fashionable one — adversarial LLM review — discriminates weakly in every
+family we measured, yet composes well: the cross-family union reaches 89%
+sensitivity at no extra false-alarm cost, while cross-family *agreement* fails
+to suppress false alarms because the families share them. Every detector class
+fails differently; that heterogeneity is the argument for a gate that composes
+them rather than trusting any one. Vouch and its corpus are open source; the
+VBOM format is offered as a starting point for verification evidence as a
+first-class supply-chain artifact.
 
 ## References
 
