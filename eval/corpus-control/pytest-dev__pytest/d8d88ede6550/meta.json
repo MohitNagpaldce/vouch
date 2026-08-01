@@ -1,0 +1,19 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "d8d88ede6550a9533b7a0371f76fb12e65b22c83",
+  "kind": "control_good",
+  "subject": "refine and unify initial capturing - now works also if the logging module is already used from an early-loaded conftest.py file (prior to option parsing)",
+  "evidence_subject": "refine and unify initial capturing - now works also if the logging module is already used from an early-loaded conftest.py file (prior to option parsing)",
+  "author": "holger krekel",
+  "date": "2011-01-18T12:51:21+01:00",
+  "impl_files": [
+    "_pytest/capture.py",
+    "_pytest/config.py",
+    "pytest.py",
+    "setup.py"
+  ],
+  "test_files": [
+    "testing/test_capture.py"
+  ],
+  "diff_lines": 165
+}

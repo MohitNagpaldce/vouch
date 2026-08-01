@@ -1,0 +1,14 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "a833c9f7012cb8dd31001443eb745819f5e6dcf8",
+  "kind": "control_good",
+  "subject": "Fix enable_relationship_loading() works fine w/ one-to-many",
+  "evidence_subject": "Fix enable_relationship_loading() works fine w/ one-to-many",
+  "author": "Mike Bayer",
+  "date": "2018-03-02T10:45:42-05:00",
+  "impl_files": [
+    "lib/sqlalchemy/orm/session.py"
+  ],
+  "test_files": [],
+  "diff_lines": 26
+}

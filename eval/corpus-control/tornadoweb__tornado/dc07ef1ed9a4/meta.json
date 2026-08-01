@@ -1,0 +1,18 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "dc07ef1ed9a4f2570244ca6abb042bd0cf2bfc6d",
+  "kind": "control_good",
+  "subject": "httputil: Clean up error handling in HTTPHeaders.parse",
+  "evidence_subject": "httputil: Clean up error handling in HTTPHeaders.parse",
+  "author": "Ben Darnell",
+  "date": "2018-03-11T18:34:32-04:00",
+  "impl_files": [
+    "tornado/http1connection.py",
+    "tornado/httputil.py"
+  ],
+  "test_files": [
+    "tornado/test/httpserver_test.py",
+    "tornado/test/httputil_test.py"
+  ],
+  "diff_lines": 92
+}

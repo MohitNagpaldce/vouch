@@ -1,0 +1,26 @@
+diff --git a/src/_pytest/main.py b/src/_pytest/main.py
+index df4a7a956..291fb73a4 100644
+--- a/src/_pytest/main.py
++++ b/src/_pytest/main.py
+@@ -434,7 +434,7 @@ class Session(nodes.FSCollector):
+         self.shouldfail = False
+         self.trace = config.trace.root.get("collection")
+         self._norecursepatterns = config.getini("norecursedirs")
+-        self.startdir = py.path.local()
++        self.startdir = config.invocation_dir
+         self._initialpaths = frozenset()
+         # Keep track of any collected nodes in here, so we don't duplicate fixtures
+         self._node_cache = {}
+diff --git a/src/_pytest/terminal.py b/src/_pytest/terminal.py
+index 8d2d65da5..93267a6b8 100644
+--- a/src/_pytest/terminal.py
++++ b/src/_pytest/terminal.py
+@@ -234,7 +234,7 @@ class TerminalReporter(object):
+         self._showfspath = None
+ 
+         self.stats = {}
+-        self.startdir = py.path.local()
++        self.startdir = config.invocation_dir
+         if file is None:
+             file = sys.stdout
+         self._tw = _pytest.config.create_terminal_writer(config, file)

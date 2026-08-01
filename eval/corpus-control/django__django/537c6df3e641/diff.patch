@@ -1,0 +1,278 @@
+diff --git a/django/conf/__init__.py b/django/conf/__init__.py
+index b3daea5b7b..7a9ed9418b 100644
+--- a/django/conf/__init__.py
++++ b/django/conf/__init__.py
+@@ -248,7 +248,14 @@ class Settings:
+         # store the settings module in case someone later cares
+         self.SETTINGS_MODULE = settings_module
+ 
+-        mod = importlib.import_module(self.SETTINGS_MODULE)
++        try:
++            mod = importlib.import_module(self.SETTINGS_MODULE)
++        except ImportError as exc:
++            # If settings cannot be imported, treat as a configuration error.
++            if exc.name == self.SETTINGS_MODULE:
++                msg = f"No module named {self.SETTINGS_MODULE!r}."
++                raise ImproperlyConfigured(msg) from exc
++            raise
+ 
+         tuple_settings = (
+             "ALLOWED_HOSTS",
+diff --git a/django/core/management/__init__.py b/django/core/management/__init__.py
+index f547ef730c..be23490671 100644
+--- a/django/core/management/__init__.py
++++ b/django/core/management/__init__.py
+@@ -206,6 +206,7 @@ class ManagementUtility:
+         if self.prog_name == "__main__.py":
+             self.prog_name = "python -m django"
+         self.settings_exception = None
++        self.style = color_style()
+ 
+     def main_help_text(self, commands_only=False):
+         """Return the script's main help text, as a string."""
+@@ -226,16 +227,15 @@ class ManagementUtility:
+                 else:
+                     app = app.rpartition(".")[-1]
+                 commands_dict[app].append(name)
+-            style = color_style()
+             for app in sorted(commands_dict):
+                 usage.append("")
+-                usage.append(style.NOTICE("[%s]" % app))
++                usage.append(self.style.NOTICE("[%s]" % app))
+                 for name in sorted(commands_dict[app]):
+                     usage.append("    %s" % name)
+             # Output an extra note if settings are not properly configured
+             if self.settings_exception is not None:
+                 usage.append(
+-                    style.NOTICE(
++                    self.style.NOTICE(
+                         "Note that only Django core commands are listed "
+                         "as settings are not properly configured (error: %s)."
+                         % self.settings_exception
+@@ -255,14 +255,10 @@ class ManagementUtility:
+         try:
+             app_name = commands[subcommand]
+         except KeyError:
+-            if os.environ.get("DJANGO_SETTINGS_MODULE"):
+-                # If `subcommand` is missing due to misconfigured settings, the
+-                # following line will retrigger an ImproperlyConfigured
+-                # exception (get_commands() swallows the original one) so the
+-                # user is informed about it.
+-                settings.INSTALLED_APPS
++            if os.environ.get("DJANGO_SETTINGS_MODULE") and self.settings_exception:
++                sys.stderr.write(self.style.NOTICE(str(self.settings_exception) + "\n"))
+             elif not settings.configured:
+-                sys.stderr.write("No Django settings specified.\n")
++                sys.stderr.write(self.style.NOTICE("No Django settings specified.\n"))
+             possible_matches = get_close_matches(subcommand, commands)
+             sys.stderr.write("Unknown command: %r" % subcommand)
+             if possible_matches:
+@@ -274,6 +270,9 @@ class ManagementUtility:
+             klass = app_name
+         else:
+             klass = load_command_class(app_name, subcommand)
++        if self.settings_exception and klass.requires_settings:
++            sys.stderr.write(self.style.NOTICE(str(self.settings_exception) + "\n"))
++            sys.exit(1)
+         return klass
+ 
+     def autocomplete(self):
+@@ -383,8 +382,6 @@ class ManagementUtility:
+             settings.INSTALLED_APPS
+         except ImproperlyConfigured as exc:
+             self.settings_exception = exc
+-        except ImportError as exc:
+-            self.settings_exception = exc
+ 
+         if settings.configured:
+             # Start the auto-reloading dev server even if the code is broken.
+diff --git a/django/core/management/base.py b/django/core/management/base.py
+index 8f24479050..983e24c0ba 100644
+--- a/django/core/management/base.py
++++ b/django/core/management/base.py
+@@ -245,6 +245,10 @@ class BaseCommand:
+         A boolean; if ``True``, the command prints a warning if the set of
+         migrations on disk don't match the migrations in the database.
+ 
++    ``requires_settings``
++        A boolean; if ``False``, an ``ImportError`` from a missing settings
++        module is suppressed.
++
+     ``requires_system_checks``
+         A list or tuple of tags, e.g. [Tags.staticfiles, Tags.models]. System
+         checks registered in the chosen tags will be checked for errors prior
+@@ -269,6 +273,7 @@ class BaseCommand:
+     _called_from_command_line = False
+     output_transaction = False  # Whether to wrap the output in a "BEGIN; COMMIT;"
+     requires_migrations_checks = False
++    requires_settings = True
+     requires_system_checks = "__all__"
+     # Arguments, common to all commands, which aren't defined by the argument
+     # parser.
+diff --git a/django/core/management/commands/makemessages.py b/django/core/management/commands/makemessages.py
+index bf4ce5fc44..5a4bd55bb8 100644
+--- a/django/core/management/commands/makemessages.py
++++ b/django/core/management/commands/makemessages.py
+@@ -208,6 +208,7 @@ class Command(BaseCommand):
+     translatable_file_class = TranslatableFile
+     build_file_class = BuildFile
+ 
++    requires_settings = False
+     requires_system_checks = []
+ 
+     msgmerge_options = ["-q", "--backup=none", "--previous", "--update"]
+diff --git a/django/core/management/commands/shell.py b/django/core/management/commands/shell.py
+index 47342291e8..8366e28722 100644
+--- a/django/core/management/commands/shell.py
++++ b/django/core/management/commands/shell.py
+@@ -19,6 +19,7 @@ class Command(BaseCommand):
+         "as code."
+     )
+ 
++    requires_settings = False
+     requires_system_checks = []
+     shells = ["ipython", "bpython", "python"]
+ 
+diff --git a/django/core/management/commands/startapp.py b/django/core/management/commands/startapp.py
+index e85833b9a8..e722056d77 100644
+--- a/django/core/management/commands/startapp.py
++++ b/django/core/management/commands/startapp.py
+@@ -7,6 +7,7 @@ class Command(TemplateCommand):
+         "the current directory or optionally in the given directory."
+     )
+     missing_args_message = "You must provide an application name."
++    requires_settings = False
+ 
+     def handle(self, **options):
+         app_name = options.pop("name")
+diff --git a/django/core/management/commands/startproject.py b/django/core/management/commands/startproject.py
+index 2b4f953e36..6c1d8873a8 100644
+--- a/django/core/management/commands/startproject.py
++++ b/django/core/management/commands/startproject.py
+@@ -9,6 +9,7 @@ class Command(TemplateCommand):
+         "name in the current directory or optionally in the given directory."
+     )
+     missing_args_message = "You must provide a project name."
++    requires_settings = False
+ 
+     def handle(self, **options):
+         project_name = options.pop("name")
+diff --git a/docs/howto/custom-management-commands.txt b/docs/howto/custom-management-commands.txt
+index dddfb5b19b..7b9b4e26fe 100644
+--- a/docs/howto/custom-management-commands.txt
++++ b/docs/howto/custom-management-commands.txt
+@@ -222,6 +222,13 @@ All attributes can be set in your derived class and can be used in
+     migrations on disk don't match the migrations in the database. A warning
+     doesn't prevent the command from executing. Default value is ``False``.
+ 
++.. attribute:: BaseCommand.requires_settings
++
++    .. versionadded:: 6.2
++
++    A boolean; if ``False``, any :exc:`ImportError` from a missing settings
++    module is suppressed. Default value is ``True``.
++
+ .. attribute:: BaseCommand.requires_system_checks
+ 
+     A list or tuple of tags, e.g. ``[Tags.staticfiles, Tags.models]``. System
+diff --git a/docs/releases/6.2.txt b/docs/releases/6.2.txt
+index c2c8eed5e8..d40237d86f 100644
+--- a/docs/releases/6.2.txt
++++ b/docs/releases/6.2.txt
+@@ -183,6 +183,10 @@ Management Commands
+   model renames. After upgrading, you will see new migrations detected for
+   unmanaged models that have changed since their creation.
+ 
++* Whether to suppress an :exc:`ImportError` escaping from a settings module is
++  configurable by the new :attr:`.BaseCommand.requires_settings` attribute
++  (default ``True``). In previous versions, such errors were always suppressed.
++
+ Migrations
+ ~~~~~~~~~~
+ 
+diff --git a/tests/admin_scripts/tests.py b/tests/admin_scripts/tests.py
+index 3eb7b97c99..3178cdf4df 100644
+--- a/tests/admin_scripts/tests.py
++++ b/tests/admin_scripts/tests.py
+@@ -29,6 +29,8 @@ from django.core.management import (
+     call_command,
+     color,
+     execute_from_command_line,
++    get_commands,
++    load_command_class,
+ )
+ from django.core.management.base import LabelCommand, SystemCheckError
+ from django.core.management.commands.listurls import Command as ListurlsCommand
+@@ -257,10 +259,19 @@ class DjangoAdminNoSettings(AdminScriptTestCase):
+         Commands that don't require settings succeed if the settings file
+         doesn't exist.
+         """
+-        args = ["startproject"]
+-        out, err = self.run_django_admin(args, settings_file="bad_settings")
+-        self.assertNoOutput(out)
+-        self.assertOutput(err, "You must provide a project name", regex=True)
++        for cmd, owner in get_commands().items():
++            if owner != "django.core":
++                continue
++            with self.subTest(command=cmd):
++                out, err = self.run_django_admin(
++                    [cmd, "--help"], settings_file="bad_settings"
++                )
++                klass = load_command_class(owner, cmd)
++                if klass.requires_settings:
++                    msg = "No module named 'bad_settings'."
++                    self.assertOutput(err, msg)
++                else:
++                    self.assertNotIn("bad_settings", err)
+ 
+ 
+ class DjangoAdminDefaultSettings(AdminScriptTestCase):
+@@ -889,6 +900,18 @@ class ManageNoSettings(AdminScriptTestCase):
+         self.assertNoOutput(out)
+         self.assertOutput(err, "No module named '?bad_settings'?", regex=True)
+ 
++    def test_runserver_with_bad_settings(self):
++        args = ["runserver", "--settings=bad_settings", "--nostatic"]
++        out, err = self.run_manage(args)
++        self.assertNoOutput(out)
++        self.assertOutput(err, "No module named '?bad_settings'?", regex=True)
++
++    def test_startapp_with_bad_settings(self):
++        args = ["startapp", "--settings=bad_settings", "app1"]
++        out, err = self.run_manage(args)
++        self.assertNoOutput(out)
++        self.assertNoOutput(err)
++
+     def test_builtin_with_bad_environment(self):
+         """
+         no settings: manage.py builtin commands fail if settings file (from
+@@ -1867,6 +1890,7 @@ class ManageRunserverEmptyAllowedHosts(AdminScriptTestCase):
+ class ManageRunserverHelpOutput(AdminScriptTestCase):
+     def test_suppressed_options(self):
+         """runserver doesn't support --verbosity and --trackback options."""
++        self.write_settings("settings.py")
+         out, err = self.run_manage(["runserver", "--help"])
+         self.assertNotInOutput(out, "--verbosity")
+         self.assertNotInOutput(out, "--trackback")
+diff --git a/tests/settings_tests/tests.py b/tests/settings_tests/tests.py
+index 7794aeef9a..3c52f31df8 100644
+--- a/tests/settings_tests/tests.py
++++ b/tests/settings_tests/tests.py
+@@ -339,6 +339,17 @@ class SettingsTests(SimpleTestCase):
+         with self.assertRaisesMessage(ValueError, "Incorrect timezone setting: test"):
+             settings._setup()
+ 
++    def test_unable_to_import_settings_module(self):
++        msg = "No module named 'fake_settings_module'."
++        with self.assertRaisesMessage(ImproperlyConfigured, msg):
++            Settings("fake_settings_module")
++
++    def test_unable_to_import_a_random_module(self):
++        exc = ModuleNotFoundError("No module named 'fake_module'", name="fake_module")
++        with mock.patch("importlib.import_module", side_effect=exc):
++            with self.assertRaisesMessage(ImportError, "No module named 'fake_module'"):
++                Settings("fake_settings_module")
++
+ 
+ class TestComplexSettingOverride(SimpleTestCase):
+     def setUp(self):

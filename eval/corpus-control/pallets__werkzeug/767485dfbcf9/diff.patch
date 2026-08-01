@@ -1,0 +1,33 @@
+diff --git a/tests/test_datastructures.py b/tests/test_datastructures.py
+index 4335d55d..16a4e739 100644
+--- a/tests/test_datastructures.py
++++ b/tests/test_datastructures.py
+@@ -900,3 +900,15 @@ class TestFileStorage(object):
+     def test_mimetype_always_lowercase(self):
+         file_storage = self.storage_class(content_type='APPLICATION/JSON')
+         assert file_storage.mimetype == 'application/json'
++
++    def test_bytes_proper_sentinel(self):
++        # ensure we iterate over new lines and don't enter into an infinite loop
++        import io
++        unicode_storage = self.storage_class(io.StringIO(u"one\ntwo"))
++        for idx, line in enumerate(unicode_storage):
++            assert idx < 2
++        assert idx == 1
++        binary_storage = self.storage_class(io.BytesIO(b"one\ntwo"))
++        for idx, line in enumerate(binary_storage):
++            assert idx < 2
++        assert idx == 1
+diff --git a/werkzeug/datastructures.py b/werkzeug/datastructures.py
+index 9828707d..f3d42b9b 100644
+--- a/werkzeug/datastructures.py
++++ b/werkzeug/datastructures.py
+@@ -2671,7 +2671,7 @@ class FileStorage(object):
+         return getattr(self.stream, name)
+ 
+     def __iter__(self):
+-        return iter(self.readline, '')
++        return iter(self.stream)
+ 
+     def __repr__(self):
+         return '<%s: %r (%r)>' % (

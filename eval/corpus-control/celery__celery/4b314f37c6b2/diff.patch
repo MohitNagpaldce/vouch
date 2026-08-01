@@ -1,0 +1,86 @@
+diff --git a/examples/eventlet/README.rst b/examples/eventlet/README.rst
+new file mode 100644
+index 000000000..2823cf9cc
+--- /dev/null
++++ b/examples/eventlet/README.rst
+@@ -0,0 +1,59 @@
++==================================
++  Example using the Eventlet Pool
++==================================
++
++Introduction
++============
++
++This is a Celery application containing two example tasks.
++
++First you need to install Eventlet, and also recommended is the `dnspython`
++module (when this is installed all name lookups will be asynchronous)::
++
++    $ pip install eventlet
++    $ pip install dnspython
++
++Before you run any of the example tasks you need to start celeryd::
++
++    $ cd examples/eventlet
++    $ celeryd -l info --concurrency=500 --pool=eventlet
++
++As usual you need to have RabbitMQ running, see the Celery getting started
++guide if you haven't installed it yet.
++
++Tasks
++=====
++
++* `tasks.urlopen`
++
++This task simply makes a request opening the URL and returns the size
++of the response body::
++
++    $ cd examples/eventlet
++    $ python
++    >>> from tasks import urlopen
++    >>> urlopen.delay("http://www.google.com/").get()
++    9980
++
++To open several URLs at once you can do:
++
++    $ cd examples/eventlet
++    $ python
++    >>> from tasks import urlopen
++    >>> from celery.task.sets import TaskSet
++    >>> result = TaskSet(urlopen.subtask((url, ))
++    ...                     for url in LIST_OF_URLS).apply_async()
++    >>> for incoming_result in result.iter_native():
++    ...     print(incoming_result, )
++
++* `webcrawler.crawl`
++
++This is a simple recursive web crawler.  It will only crawl
++URLs for the current host name.  Please see comments in the
++:file:`webcrawler.py` file.
++
++
++
++
++
++
+diff --git a/examples/eventlet/tasks.py b/examples/eventlet/tasks.py
+index 12ae9d0fd..24ae33d0f 100644
+--- a/examples/eventlet/tasks.py
++++ b/examples/eventlet/tasks.py
+@@ -2,13 +2,11 @@ from celery.decorators import task
+ from eventlet.green import urllib2
+ 
+ 
+-@task(ignore_result=True)
++@task
+ def urlopen(url):
+     print("Opening: %r" % (url, ))
+     try:
+         body = urllib2.urlopen(url).read()
+     except Exception, exc:
+-        print("Exception for %r: %r" % (url, exc, ))
+-        return url, 0
+-    print("Done with: %r" % (url, ))
+-    return url, 1
++        print("URL %r gave error: %r" % (url, exc))
++    return len(body)

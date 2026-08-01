@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "da94a8b504d981cb5f877219811d169823a2095e",
+  "kind": "control_good",
+  "subject": "Fixed docs not building",
+  "evidence_subject": "Fixed docs not building",
+  "author": "Armin Ronacher",
+  "date": "2013-05-20T14:06:59+01:00",
+  "impl_files": [
+    "docs/jinjaext.py"
+  ],
+  "test_files": [],
+  "diff_lines": 39
+}

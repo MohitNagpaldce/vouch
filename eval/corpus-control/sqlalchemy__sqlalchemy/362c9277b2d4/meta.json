@@ -1,0 +1,15 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "362c9277b2d4d27cbcff359ba29c1e71005fed18",
+  "kind": "control_good",
+  "subject": "Don't change asyncpg's \"char\" codec",
+  "evidence_subject": "Don't change asyncpg's \"char\" codec",
+  "author": "Mike Bayer",
+  "date": "2020-09-16T08:26:14-04:00",
+  "impl_files": [
+    "lib/sqlalchemy/dialects/postgresql/asyncpg.py",
+    "lib/sqlalchemy/dialects/postgresql/base.py"
+  ],
+  "test_files": [],
+  "diff_lines": 60
+}

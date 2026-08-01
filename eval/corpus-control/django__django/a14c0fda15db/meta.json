@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "a14c0fda15db7e0eb982ac7b68d47b45fc95b4cb",
+  "kind": "control_good",
+  "subject": "Fixed #30328 -- Fixed crash of IntegerField.validators when limit_value in a custom validator is callable.",
+  "evidence_subject": "Fixed #30328 -- Fixed crash of IntegerField.validators when limit_value in a custom validator is callable.",
+  "author": "Scott Fitsimones",
+  "date": "2019-04-05T21:40:46-07:00",
+  "impl_files": [
+    "django/db/models/fields/__init__.py"
+  ],
+  "test_files": [
+    "tests/model_fields/test_integerfield.py"
+  ],
+  "diff_lines": 117
+}

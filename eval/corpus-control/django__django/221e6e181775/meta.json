@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "221e6e18177516ac4ac95e40c344b93d14dd607b",
+  "kind": "control_good",
+  "subject": "Fixed #28176 -- Restored the uncasted option value in ChoiceWidget template context.",
+  "evidence_subject": "Fixed #28176 -- Restored the uncasted option value in ChoiceWidget template context.",
+  "author": "Tim Graham",
+  "date": "2017-06-15T11:05:21-04:00",
+  "impl_files": [
+    "django/forms/widgets.py"
+  ],
+  "test_files": [
+    "tests/forms_tests/widget_tests/test_select.py"
+  ],
+  "diff_lines": 59
+}

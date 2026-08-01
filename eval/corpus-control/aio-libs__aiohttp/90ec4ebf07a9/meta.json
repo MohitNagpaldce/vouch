@@ -1,0 +1,16 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "90ec4ebf07a9f215b89dbb8b95952d552e17461a",
+  "kind": "control_good",
+  "subject": "#921 show directory index (from PR #1033) (#1094)",
+  "evidence_subject": "#921 show directory index (from PR #1033) (#1094)",
+  "author": "tejksat",
+  "date": "2016-08-22T18:01:12+03:00",
+  "impl_files": [
+    "aiohttp/web_urldispatcher.py"
+  ],
+  "test_files": [
+    "tests/test_web_urldispatcher.py"
+  ],
+  "diff_lines": 328
+}

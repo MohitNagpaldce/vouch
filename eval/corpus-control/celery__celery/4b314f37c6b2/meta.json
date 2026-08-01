@@ -1,0 +1,14 @@
+{
+  "repo": "celery/celery",
+  "sha": "4b314f37c6b2d294478f06f9616e55a0ac7a1dab",
+  "kind": "control_good",
+  "subject": "Added README.rst to examples/eventlet",
+  "evidence_subject": "Added README.rst to examples/eventlet",
+  "author": "Ask Solem",
+  "date": "2010-12-01T22:00:35+01:00",
+  "impl_files": [
+    "examples/eventlet/tasks.py"
+  ],
+  "test_files": [],
+  "diff_lines": 86
+}

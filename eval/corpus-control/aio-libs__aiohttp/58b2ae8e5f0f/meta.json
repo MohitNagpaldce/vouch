@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "58b2ae8e5f0f6cca55e07efb16f44d0b9e442c43",
+  "kind": "control_good",
+  "subject": "remove unneeded code",
+  "evidence_subject": "remove unneeded code",
+  "author": "Nikolay Kim",
+  "date": "2013-10-09T15:03:08-07:00",
+  "impl_files": [
+    "asynchttp/client.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

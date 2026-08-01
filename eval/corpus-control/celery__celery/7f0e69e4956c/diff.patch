@@ -1,0 +1,60 @@
+diff --git a/celery/beat.py b/celery/beat.py
+index 0d57fd5f8..9e38ff768 100644
+--- a/celery/beat.py
++++ b/celery/beat.py
+@@ -334,6 +334,7 @@ class _Threaded(threading.Thread):
+         super(_Threaded, self).__init__()
+         self.service = Service(*args, **kwargs)
+         self.setDaemon(True)
++        self.setName("Beat")
+ 
+     def run(self):
+         self.service.start()
+@@ -348,6 +349,7 @@ class _Process(multiprocessing.Process):
+     def __init__(self, *args, **kwargs):
+         super(_Process, self).__init__()
+         self.service = Service(*args, **kwargs)
++        self.name = "Beat"
+ 
+     def run(self):
+         platform.reset_signal("SIGTERM")
+diff --git a/celery/utils/timer2.py b/celery/utils/timer2.py
+index 44fd9ec14..56c0f4780 100644
+--- a/celery/utils/timer2.py
++++ b/celery/utils/timer2.py
+@@ -8,6 +8,7 @@ import sys
+ import traceback
+ import warnings
+ 
++from itertools import count
+ from threading import Thread, Event
+ from time import time, sleep, mktime
+ 
+@@ -129,6 +130,7 @@ class Timer(Thread):
+     precision = 0.3
+     running = False
+     on_tick = None
++    _timer_count = count(1).next
+ 
+     def __init__(self, schedule=None, precision=None, on_error=None,
+             on_tick=None):
+@@ -141,6 +143,7 @@ class Timer(Thread):
+         self._shutdown = Event()
+         self._stopped = Event()
+         self.setDaemon(True)
++        self.setName("Timer-%s" % (self._timer_count(), ))
+ 
+     def run(self):
+         self.running = True
+diff --git a/celery/worker/heartbeat.py b/celery/worker/heartbeat.py
+index 1e012528f..af38bad30 100644
+--- a/celery/worker/heartbeat.py
++++ b/celery/worker/heartbeat.py
+@@ -23,6 +23,7 @@ class Heart(threading.Thread):
+         self._shutdown = threading.Event()
+         self._stopped = threading.Event()
+         self.setDaemon(True)
++        self.setName(self.__class__.__name__)
+         self._state = None
+ 
+     def run(self):

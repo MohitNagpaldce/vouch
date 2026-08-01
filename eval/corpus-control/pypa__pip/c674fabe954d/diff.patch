@@ -1,0 +1,69 @@
+diff --git a/src/pip/_internal/commands/show.py b/src/pip/_internal/commands/show.py
+index 8ae27699b..0e7023e86 100644
+--- a/src/pip/_internal/commands/show.py
++++ b/src/pip/_internal/commands/show.py
+@@ -138,9 +138,10 @@ def print_results(distributions, list_files=False, verbose=False):
+             write_output("---")
+ 
+         name = dist.get('name', '')
++        canonical_name = canonicalize_name(dist.get('name', ''))
+         required_by = [
+             pkg.project_name for pkg in pkg_resources.working_set
+-            if name in [required.name for required in pkg.requires()]
++            if canonical_name in [required.name for required in pkg.requires()]
+         ]
+ 
+         write_output("Name: %s", name)
+diff --git a/tests/data/src/requires_capitalized/requires_capitalized/__init__.py b/tests/data/src/requires_capitalized/requires_capitalized/__init__.py
+new file mode 100644
+index 000000000..792d60054
+--- /dev/null
++++ b/tests/data/src/requires_capitalized/requires_capitalized/__init__.py
+@@ -0,0 +1 @@
++#
+diff --git a/tests/data/src/requires_capitalized/setup.py b/tests/data/src/requires_capitalized/setup.py
+new file mode 100644
+index 000000000..39b75ba05
+--- /dev/null
++++ b/tests/data/src/requires_capitalized/setup.py
+@@ -0,0 +1,6 @@
++from setuptools import find_packages, setup
++
++setup(name='Requires_Capitalized',
++      version='0.1',
++      install_requires=['simple==1.0']
++      )
+diff --git a/tests/functional/test_show.py b/tests/functional/test_show.py
+index 8f63d3eca..fb7100892 100644
+--- a/tests/functional/test_show.py
++++ b/tests/functional/test_show.py
+@@ -205,7 +205,7 @@ def test_package_name_is_canonicalized(script, data):
+     assert underscore_upper_show_result.stdout == dash_show_result.stdout
+ 
+ 
+-def test_show_required_by_packages(script, data):
++def test_show_required_by_packages_simple(script, data):
+     """
+     Test that installed packages that depend on this package are shown
+     """
+@@ -219,3 +219,20 @@ def test_show_required_by_packages(script, data):
+ 
+     assert 'Name: simple' in lines
+     assert 'Required-by: requires-simple' in lines
++
++
++def test_show_required_by_packages_capitalized(script, data):
++    """
++    Test that installed packages that depend on this package are shown where the package has a capital letter
++    """
++    editable_path = os.path.join(data.src, 'requires_capitalized')
++    script.pip(
++        'install', '--no-index', '-f', data.find_links, editable_path
++    )
++
++    result = script.pip('show', 'simple')
++    lines = result.stdout.splitlines()
++    print(lines)
++
++    assert 'Name: simple' in lines
++    assert 'Required-by: Requires-Capitalized' in lines

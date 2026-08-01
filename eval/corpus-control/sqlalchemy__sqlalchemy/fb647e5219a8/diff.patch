@@ -1,0 +1,133 @@
+diff --git a/doc/build/changelog/changelog_11.rst b/doc/build/changelog/changelog_11.rst
+index 9a65e66a2..cb95264cc 100644
+--- a/doc/build/changelog/changelog_11.rst
++++ b/doc/build/changelog/changelog_11.rst
+@@ -21,6 +21,13 @@
+ .. changelog::
+     :version: 1.1.0
+ 
++    .. change::
++        :tags: change, orm
++
++        Passing False to :meth:`.Query.order_by` in order to cancel
++        all order by's is deprecated; there is no longer any difference
++        between calling this method with False or with None.
++
+     .. change::
+         :tags: feature, orm
+ 
+diff --git a/lib/sqlalchemy/orm/query.py b/lib/sqlalchemy/orm/query.py
+index c5ecbaffe..f15f4340b 100644
+--- a/lib/sqlalchemy/orm/query.py
++++ b/lib/sqlalchemy/orm/query.py
+@@ -1523,17 +1523,16 @@ class Query(object):
+         passing ``None`` - this will suppress any ORDER BY configured
+         on mappers as well.
+ 
+-        Alternatively, an existing ORDER BY setting on the Query
+-        object can be entirely cancelled by passing ``False``
+-        as the value - use this before calling methods where
+-        an ORDER BY is invalid.
++        Alternatively, passing False will reset ORDER BY and additionally
++        re-allow default mapper.order_by to take place.   Note mapper.order_by
++        is deprecated.
+ 
+         """
+ 
+         if len(criterion) == 1:
+             if criterion[0] is False:
+                 if '_order_by' in self.__dict__:
+-                    del self._order_by
++                    self._order_by = False
+                 return
+             if criterion[0] is None:
+                 self._order_by = None
+diff --git a/test/orm/test_query.py b/test/orm/test_query.py
+index 86be1879e..493f6a7c8 100644
+--- a/test/orm/test_query.py
++++ b/test/orm/test_query.py
+@@ -1625,6 +1625,84 @@ class ExpressionTest(QueryTest, AssertsCompiledSQL):
+ 
+         q1._no_criterion_assertion("foo")
+ 
++    def test_order_by_plain(self):
++        User = self.classes.User
++        s = create_session()
++
++        q1 = s.query(User.id, User.name).order_by(User.name)
++        self.assert_compile(
++            select([q1]),
++            "SELECT users_id, users_name FROM (SELECT users.id AS users_id, "
++            "users.name AS users_name FROM users ORDER BY users.name)"
++        )
++
++    def test_order_by_append(self):
++        User = self.classes.User
++        s = create_session()
++
++        q1 = s.query(User.id, User.name).order_by(User.name)
++
++        # test append something to order_by
++        self.assert_compile(
++            select([q1.order_by(User.id)]),
++            "SELECT users_id, users_name FROM (SELECT users.id AS users_id, "
++            "users.name AS users_name FROM users "
++            "ORDER BY users.name, users.id)"
++        )
++
++    def test_order_by_cancellation(self):
++        User = self.classes.User
++        s = create_session()
++
++        q1 = s.query(User.id, User.name).order_by(User.name)
++        # test cancellation by using None, replacement with something else
++        self.assert_compile(
++            select([q1.order_by(None).order_by(User.id)]),
++            "SELECT users_id, users_name FROM (SELECT users.id AS users_id, "
++            "users.name AS users_name FROM users ORDER BY users.id)"
++        )
++
++        # test cancellation by using None, replacement with nothing
++        self.assert_compile(
++            select([q1.order_by(None)]),
++            "SELECT users_id, users_name FROM (SELECT users.id AS users_id, "
++            "users.name AS users_name FROM users)"
++        )
++
++    def test_order_by_cancellation_false(self):
++        User = self.classes.User
++        s = create_session()
++
++        q1 = s.query(User.id, User.name).order_by(User.name)
++        # test cancellation by using None, replacement with something else
++        self.assert_compile(
++            select([q1.order_by(False).order_by(User.id)]),
++            "SELECT users_id, users_name FROM (SELECT users.id AS users_id, "
++            "users.name AS users_name FROM users ORDER BY users.id)"
++        )
++
++        # test cancellation by using None, replacement with nothing
++        self.assert_compile(
++            select([q1.order_by(False)]),
++            "SELECT users_id, users_name FROM (SELECT users.id AS users_id, "
++            "users.name AS users_name FROM users)"
++        )
++
++    def test_order_by_cancelled_allows_assertions(self):
++        User = self.classes.User
++        s = create_session()
++
++        q1 = s.query(User.id, User.name).order_by(User.name).order_by(None)
++
++        q1._no_criterion_assertion("foo")
++
++    def test_legacy_order_by_cancelled_allows_assertions(self):
++        User = self.classes.User
++        s = create_session()
++
++        q1 = s.query(User.id, User.name).order_by(User.name).order_by(False)
++
++        q1._no_criterion_assertion("foo")
+ 
+ class ColumnPropertyTest(_fixtures.FixtureTest, AssertsCompiledSQL):
+     __dialect__ = 'default'

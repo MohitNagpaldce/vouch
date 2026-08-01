@@ -1,0 +1,16 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "b939bf85f32b98758bfdc8ea3433259afba816a9",
+  "kind": "control_good",
+  "subject": "websocket: Expand testing of next-ping calculation",
+  "evidence_subject": "websocket: Expand testing of next-ping calculation",
+  "author": "Ben Darnell",
+  "date": "2025-07-24T20:37:48Z",
+  "impl_files": [
+    "tornado/websocket.py"
+  ],
+  "test_files": [
+    "tornado/test/websocket_test.py"
+  ],
+  "diff_lines": 125
+}

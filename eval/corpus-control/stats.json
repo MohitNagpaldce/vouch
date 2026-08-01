@@ -1,32 +1,56 @@
 {
-  "pallets/click": {
+  "pytest-dev/pytest": {
     "merged_then_reverted": 0,
     "regression_fix": 0,
     "control_good": 8,
-    "skipped": 11
+    "skipped": 13
   },
-  "pallets/flask": {
+  "pypa/pip": {
     "merged_then_reverted": 0,
     "regression_fix": 0,
-    "control_good": 7,
-    "skipped": 18
+    "control_good": 8,
+    "skipped": 9
   },
-  "psf/black": {
+  "django/django": {
+    "merged_then_reverted": 0,
+    "regression_fix": 0,
+    "control_good": 8,
+    "skipped": 8
+  },
+  "aio-libs/aiohttp": {
+    "merged_then_reverted": 0,
+    "regression_fix": 0,
+    "control_good": 8,
+    "skipped": 17
+  },
+  "celery/celery": {
     "merged_then_reverted": 0,
     "regression_fix": 0,
     "control_good": 8,
     "skipped": 12
   },
-  "encode/httpx": {
+  "tornadoweb/tornado": {
+    "merged_then_reverted": 0,
+    "regression_fix": 0,
+    "control_good": 8,
+    "skipped": 5
+  },
+  "pallets/werkzeug": {
+    "merged_then_reverted": 0,
+    "regression_fix": 0,
+    "control_good": 8,
+    "skipped": 6
+  },
+  "pallets/jinja": {
     "merged_then_reverted": 0,
     "regression_fix": 0,
     "control_good": 8,
     "skipped": 11
   },
-  "psf/requests": {
+  "sqlalchemy/sqlalchemy": {
     "merged_then_reverted": 0,
     "regression_fix": 0,
     "control_good": 8,
-    "skipped": 12
+    "skipped": 3
   }
 }

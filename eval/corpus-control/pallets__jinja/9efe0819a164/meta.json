@@ -1,0 +1,15 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "9efe0819a164d733e630ce04f7f4222bcaca6a52",
+  "kind": "control_good",
+  "subject": "Fixed a small bug with the undefined object: the error message on divisions with undefined objects was misleading.",
+  "evidence_subject": "Fixed a small bug with the undefined object: the error message on divisions with undefined objects was misleading.",
+  "author": "Armin Ronacher",
+  "date": "2008-11-02T12:22:00+01:00",
+  "impl_files": [
+    "jinja2/runtime.py",
+    "jinja2/sandbox.py"
+  ],
+  "test_files": [],
+  "diff_lines": 39
+}

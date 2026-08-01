@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "366ba40f737b811e6ac2e63bb40c347fa4fafcef",
+  "kind": "control_good",
+  "subject": "Only check origin if insecure scheme and there are origins to treat as secure, in CookieJar.filter_cookies() (#7821)",
+  "evidence_subject": "Only check origin if insecure scheme and there are origins to treat as secure, in CookieJar.filter_cookies() (#7821)",
+  "author": "Rongrong",
+  "date": "2023-11-13T03:46:52+08:00",
+  "impl_files": [
+    "aiohttp/cookiejar.py"
+  ],
+  "test_files": [],
+  "diff_lines": 32
+}

@@ -1,0 +1,117 @@
+diff --git a/AUTHORS b/AUTHORS
+index 0557c343db..62268ff103 100644
+--- a/AUTHORS
++++ b/AUTHORS
+@@ -765,6 +765,7 @@ answer newbie questions, and generally made Django that much better:
+     schwank@gmail.com
+     Scot Hacker <shacker@birdhouse.org>
+     Scott Barr <scott@divisionbyzero.com.au>
++    Scott Fitsimones <scott@airgara.ge>
+     Scott Pashley <github@scottpashley.co.uk>
+     scott@staplefish.com
+     Sean Brant
+diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+index 0d8612532d..068b36a0b3 100644
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -1792,13 +1792,25 @@ class IntegerField(Field):
+         validators_ = super().validators
+         internal_type = self.get_internal_type()
+         min_value, max_value = connection.ops.integer_field_range(internal_type)
+-        if (min_value is not None and not
+-            any(isinstance(validator, validators.MinValueValidator) and
+-                validator.limit_value >= min_value for validator in validators_)):
++        if min_value is not None and not any(
++            (
++                isinstance(validator, validators.MinValueValidator) and (
++                    validator.limit_value()
++                    if callable(validator.limit_value)
++                    else validator.limit_value
++                ) >= min_value
++            ) for validator in validators_
++        ):
+             validators_.append(validators.MinValueValidator(min_value))
+-        if (max_value is not None and not
+-            any(isinstance(validator, validators.MaxValueValidator) and
+-                validator.limit_value <= max_value for validator in validators_)):
++        if max_value is not None and not any(
++            (
++                isinstance(validator, validators.MaxValueValidator) and (
++                    validator.limit_value()
++                    if callable(validator.limit_value)
++                    else validator.limit_value
++                ) <= max_value
++            ) for validator in validators_
++        ):
+             validators_.append(validators.MaxValueValidator(max_value))
+         return validators_
+ 
+diff --git a/docs/releases/2.2.1.txt b/docs/releases/2.2.1.txt
+index a740f516ec..2648a60139 100644
+--- a/docs/releases/2.2.1.txt
++++ b/docs/releases/2.2.1.txt
+@@ -38,3 +38,7 @@ Bugfixes
+   :class:`~django.core.paginator.Paginator` crashed when ``object_list`` was
+   a queryset ordered or aggregated over a nested ``JSONField`` key transform
+   (:ticket:`30335`).
++
++* Fixed a regression in Django 2.2 where ``IntegerField`` validation of
++  database limits crashes if ``limit_value`` attribute in a custom validator is
++  callable (:ticket:`30328`).
+diff --git a/tests/model_fields/test_integerfield.py b/tests/model_fields/test_integerfield.py
+index 5c7ba47fbb..626b67b00b 100644
+--- a/tests/model_fields/test_integerfield.py
++++ b/tests/model_fields/test_integerfield.py
+@@ -98,27 +98,31 @@ class IntegerFieldTests(TestCase):
+         """
+         min_backend_value, max_backend_value = self.backend_range
+ 
+-        if min_backend_value is not None:
+-            min_custom_value = min_backend_value + 1
+-            ranged_value_field = self.model._meta.get_field('value').__class__(
+-                validators=[validators.MinValueValidator(min_custom_value)]
+-            )
+-            field_range_message = validators.MinValueValidator.message % {
+-                'limit_value': min_custom_value,
+-            }
+-            with self.assertRaisesMessage(ValidationError, "[%r]" % field_range_message):
+-                ranged_value_field.run_validators(min_backend_value - 1)
+-
+-        if max_backend_value is not None:
+-            max_custom_value = max_backend_value - 1
+-            ranged_value_field = self.model._meta.get_field('value').__class__(
+-                validators=[validators.MaxValueValidator(max_custom_value)]
+-            )
+-            field_range_message = validators.MaxValueValidator.message % {
+-                'limit_value': max_custom_value,
+-            }
+-            with self.assertRaisesMessage(ValidationError, "[%r]" % field_range_message):
+-                ranged_value_field.run_validators(max_backend_value + 1)
++        for callable_limit in (True, False):
++            with self.subTest(callable_limit=callable_limit):
++                if min_backend_value is not None:
++                    min_custom_value = min_backend_value + 1
++                    limit_value = (lambda: min_custom_value) if callable_limit else min_custom_value
++                    ranged_value_field = self.model._meta.get_field('value').__class__(
++                        validators=[validators.MinValueValidator(limit_value)]
++                    )
++                    field_range_message = validators.MinValueValidator.message % {
++                        'limit_value': min_custom_value,
++                    }
++                    with self.assertRaisesMessage(ValidationError, '[%r]' % field_range_message):
++                        ranged_value_field.run_validators(min_backend_value - 1)
++
++                if max_backend_value is not None:
++                    max_custom_value = max_backend_value - 1
++                    limit_value = (lambda: max_custom_value) if callable_limit else max_custom_value
++                    ranged_value_field = self.model._meta.get_field('value').__class__(
++                        validators=[validators.MaxValueValidator(limit_value)]
++                    )
++                    field_range_message = validators.MaxValueValidator.message % {
++                        'limit_value': max_custom_value,
++                    }
++                    with self.assertRaisesMessage(ValidationError, '[%r]' % field_range_message):
++                        ranged_value_field.run_validators(max_backend_value + 1)
+ 
+     def test_types(self):
+         instance = self.model(value=0)

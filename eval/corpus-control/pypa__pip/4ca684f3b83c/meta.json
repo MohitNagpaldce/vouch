@@ -1,0 +1,16 @@
+{
+  "repo": "pypa/pip",
+  "sha": "4ca684f3b83cad2d63b12c879684dd8bce7f4a10",
+  "kind": "control_good",
+  "subject": "Fix for source directory reuse",
+  "evidence_subject": "Fix for source directory reuse",
+  "author": "Tzu-ping Chung",
+  "date": "2020-05-21T17:18:21+08:00",
+  "impl_files": [
+    "src/pip/_internal/req/req_install.py"
+  ],
+  "test_files": [
+    "tests/functional/test_new_resolver.py"
+  ],
+  "diff_lines": 46
+}

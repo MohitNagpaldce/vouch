@@ -1,0 +1,16 @@
+{
+  "repo": "pypa/pip",
+  "sha": "23cd8f689948d2741bb7e3df2b69020c4b88251f",
+  "kind": "control_good",
+  "subject": "Keep install options in requirements.txt from leaking",
+  "evidence_subject": "Keep install options in requirements.txt from leaking",
+  "author": "Phil Pennock",
+  "date": "2018-03-19T20:30:09-04:00",
+  "impl_files": [
+    "src/pip/_internal/req/req_install.py"
+  ],
+  "test_files": [
+    "tests/functional/test_install_reqs.py"
+  ],
+  "diff_lines": 70
+}

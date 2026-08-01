@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "767485dfbcf93c069225e842ace382f314e64c9b",
+  "kind": "control_good",
+  "subject": "Fixed infinite loop FileStorage iter in python 3",
+  "evidence_subject": "Fixed infinite loop FileStorage iter in python 3",
+  "author": "Neurostack",
+  "date": "2016-03-02T12:55:49-07:00",
+  "impl_files": [
+    "werkzeug/datastructures.py"
+  ],
+  "test_files": [
+    "tests/test_datastructures.py"
+  ],
+  "diff_lines": 33
+}

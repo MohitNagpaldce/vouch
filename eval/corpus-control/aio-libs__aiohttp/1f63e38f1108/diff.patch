@@ -1,0 +1,139 @@
+diff --git a/aiohttp/web.py b/aiohttp/web.py
+index 21a41a58..4837452a 100644
+--- a/aiohttp/web.py
++++ b/aiohttp/web.py
+@@ -155,7 +155,6 @@ class Request(HeadersMixin):
+         self._match_info = None  # initialized after route resolving
+ 
+         self._payload = payload
+-        self._response = None
+         self._cookies = None
+ 
+     @property
+@@ -385,14 +384,6 @@ class StreamResponse(HeadersMixin):
+             value = cookie.output(header='')[1:]
+             self.headers.add('Set-Cookie', value)
+ 
+-    def _check_sending_started(self):
+-        resp = self._request._response
+-        if resp is not None:
+-            resp = resp()  # dereference weakref
+-        if resp is not None:
+-            raise RuntimeError(("Response {!r} already started to send"
+-                                " data").format(resp))
+-
+     @property
+     def request(self):
+         return self._request
+@@ -429,7 +420,6 @@ class StreamResponse(HeadersMixin):
+         Also updates only those params which are not None.
+         """
+ 
+-        self._check_sending_started()
+         if name in self._deleted_cookies:
+             self._deleted_cookies.remove(name)
+             self._cookies.pop(name, None)
+@@ -457,7 +447,6 @@ class StreamResponse(HeadersMixin):
+         Creates new empty expired cookie.
+         """
+         # TODO: do we need domain/path here?
+-        self._check_sending_started()
+         self._cookies.pop(name, None)
+         self.set_cookie(name, '', max_age=0, domain=domain, path=path)
+         self._deleted_cookies.add(name)
+@@ -469,7 +458,6 @@ class StreamResponse(HeadersMixin):
+ 
+     @content_length.setter
+     def content_length(self, value):
+-        self._check_sending_started()
+         if value is not None:
+             value = int(value)
+             # TODO: raise error if chunked enabled
+@@ -484,7 +472,6 @@ class StreamResponse(HeadersMixin):
+ 
+     @content_type.setter
+     def content_type(self, value):
+-        self._check_sending_started()
+         self.content_type  # read header values if needed
+         self._content_type = str(value)
+         self._generate_content_type_header()
+@@ -496,7 +483,6 @@ class StreamResponse(HeadersMixin):
+ 
+     @charset.setter
+     def charset(self, value):
+-        self._check_sending_started()
+         ctype = self.content_type  # read header values if needed
+         if ctype == 'application/octet-stream':
+             raise RuntimeError("Setting charset for application/octet-stream "
+@@ -515,18 +501,10 @@ class StreamResponse(HeadersMixin):
+             ctype = self._content_type
+         self.headers['Content-Type'] = ctype
+ 
+-    def set_chunked(self, chunk_size, buffered=True):
+-        if self.content_length is not None:
+-            raise RuntimeError(
+-                "Cannot use chunked encoding with Content-Length set up")
+-
+     def send_headers(self):
+         if self._resp_impl is not None:
+             raise RuntimeError("HTTP headers are already sent")
+ 
+-        self._check_sending_started()
+-        self._request._response = weakref.ref(self)
+-
+         resp_impl = self._resp_impl = ResponseImpl(
+             self._request._writer,
+             self._status,
+@@ -584,7 +562,6 @@ class Response(StreamResponse):
+         if body is not None and not isinstance(body, bytes):
+             raise TypeError('body argument must be bytes (%r)',
+                             type(body))
+-        self._check_sending_started()
+         self._body = body
+         if body is not None:
+             self.content_length = len(body)
+diff --git a/tests/test_web_response.py b/tests/test_web_response.py
+index 0780b08c..ba604dcb 100644
+--- a/tests/test_web_response.py
++++ b/tests/test_web_response.py
+@@ -29,7 +29,6 @@ class TestStreamResponse(unittest.TestCase):
+         resp = StreamResponse(req)
+ 
+         self.assertEqual(req, resp._request)
+-        self.assertIsNone(req._response)
+         self.assertEqual(200, resp.status)
+         self.assertTrue(resp.keep_alive)
+         self.assertIs(req, resp.request)
+@@ -47,15 +46,6 @@ class TestStreamResponse(unittest.TestCase):
+         resp.content_length = 234
+         self.assertEqual(234, resp.content_length)
+ 
+-    def test_cannot_change_content_length_after_sending_headers(self):
+-        req = self.make_request('GET', '/')
+-        resp = StreamResponse(req)
+-
+-        resp.send_headers()
+-        with self.assertRaises(RuntimeError):
+-            resp.content_length = 123
+-        self.assertIsNone(resp.content_length)
+-
+     def test_drop_content_length_header_on_setting_len_to_None(self):
+         req = self.make_request('GET', '/')
+         resp = StreamResponse(req)
+@@ -73,16 +63,6 @@ class TestStreamResponse(unittest.TestCase):
+         resp.content_type = 'text/html'
+         self.assertEqual('text/html', resp.headers['content-type'])
+ 
+-    def test_cannot_change_content_type_after_sending_headers(self):
+-        req = self.make_request('GET', '/')
+-        resp = StreamResponse(req)
+-
+-        resp.content_type = 'text/plain'
+-        resp.send_headers()
+-        with self.assertRaises(RuntimeError):
+-            resp.content_type = 'text/html'
+-        self.assertEqual('text/plain', resp.content_type)
+-
+     def test_setting_charset(self):
+         req = self.make_request('GET', '/')
+         resp = StreamResponse(req)

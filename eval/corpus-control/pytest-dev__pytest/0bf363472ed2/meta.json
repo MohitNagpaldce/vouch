@@ -1,0 +1,15 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "0bf363472ed23c42674bc41528fd482a7b73f8d8",
+  "kind": "control_good",
+  "subject": "Use config_invocation_dir for startdirs",
+  "evidence_subject": "Use config_invocation_dir for startdirs",
+  "author": "Daniel Hahler",
+  "date": "2019-04-22T02:04:07+02:00",
+  "impl_files": [
+    "src/_pytest/main.py",
+    "src/_pytest/terminal.py"
+  ],
+  "test_files": [],
+  "diff_lines": 26
+}

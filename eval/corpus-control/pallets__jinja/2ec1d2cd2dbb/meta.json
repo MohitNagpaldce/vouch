@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "2ec1d2cd2dbb5bee1401d05a8d61ba4f056a63df",
+  "kind": "control_good",
+  "subject": "tip iis 2.5",
+  "evidence_subject": "tip iis 2.5",
+  "author": "Armin Ronacher",
+  "date": "2010-04-20T13:46:08+02:00",
+  "impl_files": [
+    "setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 28
+}

@@ -1,0 +1,15 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "ee51fa58812e23ab3b26a2d11e8706d5d9b7cd67",
+  "kind": "control_good",
+  "subject": "add api to iterate over all marerks of a node",
+  "evidence_subject": "add api to iterate over all marerks of a node",
+  "author": "Ronny Pfannschmidt",
+  "date": "2018-03-26T17:46:07+02:00",
+  "impl_files": [
+    "_pytest/mark/structures.py",
+    "_pytest/nodes.py"
+  ],
+  "test_files": [],
+  "diff_lines": 58
+}

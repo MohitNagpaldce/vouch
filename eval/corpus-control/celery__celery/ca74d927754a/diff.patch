@@ -1,0 +1,250 @@
+diff --git a/celery/apps/beat.py b/celery/apps/beat.py
+index e6e5fadcd..d7f5926ed 100644
+--- a/celery/apps/beat.py
++++ b/celery/apps/beat.py
+@@ -122,5 +122,4 @@ class Beat(object):
+             beat.sync()
+             raise SystemExit()
+ 
+-        platforms.install_signal_handler("SIGTERM", _sync)
+-        platforms.install_signal_handler("SIGINT", _sync)
++        platforms.install_signal_handler(SIGTERM=_sync, SIGINT=_sync)
+diff --git a/celery/apps/worker.py b/celery/apps/worker.py
+index 7504f91af..cd763a2c4 100644
+--- a/celery/apps/worker.py
++++ b/celery/apps/worker.py
+@@ -287,7 +287,7 @@ def install_worker_int_handler(worker):
+             worker.stop(in_sighandler=True)
+         raise SystemExit()
+ 
+-    platforms.install_signal_handler("SIGINT", _stop)
++    platforms.install_signal_handler(SIGINT=_stop)
+ 
+ 
+ def install_worker_int_again_handler(worker):
+@@ -302,7 +302,7 @@ def install_worker_int_again_handler(worker):
+             worker.terminate(in_sighandler=True)
+         raise SystemTerminate()
+ 
+-    platforms.install_signal_handler("SIGINT", _stop)
++    platforms.install_signal_handler(SIGINT=_stop)
+ 
+ 
+ def install_worker_term_handler(worker):
+@@ -317,7 +317,7 @@ def install_worker_term_handler(worker):
+             worker.stop(in_sighandler=True)
+         raise SystemExit()
+ 
+-    platforms.install_signal_handler("SIGTERM", _stop)
++    platforms.install_signal_handler(SIGTERM=_stop)
+ 
+ 
+ def install_worker_restart_handler(worker):
+@@ -329,7 +329,7 @@ def install_worker_restart_handler(worker):
+         worker.stop(in_sighandler=True)
+         os.execv(sys.executable, [sys.executable] + sys.argv)
+ 
+-    platforms.install_signal_handler("SIGHUP", restart_worker_sig_handler)
++    platforms.install_signal_handler(SIGHUP=restart_worker_sig_handler)
+ 
+ 
+ def install_cry_handler(logger):
+@@ -342,7 +342,7 @@ def install_cry_handler(logger):
+             """Signal handler logging the stacktrace of all active threads."""
+             logger.error("\n" + cry())
+ 
+-        platforms.install_signal_handler("SIGUSR1", cry_handler)
++        platforms.install_signal_handler(SIGUSR1=cry_handler)
+ 
+ 
+ def install_rdb_handler():  # pragma: no cover
+@@ -353,7 +353,7 @@ def install_rdb_handler():  # pragma: no cover
+         rdb.set_trace(frame)
+ 
+     if os.environ.get("CELERY_RDBSIG"):
+-        platforms.install_signal_handler("SIGUSR2", rdb_handler)
++        platforms.install_signal_handler(SIGUSR2=rdb_handler)
+ 
+ 
+ def install_HUP_not_supported_handler(worker):
+@@ -362,4 +362,4 @@ def install_HUP_not_supported_handler(worker):
+         worker.logger.error("SIGHUP not supported: "
+             "Restarting with HUP is unstable on this platform!")
+ 
+-    platforms.install_signal_handler("SIGHUP", warn_on_HUP_handler)
++    platforms.install_signal_handler(SIGHUP=warn_on_HUP_handler)
+diff --git a/celery/platforms.py b/celery/platforms.py
+index ca3d4889b..b0873c1af 100644
+--- a/celery/platforms.py
++++ b/celery/platforms.py
+@@ -289,46 +289,51 @@ def get_signal(signal_name):
+     return getattr(signal, signal_name)
+ 
+ 
+-def reset_signal(signal_name):
++def reset_signal(*signal_names):
+     """Reset signal to the default signal handler.
+ 
+     Does nothing if the platform doesn't support signals,
+     or the specified signal in particular.
+ 
+     """
+-    try:
+-        signum = getattr(signal, signal_name)
+-        signal.signal(signum, signal.SIG_DFL)
+-    except (AttributeError, ValueError):
+-        pass
++    for signal_name in signal_names:
++        try:
++            signum = getattr(signal, signal_name)
++            signal.signal(signum, signal.SIG_DFL)
++        except (AttributeError, ValueError):
++            pass
+ 
+ 
+-def ignore_signal(signal_name):
++def ignore_signal(*signal_names):
+     """Ignore signal using :const:`SIG_IGN`.
+ 
+     Does nothing if the platform doesn't support signals,
+     or the specified signal in particular.
+ 
+     """
+-    try:
+-        signum = getattr(signal, signal_name)
+-        signal.signal(signum, signal.SIG_IGN)
+-    except (AttributeError, ValueError):
+-        pass
++    for signal_name in signal_names:
++        try:
++            signum = getattr(signal, signal_name)
++            signal.signal(signum, signal.SIG_IGN)
++        except (AttributeError, ValueError):
++            pass
+ 
+ 
+-def install_signal_handler(signal_name, handler):
+-    """Install a handler.
++def install_signal_handler(signal_name=None, handler=None, **sigmap):
++    """Install signal handlers.
+ 
+     Does nothing if the current platform doesn't support signals,
+     or the specified signal in particular.
+ 
+     """
+-    try:
+-        signum = getattr(signal, signal_name)
+-        signal.signal(signum, handler)
+-    except (AttributeError, ValueError):
+-        pass
++    if signal_name:
++        sigmap[signal_name] = handler
++    for signal_name, handler in sigmap.iteritems():
++        try:
++            signum = getattr(signal, signal_name)
++            signal.signal(signum, handler)
++        except (AttributeError, ValueError):
++            pass
+ 
+ 
+ def strargv(argv):
+diff --git a/celery/tests/test_bin/test_celerybeat.py b/celery/tests/test_bin/test_celerybeat.py
+index 447fb92c0..c599aec6f 100644
+--- a/celery/tests/test_bin/test_celerybeat.py
++++ b/celery/tests/test_bin/test_celerybeat.py
+@@ -80,8 +80,10 @@ class test_Beat(AppCase):
+     def psig(self, fun, *args, **kwargs):
+         handlers = {}
+ 
+-        def i(sig, handler):
+-            handlers[sig] = handler
++        def i(sig=None, handler=None, **sigmap):
++            if sig:
++                sigmap[sig] = handler
++            handlers.update(sigmap)
+ 
+         p, platforms.install_signal_handler = \
+                 platforms.install_signal_handler, i
+diff --git a/celery/tests/test_bin/test_celeryd.py b/celery/tests/test_bin/test_celeryd.py
+index 0d5d5ac09..8adb2f599 100644
+--- a/celery/tests/test_bin/test_celeryd.py
++++ b/celery/tests/test_bin/test_celeryd.py
+@@ -78,8 +78,10 @@ class test_Worker(AppCase):
+     def test_run_worker(self):
+         handlers = {}
+ 
+-        def i(sig, handler):
+-            handlers[sig] = handler
++        def i(sig=None, handler=None, **sigmap):
++            if sig:
++                sigmap[sig] = handler
++            handlers.update(sigmap)
+ 
+         p = platforms.install_signal_handler
+         platforms.install_signal_handler = i
+@@ -379,8 +381,10 @@ class test_signal_handlers(AppCase):
+     def psig(self, fun, *args, **kwargs):
+         handlers = {}
+ 
+-        def i(sig, handler):
+-            handlers[sig] = handler
++        def i(sig=None, handler=None, **sigmap):
++            if sig:
++                sigmap[sig] = handler
++            handlers.update(sigmap)
+ 
+         p, platforms.install_signal_handler = \
+                 platforms.install_signal_handler, i
+@@ -396,8 +400,10 @@ class test_signal_handlers(AppCase):
+         handlers = self.psig(cd.install_worker_int_handler, worker)
+         next_handlers = {}
+ 
+-        def i(sig, handler):
+-            next_handlers[sig] = handler
++        def i(sig=None, handler=None, **sigmap):
++            if sig:
++                sigmap[sig] = handler
++            next_handlers.update(sigmap)
+ 
+         p = platforms.install_signal_handler
+         platforms.install_signal_handler = i
+diff --git a/celery/tests/test_worker/test_worker.py b/celery/tests/test_worker/test_worker.py
+index 3aea677fd..8de857cda 100644
+--- a/celery/tests/test_worker/test_worker.py
++++ b/celery/tests/test_worker/test_worker.py
+@@ -544,12 +544,10 @@ class test_WorkController(AppCase):
+ 
+         app = Celery(loader=Mock(), set_as_current=False)
+         process_initializer(app, "awesome.worker.com")
+-        for ignoresig in WORKER_SIGIGNORE:
+-            self.assertIn(((ignoresig, ), {}),
+-                            ignore_signal.call_args_list)
+-        for resetsig in WORKER_SIGRESET:
+-            self.assertIn(((resetsig, ), {}),
+-                            reset_signal.call_args_list)
++        self.assertIn((tuple(WORKER_SIGIGNORE), {}),
++                      ignore_signal.call_args_list)
++        self.assertIn((tuple(WORKER_SIGRESET), {}),
++                      reset_signal.call_args_list)
+         self.assertTrue(app.loader.init_worker.call_count)
+         self.assertTrue(on_worker_process_init.called)
+         self.assertIs(_tls.current_app, app)
+diff --git a/celery/worker/__init__.py b/celery/worker/__init__.py
+index c1636f214..69a8b12e6 100644
+--- a/celery/worker/__init__.py
++++ b/celery/worker/__init__.py
+@@ -41,11 +41,11 @@ def process_initializer(app, hostname):
+     """
+     app = app_or_default(app)
+     app.set_current()
+-    [platforms.reset_signal(signal) for signal in WORKER_SIGRESET]
+-    [platforms.ignore_signal(signal) for signal in WORKER_SIGIGNORE]
++    platforms.reset_signal(*WORKER_SIGRESET)
++    platforms.ignore_signal(*WORKER_SIGIGNORE)
+     platforms.set_mp_process_title("celeryd", hostname=hostname)
+ 
+-    # This is for windows and other platforms not supporting
++    # This is for Windows and other platforms not supporting
+     # fork(). Note that init_worker makes sure it's only
+     # run once per process.
+     app.loader.init_worker()

@@ -1,0 +1,449 @@
+diff --git a/changelog/6881.feature.rst b/changelog/6881.feature.rst
+new file mode 100644
+index 000000000..d75f12c17
+--- /dev/null
++++ b/changelog/6881.feature.rst
+@@ -0,0 +1 @@
++Added a ``parametrize_long_str_id_strategy`` ini option to control how long ``str``/``bytes`` parameter values are handled in auto-generated test IDs. Explicit IDs set via ``ids=[...]`` or ``pytest.param(..., id=...)`` are not affected. Available strategies: ``short`` (default, values over 100 chars fall back to ``argname+index``), ``sha256`` (SHA-256 hex digest), ``legacy`` (keep full value), and ``disallow`` (error requesting explicit IDs).
+diff --git a/doc/en/reference/reference.rst b/doc/en/reference/reference.rst
+index 644b78668..1eec97a53 100644
+--- a/doc/en/reference/reference.rst
++++ b/doc/en/reference/reference.rst
+@@ -1494,6 +1494,54 @@ passed multiple times. The expected format is ``name=value``. For example::
+ 
+    See :ref:`parametrizemark`.
+ 
++
++.. confval:: parametrize_long_str_id_strategy
++   :type: ``str``
++   :default: ``"short"``
++
++   .. versionadded:: 9.1
++
++   Strategy for handling long ``str`` or ``bytes`` parameter values when
++   auto-generating test IDs for ``@pytest.mark.parametrize``. This only
++   affects auto-generated IDs — explicit IDs set via ``ids=[...]`` or
++   ``pytest.param(..., id=...)`` are never affected.
++
++   Available strategies:
++
++   ``short``
++       Values over 100 characters are replaced with ``<argname><index>``
++       (e.g. ``a0``, ``a1``). This is the default.
++
++   ``sha256``
++       Replace the value with its SHA-256 hex digest, producing a
++       fixed-length, content-based ID.
++
++   ``legacy``
++       Keep the full value as the ID regardless of length. Use this for
++       temporary backward compatibility during migration.
++
++   ``disallow``
++       Raise an error for values over 100 characters, requiring the user
++       to set explicit IDs.
++
++   Example configuration:
++
++   .. tab:: toml
++
++       .. code-block:: toml
++
++           [pytest]
++           parametrize_long_str_id_strategy = "sha256"
++
++   .. tab:: ini
++
++       .. code-block:: ini
++
++           [pytest]
++           parametrize_long_str_id_strategy = sha256
++
++   See :ref:`parametrizemark`.
++
+ .. confval:: doctest_encoding
+    :type: ``str``
+    :default: ``"utf-8"``
+diff --git a/src/_pytest/python.py b/src/_pytest/python.py
+index eb481393b..594182892 100644
+--- a/src/_pytest/python.py
++++ b/src/_pytest/python.py
+@@ -16,6 +16,7 @@ import dataclasses
+ import enum
+ import fnmatch
+ from functools import partial
++import hashlib
+ import inspect
+ import itertools
+ import os
+@@ -26,6 +27,7 @@ import types
+ from typing import Any
+ from typing import cast
+ from typing import final
++from typing import get_args
+ from typing import Literal
+ from typing import NoReturn
+ from typing import TYPE_CHECKING
+@@ -50,6 +52,7 @@ from _pytest.compat import safe_getattr
+ from _pytest.compat import safe_isclass
+ from _pytest.config import Config
+ from _pytest.config import hookimpl
++from _pytest.config import UsageError
+ from _pytest.config.argparsing import Parser
+ from _pytest.deprecated import check_ispytest
+ from _pytest.fixtures import _resolve_args_directness
+@@ -82,6 +85,11 @@ from _pytest.warning_types import PytestReturnNotNoneWarning
+ if TYPE_CHECKING:
+     from typing_extensions import Self
+ 
++LongStrIdStrategy = Literal["short", "sha256", "legacy", "disallow"]
++_LONG_STR_STRATEGIES: frozenset[LongStrIdStrategy] = frozenset(
++    get_args(LongStrIdStrategy)
++)
++
+ 
+ def pytest_addoption(parser: Parser) -> None:
+     parser.addini(
+@@ -117,6 +125,16 @@ def pytest_addoption(parser: Parser) -> None:
+         default=None,
+         help="Emit an error if non-unique parameter set IDs are detected",
+     )
++    parser.addini(
++        "parametrize_long_str_id_strategy",
++        type="string",
++        default="short",
++        help="strategy for long str/bytes parameter values in auto-generated ids\n"
++        "- short (default): values over 100 chars fall back to argname+index\n"
++        "- sha256: replace value with its sha256 hex digest\n"
++        "- legacy: keep the full value (for temporary backward compatibility)\n"
++        "- disallow: raise an error requesting explicit ids",
++    )
+ 
+ 
+ def pytest_generate_tests(metafunc: Metafunc) -> None:
+@@ -1003,11 +1021,55 @@ class IdMaker:
+         idval = self._idval_from_hook(val, argname)
+         if idval is not None:
+             return idval
+-        idval = self._idval_from_value(val)
+-        if idval is not None:
+-            return idval
++        if isinstance(val, str | bytes):
++            idval = self._apply_long_str_strategy(val, argname, idx)
++            if idval is not None:
++                return idval
++        else:
++            idval = self._idval_from_value(val)
++            if idval is not None:
++                return idval
+         return self._idval_from_argname(argname, idx)
+ 
++    def _get_long_str_strategy(self) -> LongStrIdStrategy:
++        if not self.config:
++            return "short"
++        value = self.config.getini("parametrize_long_str_id_strategy")
++        if value not in _LONG_STR_STRATEGIES:
++            raise UsageError(
++                f"Unknown parametrize_long_str_id_strategy: {value!r}. "
++                f"Valid values: {', '.join(sorted(_LONG_STR_STRATEGIES))}"
++            )
++        return cast(LongStrIdStrategy, value)
++
++    def _apply_long_str_strategy(
++        self, val: str | bytes, argname: str, idx: int
++    ) -> str | None:
++        """Apply the configured strategy for long str/bytes parameter values.
++
++        Only used for auto-generated IDs (not explicit ids=[...] or
++        pytest.param(id=...)).
++        """
++        if len(val) <= 100:
++            return _ascii_escaped_by_config(val, self.config)
++        match self._get_long_str_strategy():
++            case "legacy":
++                return _ascii_escaped_by_config(val, self.config)
++            case "short":
++                return None
++            case "sha256":
++                encoded = val.encode("utf-8") if isinstance(val, str) else val
++                return hashlib.sha256(encoded).hexdigest()
++            case "disallow":  # pragma: no branch -- fail() raises, confuses coverage
++                prefix = self._make_error_prefix()
++                fail(
++                    f"{prefix}parametrize value for '{argname}' at index {idx} "
++                    f"is too long for an auto-generated ID ({len(val)} characters). "
++                    f"Use pytest.param(..., id=...) or parametrize(..., ids=...) "
++                    f"to set an explicit ID, or change parametrize_long_str_id_strategy.",
++                    pytrace=False,
++                )
++
+     def _idval_from_function(self, val: object, argname: str, idx: int) -> str | None:
+         """Try to make an ID for a parameter in a ParameterSet using the
+         user-provided id callable, if given."""
+diff --git a/testing/python/metafunc.py b/testing/python/metafunc.py
+index e8e9b3de7..d4c3e514c 100644
+--- a/testing/python/metafunc.py
++++ b/testing/python/metafunc.py
+@@ -28,6 +28,35 @@ from _pytest.scope import Scope
+ import pytest
+ 
+ 
++_IDMAKER_INI_DEFAULTS: dict[str, object] = {
++    "disable_test_id_escaping_and_forfeit_all_rights_to_community_support": False,
++    "parametrize_long_str_id_strategy": "short",
++    "strict_parametrization_ids": None,
++    "strict": False,
++}
++
++
++class _IdMakerConfig:
++    """Mock config for IdMaker tests.
++
++    Only serves known ini keys — raises KeyError on unknown ones
++    to catch accidental lookups for keys without proper defaults.
++    """
++
++    def __init__(self, overrides: dict[str, object] | None = None) -> None:
++        self._ini: dict[str, object] = {**_IDMAKER_INI_DEFAULTS, **(overrides or {})}
++
++    @property
++    def hook(self) -> _IdMakerConfig:
++        return self
++
++    def pytest_make_parametrize_id(self, **kw: object) -> None:
++        return None
++
++    def getini(self, name: str) -> object:
++        return self._ini[name]
++
++
+ class TestMetafunc:
+     def Metafunc(self, func, config=None) -> python.Metafunc:
+         # The unit tests of this class check if things work correctly
+@@ -373,26 +402,11 @@ class TestMetafunc:
+         """Unit test for expected behavior to obtain ids with
+         disable_test_id_escaping_and_forfeit_all_rights_to_community_support
+         option (#5294)."""
+-
+-        class MockConfig:
+-            def __init__(self, config):
+-                self.config = config
+-
+-            @property
+-            def hook(self):
+-                return self
+-
+-            def pytest_make_parametrize_id(self, **kw):
+-                pass
+-
+-            def getini(self, name):
+-                return self.config[name]
+-
+         option = "disable_test_id_escaping_and_forfeit_all_rights_to_community_support"
+ 
+         values: list[tuple[str, Any, str]] = [
+-            ("ação", MockConfig({option: True}), "ação"),
+-            ("ação", MockConfig({option: False}), "a\\xe7\\xe3o"),
++            ("ação", _IdMakerConfig({option: True}), "ação"),
++            ("ação", _IdMakerConfig({option: False}), "a\\xe7\\xe3o"),
+         ]
+         for val, config, expected in values:
+             actual = IdMaker([], [], None, None, config, None)._idval(val, "a", 6)
+@@ -595,26 +609,11 @@ class TestMetafunc:
+         disable_test_id_escaping_and_forfeit_all_rights_to_community_support
+         option (#5294).
+         """
+-
+-        class MockConfig:
+-            def __init__(self, config):
+-                self.config = config
+-
+-            @property
+-            def hook(self):
+-                return self
+-
+-            def pytest_make_parametrize_id(self, **kw):
+-                pass
+-
+-            def getini(self, name):
+-                return self.config[name]
+-
+         option = "disable_test_id_escaping_and_forfeit_all_rights_to_community_support"
+ 
+         values: list[tuple[Any, str]] = [
+-            (MockConfig({option: True}), "ação"),
+-            (MockConfig({option: False}), "a\\xe7\\xe3o"),
++            (_IdMakerConfig({option: True}), "ação"),
++            (_IdMakerConfig({option: False}), "a\\xe7\\xe3o"),
+         ]
+         for config, expected in values:
+             result = IdMaker(
+@@ -632,26 +631,11 @@ class TestMetafunc:
+         disable_test_id_escaping_and_forfeit_all_rights_to_community_support
+         option (#5294).
+         """
+-
+-        class MockConfig:
+-            def __init__(self, config):
+-                self.config = config
+-
+-            @property
+-            def hook(self):
+-                return self
+-
+-            def pytest_make_parametrize_id(self, **kw):
+-                pass
+-
+-            def getini(self, name):
+-                return self.config[name]
+-
+         option = "disable_test_id_escaping_and_forfeit_all_rights_to_community_support"
+ 
+         values: list[tuple[Any, str]] = [
+-            (MockConfig({option: True}), "ação"),
+-            (MockConfig({option: False}), "a\\xe7\\xe3o"),
++            (_IdMakerConfig({option: True}), "ação"),
++            (_IdMakerConfig({option: False}), "a\\xe7\\xe3o"),
+         ]
+         for config, expected in values:
+             result = IdMaker(
+@@ -659,24 +643,129 @@ class TestMetafunc:
+             ).make_unique_parameterset_ids()
+             assert result == [expected]
+ 
++    @pytest.mark.parametrize("id_style", ["short", "sha256", "legacy"])
++    @pytest.mark.parametrize(
++        "kind",
++        [
++            pytest.param("a", id="str"),
++            pytest.param(b"a", id="bytes"),
++        ],
++    )
++    def test_idmaker_long_string(self, id_style: str, kind: str | bytes) -> None:
++        maker = IdMaker(
++            "a",
++            [pytest.param(kind * 1000)],
++            None,
++            None,
++            cast(
++                pytest.Config,
++                _IdMakerConfig({"parametrize_long_str_id_strategy": id_style}),
++            ),
++            None,
++        )
++
++        res = maker.make_unique_parameterset_ids()
++        expected = {
++            "legacy": "a" * 1000,
++            "short": "a0",
++            "sha256": "41edece42d63e8d9bf515a9ba6932e1c20cbc9f5a5d134645adb5db1b9737ea3",
++        }
++        assert res == [expected[id_style]]
++
++    @pytest.mark.parametrize(
++        "kind",
++        [
++            pytest.param("a", id="str"),
++            pytest.param(b"a", id="bytes"),
++        ],
++    )
++    def test_idmaker_long_string_disallow(self, kind: str | bytes) -> None:
++        maker = IdMaker(
++            "a",
++            [pytest.param(kind * 1000)],
++            None,
++            None,
++            cast(
++                pytest.Config,
++                _IdMakerConfig({"parametrize_long_str_id_strategy": "disallow"}),
++            ),
++            None,
++        )
++
++        with pytest.raises(Failed, match="too long for an auto-generated ID"):
++            maker.make_unique_parameterset_ids()
++
++    def test_idmaker_long_string_disallow_short_value(self) -> None:
++        """The disallow strategy should pass through short values normally."""
++        maker = IdMaker(
++            "a",
++            [pytest.param("short")],
++            None,
++            None,
++            cast(
++                pytest.Config,
++                _IdMakerConfig({"parametrize_long_str_id_strategy": "disallow"}),
++            ),
++            None,
++        )
++        assert maker.make_unique_parameterset_ids() == ["short"]
++
++    def test_idmaker_long_string_no_config(self) -> None:
++        """Without config, defaults to 'short' strategy."""
++        maker = IdMaker(
++            "a",
++            [pytest.param("x" * 200)],
++            None,
++            None,
++            None,
++            None,
++        )
++        assert maker.make_unique_parameterset_ids() == ["a0"]
++
++    def test_idmaker_long_string_unknown_strategy(self) -> None:
++        """An unknown strategy value should raise UsageError."""
++        maker = IdMaker(
++            "a",
++            [pytest.param("x" * 200)],
++            None,
++            None,
++            cast(
++                pytest.Config,
++                _IdMakerConfig({"parametrize_long_str_id_strategy": "bogus"}),
++            ),
++            None,
++        )
++        with pytest.raises(pytest.UsageError, match=r"Unknown.*bogus"):
++            maker.make_unique_parameterset_ids()
++
++    @pytest.mark.parametrize("id_style", ["short", "sha256", "disallow"])
++    def test_idmaker_long_string_explicit_ids_unaffected(self, id_style: str) -> None:
++        """Explicit ids=[...] with long strings should work regardless of strategy."""
++        long_id = "x" * 200
++        maker = IdMaker(
++            "a",
++            [pytest.param("value")],
++            None,
++            [long_id],
++            cast(
++                pytest.Config,
++                _IdMakerConfig({"parametrize_long_str_id_strategy": id_style}),
++            ),
++            None,
++        )
++        result = maker.make_unique_parameterset_ids()
++        assert result == [long_id]
++
+     def test_idmaker_with_param_id_and_config(self) -> None:
+         """Unit test for expected behavior to create ids with pytest.param(id=...) and
+         disable_test_id_escaping_and_forfeit_all_rights_to_community_support
+         option (#9037).
+         """
+-
+-        class MockConfig:
+-            def __init__(self, config):
+-                self.config = config
+-
+-            def getini(self, name):
+-                return self.config[name]
+-
+         option = "disable_test_id_escaping_and_forfeit_all_rights_to_community_support"
+ 
+         values: list[tuple[Any, str]] = [
+-            (MockConfig({option: True}), "ação"),
+-            (MockConfig({option: False}), "a\\xe7\\xe3o"),
++            (_IdMakerConfig({option: True}), "ação"),
++            (_IdMakerConfig({option: False}), "a\\xe7\\xe3o"),
+         ]
+         for config, expected in values:
+             result = IdMaker(

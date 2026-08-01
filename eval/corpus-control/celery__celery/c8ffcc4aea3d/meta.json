@@ -1,0 +1,14 @@
+{
+  "repo": "celery/celery",
+  "sha": "c8ffcc4aea3d548bd81a765d6960318aa5d19d52",
+  "kind": "control_good",
+  "subject": "Changed _apply_chord_incr to use int value",
+  "evidence_subject": "Changed _apply_chord_incr to use int value",
+  "author": "Wiliam Souza",
+  "date": "2015-04-15T14:53:16-03:00",
+  "impl_files": [
+    "celery/backends/cache.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

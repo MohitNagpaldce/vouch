@@ -1,0 +1,1064 @@
+{
+  "model": "gpt-5.1",
+  "n": 55,
+  "ok": 55,
+  "records": [
+    {
+      "repo": "encode/httpx",
+      "sha": "4cbf13ece2e584b45b935df0a0c670e1863c4569",
+      "kind": "merged_then_reverted",
+      "subject": "Raise `TypeError` on invalid query params. (#2523)",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": [
+        {
+          "file": "httpx/_utils.py",
+          "line": 67,
+          "message": "Behavioral change: primitive_value_to_str now raises TypeError for any type other than str, float, int, bool, or None, instead of implicitly calling str(value). This is intentional per the new test, but may break users who relied on implicit coercion of other types (e.g., custom classes with __str__, Decimal, Enum). Consider whether this is an acceptable backward-incompatible change or should be guarded/softened."
+        }
+      ]
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "71cbde8ba4cab32dd96ccb91e9db20216587fae9",
+      "kind": "merged_then_reverted",
+      "subject": "Use Python 3.8 asyncio.Stream where possible (#369)",
+      "status": "ok",
+      "likelihood": 75,
+      "findings": [
+        {
+          "file": "httpx/concurrency/asyncio/compat.py",
+          "line": 32,
+          "message": "The Stream protocol declares close(self) -> Awaitable[None], and start_tls(...) -> None, and write(self, data) -> Awaitable[None]. These do not match the asyncio.Stream API on Python 3.8+, where close() is sync and returns None, write() is sync and returns None, and start_tls() returns a new Stream. Using asyncio.connect() and typing it as this Protocol is inconsistent and may hide real API mismatches; at runtime, TCPStream.close() will call stream.close() without awaiting (fine for real Stream, but type annotations and Protocol are misleading)."
+        },
+        {
+          "file": "httpx/concurrency/asyncio/compat.py",
+          "line": 45,
+          "message": "connect_compat uses asyncio.connect(*args, **kwargs) for Python >= 3.8, but asyncio.connect() does not exist in the stdlib asyncio API (the usual call is asyncio.open_connection or asyncio.Stream.connect in 3.11+). This is very likely an AttributeError at runtime on supported Python versions."
+        },
+        {
+          "file": "httpx/concurrency/asyncio/compat.py",
+          "line": 18,
+          "message": "Stream.close is annotated as returning Awaitable[None], but in the Python >= 3.8 branch a real asyncio.Stream (if it exists) has close() as a synchronous method returning None. The mismatch between the Protocol and actual objects may confuse type checking and could mask incorrect usage."
+        },
+        {
+          "file": "httpx/concurrency/asyncio/compat.py",
+          "line": 30,
+          "message": "Stream.write is annotated as returning Awaitable[None], but asyncio streams typically have write() as a synchronous method returning None and drain() as the awaitable. The returned _OptionalAwait in StreamCompat.write is a custom pattern that diverges from asyncio.Stream and may not be expected by callers, although current TCPStream.write_no_block ignores the return value."
+        },
+        {
+          "file": "httpx/concurrency/asyncio/backend.py",
+          "line": 141,
+          "message": "TCPStream.close now calls self.stream.close() without awaiting it. For the StreamCompat wrapper, close() returns an _OptionalAwait, which is never awaited here, so wait_closed() may never be called. For real asyncio.Stream (>=3.8), close() is synchronous and this is fine, but behavior differs between branches and may lead to resource leaks on older versions."
+        }
+      ]
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "939f3ce7ce43d11f3a9829dabaa292b3a906b56d",
+      "kind": "merged_then_reverted",
+      "subject": "Add content-length header for empty bytestream (#866)",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": []
+    },
+    {
+      "repo": "fastapi/fastapi",
+      "sha": "508f9ce9547972dc4feb997f53ce332716afee88",
+      "kind": "regression_fix",
+      "subject": ":bug: Fix regression, Swagger UI with deep linking (#350)",
+      "status": "ok",
+      "likelihood": 10,
+      "findings": []
+    },
+    {
+      "repo": "fastapi/fastapi",
+      "sha": "88d4f2cb1814392f54011b2bbd3fe55c5f2a3278",
+      "kind": "regression_fix",
+      "subject": "\ud83d\udc1b Fix form field regression (#12194)",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": [
+        {
+          "file": "fastapi/dependencies/utils.py",
+          "line": 795,
+          "message": "Changed assignment from values[field.name] to values[field.alias]. This aligns with using the alias in the incoming form data (e.g. alias 'with'), but may affect compatibility if previously code relied on the internal model field name being present in the parsed body instead of the alias, especially for fields with no alias or when alias behavior differs between Pydantic v1 and v2."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "6c4a77ba24854dab793a8ff72110a0a24c403c9f",
+      "kind": "merged_then_reverted",
+      "subject": "Use `default=True` as a sentinel for non-boolean flags",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": []
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "8bc912710774c7b4c84f5d4effd0c764f3e2bbb9",
+      "kind": "merged_then_reverted",
+      "subject": "Revert \"Merge Stable into master\"",
+      "status": "ok",
+      "likelihood": 65,
+      "findings": [
+        {
+          "file": "src/click/exceptions.py",
+          "line": 116,
+          "message": "The type of `param_hint` in BadParameter and MissingParameter has been narrowed from `Sequence[str] | str | None` to `str | None`. This is a public API change and will now reject previously valid usages that passed a sequence of strings. High risk of breaking user code relying on the documented, broader type."
+        },
+        {
+          "file": "src/click/core.py",
+          "line": 2872,
+          "message": "The special handling for Enum defaults (`default_string = default_value.name`) was removed. Help text will now render Enum defaults via `str(default_value)`, changing user-visible behavior and possibly breaking expectations and existing tests that rely on the enum name formatting."
+        },
+        {
+          "file": "src/click/shell_completion.py",
+          "line": 373,
+          "message": "Zsh completion formatting no longer escapes colons in item values. This contradicts the prior documented behavior and comments about `_describe` being picky, and may reintroduce bugs for completion items containing colons in zsh. The corresponding regression tests have been removed, increasing risk."
+        },
+        {
+          "file": "src/click/testing.py",
+          "line": 99,
+          "message": "The `StreamMixer.__del__` method that closed `stderr`, `stdout`, and `output` was removed. This may reintroduce resource leaks or nondeterministic behavior in tests relying on proper closure/flushing order, especially around stderr flushing, even though some tests were adjusted."
+        },
+        {
+          "file": "tests/test_options.py",
+          "line": 1305,
+          "message": "Enum-related tests for choice metavars and default rendering were deleted, and assertions simplified to `str(i)` behavior. This aligns tests with the code changes but simultaneously removes coverage for previously supported Enum behavior, suggesting a potential unintentional regression in how choices and defaults are displayed."
+        },
+        {
+          "file": "tests/test_shell_completion.py",
+          "line": 354,
+          "message": "Zsh colon-handling tests were removed along with the escaping logic. Eliminating these tests without a clear deprecation or replacement path raises the chance that regressions in zsh completion with colons will go unnoticed."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "8e768e7ba68088766ee3e982f9ce8e6792674372",
+      "kind": "regression_fix",
+      "subject": "Fixed a regression on non windows systems",
+      "status": "ok",
+      "likelihood": 10,
+      "findings": [
+        {
+          "file": "click/_compat.py",
+          "line": 181,
+          "message": "_get_windows_console_stream previously accepted exactly one argument; it now accepts any number via *x. This is backward-compatible for all existing callers and reduces the chance of TypeError if additional arguments are passed. The change is minimal, self-contained, and unlikely to introduce regressions."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "93c6966eb3a575c2b600434d1cc9f4b3aee505ac",
+      "kind": "regression_fix",
+      "subject": "testing/CliRunner: Fix regression related to EOF introduced in 262bdf0",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": [
+        {
+          "file": "src/click/testing.py",
+          "line": 341,
+          "message": "Behavioral change: EOFError is now raised specifically from StopIteration in visible_input/hidden_input instead of via _NamedTextIOWrapper.__next__. This looks like a targeted fix for EOF handling regression, but it does subtly change where/how EOFError is raised. Given new tests, risk seems low but worth noting as a behavior change for callers relying on prior behavior."
+        },
+        {
+          "file": "tests/test_chain.py",
+          "line": 166,
+          "message": "Test expectation updated: previously allowed an extra blank line and 'Aborted!' at the end of output, now requires exact match with expect and no exception. This tightens the contract and may cause previously tolerated behavior to be treated as failure, but is consistent with fixing the referenced regression."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "b625654063f03936c65f33d1f5025376f57f4a06",
+      "kind": "regression_fix",
+      "subject": "Fixed a regression for echo_via_pager on 3.x.  This fixes #185",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "click/_termui_impl.py",
+          "line": 301,
+          "message": "Piping text through a pager now assumes `text` is a Unicode string and unconditionally encodes it: `text.encode(encoding, 'replace')`. If existing callers sometimes pass `bytes`, this will raise `AttributeError` (no `.encode` on bytes) or double-encode data. The prior implementation accepted both text and bytes-like objects."
+        },
+        {
+          "file": "click/_termui_impl.py",
+          "line": 313,
+          "message": "Temporary-file pager now opens the file in binary mode and always encodes `text` with `get_best_encoding(sys.stdout)`. If `text` can be bytes in some code paths, this will similarly fail or double-encode. Also, previous behavior relied on `open_stream(..., 'w')` text-mode defaults, so this is a behavior change on Windows (newline translation) and might affect tests or expectations there."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "e74508119a1e8ba59bf96a45fa1a149cd292a79d",
+      "kind": "regression_fix",
+      "subject": "progressbar: fix regression with hidden bars",
+      "status": "ok",
+      "likelihood": 10,
+      "findings": []
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "e798f64ffde20c549e2e0df5834e4194c74adb0a",
+      "kind": "merged_then_reverted",
+      "subject": "Use shlex.quote for quoting shell arguments",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "click/_termui_impl.py",
+          "line": 441,
+          "message": "Using shlex_quote(editor) while still passing shell=True changes behavior for composite editor commands (e.g. 'vim -O' or 'code --wait'); these will now be treated as a single shell word and likely fail. Previously such multi-word EDITOR values were supported."
+        },
+        {
+          "file": "click/_termui_impl.py",
+          "line": 441,
+          "message": "Substituting shlex_quote for editor and filename with shell=True reduces injection risk but is semantically inconsistent: shlex_quote is primarily intended for shell=False argv construction or embedding in shell snippets, not simple command strings. This may introduce subtle cross-platform quoting issues."
+        },
+        {
+          "file": "click/_termui_impl.py",
+          "line": 513,
+          "message": "Replacing manual quote-stripping with shlex_quote(url) on Windows and Cygwin might break existing callers that relied on embedded quotes or characters that Windows cmd.exe expects unquoted; behavior change could be user-visible even if safer."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "1d4448abe335741c61b3c8c5f99e1607a13f7e3d",
+      "kind": "merged_then_reverted",
+      "subject": "Handle BaseExceptions (#2222)",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": [
+        {
+          "file": "flask/app.py",
+          "line": 1994,
+          "message": "Bare `except:` will catch all BaseException subclasses (KeyboardInterrupt, SystemExit, GeneratorExit). This is intentional for the new behavior but slightly broad; ensure this does not interfere with any existing mechanisms that rely on those exceptions propagating unmodified beyond setting `error`."
+        },
+        {
+          "file": "flask/app.py",
+          "line": 1994,
+          "message": "`error = sys.exc_info()[1]` assumes that `sys` is imported in this module. If not already present at top of file, this will raise a NameError during request handling."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "2aa26fff04a98f2435e8e3015e92ef6108d3b485",
+      "kind": "merged_then_reverted",
+      "subject": "Revert \"Merge pull request #859 from wvh/register_error_handler\"",
+      "status": "ok",
+      "likelihood": 70,
+      "findings": [
+        {
+          "file": "flask/blueprints.py",
+          "line": 399,
+          "message": "Removed Blueprint.register_error_handler, a public, documented method (versionadded 0.11) without providing a replacement or deprecation path. This is likely a backward-incompatible API break for code using blueprints\u2019 non-decorator error handler registration."
+        },
+        {
+          "file": "flask/testsuite/blueprints.py",
+          "line": 296,
+          "message": "Corresponding test for blueprint-specific user error handling via register_error_handler was removed, suggesting intentional removal but increasing risk of silently breaking existing user code depending on this API."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "a22d143f96ee3c7d14887e871b34a84683835a3f",
+      "kind": "merged_then_reverted",
+      "subject": "Add `python_requires` metadata for PyPI",
+      "status": "ok",
+      "likelihood": 5,
+      "findings": []
+    },
+    {
+      "repo": "psf/black",
+      "sha": "00e7e12a3a412ea386806d5d4eeaed345e912940",
+      "kind": "regression_fix",
+      "subject": "Regression fix: leave R prefixes capitalization alone (#2285)",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": [
+        {
+          "file": "src/black/linegen.py",
+          "line": 226,
+          "message": "normalize_string_prefix() is now called for all docstrings before extracting the prefix. If normalize_string_prefix ever drops or reorders prefix characters when remove_u_prefix is False, get_string_prefix() and subsequent slicing could misbehave; worth confirming normalize_string_prefix is a no-op in that case aside from optional 'u' removal."
+        },
+        {
+          "file": "src/black/strings.py",
+          "line": 87,
+          "message": "get_string_prefix() no longer lowercases prefix characters. Call sites in trans.py have been updated to call .lower() where case-insensitive checks are intended, but any external or missed internal callers expecting lowercased prefixes could see behavior changes; a quick grep for get_string_prefix usages is advisable."
+        }
+      ]
+    },
+    {
+      "repo": "psf/black",
+      "sha": "455de7703ea2c4144f8c1bb2c352974ac9b2403f",
+      "kind": "regression_fix",
+      "subject": "Fix another f-string regression (#4339)",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": []
+    },
+    {
+      "repo": "psf/black",
+      "sha": "6dca5278a3159cb35e8b9076bf81eacd35c1f0a7",
+      "kind": "regression_fix",
+      "subject": "Fix regression: unexpected parentheses around non-mathematical powers",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": [
+        {
+          "file": "black.py",
+          "line": 1819,
+          "message": "The new visit_factor assumes exactly two children (`_operator, operand = node.children`). If the grammar ever yields a different arity for `factor` (e.g., error recovery, future syntax changes, or unexpected CST shapes), this will raise a ValueError. The previous implementation indexed directly into `children[1]` and would not fail on extra children."
+        },
+        {
+          "file": "black.py",
+          "line": 1821,
+          "message": "The additional guard `operand.children[1].type == token.DOUBLESTAR` narrows the transformation to only true exponentiation. This is likely intentional, but behavior differs from the prior version which only checked `type == syms.power` and `len(children) == 3`. Any previous edge cases that relied on the broader condition will now format differently; verify that this is desired."
+        },
+        {
+          "file": "tests/data/function2.py",
+          "line": 8,
+          "message": "Test data changed to include unary minus usage (`-limited.pop()` and `-very.long.value.for_the_argument`), which aligns with the visit_factor change, but no corresponding expected-output test is shown in this diff. Ensure golden/expected formatting files are updated accordingly so the new behavior is validated by tests."
+        }
+      ]
+    },
+    {
+      "repo": "psf/black",
+      "sha": "7d032fa848c8910007a0a41c1ba61d70d2846f48",
+      "kind": "merged_then_reverted",
+      "subject": "Use lowercase hex numbers fixes #1692 (#1775)",
+      "status": "ok",
+      "likelihood": 12,
+      "findings": [
+        {
+          "file": "src/black/__init__.py",
+          "line": 5192,
+          "message": "Refactor of numeric literal normalization into helper functions changes behavior for any hex literal starting with \"0x\" (including those that may already be lowercase); however, this aligns with the new documented intent (use lowercase hex) and tests were updated accordingly. Risk is mainly that some obscure numeric-literal edge case (e.g., unconventional scientific notation forms or complex/long literals) might rely on previous inlined logic, but the extracted helpers are effectively equivalent logic-wise."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "086e19d8e175cccb630ee3589affdd2f38075ecd",
+      "kind": "merged_then_reverted",
+      "subject": "Clarify the contract of Response#ok, and avoid exceptions in it",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 616,
+          "message": "Behavioral change: `Response.ok` no longer depends on `raise_for_status()` and thus no longer treats all conditions that previously raised `HTTPError` as non-ok. Historically, `raise_for_status()` only checks `status_code` ranges, so this is likely safe, but if any subclass or custom adapter overrides `raise_for_status()` with additional logic, `ok` will now diverge from that behavior."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 616,
+          "message": "Change is arguably an improvement (removes exception overhead and is simpler) but might affect any user code that relied on side effects or custom overrides of `raise_for_status()` when accessing `response.ok` (e.g., logging in an overridden method)."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "178ff62b934c30278114028f654e42374206c291",
+      "kind": "merged_then_reverted",
+      "subject": "Lukasa is lazy",
+      "status": "ok",
+      "likelihood": 70,
+      "findings": [
+        {
+          "file": "requests/adapters.py",
+          "line": 231,
+          "message": "Changing bare `raise` inside an `except Exception as e:` block to `raise e` alters the traceback: `raise` preserves the original stack and exception context, while `raise e` re-raises from this frame and can lose original traceback/context. This is a behavioral change that may break existing error reporting, debugging, and possibly test expectations relying on tracebacks or __cause__/__context__."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "19cff44ec1b8eeec99459b504a681aa440f6344c",
+      "kind": "merged_then_reverted",
+      "subject": "fix response with utf8 bom",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 858,
+          "message": "The new logic only handles an exact lowercased match to 'utf-8'. Common equivalent labels such as 'utf8', 'utf_8', 'utf-8-sig', or codec names returned by chardet/charset_normalizer may not be caught, resulting in inconsistent BOM handling depending on the exact encoding string."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 858,
+          "message": "Forcing 'utf-8-sig' when encoding is declared as 'utf-8' changes behavior for responses that previously decoded correctly but legitimately began with the UTF-8 BOM byte sequence. Those bytes will now be stripped, which may be a breaking change for consumers expecting the BOM to be preserved in response.text."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 858,
+          "message": "The comment 'Forcefully remove BOM from UTF-8' does not cover non-UTF-8 BOMs. If a response is labeled incorrectly as another encoding but actually contains a UTF-8 BOM, this change will not address it and may give a false sense of completeness."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "26ed7c2e1dce4271f3a3b111a167a6dcca3acddf",
+      "kind": "merged_then_reverted",
+      "subject": "fix failing test \"test_prepare_unicode_url\"",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 310,
+          "message": "Behavior change: Previously, passing hooks=None to prepare() would propagate None into prepare_hooks (and whatever semantics that method had for a None value). Now, None is coerced to an empty list. If prepare_hooks or any callers relied on distinguishing between no hooks (None) and an empty hook list, this could be a subtle behavior change. If prepare_hooks already normalizes/iterates over hooks and did not support None, this is a safe robustness fix; otherwise it may regress edge cases."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "2da7fe08586aeaff614c017a9a834a22c937384a",
+      "kind": "merged_then_reverted",
+      "subject": "Use urllib for chunked requests",
+      "status": "ok",
+      "likelihood": 65,
+      "findings": [
+        {
+          "file": "requests/adapters.py",
+          "line": 435,
+          "message": "Behavior for chunked requests is substantially changed: previously the adapter manually streamed iterable bodies as HTTP/1.1 chunked encoding via low-level httplib APIs; now it delegates to urllib3's conn.urlopen(chunked=chunked). This may break compatibility with non-iterable bodies, generators that expect per-chunk control, or environments relying on the prior manual implementation."
+        },
+        {
+          "file": "requests/adapters.py",
+          "line": 435,
+          "message": "The old path explicitly handled proxies via `if hasattr(conn, 'proxy_pool'): conn = conn.proxy_pool` and then used `conn._get_conn`; the new unified call to `conn.urlopen(..., chunked=chunked)` may behave differently with proxy connections, potentially changing connection reuse or proxy tunneling behavior."
+        },
+        {
+          "file": "requests/adapters.py",
+          "line": 435,
+          "message": "Manual error handling around `low_conn` (`low_conn.close()` in a broad except) has been removed. If urllib3\u2019s chunked path does not identically clean up on all exceptions, this could lead to leaked or unhealthy connections in edge cases."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "34af72c87d79bd8852e8564c050dd7711c6a08d6",
+      "kind": "merged_then_reverted",
+      "subject": "Restrict URL preparation to HTTP/HTTPS",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 350,
+          "message": "Behavior change: URLs starting with custom schemes that begin with 'http' (e.g. 'http+custom://') were previously passed through unchanged, but now will go through RFC 3986 parsing logic due to the stricter ('http://', 'https://') check. This is intentional for 'http+unix', but may be a subtle breaking change for any existing custom schemes relying on the old behavior."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "35d5ac6e8f5f4357f945b8c4890388207f7f1c00",
+      "kind": "merged_then_reverted",
+      "subject": "Use utf-8 as the default encoding",
+      "status": "ok",
+      "likelihood": 40,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 794,
+          "message": "Behavioral change: previously, on any exception during encoding detection, the code would fall through to later logic (likely falling back to `apparent_encoding` or `encoding` attributes). Now it unconditionally returns 'utf-8', which may silently change response decoding semantics for all exception paths. This may be intended as a safer default but is a potentially breaking change for users relying on previous fallback behavior."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "4b66260cb7c88a41a971d2458d75efd556f2e00e",
+      "kind": "merged_then_reverted",
+      "subject": "New helper method `set_http_proxy` in `Session` to set proxies in a more user friendly way",
+      "status": "ok",
+      "likelihood": 15,
+      "findings": [
+        {
+          "file": "requests/sessions.py",
+          "line": 703,
+          "message": "Function argument order is http_scheme, http_host, http_port, http_url, ... without keyword-only enforcement. Positional use (e.g., set_http_proxy('http://10.0.0.1', 8080)) will be interpreted as scheme='http://10.0.0.1', host=8080 instead of host, port, potentially confusing existing users if they try to call this helper positionally."
+        },
+        {
+          "file": "requests/sessions.py",
+          "line": 712,
+          "message": "Docstring states \"See :ref:`Proxies documentation <_proxies>` for details.\" but this new helper is not part of the existing public API; adding it may create expectations of long-term support and could be considered an API surface increase without deprecation path."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "4dd3d1a1a2534f2996a368ebe26114bf974e15f9",
+      "kind": "regression_fix",
+      "subject": "Fix #785 & add regression test.",
+      "status": "ok",
+      "likelihood": 15,
+      "findings": []
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "537def4a4fb284a216f56f3bae308d28ccc67b1f",
+      "kind": "regression_fix",
+      "subject": "fix regression with cookiejar.iteritems()",
+      "status": "ok",
+      "likelihood": 55,
+      "findings": [
+        {
+          "file": "requests/cookies.py",
+          "line": 207,
+          "message": "On Python 3, keys() now returns an iterator (iterkeys) instead of a list. This breaks the standard mapping contract and existing code/tests that expect list-like behavior: e.g., list(jar.keys()) would still work but code relying on keys() returning a concrete list (len(), slicing, repr, duplication) may change semantics."
+        },
+        {
+          "file": "requests/cookies.py",
+          "line": 217,
+          "message": "On Python 3, values() now returns an iterator (itervalues) instead of a list, same contract change as keys()."
+        },
+        {
+          "file": "requests/cookies.py",
+          "line": 229,
+          "message": "On Python 3, items() now returns an iterator (iteritems) instead of a list. This affects any user code expecting list(RequestsCookieJar().items())-like concrete list semantics or depending on repr/len without materializing."
+        },
+        {
+          "file": "test_requests.py",
+          "line": 580,
+          "message": "New test uses jar.iteritems() directly, which is not a standard Mapping API in Python 3. While compat.is_py3 likely makes this work for now, publicly encouraging iteritems/itervalues/iterkeys usage can complicate future Python 3-only refactors."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "544d08d0f61c35358cf13b4a6b677e4e51dbbe7e",
+      "kind": "merged_then_reverted",
+      "subject": "If Content-Length is already set, don't override",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 389,
+          "message": "The early return when 'Content-Length' is already present changes behavior for callers that previously relied on prepare_content_length() to recalculate or correct an existing Content-Length header (e.g., after mutating the body). If such usage exists, this could cause incorrect Content-Length values to be sent. If the intent is to always honor user-specified headers, this is correct, but it is a subtle behavioral change worth validating against existing tests and documented guarantees."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "62a23bfbdecf54e13e571237df5a175e53d539cb",
+      "kind": "merged_then_reverted",
+      "subject": "Auto-detect CA Cert path instead of requiring users to hack setup.py",
+      "status": "ok",
+      "likelihood": 70,
+      "findings": [
+        {
+          "file": "setup.py",
+          "line": 35,
+          "message": "Uses requests.utils.get_os_ca_bundle_path() at import/setup time, but the module 'requests' itself is not imported in setup.py. This will raise a NameError ('requests' is not defined') when running setup.py."
+        },
+        {
+          "file": "setup.py",
+          "line": 35,
+          "message": "Evaluating get_os_ca_bundle_path() during setup.py execution may not reflect the target installation environment (e.g., building wheels or cross-environment builds), potentially leading to incorrect conditional dependencies."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "730c0e2e2bef77968a86962f9d5f2bebba4d19ec",
+      "kind": "merged_then_reverted",
+      "subject": "Initial stop-the-bleeding fix",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 214,
+          "message": "Calling r.content unconditionally forces full response-body download on each redirect hop. This changes performance characteristics (memory, latency, bandwidth) and may be undesirable for very large responses, but is unlikely to be a functional defect if redirects normally return small bodies."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 267,
+          "message": "A second unconditional r.content read after the redirect loop similarly changes behavior by always buffering the entire body. If the response is streamed/iterated elsewhere, this may alter memory usage and timing, but functionally r.content is a documented property, so this is low risk for correctness and higher for performance only."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "796d3225ddf08a9ebaa429209b9d077c3a8f99b8",
+      "kind": "merged_then_reverted",
+      "subject": "[kennethreitz/requests#1208] adding a max_retries argument",
+      "status": "ok",
+      "likelihood": 55,
+      "findings": [
+        {
+          "file": "requests/adapters.py",
+          "line": 45,
+          "message": "Removed `self.max_retries` from HTTPAdapter.__init__ but did not add any per-adapter storage of retries; behavior changes from a configurable attribute to a per-call parameter only. This may break code that relies on setting adapter.max_retries."
+        },
+        {
+          "file": "requests/adapters.py",
+          "line": 166,
+          "message": "Signature of HTTPAdapter.send was changed to add `max_retries` between `timeout` and `verify`. This can break existing code that calls send with positional arguments beyond `timeout`, as their meanings shift."
+        },
+        {
+          "file": "requests/adapters.py",
+          "line": 188,
+          "message": "`retries` now uses the send() parameter `max_retries` instead of adapter-level configuration. Any code that previously configured retries via HTTPAdapter.max_retries will silently stop working as before."
+        },
+        {
+          "file": "requests/sessions.py",
+          "line": 80,
+          "message": "SessionRedirectMixin.resolve_redirects signature changed to include `max_retries` before `verify`. Any external overrides/monkeypatches of resolve_redirects using positional arguments are at risk of breakage."
+        },
+        {
+          "file": "requests/sessions.py",
+          "line": 237,
+          "message": "Session.request signature changed to add `max_retries` before `allow_redirects`. Callers using positional args for allow_redirects and subsequent parameters may experience argument shifting and incorrect behavior."
+        },
+        {
+          "file": "requests/sessions.py",
+          "line": 399,
+          "message": "Session.send now pulls `max_retries` from kwargs and passes it into resolve_redirects and adapter.send. If max_retries is omitted, value becomes None in some flows (e.g., via kwargs.get('max_retries')), potentially overriding the default expected by HTTPAdapter.send if not normalized."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "840540b6b1f07ef87faab73392c03fbef0dcc9fe",
+      "kind": "merged_then_reverted",
+      "subject": "Proxy urls should have explicit schemes.",
+      "status": "ok",
+      "likelihood": 75,
+      "findings": [
+        {
+          "file": "requests/adapters.py",
+          "line": 193,
+          "message": "Behavioral change for proxies: previously `prepend_scheme_if_needed` would transparently add the request URL scheme to a proxy URL missing a scheme; now `except_on_missing_scheme` is called and will raise `MissingSchema` instead. This is a backward-incompatible change that may break existing configurations that rely on scheme-less proxy URLs (e.g., `myproxy:8080`)."
+        },
+        {
+          "file": "requests/adapters.py",
+          "line": 193,
+          "message": "The replacement of `prepend_scheme_if_needed(proxy, urlparse(url.lower()).scheme)` with `except_on_missing_scheme(proxy)` removes the logic that normalizes and constructs a proper proxy URL (including host/port and path handling). The subsequent `ProxyManager(self.poolmanager.connection_from_url(proxy))` now assumes the original proxy string is already a valid URL, which may not hold and can cause failures for inputs that previously worked."
+        },
+        {
+          "file": "requests/utils.py",
+          "line": 525,
+          "message": "The new helper `except_on_missing_scheme` is not a drop-in behavioral equivalent of the removed `prepend_scheme_if_needed`; no callers were updated except the proxy path, so any other (current or future) uses expecting the old normalization behavior would be incorrect. Consider keeping `prepend_scheme_if_needed` or providing a separate, clearly named validation helper while preserving existing behavior where needed."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "91766548d10cd5ebf46aba376f9e000263285875",
+      "kind": "merged_then_reverted",
+      "subject": "Revert \"Make safe_mode play nice with timeout (fixes #312)\"",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 450,
+          "message": "The initialization of `r = None` before the try block was removed and is now only set in the MaxRetryError safe_mode path. If any other exception type is raised while in safe_mode and then suppressed, `r` may be left undefined or holding a stale value from a previous iteration/context, depending on surrounding code. This risks an UnboundLocalError or incorrect response object usage after the try/except block."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 597,
+          "message": "Changing `while True:` to `while 1:` is behaviorally equivalent in CPython and most Python implementations; this is low risk but slightly reduces readability without clear benefit."
+        },
+        {
+          "file": "test_requests.py",
+          "line": 619,
+          "message": "Removal of `test_timeout` reduces coverage of timeout/safe_mode behavior. Combined with the change in how `r` is initialized, regressions in timeout handling might go undetected; ensure that equivalent coverage exists elsewhere if this behavior is intentionally changed."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "9217a2523d7d4fafeebb259884276fc349a376b1",
+      "kind": "merged_then_reverted",
+      "subject": "Call auth callable before encoding body data",
+      "status": "ok",
+      "likelihood": 65,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 502,
+          "message": "`self._enc_data` was replaced by an inline call to `self._encode_params(self.data)` but `body` is now set to the *second* return value of `_encode_params`, whereas the previous behavior used the fully encoded body from `self._enc_data`. If `_enc_data` previously returned a different structure or encoding than `(body_params, body)`, this may change request bodies in a backward-incompatible way."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 503,
+          "message": "Content-Type inference logic changed: before, any non-str `self.data` triggered `application/x-www-form-urlencoded`. Now `content_type` is set only when `isinstance(body_params, list) and isinstance(body, str)`. This can break cases where `self.data` is a dict or iterable that `_encode_params` returns in a different shape but was previously sent as `application/x-www-form-urlencoded`."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 503,
+          "message": "The new logic assumes `_encode_params` returns `(body_params, body)` where `body_params` is a list for form-encoded data. If `_encode_params` can also return tuples/lists for non-form cases or has other return conventions, requests may be misclassified and have incorrect or missing `Content-Type` headers."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 493,
+          "message": "The block handling body and Content-Type has been moved below netrc-based auth handling. If any auth-related mutation depends on `self.data` or `self.files` (directly or indirectly), this reordering might introduce subtle behavior changes, though risk here is lower than the encoding changes."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "9a20afd6b5140da4b9f187a3c0c6ea7010baeee9",
+      "kind": "merged_then_reverted",
+      "subject": "Refactor default params",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "AUTHORS.rst",
+          "line": 165,
+          "message": "Malformed reStructuredText link: missing space before `(` and the closing `>` and `)` are out of order. Should be something like \"- Brian Samek (`@bsamek <https://github.com/bsamek>`_)\"."
+        },
+        {
+          "file": "requests/sessions.py",
+          "line": 404,
+          "message": "Behavioral change: default `stream` changed from `None` (inherit global/adapter default) to explicit `False`. This may alter behavior for callers relying on `None` semantics or downstream code distinguishing `None` vs `False`."
+        },
+        {
+          "file": "requests/sessions.py",
+          "line": 405,
+          "message": "Behavioral change: default `verify` changed from `None` (defer to global default or environment) to explicit `True`. This may break callers that passed no `verify` and depended on custom global settings or environment-driven behavior; also changes behavior in code that checks for `None` specifically."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "a9470fe31f0c9590dafeac4b53f91fbf11fd6677",
+      "kind": "regression_fix",
+      "subject": "Fix regression in API caused by commit 85400d8d6751071ef78f042d1efa72bdcf76cc0e   - The added optional parameter changes API and should default to None",
+      "status": "ok",
+      "likelihood": 5,
+      "findings": []
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "bd100472443dcf4189630f6b1ed3ec0a61259dd8",
+      "kind": "merged_then_reverted",
+      "subject": "#4965 fix: Accessing response.content twice removes forgets read error.",
+      "status": "ok",
+      "likelihood": 65,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 753,
+          "message": "Behavior of iter_content has changed: previously ProtocolError/DecodeError/ReadTimeoutError were wrapped and raised immediately; now iter_content swallows them and only raises after the loop via finally, potentially altering control flow and exception timing for consumers relying on immediate propagation."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 753,
+          "message": "In the streaming branch, self._error is set once and never cleared on success. If iter_content is called again after a transient error scenario that did not trigger the finally-branch in some edge case, or if other code sets _error, later successful calls may still raise a stale _error at the end of content retrieval."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 753,
+          "message": "The finally block raises self._error outside the except blocks; this can raise even after some chunks may already have been yielded if _error is set mid-stream, changing partial-consumption semantics compared to raising at the point of failure."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 640,
+          "message": "Public attribute 'error' is removed/replaced with private '_error'. Any external or third-party code depending on Response.error will break; this is a backward-incompatible API change in a widely used library."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 840,
+          "message": "Response.content now depends on _error potentially being set by iter_content; because iter_content\u2019s control flow has changed, callers that previously caught ChunkedEncodingError/ContentDecodingError/ConnectionError directly from iter_content or raw.stream may now see different exception types or timing."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "c19650b00f0c169cdf6372a093425830e11a8771",
+      "kind": "merged_then_reverted",
+      "subject": "Fix SSL3 error on Ubuntu 12.04",
+      "status": "ok",
+      "likelihood": 40,
+      "findings": [
+        {
+          "file": "requests/packages/urllib3/connectionpool.py",
+          "line": 99,
+          "message": "The new behavior changes the default SSL protocol negotiation semantics: previously, the SSL module\u2019s default (often PROTOCOL_SSLv23 with secure options) was used; now the code first forces PROTOCOL_SSLv3 and only falls back to PROTOCOL_SSLv23 on SSLError. This may unintentionally enable SSLv3 on servers that would otherwise negotiate TLS-only, potentially weakening security and diverging from upstream urllib3 behavior."
+        },
+        {
+          "file": "requests/packages/urllib3/connectionpool.py",
+          "line": 99,
+          "message": "Hard-coding ssl.PROTOCOL_SSLv3 may fail on platforms where SSLv3 is disabled or unsupported and raise SSLError more frequently than expected, changing connection behavior relative to the prior implementation. This is a behavior change that may surface as connection failures or performance regressions and may require additional exception handling or configuration switches."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "ca0aea640d0cce01c126220b74362c9014cabbd6",
+      "kind": "merged_then_reverted",
+      "subject": "Fix for the issue https://github.com/kennethreitz/requests/issues/1280",
+      "status": "ok",
+      "likelihood": 85,
+      "findings": [
+        {
+          "file": "requests/sessions.py",
+          "line": 255,
+          "message": "Public API change: adding `return_response` parameter to `Session.request` alters the documented behavior ('Returns Response object') and may break callers and higher-level helpers that always expect a Response."
+        },
+        {
+          "file": "requests/sessions.py",
+          "line": 344,
+          "message": "`return_response` path returns the unprepared `Request` object (`req`) instead of a prepared request or response; this diverges from the function\u2019s documented contract and will likely confuse or break callers."
+        },
+        {
+          "file": "requests/sessions.py",
+          "line": 343,
+          "message": "Inconsistent indentation: the new `if not return_response:` block is indented with a tab and two spaces rather than 4 spaces, which may cause an `IndentationError` or at least violates style / CI checks."
+        },
+        {
+          "file": "requests/sessions.py",
+          "line": 255,
+          "message": "New parameter `return_response` is not documented in the docstring or type hints, increasing risk of misuse and regressions in downstream code."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "cfd6e25749dd17c6b511043a6720b672f74029ed",
+      "kind": "merged_then_reverted",
+      "subject": "fix failing test \"test_prepare_unicode_url\"",
+      "status": "ok",
+      "likelihood": 10,
+      "findings": []
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "d232948188f922c137dd709b53f77c49d1442c84",
+      "kind": "merged_then_reverted",
+      "subject": "Cache the value of the `Response.text` property",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 804,
+          "message": "The new text caching via self._text adds state that is never invalidated when response.content or encoding change. If user code mutates response._content, response.encoding, or related headers after first access to .text (or if other methods do so), .text will return a stale value."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 804,
+          "message": "Previously, .text was computed on each access; now it is computed once and cached. Any existing code that relied on a recomputation (e.g., changing encoding between accesses) may observe behavior changes. This is a semantic change that might break edge cases but is unlikely for typical usage."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "fbe48fbb7c5b96cde3a16453311e45f723516afd",
+      "kind": "merged_then_reverted",
+      "subject": "Add trusted domains",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "requests/sessions.py",
+          "line": 96,
+          "message": "SessionRedirectMixin.__init__ introduces an instance attribute trusted_domains, but SessionRedirectMixin was previously a mixin-only class with no __init__. Existing subclasses that define their own __init__ without calling super().__init__() will not get trusted_domains set, leading to AttributeError when accessing self.trusted_domains in should_strip_auth()."
+        },
+        {
+          "file": "requests/sessions.py",
+          "line": 123,
+          "message": "should_strip_auth now assumes self.trusted_domains exists. Any custom Session-like class or tests that use SessionRedirectMixin directly, or subclasses of Session that override __init__ without calling super(), may encounter AttributeError at runtime."
+        },
+        {
+          "file": "requests/sessions.py",
+          "line": 422,
+          "message": "Session.__init__ now calls super().__init__(). This changes MRO behavior: any additional base classes added to Session in downstream forks/extensions that rely on not having their __init__ invoked may see behavior changes. Also, if the MRO of Session changes in future, calling super() from a concrete class that inherits from a mixin might produce unexpected side effects."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "fc8fa1aa265bb14d59c68eb68a179bce17953967",
+      "kind": "regression_fix",
+      "subject": "Fix regression from #2844 regarding binary bodies.",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "requests/models.py",
+          "line": 81,
+          "message": "Changing `data` handling from `to_native_string(data)` to returning `data` directly alters behavior for text types. Previously, unicode on Python 2 would be encoded to native string; now it will be passed through. This may affect callers expecting implicit encoding for non-bytes `data`, but it appears intentional to preserve bytes for the new binary PUT test."
+        },
+        {
+          "file": "requests/models.py",
+          "line": 385,
+          "message": "New normalization step `if isinstance(params, (str, bytes)): params = to_native_string(params)` changes behavior for bytes query parameters by decoding to native string (platform default encoding). On Python 2 this may differ from the previous behavior where bytes may have been used as-is. Could affect non-ASCII query params if system encoding differs from expected (e.g., UTF-8 vs latin-1)."
+        }
+      ]
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "0b7a570afd5473d738e2c820520686aac9a63199",
+      "kind": "regression_fix",
+      "subject": "Fixes a regression where Enum fields would not propagate keyword arguments to the schema (#2109)",
+      "status": "ok",
+      "likelihood": 10,
+      "findings": []
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "24515489250de5d63c487e608f2f8d184b427498",
+      "kind": "merged_then_reverted",
+      "subject": "feat: allow accessing attributes as strings (#5501)",
+      "status": "ok",
+      "likelihood": 45,
+      "findings": [
+        {
+          "file": "pydantic/main.py",
+          "line": 296,
+          "message": "Adding __getitem__ to BaseModel changes the public API and semantics of subscription on all models. This may conflict with existing expectations/usages where __getitem__ is undefined or reserved for other behavior, and can break code relying on duck-typing with __getitem__ meaning mapping-like access (e.g., raising KeyError vs AttributeError)."
+        },
+        {
+          "file": "pydantic/main.py",
+          "line": 296,
+          "message": "Using getattr(self, item) means that missing keys raise AttributeError, while many callers using item access may expect KeyError. This can cause subtle bugs in code that distinguishes between these exception types or catches KeyError for control flow."
+        },
+        {
+          "file": "pydantic/main.py",
+          "line": 296,
+          "message": "No type checking or restriction on 'item' is present; passing non-str items (e.g., integers or slices) will be forwarded directly to getattr, which will raise a TypeError. This is a change from previous behavior where such usage would fail with a more obvious 'object is not subscriptable' error and may break callers relying on that failure mode."
+        }
+      ]
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "4520e61f38b69fd5f93e6f06b433c574777012a5",
+      "kind": "merged_then_reverted",
+      "subject": "parens",
+      "status": "ok",
+      "likelihood": 3,
+      "findings": []
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "6e0c5c336ca9d63952eb0bf3705ca9ea93f73d38",
+      "kind": "merged_then_reverted",
+      "subject": "fix coverage",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "pydantic/typing.py",
+          "line": 0,
+          "message": "The previous implementation of get_args() caught an IndexError from typing_get_args(tp) and treated it as no-args (empty tuple). The new implementation removes this try/except. If typing_get_args(tp) can still raise IndexError for some inputs, this will now propagate as an unhandled exception instead of falling back gracefully. Consider confirming that typing_get_args(tp) no longer raises IndexError in supported Python versions or reinstating a narrow guard if needed."
+        }
+      ]
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "8898b8fee91c5a9dd99f4eb0c05f6950c2f684e0",
+      "kind": "regression_fix",
+      "subject": "Fix regression in core schema generation for indirect definition references (#8702)",
+      "status": "ok",
+      "likelihood": 5,
+      "findings": [
+        {
+          "file": "pydantic/_internal/_core_utils.py",
+          "line": 231,
+          "message": "Bug fix: previously `if 'schema_ref' and 'ref' in definition` always evaluated truthy when 'ref' was present, regardless of whether 'schema_ref' existed. The corrected condition now properly checks both keys, reducing incorrect behavior risk rather than introducing it."
+        }
+      ]
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "8ff235ae86344b4963444466785d97a3e6cb8108",
+      "kind": "regression_fix",
+      "subject": "Fix failure to load `SecretStr` from JSON (regression in v2.4) (#7729)",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": []
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "b42fae081ce095769f60cf18d4657ba9b14a97b5",
+      "kind": "merged_then_reverted",
+      "subject": "Add nested json encoding (#3941)",
+      "status": "ok",
+      "likelihood": 30,
+      "findings": [
+        {
+          "file": "pydantic/main.py",
+          "line": 471,
+          "message": "New json() parameter is named `use_nested_encoders` but is threaded through as `encode_as_json` into internal dict generation; this is intentional but slightly confusing naming. No direct bug evident since tests cover the behavior."
+        },
+        {
+          "file": "pydantic/main.py",
+          "line": 776,
+          "message": "When encode_as_json/use_nested_encoders is True, `__json_encoder__` is applied to any remaining value types, which may change behavior for non-BaseModel nested values that were previously passed through unchanged. This is likely desired but is a behavioral change that could regress some edge cases."
+        }
+      ]
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "e34ff9255f281eaccac10d0436c082626d9146c3",
+      "kind": "merged_then_reverted",
+      "subject": "Fix `AnyUrl.build` doesn't do percent encoding (#3061) (#4224)",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": [
+        {
+          "file": "pydantic/networks.py",
+          "line": 249,
+          "message": "Query encoding assumes `key=value` pairs and splits on the first `=` only. This breaks for queries containing additional `=` characters (e.g. `token=a=b=c`) which will be over-split and incorrectly re-joined, altering the query semantics."
+        },
+        {
+          "file": "pydantic/networks.py",
+          "line": 249,
+          "message": "Query encoding logic does not preserve empty values or standalone keys reliably. For example, `a=&b` or `a` may be transformed unexpectedly due to unconditional split/join behavior."
+        }
+      ]
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "e690f0878e7ccae4bc50c84e022e94b9b59f6dcf",
+      "kind": "merged_then_reverted",
+      "subject": "add `configs` to validate_arguments (#1378)",
+      "status": "ok",
+      "likelihood": 30,
+      "findings": [
+        {
+          "file": "pydantic/decorator.py",
+          "line": 17,
+          "message": "The decorator now supports optional config_params via validate_arguments(func=None, **config_params). This changes the call semantics from a simple @validate_arguments to a decorator that can also be used as @validate_arguments(...). Need to confirm that no callers depended on validate_arguments having a single positional parameter or being passed non-callable first argument; otherwise behavior may change subtly."
+        },
+        {
+          "file": "pydantic/decorator.py",
+          "line": 31,
+          "message": "The conditional `if func:` will treat any falsy callable (objects with __bool__ returning False) as if no function was provided, returning the inner decorator instead of wrapping. Using `if func is not None:` would be safer, though in practice most callables are truthy."
+        },
+        {
+          "file": "pydantic/decorator.py",
+          "line": 107,
+          "message": "ValidatedFunction.__init__ now forwards **config_params into create_model, and create_model uses them to build a dynamic CustomConfig type for the Pydantic model. This assumes that all config_params are valid Pydantic Config attributes; invalid keys will not be caught here and may lead to runtime errors or ignored configuration in Pydantic. Tests should cover invalid or unexpected config params."
+        },
+        {
+          "file": "pydantic/decorator.py",
+          "line": 181,
+          "message": "Inner class Config now inherits from a dynamically-created CustomConfig instead of object. If CustomConfig defines attributes that conflict with those set in Config (e.g., extra), subclass precedence may override them unexpectedly. Need tests to ensure that user-supplied config does not unintentionally override required Config settings like extra=Extra.forbid, or vice versa."
+        }
+      ]
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "faee3301eb2c0d4157150a2f4cde2b4edb32ac8e",
+      "kind": "regression_fix",
+      "subject": "Fix regression in handling of nested dataclasses in `get_flat_models_from_field` (#3819)",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": []
+    }
+  ]
+}

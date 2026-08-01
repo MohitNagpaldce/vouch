@@ -1,0 +1,21 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "58630b82029a54717043e14c29651f20ff42a9d8",
+  "kind": "control_good",
+  "subject": "replace \"and or\" with \"if else\"",
+  "evidence_subject": "replace \"and or\" with \"if else\"",
+  "author": "David Lord",
+  "date": "2020-03-14T18:48:09-07:00",
+  "impl_files": [
+    "examples/i18nurls/application.py",
+    "examples/plnt/sync.py",
+    "examples/simplewiki/actions.py",
+    "src/werkzeug/datastructures.py",
+    "src/werkzeug/routing.py",
+    "src/werkzeug/security.py",
+    "src/werkzeug/serving.py",
+    "src/werkzeug/urls.py"
+  ],
+  "test_files": [],
+  "diff_lines": 117
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "eb515440df5b9a5f4acdb03ba722f4c1153d7dbc",
+  "kind": "control_good",
+  "subject": "pulled out all of OpenSSL except crypto",
+  "evidence_subject": "pulled out all of OpenSSL except crypto",
+  "author": "Jess Austin",
+  "date": "2013-10-26T12:35:07-05:00",
+  "impl_files": [
+    "werkzeug/serving.py"
+  ],
+  "test_files": [],
+  "diff_lines": 123
+}

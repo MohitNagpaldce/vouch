@@ -1,0 +1,165 @@
+diff --git a/CHANGELOG b/CHANGELOG
+index 367e3cefb..14d72e3d4 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -1,6 +1,9 @@
+ Changes between 2.0.0 and 2.0.1.devX
+ ----------------------------------------------
+ 
++- refine and unify initial capturing so that it works nicely 
++  even if the logging module is used on an early-loaded conftest.py
++  file or plugin.
+ - fix issue12 - show plugin versions with "--version" and
+   "--traceconfig" and also document how to add extra information 
+   to reporting test header
+diff --git a/_pytest/capture.py b/_pytest/capture.py
+index d0fe3c9b0..2da398383 100644
+--- a/_pytest/capture.py
++++ b/_pytest/capture.py
+@@ -19,10 +19,8 @@ def addouterr(rep, outerr):
+         if content:
+             repr.addsection("Captured std%s" % secname, content.rstrip())
+ 
+-def pytest_configure(config):
+-    config.pluginmanager.register(CaptureManager(), 'capturemanager')
+-
+ def pytest_unconfigure(config):
++    # registered in config.py during early conftest.py loading
+     capman = config.pluginmanager.getplugin('capturemanager')
+     while capman._method2capture:
+         name, cap = capman._method2capture.popitem()
+@@ -67,6 +65,14 @@ class CaptureManager:
+         else:
+             raise ValueError("unknown capturing method: %r" % method)
+ 
++    def _getmethod_preoptionparse(self, args):
++        if '-s' in args or "--capture=no" in args:
++            return "no"
++        elif hasattr(os, 'dup') and '--capture=sys' not in args:
++            return "fd"
++        else:
++            return "sys"
++
+     def _getmethod(self, config, fspath):
+         if config.option.capture:
+             method = config.option.capture
+diff --git a/_pytest/config.py b/_pytest/config.py
+index b62e222df..0c6c2e162 100644
+--- a/_pytest/config.py
++++ b/_pytest/config.py
+@@ -34,7 +34,7 @@ class Parser:
+ 
+     def getgroup(self, name, description="", after=None):
+         """ get (or create) a named option Group.
+-       
++
+         :name: unique name of the option group.
+         :description: long description for --help output.
+         :after: name of other group, used for ordering --help output.
+@@ -270,13 +270,16 @@ class Config(object):
+ 
+     def _setinitialconftest(self, args):
+         # capture output during conftest init (#issue93)
+-        name = hasattr(os, 'dup') and 'StdCaptureFD' or 'StdCapture'
+-        cap = getattr(py.io, name)()
++        from _pytest.capture import CaptureManager
++        capman = CaptureManager()
++        self.pluginmanager.register(capman, 'capturemanager')
++        # will be unregistered in capture.py's unconfigure()
++        capman.resumecapture(capman._getmethod_preoptionparse(args))
+         try:
+             try:
+                 self._conftest.setinitial(args)
+             finally:
+-                out, err = cap.reset()
++                out, err = capman.suspendcapture() # logging might have got it
+         except:
+             sys.stdout.write(out)
+             sys.stderr.write(err)
+@@ -417,7 +420,7 @@ def getcfg(args, inibasenames):
+                     if 'pytest' in iniconfig.sections:
+                         return iniconfig['pytest']
+     return {}
+-   
++
+ def findupwards(current, basename):
+     current = py.path.local(current)
+     while 1:
+diff --git a/pytest.py b/pytest.py
+index 2a905365e..fe55b153f 100644
+--- a/pytest.py
++++ b/pytest.py
+@@ -1,7 +1,7 @@
+ """
+ unit and functional testing with Python.
+ """
+-__version__ = '2.0.1.dev8'
++__version__ = '2.0.1.dev9'
+ __all__ = ['main']
+ 
+ from _pytest.core import main, UsageError, _preloadplugins
+diff --git a/setup.py b/setup.py
+index 6cf82f6aa..018a5a308 100644
+--- a/setup.py
++++ b/setup.py
+@@ -22,7 +22,7 @@ def main():
+         name='pytest',
+         description='py.test: simple powerful testing with Python',
+         long_description = long_description,
+-        version='2.0.1.dev8',
++        version='2.0.1.dev9',
+         url='http://pytest.org',
+         license='MIT license',
+         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],
+@@ -67,4 +67,4 @@ def make_entry_points():
+     return {'console_scripts': l}
+ 
+ if __name__ == '__main__':
+-    main()
+\ No newline at end of file
++    main()
+diff --git a/testing/test_capture.py b/testing/test_capture.py
+index 0080ef8e5..c22069d2f 100644
+--- a/testing/test_capture.py
++++ b/testing/test_capture.py
+@@ -325,6 +325,40 @@ class TestLoggingInteraction:
+         ])
+         assert 'operation on closed file' not in result.stderr.str()
+ 
++    def test_conftestlogging_is_shown(self, testdir):
++        testdir.makeconftest("""
++                import logging
++                logging.basicConfig()
++                logging.warn("hello435")
++        """)
++        # make sure that logging is still captured in tests
++        result = testdir.runpytest("-s", "-p", "no:capturelog")
++        assert result.ret == 0
++        result.stderr.fnmatch_lines([
++            "WARNING*hello435*",
++        ])
++        assert 'operation on closed file' not in result.stderr.str()
++
++    def test_conftestlogging_and_test_logging(self, testdir):
++        testdir.makeconftest("""
++                import logging
++                logging.basicConfig()
++        """)
++        # make sure that logging is still captured in tests
++        p = testdir.makepyfile("""
++            def test_hello():
++                import logging
++                logging.warn("hello433")
++                assert 0
++        """)
++        result = testdir.runpytest(p, "-p", "no:capturelog")
++        assert result.ret != 0
++        result.stdout.fnmatch_lines([
++            "WARNING*hello433*",
++        ])
++        assert 'something' not in result.stderr.str()
++        assert 'operation on closed file' not in result.stderr.str()
++
+ 
+ class TestCaptureFuncarg:
+     def test_std_functional(self, testdir):

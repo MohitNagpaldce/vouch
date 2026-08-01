@@ -1,0 +1,16 @@
+{
+  "repo": "celery/celery",
+  "sha": "b01b81c60ae07ad5d67a01cc8b1f192f32aa4a3d",
+  "kind": "control_good",
+  "subject": "Use TokenBucket from kombu.utils.limits instead.",
+  "evidence_subject": "Use TokenBucket from kombu.utils.limits instead.",
+  "author": "Ask Solem",
+  "date": "2011-09-09T12:38:19+01:00",
+  "impl_files": [
+    "celery/datastructures.py",
+    "celery/events/snapshot.py",
+    "celery/worker/buckets.py"
+  ],
+  "test_files": [],
+  "diff_lines": 96
+}

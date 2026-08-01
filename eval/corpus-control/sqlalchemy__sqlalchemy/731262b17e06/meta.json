@@ -1,0 +1,14 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "731262b17e0678b2549bf5d41adfd9c82ced01cc",
+  "kind": "control_good",
+  "subject": "changelog fixes",
+  "evidence_subject": "changelog fixes",
+  "author": "Mike Bayer",
+  "date": "2022-03-30T10:52:29-04:00",
+  "impl_files": [
+    "lib/sqlalchemy/sql/schema.py"
+  ],
+  "test_files": [],
+  "diff_lines": 87
+}

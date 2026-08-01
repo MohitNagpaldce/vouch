@@ -1,0 +1,203 @@
+diff --git a/src/pip/_internal/vcs/__init__.py b/src/pip/_internal/vcs/__init__.py
+index 3bacd1228..295d69077 100644
+--- a/src/pip/_internal/vcs/__init__.py
++++ b/src/pip/_internal/vcs/__init__.py
+@@ -59,11 +59,16 @@ class RevOptions(object):
+     Instances of this class should be treated as if immutable.
+     """
+ 
+-    def __init__(self, vcs, rev=None, extra_args=None):
+-        # type: (VersionControl, Optional[str], Optional[List[str]]) -> None
++    def __init__(
++        self,
++        vc_class,  # type: Type[VersionControl]
++        rev=None,  # type: Optional[str]
++        extra_args=None,  # type: Optional[List[str]]
++    ):
++        # type: (...) -> None
+         """
+         Args:
+-          vcs: a VersionControl object.
++          vc_class: a VersionControl subclass.
+           rev: the name of the revision to install.
+           extra_args: a list of extra options.
+         """
+@@ -72,16 +77,16 @@ class RevOptions(object):
+ 
+         self.extra_args = extra_args
+         self.rev = rev
+-        self.vcs = vcs
++        self.vc_class = vc_class
+ 
+     def __repr__(self):
+-        return '<RevOptions {}: rev={!r}>'.format(self.vcs.name, self.rev)
++        return '<RevOptions {}: rev={!r}>'.format(self.vc_class.name, self.rev)
+ 
+     @property
+     def arg_rev(self):
+         # type: () -> Optional[str]
+         if self.rev is None:
+-            return self.vcs.default_arg_rev
++            return self.vc_class.default_arg_rev
+ 
+         return self.rev
+ 
+@@ -93,7 +98,7 @@ class RevOptions(object):
+         args = []  # type: List[str]
+         rev = self.arg_rev
+         if rev is not None:
+-            args += self.vcs.get_base_rev_args(rev)
++            args += self.vc_class.get_base_rev_args(rev)
+         args += self.extra_args
+ 
+         return args
+@@ -113,7 +118,7 @@ class RevOptions(object):
+         Args:
+           rev: the name of the revision for the new object.
+         """
+-        return self.vcs.make_rev_options(rev, extra_args=self.extra_args)
++        return self.vc_class.make_rev_options(rev, extra_args=self.extra_args)
+ 
+ 
+ class VcsSupport(object):
+@@ -266,7 +271,8 @@ class VersionControl(object):
+         """
+         raise NotImplementedError
+ 
+-    def make_rev_options(self, rev=None, extra_args=None):
++    @classmethod
++    def make_rev_options(cls, rev=None, extra_args=None):
+         # type: (Optional[str], Optional[List[str]]) -> RevOptions
+         """
+         Return a RevOptions object.
+@@ -275,7 +281,7 @@ class VersionControl(object):
+           rev: the name of a revision to install.
+           extra_args: a list of extra options.
+         """
+-        return RevOptions(self, rev, extra_args=extra_args)
++        return RevOptions(cls, rev, extra_args=extra_args)
+ 
+     @classmethod
+     def _is_local_repository(cls, repo):
+diff --git a/tests/unit/test_vcs.py b/tests/unit/test_vcs.py
+index 85e0178d7..c41f26ecb 100644
+--- a/tests/unit/test_vcs.py
++++ b/tests/unit/test_vcs.py
+@@ -37,26 +37,26 @@ def test_make_vcs_requirement_url(args, expected):
+ 
+ 
+ def test_rev_options_repr():
+-    rev_options = RevOptions(Git(), 'develop')
++    rev_options = RevOptions(Git, 'develop')
+     assert repr(rev_options) == "<RevOptions git: rev='develop'>"
+ 
+ 
+-@pytest.mark.parametrize(('vcs', 'expected1', 'expected2', 'kwargs'), [
++@pytest.mark.parametrize(('vc_class', 'expected1', 'expected2', 'kwargs'), [
+     # First check VCS-specific RevOptions behavior.
+-    (Bazaar(), [], ['-r', '123'], {}),
+-    (Git(), ['HEAD'], ['123'], {}),
+-    (Mercurial(), [], ['123'], {}),
+-    (Subversion(), [], ['-r', '123'], {}),
++    (Bazaar, [], ['-r', '123'], {}),
++    (Git, ['HEAD'], ['123'], {}),
++    (Mercurial, [], ['123'], {}),
++    (Subversion, [], ['-r', '123'], {}),
+     # Test extra_args.  For this, test using a single VersionControl class.
+-    (Git(), ['HEAD', 'opt1', 'opt2'], ['123', 'opt1', 'opt2'],
++    (Git, ['HEAD', 'opt1', 'opt2'], ['123', 'opt1', 'opt2'],
+         dict(extra_args=['opt1', 'opt2'])),
+ ])
+-def test_rev_options_to_args(vcs, expected1, expected2, kwargs):
++def test_rev_options_to_args(vc_class, expected1, expected2, kwargs):
+     """
+     Test RevOptions.to_args().
+     """
+-    assert RevOptions(vcs, **kwargs).to_args() == expected1
+-    assert RevOptions(vcs, '123', **kwargs).to_args() == expected2
++    assert RevOptions(vc_class, **kwargs).to_args() == expected1
++    assert RevOptions(vc_class, '123', **kwargs).to_args() == expected2
+ 
+ 
+ def test_rev_options_to_display():
+@@ -65,12 +65,10 @@ def test_rev_options_to_display():
+     """
+     # The choice of VersionControl class doesn't matter here since
+     # the implementation is the same for all of them.
+-    vcs = Git()
+-
+-    rev_options = RevOptions(vcs)
++    rev_options = RevOptions(Git)
+     assert rev_options.to_display() == ''
+ 
+-    rev_options = RevOptions(vcs, 'master')
++    rev_options = RevOptions(Git, 'master')
+     assert rev_options.to_display() == ' (to revision master)'
+ 
+ 
+@@ -80,15 +78,13 @@ def test_rev_options_make_new():
+     """
+     # The choice of VersionControl class doesn't matter here since
+     # the implementation is the same for all of them.
+-    vcs = Git()
+-
+-    rev_options = RevOptions(vcs, 'master', extra_args=['foo', 'bar'])
++    rev_options = RevOptions(Git, 'master', extra_args=['foo', 'bar'])
+     new_options = rev_options.make_new('develop')
+ 
+     assert new_options is not rev_options
+     assert new_options.extra_args == ['foo', 'bar']
+     assert new_options.rev == 'develop'
+-    assert new_options.vcs is vcs
++    assert new_options.vc_class is Git
+ 
+ 
+ def test_looks_like_hash():
+@@ -133,10 +129,10 @@ def test_git_get_src_requirements(mock_get_remote_url, mock_get_revision):
+ @patch('pip._internal.vcs.git.Git.get_revision_sha')
+ def test_git_resolve_revision_rev_exists(get_sha_mock):
+     get_sha_mock.return_value = ('123456', False)
+-    git = Git()
+-    rev_options = git.make_rev_options('develop')
+-
+     url = 'git+https://git.example.com'
++    rev_options = Git.make_rev_options('develop')
++
++    git = Git()
+     new_options = git.resolve_revision('.', url, rev_options)
+     assert new_options.rev == '123456'
+ 
+@@ -144,10 +140,10 @@ def test_git_resolve_revision_rev_exists(get_sha_mock):
+ @patch('pip._internal.vcs.git.Git.get_revision_sha')
+ def test_git_resolve_revision_rev_not_found(get_sha_mock):
+     get_sha_mock.return_value = (None, False)
+-    git = Git()
+-    rev_options = git.make_rev_options('develop')
+-
+     url = 'git+https://git.example.com'
++    rev_options = Git.make_rev_options('develop')
++
++    git = Git()
+     new_options = git.resolve_revision('.', url, rev_options)
+     assert new_options.rev == 'develop'
+ 
+@@ -155,15 +151,15 @@ def test_git_resolve_revision_rev_not_found(get_sha_mock):
+ @patch('pip._internal.vcs.git.Git.get_revision_sha')
+ def test_git_resolve_revision_not_found_warning(get_sha_mock, caplog):
+     get_sha_mock.return_value = (None, False)
+-    git = Git()
+-
+     url = 'git+https://git.example.com'
+     sha = 40 * 'a'
+-    rev_options = git.make_rev_options(sha)
++    rev_options = Git.make_rev_options(sha)
++
++    git = Git()
+     new_options = git.resolve_revision('.', url, rev_options)
+     assert new_options.rev == sha
+ 
+-    rev_options = git.make_rev_options(sha[:6])
++    rev_options = Git.make_rev_options(sha[:6])
+     new_options = git.resolve_revision('.', url, rev_options)
+     assert new_options.rev == 'aaaaaa'
+ 

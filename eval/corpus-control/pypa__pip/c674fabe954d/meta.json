@@ -1,0 +1,18 @@
+{
+  "repo": "pypa/pip",
+  "sha": "c674fabe954de919bc1d0950d86bb938fc056441",
+  "kind": "control_good",
+  "subject": "Fix package name not being canonicalize in commands/show Add test to check if a capitalized name is being shown properly Add new stub package to support the test",
+  "evidence_subject": "Fix package name not being canonicalize in commands/show Add test to check if a capitalized name is being shown properly Add new stub package to support the test",
+  "author": "ofrinevo",
+  "date": "2019-08-31T21:44:41+03:00",
+  "impl_files": [
+    "src/pip/_internal/commands/show.py"
+  ],
+  "test_files": [
+    "tests/data/src/requires_capitalized/requires_capitalized/__init__.py",
+    "tests/data/src/requires_capitalized/setup.py",
+    "tests/functional/test_show.py"
+  ],
+  "diff_lines": 69
+}

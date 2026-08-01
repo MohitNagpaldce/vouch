@@ -1,0 +1,14 @@
+{
+  "repo": "django/django",
+  "sha": "2dd6a83d2d7c61321ac4a9b10fbf3c379cb305c3",
+  "kind": "control_good",
+  "subject": "Refs #12990 -- Removed django.contrib.postgres.forms.JSONField per deprecation timeline.",
+  "evidence_subject": "Refs #12990 -- Removed django.contrib.postgres.forms.JSONField per deprecation timeline.",
+  "author": "Mariusz Felisiak",
+  "date": "2021-01-14T10:04:20+01:00",
+  "impl_files": [
+    "django/contrib/postgres/forms/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 95
+}

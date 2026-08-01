@@ -1,0 +1,262 @@
+diff --git a/src/pip/_internal/operations/prepare.py b/src/pip/_internal/operations/prepare.py
+index 81bf48fbb..1b32d7eec 100644
+--- a/src/pip/_internal/operations/prepare.py
++++ b/src/pip/_internal/operations/prepare.py
+@@ -7,7 +7,8 @@
+ import mimetypes
+ import os
+ import shutil
+-from typing import Dict, Iterable, List, Optional, Set
++from pathlib import Path
++from typing import Dict, Iterable, List, Optional
+ 
+ from pip._vendor.packaging.utils import canonicalize_name
+ 
+@@ -20,7 +21,6 @@ from pip._internal.exceptions import (
+     InstallationError,
+     MetadataInconsistent,
+     NetworkConnectionError,
+-    PreviousBuildDirError,
+     VcsHashUnsupported,
+ )
+ from pip._internal.index.package_finder import PackageFinder
+@@ -47,7 +47,6 @@ from pip._internal.utils.misc import (
+     display_path,
+     hash_file,
+     hide_url,
+-    is_installable_dir,
+ )
+ from pip._internal.utils.temp_dir import TempDirectory
+ from pip._internal.utils.unpacking import unpack_file
+@@ -319,21 +318,7 @@ class RequirementPreparer:
+             autodelete=True,
+             parallel_builds=parallel_builds,
+         )
+-
+-        # If a checkout exists, it's unwise to keep going.  version
+-        # inconsistencies are logged later, but do not fail the
+-        # installation.
+-        # FIXME: this won't upgrade when there's an existing
+-        # package unpacked in `req.source_dir`
+-        # TODO: this check is now probably dead code
+-        if is_installable_dir(req.source_dir):
+-            raise PreviousBuildDirError(
+-                "pip can't proceed with requirements '{}' due to a"
+-                "pre-existing build directory ({}). This is likely "
+-                "due to a previous installation that failed . pip is "
+-                "being responsible and not assuming it can delete this. "
+-                "Please delete it and try again.".format(req, req.source_dir)
+-            )
++        req.ensure_pristine_source_checkout()
+ 
+     def _get_linked_req_hashes(self, req: InstallRequirement) -> Hashes:
+         # By the time this is called, the requirement's link should have
+@@ -474,8 +459,6 @@ class RequirementPreparer:
+             assert req.link
+             links_to_fully_download[req.link] = req
+ 
+-        reqs_with_newly_unpacked_source_dirs: Set[Link] = set()
+-
+         batch_download = self._batch_download(
+             links_to_fully_download.keys(),
+             temp_dir,
+@@ -490,28 +473,17 @@ class RequirementPreparer:
+             # _prepare_linked_requirement().
+             self._downloaded[req.link.url] = filepath
+ 
+-            # If this is an sdist, we need to unpack it and set the .source_dir
+-            # immediately after downloading, as _prepare_linked_requirement() assumes
+-            # the req is either not downloaded at all, or both downloaded and
+-            # unpacked. The downloading and unpacking is is typically done with
+-            # unpack_url(), but we separate the downloading and unpacking steps here in
+-            # order to use the BatchDownloader.
++            # If this is an sdist, we need to unpack it after downloading, but the
++            # .source_dir won't be set up until we are in _prepare_linked_requirement().
++            # Add the downloaded archive to the install requirement to unpack after
++            # preparing the source dir.
+             if not req.is_wheel:
+-                hashes = self._get_linked_req_hashes(req)
+-                assert filepath == _check_download_dir(req.link, temp_dir, hashes)
+-                self._ensure_link_req_src_dir(req, parallel_builds)
+-                unpack_file(filepath, req.source_dir)
+-                reqs_with_newly_unpacked_source_dirs.add(req.link)
++                req.needs_unpacked_archive(Path(filepath))
+ 
+         # This step is necessary to ensure all lazy wheels are processed
+         # successfully by the 'download', 'wheel', and 'install' commands.
+         for req in partially_downloaded_reqs:
+-            self._prepare_linked_requirement(
+-                req,
+-                parallel_builds,
+-                source_dir_exists_already=req.link
+-                in reqs_with_newly_unpacked_source_dirs,
+-            )
++            self._prepare_linked_requirement(req, parallel_builds)
+ 
+     def prepare_linked_requirement(
+         self, req: InstallRequirement, parallel_builds: bool = False
+@@ -582,10 +554,7 @@ class RequirementPreparer:
+         )
+ 
+     def _prepare_linked_requirement(
+-        self,
+-        req: InstallRequirement,
+-        parallel_builds: bool,
+-        source_dir_exists_already: bool = False,
++        self, req: InstallRequirement, parallel_builds: bool
+     ) -> BaseDistribution:
+         assert req.link
+         link = req.link
+@@ -617,8 +586,7 @@ class RequirementPreparer:
+                 req.link = req.cached_wheel_source_link
+                 link = req.link
+ 
+-        if not source_dir_exists_already:
+-            self._ensure_link_req_src_dir(req, parallel_builds)
++        self._ensure_link_req_src_dir(req, parallel_builds)
+ 
+         if link.is_existing_dir():
+             local_file = None
+diff --git a/src/pip/_internal/req/req_install.py b/src/pip/_internal/req/req_install.py
+index 542d6c78f..614c6de9c 100644
+--- a/src/pip/_internal/req/req_install.py
++++ b/src/pip/_internal/req/req_install.py
+@@ -6,6 +6,7 @@ import sys
+ import uuid
+ import zipfile
+ from optparse import Values
++from pathlib import Path
+ from typing import Any, Collection, Dict, Iterable, List, Optional, Sequence, Union
+ 
+ from pip._vendor.packaging.markers import Marker
+@@ -17,7 +18,7 @@ from pip._vendor.packaging.version import parse as parse_version
+ from pip._vendor.pyproject_hooks import BuildBackendHookCaller
+ 
+ from pip._internal.build_env import BuildEnvironment, NoOpBuildEnvironment
+-from pip._internal.exceptions import InstallationError
++from pip._internal.exceptions import InstallationError, PreviousBuildDirError
+ from pip._internal.locations import get_scheme
+ from pip._internal.metadata import (
+     BaseDistribution,
+@@ -47,11 +48,13 @@ from pip._internal.utils.misc import (
+     backup_dir,
+     display_path,
+     hide_url,
++    is_installable_dir,
+     redact_auth_from_url,
+ )
+ from pip._internal.utils.packaging import safe_extra
+ from pip._internal.utils.subprocess import runner_with_spinner_message
+ from pip._internal.utils.temp_dir import TempDirectory, tempdir_kinds
++from pip._internal.utils.unpacking import unpack_file
+ from pip._internal.utils.virtualenv import running_under_virtualenv
+ from pip._internal.vcs import vcs
+ 
+@@ -180,6 +183,9 @@ class InstallRequirement:
+         # This requirement needs more preparation before it can be built
+         self.needs_more_preparation = False
+ 
++        # This requirement needs to be unpacked before it can be installed.
++        self._archive_source: Optional[Path] = None
++
+     def __str__(self) -> str:
+         if self.req:
+             s = str(self.req)
+@@ -645,6 +651,27 @@ class InstallRequirement:
+                 parallel_builds=parallel_builds,
+             )
+ 
++    def needs_unpacked_archive(self, archive_source: Path) -> None:
++        assert self._archive_source is None
++        self._archive_source = archive_source
++
++    def ensure_pristine_source_checkout(self) -> None:
++        """Ensure the source directory has not yet been built in."""
++        assert self.source_dir is not None
++        if self._archive_source is not None:
++            unpack_file(str(self._archive_source), self.source_dir)
++        elif is_installable_dir(self.source_dir):
++            # If a checkout exists, it's unwise to keep going.
++            # version inconsistencies are logged later, but do not fail
++            # the installation.
++            raise PreviousBuildDirError(
++                "pip can't proceed with requirements '{}' due to a "
++                "pre-existing build directory ({}). This is likely "
++                "due to a previous installation that failed . pip is "
++                "being responsible and not assuming it can delete this. "
++                "Please delete it and try again.".format(self, self.source_dir)
++            )
++
+     # For editable installations
+     def update_editable(self) -> None:
+         if not self.link:
+diff --git a/tests/conftest.py b/tests/conftest.py
+index 25581af9a..cd9931c66 100644
+--- a/tests/conftest.py
++++ b/tests/conftest.py
+@@ -935,17 +935,21 @@ def html_index_for_packages(
+     pkg_links = "\n".join(
+         f'    <a href="{pkg}/index.html">{pkg}</a>' for pkg in fake_packages.keys()
+     )
+-    index_html = f"""\
+-<!DOCTYPE html>
+-<html>
+-  <head>
+-    <meta name="pypi:repository-version" content="1.0">
+-    <title>Simple index</title>
+-  </head>
+-  <body>
+-{pkg_links}
+-  </body>
+-</html>"""
++    # Output won't be nicely indented because dedent() acts after f-string
++    # arg insertion.
++    index_html = dedent(
++        f"""\
++        <!DOCTYPE html>
++        <html>
++          <head>
++            <meta name="pypi:repository-version" content="1.0">
++            <title>Simple index</title>
++          </head>
++          <body>
++          {pkg_links}
++          </body>
++        </html>"""
++    )
+     # (2) Generate the index.html in a new subdirectory of the temp directory.
+     (html_dir / "index.html").write_text(index_html)
+ 
+@@ -976,18 +980,20 @@ def html_index_for_packages(
+         # write an index.html with the generated download links for each
+         # copied file for this specific package name.
+         download_links_str = "\n".join(download_links)
+-        pkg_index_content = f"""\
+-<!DOCTYPE html>
+-<html>
+-  <head>
+-    <meta name="pypi:repository-version" content="1.0">
+-    <title>Links for {pkg}</title>
+-  </head>
+-  <body>
+-    <h1>Links for {pkg}</h1>
+-{download_links_str}
+-  </body>
+-</html>"""
++        pkg_index_content = dedent(
++            f"""\
++            <!DOCTYPE html>
++            <html>
++              <head>
++                <meta name="pypi:repository-version" content="1.0">
++                <title>Links for {pkg}</title>
++              </head>
++              <body>
++                <h1>Links for {pkg}</h1>
++                {download_links_str}
++              </body>
++            </html>"""
++        )
+         with open(pkg_subdir / "index.html", "w") as f:
+             f.write(pkg_index_content)
+ 

@@ -1,0 +1,60 @@
+diff --git a/django/test/utils.py b/django/test/utils.py
+index 3ae68b8a2f..57ae46fe1c 100644
+--- a/django/test/utils.py
++++ b/django/test/utils.py
+@@ -99,6 +99,13 @@ def setup_test_environment():
+     Perform global pre-test setup, such as installing the instrumented template
+     renderer and setting the email backend to the locmem email backend.
+     """
++    if hasattr(Template, '_original_render'):
++        # Executing this function twice would overwrite the saved values.
++        raise RuntimeError(
++            "setup_test_environment() was already called and can't be called "
++            "again without first calling teardown_test_environment()."
++        )
++
+     Template._original_render = Template._render
+     Template._render = instrumented_test_render
+ 
+diff --git a/docs/releases/1.11.txt b/docs/releases/1.11.txt
+index 45bfdcffdf..1c7509b062 100644
+--- a/docs/releases/1.11.txt
++++ b/docs/releases/1.11.txt
+@@ -364,6 +364,11 @@ Miscellaneous
+   :meth:`~django.db.models.fields.related.RelatedManager.set` now
+   clear the ``prefetch_related()`` cache.
+ 
++* To prevent possible loss of saved settings,
++  :func:`~django.test.utils.setup_test_environment` now raises an exception if
++  called a second time before calling
++  :func:`~django.test.utils.teardown_test_environment`.
++
+ .. _deprecated-features-1.11:
+ 
+ Features deprecated in 1.11
+diff --git a/tests/test_utils/tests.py b/tests/test_utils/tests.py
+index 395884fedf..16c4890914 100644
+--- a/tests/test_utils/tests.py
++++ b/tests/test_utils/tests.py
+@@ -20,6 +20,7 @@ from django.test import (
+ from django.test.html import HTMLParseError, parse_html
+ from django.test.utils import (
+     CaptureQueriesContext, isolate_apps, override_settings,
++    setup_test_environment,
+ )
+ from django.urls import NoReverseMatch, reverse
+ from django.utils import six
+@@ -864,6 +865,13 @@ class SecondUrls:
+     urlpatterns = [url(r'second/$', empty_response, name='second')]
+ 
+ 
++class SetupTestEnvironmentTests(SimpleTestCase):
++
++    def test_setup_test_environment_calling_more_than_once(self):
++        with self.assertRaisesMessage(RuntimeError, "setup_test_environment() was already called"):
++            setup_test_environment()
++
++
+ class OverrideSettingsTests(SimpleTestCase):
+ 
+     # #21518 -- If neither override_settings nor a setting_changed receiver

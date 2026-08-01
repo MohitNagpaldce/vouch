@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "e7fb724cd2928802fbefa3b5491640fab51e898a",
+  "kind": "control_good",
+  "subject": "Fixed #27032 -- Prevented setup_test_environment() from being called twice.",
+  "evidence_subject": "Fixed #27032 -- Prevented setup_test_environment() from being called twice.",
+  "author": "Chris Jerdonek",
+  "date": "2016-08-08T02:38:10-07:00",
+  "impl_files": [
+    "django/test/utils.py"
+  ],
+  "test_files": [
+    "tests/test_utils/tests.py"
+  ],
+  "diff_lines": 60
+}

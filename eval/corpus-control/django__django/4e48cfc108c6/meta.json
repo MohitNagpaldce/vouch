@@ -1,0 +1,16 @@
+{
+  "repo": "django/django",
+  "sha": "4e48cfc108c6cf69052cc728e72dc2cb25a880a5",
+  "kind": "control_good",
+  "subject": "Fixed #27709 -- Fixed get_for_models() for proxies with an empty cache.",
+  "evidence_subject": "Fixed #27709 -- Fixed get_for_models() for proxies with an empty cache.",
+  "author": "Simon Charette",
+  "date": "2017-01-10T13:50:20-05:00",
+  "impl_files": [
+    "django/contrib/contenttypes/models.py"
+  ],
+  "test_files": [
+    "tests/contenttypes_tests/test_models.py"
+  ],
+  "diff_lines": 97
+}

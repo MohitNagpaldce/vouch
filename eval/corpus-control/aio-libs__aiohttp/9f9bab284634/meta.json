@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "9f9bab284634d51ab8108260821be44e714b73c6",
+  "kind": "control_good",
+  "subject": "Add `__slots__` to `Connection` (#9616)",
+  "evidence_subject": "Add `__slots__` to `Connection` (#9616)",
+  "author": "J. Nick Koston",
+  "date": "2024-11-01T15:59:26-05:00",
+  "impl_files": [
+    "aiohttp/connector.py"
+  ],
+  "test_files": [],
+  "diff_lines": 35
+}

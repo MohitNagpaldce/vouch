@@ -1,0 +1,23 @@
+{
+  "repo": "django/django",
+  "sha": "537c6df3e641ebc21e9da76c86aea4d36e6a32e2",
+  "kind": "control_good",
+  "subject": "Fixed #32915 -- Suppressed fewer ImportErrors in management commands.",
+  "evidence_subject": "Fixed #32915 -- Suppressed fewer ImportErrors in management commands.",
+  "author": "Ben Cail",
+  "date": "2022-11-01T14:55:40-04:00",
+  "impl_files": [
+    "django/conf/__init__.py",
+    "django/core/management/__init__.py",
+    "django/core/management/base.py",
+    "django/core/management/commands/makemessages.py",
+    "django/core/management/commands/shell.py",
+    "django/core/management/commands/startapp.py",
+    "django/core/management/commands/startproject.py"
+  ],
+  "test_files": [
+    "tests/admin_scripts/tests.py",
+    "tests/settings_tests/tests.py"
+  ],
+  "diff_lines": 278
+}

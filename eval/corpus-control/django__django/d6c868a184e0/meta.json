@@ -1,0 +1,14 @@
+{
+  "repo": "django/django",
+  "sha": "d6c868a184e01f44302e8d31130fe1321208a6af",
+  "kind": "control_good",
+  "subject": "Fixed #35000 -- Skipped declaring empty string defaults on BLOB/TEXT field on MySQL.",
+  "evidence_subject": "Fixed #35000 -- Skipped declaring empty string defaults on BLOB/TEXT field on MySQL.",
+  "author": "Tobias Kr\u00f6nke",
+  "date": "2023-11-28T15:06:06+01:00",
+  "impl_files": [
+    "django/db/backends/mysql/schema.py"
+  ],
+  "test_files": [],
+  "diff_lines": 27
+}

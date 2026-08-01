@@ -1,0 +1,58 @@
+diff --git a/_pytest/mark/structures.py b/_pytest/mark/structures.py
+index 853d89fdd..3879c9f8f 100644
+--- a/_pytest/mark/structures.py
++++ b/_pytest/mark/structures.py
+@@ -399,3 +399,6 @@ class NodeMarkers(object):
+         for mark in self.own_markers:
+             if mark.name == name:
+                 yield mark
++
++    def __iter__(self):
++        return iter(self.own_markers)
+diff --git a/_pytest/nodes.py b/_pytest/nodes.py
+index 4988421c4..5238e345d 100644
+--- a/_pytest/nodes.py
++++ b/_pytest/nodes.py
+@@ -1,6 +1,8 @@
+ from __future__ import absolute_import, division, print_function
+ import os
+ 
++from itertools import chain
++
+ import six
+ import py
+ import attr
+@@ -191,9 +193,20 @@ class Node(object):
+             for mark in node._markers.find(name):
+                 yield mark
+ 
++    def iter_markers(self):
++        """
++        iterate over all markers of the node
++        """
++        return chain.from_iterable(x._markers for x in reversed(self.listchain()))
++
+     def get_marker(self, name):
+         """ get a marker object from this node or None if
+-        the node doesn't have a marker with that name. """
++        the node doesn't have a marker with that name.
++
++        ..warning::
++
++          deprecated
++        """
+         markers = list(self.find_markers(name))
+         if markers:
+             return MarkInfo(markers)
+diff --git a/doc/en/mark.rst b/doc/en/mark.rst
+index e4858bf83..6c5c9c49e 100644
+--- a/doc/en/mark.rst
++++ b/doc/en/mark.rst
+@@ -26,3 +26,6 @@ which also serve as documentation.
+     :ref:`fixtures <fixtures>`.
+ 
+ 
++
++
++.. autoclass:: Mark
+\ No newline at end of file

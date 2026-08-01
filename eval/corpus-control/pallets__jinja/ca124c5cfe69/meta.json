@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "ca124c5cfe69ea695ac4caa05d0acb611de52adf",
+  "kind": "control_good",
+  "subject": "Correctly use buffer for else frame in loops. Fixes #669",
+  "evidence_subject": "Correctly use buffer for else frame in loops. Fixes #669",
+  "author": "Armin Ronacher",
+  "date": "2017-01-24T20:16:02+01:00",
+  "impl_files": [
+    "jinja2/compiler.py"
+  ],
+  "test_files": [
+    "tests/test_regression.py"
+  ],
+  "diff_lines": 42
+}

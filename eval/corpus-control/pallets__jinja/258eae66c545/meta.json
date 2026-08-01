@@ -1,0 +1,17 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "258eae66c545c25ecd48243a5ec4e78b28892a1b",
+  "kind": "control_good",
+  "subject": "Use a separate scope for the loop else branch",
+  "evidence_subject": "Use a separate scope for the loop else branch",
+  "author": "Armin Ronacher",
+  "date": "2017-01-03T01:50:05+01:00",
+  "impl_files": [
+    "jinja2/compiler.py",
+    "jinja2/idtracking.py"
+  ],
+  "test_files": [
+    "tests/test_core_tags.py"
+  ],
+  "diff_lines": 123
+}

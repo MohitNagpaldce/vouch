@@ -1,0 +1,60 @@
+diff --git a/lib/sqlalchemy/dialects/postgresql/asyncpg.py b/lib/sqlalchemy/dialects/postgresql/asyncpg.py
+index 780e23844..6fa1dd78b 100644
+--- a/lib/sqlalchemy/dialects/postgresql/asyncpg.py
++++ b/lib/sqlalchemy/dialects/postgresql/asyncpg.py
+@@ -486,28 +486,13 @@ class AsyncAdapt_asyncpg_connection:
+     async def _setup_type_codecs(self):
+         """set up type decoders at the asyncpg level.
+ 
+-        this is first to accommodate the "char" value of
+-        pg_catalog.pg_attribute.attgenerated being returned as bytes.
+-        Even though the doc at
+-        https://magicstack.github.io/asyncpg/current/usage.html#type-conversion
+-        claims "char" is returned as "str", it looks like this is actually
+-        the 'bpchar' datatype, blank padded.  'char' seems to be some
+-        more obscure type (oid 18) and asyncpg codes this to bytea:
+-        https://github.com/MagicStack/asyncpg/blob/master/asyncpg/protocol/
+-        codecs/pgproto.pyx#L26
+-
+-        all the other drivers treat this as a string.
++        these are set_type_codec() calls to normalize
++        There was a tentative decoder for the "char" datatype here
++        to have it return strings however this type is actually a binary
++        type that other drivers are likely mis-interpreting.
+ 
+         """
+ 
+-        await self._connection.set_type_codec(
+-            "char",
+-            schema="pg_catalog",
+-            encoder=lambda value: value,
+-            decoder=lambda value: value,
+-            format="text",
+-        )
+-
+     def _handle_exception(self, error):
+         if not isinstance(error, AsyncAdapt_asyncpg_dbapi.Error):
+             exception_mapping = self.dbapi._asyncpg_error_translate
+diff --git a/lib/sqlalchemy/dialects/postgresql/base.py b/lib/sqlalchemy/dialects/postgresql/base.py
+index 5e81586b4..878693866 100644
+--- a/lib/sqlalchemy/dialects/postgresql/base.py
++++ b/lib/sqlalchemy/dialects/postgresql/base.py
+@@ -3423,10 +3423,14 @@ class PGDialect(default.DefaultDialect):
+             )
+             coltype = sqltypes.NULLTYPE
+ 
+-        # If a zero byte (''), then not a generated column.
+-        # Otherwise, s = stored. (Other values might be added in the future.)
+-        if generated:
+-            computed = dict(sqltext=default, persisted=generated == "s")
++        # If a zero byte or blank string depending on driver (is also absent
++        # for older PG versions), then not a generated column. Otherwise, s =
++        # stored. (Other values might be added in the future.)
++        #
++        if generated not in (None, "", b"\x00"):
++            computed = dict(
++                sqltext=default, persisted=generated in ("s", b"s")
++            )
+             default = None
+         else:
+             computed = None

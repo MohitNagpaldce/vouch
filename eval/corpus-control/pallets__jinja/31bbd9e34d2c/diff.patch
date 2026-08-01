@@ -1,0 +1,360 @@
+diff --git a/CHANGES b/CHANGES
+index 17d3d69..18bbc3d 100644
+--- a/CHANGES
++++ b/CHANGES
+@@ -1,12 +1,16 @@
+ Jinja2 Changelog
+ ================
+ 
+-Version 2.2.2
+--------------
+-(bugfix release, release date to be selected.)
++Version 2.3
++-----------
++(codename to be selected, release date to be selected.)
+ 
+ - fixes issue with code generator that causes unbound variables
+-  to be generated if set was used in if-blocks.
++  to be generated if set was used in if-blocks and other small
++  identifier problems.
++- include tags are now able to select between multiple templates
++  and take the first that exists, if a list of templates is
++  given.
+ 
+ Version 2.2.1
+ -------------
+diff --git a/docs/api.rst b/docs/api.rst
+index 5a1e29a..d6d1e20 100644
+--- a/docs/api.rst
++++ b/docs/api.rst
+@@ -115,7 +115,8 @@ useful if you want to dig deeper into Jinja2 or :ref:`develop extensions
+ <jinja-extensions>`.
+ 
+ .. autoclass:: Environment([options])
+-    :members: from_string, get_template, join_path, extend, compile_expression
++    :members: from_string, get_template, select_template,
++              get_or_select_template, join_path, extend, compile_expression
+ 
+     .. attribute:: shared
+ 
+@@ -485,6 +486,8 @@ Exceptions
+ 
+ .. autoexception:: jinja2.TemplateNotFound
+ 
++.. autoexception:: jinja2.TemplatesNotFound
++
+ .. autoexception:: jinja2.TemplateSyntaxError
+ 
+     .. attribute:: message
+diff --git a/docs/templates.rst b/docs/templates.rst
+index 93560af..732845a 100644
+--- a/docs/templates.rst
++++ b/docs/templates.rst
+@@ -768,6 +768,18 @@ examples::
+     {% include "sidebar.html" ignore missing with context %}
+     {% include "sidebar.html" ignore missing without context %}
+ 
++.. versionadded:: 2.2
++
++You can also provide a list of templates that are checked for existence
++before inclusion.  The first template that exists will be included.  If
++`ignore missing` is given, it will fall back to rendering nothing if
++none of the templates exist, otherwise it will raise an exception.
++
++Example::
++
++    {% include ['page_detailed.html', 'page.html'] %}
++    {% include ['special_sidebar.html', 'sidebar.html'] ignore missing %}
++
+ .. _import:
+ 
+ Import
+diff --git a/jinja2/__init__.py b/jinja2/__init__.py
+index b7a14f7..41dd615 100644
+--- a/jinja2/__init__.py
++++ b/jinja2/__init__.py
+@@ -49,7 +49,8 @@ from jinja2.runtime import Undefined, DebugUndefined, StrictUndefined
+ 
+ # exceptions
+ from jinja2.exceptions import TemplateError, UndefinedError, \
+-     TemplateNotFound, TemplateSyntaxError, TemplateAssertionError
++     TemplateNotFound, TemplatesNotFound, TemplateSyntaxError, \
++     TemplateAssertionError
+ 
+ # decorators and public utilities
+ from jinja2.filters import environmentfilter, contextfilter
+@@ -62,7 +63,7 @@ __all__ = [
+     'ChoiceLoader', 'BytecodeCache', 'FileSystemBytecodeCache',
+     'MemcachedBytecodeCache', 'Undefined', 'DebugUndefined',
+     'StrictUndefined', 'TemplateError', 'UndefinedError', 'TemplateNotFound',
+-    'TemplateSyntaxError', 'TemplateAssertionError', 'environmentfilter',
+-    'contextfilter', 'Markup', 'escape', 'environmentfunction',
+-    'contextfunction', 'clear_caches', 'is_undefined'
++    'TemplatesNotFound', 'TemplateSyntaxError', 'TemplateAssertionError',
++    'environmentfilter', 'contextfilter', 'Markup', 'escape',
++    'environmentfunction', 'contextfunction', 'clear_caches', 'is_undefined'
+ ]
+diff --git a/jinja2/compiler.py b/jinja2/compiler.py
+index 523b7bf..36d829a 100644
+--- a/jinja2/compiler.py
++++ b/jinja2/compiler.py
+@@ -890,7 +890,17 @@ class CodeGenerator(NodeVisitor):
+         if node.ignore_missing:
+             self.writeline('try:')
+             self.indent()
+-        self.writeline('template = environment.get_template(', node)
++
++        func_name = 'get_or_select_template'
++        if isinstance(node.template, nodes.Const):
++            if isinstance(node.template.value, basestring):
++                func_name = 'get_template'
++            elif isinstance(node.template.value, (tuple, list)):
++                func_name = 'select_template'
++        elif isinstance(node.template, (nodes.Tuple, nodes.List)):
++            func_name = 'select_template'
++
++        self.writeline('template = environment.%s(' % func_name, node)
+         self.visit(node.template, frame)
+         self.write(', %r)' % self.name)
+         if node.ignore_missing:
+diff --git a/jinja2/environment.py b/jinja2/environment.py
+index a08aad2..d5a4515 100644
+--- a/jinja2/environment.py
++++ b/jinja2/environment.py
+@@ -16,7 +16,8 @@ from jinja2.parser import Parser
+ from jinja2.optimizer import optimize
+ from jinja2.compiler import generate
+ from jinja2.runtime import Undefined, new_context
+-from jinja2.exceptions import TemplateSyntaxError
++from jinja2.exceptions import TemplateSyntaxError, TemplateNotFound, \
++     TemplatesNotFound
+ from jinja2.utils import import_string, LRUCache, Markup, missing, \
+      concat, consume, internalcode
+ 
+@@ -525,6 +526,20 @@ class Environment(object):
+         """
+         return template
+ 
++    @internalcode
++    def _load_template(self, name, globals):
++        if self.loader is None:
++            raise TypeError('no loader for this environment specified')
++        if self.cache is not None:
++            template = self.cache.get(name)
++            if template is not None and (not self.auto_reload or \
++                                         template.is_up_to_date):
++                return template
++        template = self.loader.load(self, name, globals)
++        if self.cache is not None:
++            self.cache[name] = template
++        return template
++
+     @internalcode
+     def get_template(self, name, parent=None, globals=None):
+         """Load a template from the loader.  If a loader is configured this
+@@ -538,21 +553,43 @@ class Environment(object):
+         If the template does not exist a :exc:`TemplateNotFound` exception is
+         raised.
+         """
+-        if self.loader is None:
+-            raise TypeError('no loader for this environment specified')
+         if parent is not None:
+             name = self.join_path(name, parent)
++        return self._load_template(name, self.make_globals(globals))
+ 
+-        if self.cache is not None:
+-            template = self.cache.get(name)
+-            if template is not None and (not self.auto_reload or \
+-                                         template.is_up_to_date):
+-                return template
++    @internalcode
++    def select_template(self, names, parent=None, globals=None):
++        """Works like :meth:`get_template` but tries a number of templates
++        before it fails.  If it cannot find any of the templates, it will
++        raise a :exc:`TemplatesNotFound` exception.
+ 
+-        template = self.loader.load(self, name, self.make_globals(globals))
+-        if self.cache is not None:
+-            self.cache[name] = template
+-        return template
++        .. versionadded:: 2.2
++        """
++        if not names:
++            raise TemplatesNotFound(message=u'Tried to select from an empty list '
++                                            u'of templates.')
++        globals = self.make_globals(globals)
++        for name in names:
++            if parent is not None:
++                name = self.join_path(name, parent)
++            try:
++                return self._load_template(name, globals)
++            except TemplateNotFound:
++                pass
++        raise TemplatesNotFound(names)
++
++    @internalcode
++    def get_or_select_template(self, template_name_or_list,
++                               parent=None, globals=None):
++        """
++        Does a typecheck and dispatches to :meth:`select_template` if an
++        iterable of template names is given, otherwise to :meth:`get_template`.
++
++        .. versionadded:: 2.2
++        """
++        if isinstance(template_name_or_list, basestring):
++            return self.get_template(template_name_or_list, parent, globals)
++        return self.select_template(template_name_or_list, parent, globals)
+ 
+     def from_string(self, source, globals=None, template_class=None):
+         """Load a template from a string.  This parses the source given and
+diff --git a/jinja2/exceptions.py b/jinja2/exceptions.py
+index 182c061..96194a9 100644
+--- a/jinja2/exceptions.py
++++ b/jinja2/exceptions.py
+@@ -29,9 +29,39 @@ class TemplateError(Exception):
+ class TemplateNotFound(IOError, LookupError, TemplateError):
+     """Raised if a template does not exist."""
+ 
+-    def __init__(self, name):
+-        IOError.__init__(self, name)
++    # looks weird, but removes the warning descriptor that just
++    # bogusly warns us about message being deprecated
++    message = None
++
++    def __init__(self, name, message=None):
++        IOError.__init__(self)
++        if message is None:
++            message = name
++        self.message = message
+         self.name = name
++        self.templates = [name]
++
++    def __unicode__(self):
++        return self.message
++
++    def __str__(self):
++        return self.message.encode('utf-8')
++
++
++class TemplatesNotFound(TemplateNotFound):
++    """Like :class:`TemplateNotFound` but raised if multiple templates
++    are selected.  This is a subclass of :class:`TemplateNotFound`
++    exception, so just catching the base exception will catch both.
++
++    .. versionadded:: 2.2
++    """
++
++    def __init__(self, names=(), message=None):
++        if message is None:
++            message = u'non of the templates given were found: ' + \
++                      u', '.join(names)
++        TemplateNotFound.__init__(self, names and names[-1] or None, message)
++        self.templates = list(names)
+ 
+ 
+ class TemplateSyntaxError(TemplateError):
+diff --git a/jinja2/meta.py b/jinja2/meta.py
+index 2da3ebb..67113ab 100644
+--- a/jinja2/meta.py
++++ b/jinja2/meta.py
+@@ -70,8 +70,33 @@ def find_referenced_templates(ast):
+     """
+     for node in ast.find_all((nodes.Extends, nodes.FromImport, nodes.Import,
+                               nodes.Include)):
+-        if isinstance(node.template, nodes.Const) and \
+-           isinstance(node.template.value, basestring):
++        if not isinstance(node.template, nodes.Const):
++            # a tuple with some non consts in there
++            if isinstance(node.template, (nodes.Tuple, nodes.List)):
++                for template_name in node.template.items:
++                    # something const, only yield the strings and ignore
++                    # non-string consts that really just make no sense
++                    if isinstance(template_name, nodes.Const):
++                        if isinstance(template_name.value, basestring):
++                            yield template_name.value
++                    # something dynamic in there
++                    else:
++                        yield None
++            # something dynamic we don't know about here
++            else:
++                yield None
++            continue
++        # constant is a basestring, direct template name
++        if isinstance(node.template.value, basestring):
+             yield node.template.value
++        # a tuple or list (latter *should* not happen) made of consts,
++        # yield the consts that are strings.  We could warn here for
++        # non string values
++        elif isinstance(node, nodes.Include) and \
++             isinstance(node.template.value, (tuple, list)):
++            for template_name in node.template.value:
++                if isinstance(template_name, basestring):
++                    yield template_name
++        # something else we don't care about, we could warn here
+         else:
+             yield None
+diff --git a/tests/test_imports.py b/tests/test_imports.py
+index acee8f1..12545d5 100644
+--- a/tests/test_imports.py
++++ b/tests/test_imports.py
+@@ -7,7 +7,7 @@
+     :license: BSD, see LICENSE for more details.
+ """
+ from jinja2 import Environment, DictLoader
+-from jinja2.exceptions import TemplateNotFound
++from jinja2.exceptions import TemplateNotFound, TemplatesNotFound
+ 
+ from nose.tools import assert_raises
+ 
+@@ -44,6 +44,24 @@ def test_context_include():
+     assert t.render(foo=42) == '[|23]'
+ 
+ 
++def test_choice_includes():
++    t = test_env.from_string('{% include ["missing", "header"] %}')
++    assert t.render(foo=42) == '[42|23]'
++
++    t = test_env.from_string('{% include ["missing", "missing2"] ignore missing %}')
++    assert t.render(foo=42) == ''
++
++    t = test_env.from_string('{% include ["missing", "missing2"] %}')
++    assert_raises(TemplateNotFound, t.render)
++    try:
++        t.render()
++    except TemplatesNotFound, e:
++        assert e.templates == ['missing', 'missing2']
++        assert e.name == 'missing2'
++    else:
++        assert False, 'thou shalt raise'
++
++
+ def test_include_ignoring_missing():
+     t = test_env.from_string('{% include "missing" %}')
+     assert_raises(TemplateNotFound, t.render)
+diff --git a/tests/test_meta.py b/tests/test_meta.py
+index a8c600e..c0ef97c 100644
+--- a/tests/test_meta.py
++++ b/tests/test_meta.py
+@@ -36,3 +36,22 @@ def test_find_refererenced_templates():
+                     '{% include "muh.html" %}')
+     i = meta.find_referenced_templates(ast)
+     assert list(i) == ['layout.html', 'test.html', 'meh.html', 'muh.html']
++
++
++def test_find_included_templates():
++    env = Environment()
++    ast = env.parse('{% include ["foo.html", "bar.html"] %}')
++    i = meta.find_referenced_templates(ast)
++    assert list(i) == ['foo.html', 'bar.html']
++
++    ast = env.parse('{% include ("foo.html", "bar.html") %}')
++    i = meta.find_referenced_templates(ast)
++    assert list(i) == ['foo.html', 'bar.html']
++
++    ast = env.parse('{% include ["foo.html", "bar.html", foo] %}')
++    i = meta.find_referenced_templates(ast)
++    assert list(i) == ['foo.html', 'bar.html', None]
++
++    ast = env.parse('{% include ("foo.html", "bar.html", foo) %}')
++    i = meta.find_referenced_templates(ast)
++    assert list(i) == ['foo.html', 'bar.html', None]

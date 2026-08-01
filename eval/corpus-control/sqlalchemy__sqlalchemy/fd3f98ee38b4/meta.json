@@ -1,0 +1,15 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "fd3f98ee38b496916122d1a9a29b02d59ca671f9",
+  "kind": "control_good",
+  "subject": "Clarify close for sync / async session",
+  "evidence_subject": "Clarify close for sync / async session",
+  "author": "Mike Bayer",
+  "date": "2021-05-24T09:59:17-04:00",
+  "impl_files": [
+    "lib/sqlalchemy/ext/asyncio/session.py",
+    "lib/sqlalchemy/orm/session.py"
+  ],
+  "test_files": [],
+  "diff_lines": 95
+}

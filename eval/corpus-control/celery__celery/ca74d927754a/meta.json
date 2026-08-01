@@ -1,0 +1,21 @@
+{
+  "repo": "celery/celery",
+  "sha": "ca74d927754afd75797537f07b2f50c2a8464fdc",
+  "kind": "control_good",
+  "subject": "Cosmetics",
+  "evidence_subject": "Cosmetics",
+  "author": "Ask Solem",
+  "date": "2011-04-05T23:51:34+02:00",
+  "impl_files": [
+    "celery/apps/beat.py",
+    "celery/apps/worker.py",
+    "celery/platforms.py",
+    "celery/worker/__init__.py"
+  ],
+  "test_files": [
+    "celery/tests/test_bin/test_celerybeat.py",
+    "celery/tests/test_bin/test_celeryd.py",
+    "celery/tests/test_worker/test_worker.py"
+  ],
+  "diff_lines": 250
+}

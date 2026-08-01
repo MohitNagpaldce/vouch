@@ -1,0 +1,21 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "31bbd9e34d2c612686bb9cebe4efe4e54d81c751",
+  "kind": "control_good",
+  "subject": "include tags are now able to select between multiple templates and take the first that exists, if a list of templates is given.",
+  "evidence_subject": "include tags are now able to select between multiple templates and take the first that exists, if a list of templates is given.",
+  "author": "Armin Ronacher",
+  "date": "2010-01-14T00:41:30+01:00",
+  "impl_files": [
+    "jinja2/__init__.py",
+    "jinja2/compiler.py",
+    "jinja2/environment.py",
+    "jinja2/exceptions.py",
+    "jinja2/meta.py"
+  ],
+  "test_files": [
+    "tests/test_imports.py",
+    "tests/test_meta.py"
+  ],
+  "diff_lines": 360
+}

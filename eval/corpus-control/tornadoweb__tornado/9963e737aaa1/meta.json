@@ -1,0 +1,16 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "9963e737aaa1ff158897ef9f92c361894005e669",
+  "kind": "control_good",
+  "subject": "Modify origin handling & normalization. Add tests.",
+  "evidence_subject": "Modify origin handling & normalization. Add tests.",
+  "author": "Kyle Kelley",
+  "date": "2014-01-25T17:07:44-07:00",
+  "impl_files": [
+    "tornado/websocket.py"
+  ],
+  "test_files": [
+    "tornado/test/websocket_test.py"
+  ],
+  "diff_lines": 164
+}

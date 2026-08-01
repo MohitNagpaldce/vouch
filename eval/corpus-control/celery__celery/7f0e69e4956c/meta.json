@@ -1,0 +1,16 @@
+{
+  "repo": "celery/celery",
+  "sha": "7f0e69e4956c562a85eb23ce58bfd6ba6b1fc309",
+  "kind": "control_good",
+  "subject": "Set Thread names",
+  "evidence_subject": "Set Thread names",
+  "author": "Ask Solem",
+  "date": "2010-09-22T09:25:34+02:00",
+  "impl_files": [
+    "celery/beat.py",
+    "celery/utils/timer2.py",
+    "celery/worker/heartbeat.py"
+  ],
+  "test_files": [],
+  "diff_lines": 60
+}

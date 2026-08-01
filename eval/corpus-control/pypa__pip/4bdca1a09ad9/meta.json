@@ -1,0 +1,16 @@
+{
+  "repo": "pypa/pip",
+  "sha": "4bdca1a09ad93b2dc18a860c8f64558185e2d243",
+  "kind": "control_good",
+  "subject": "Remove now useless build_wheels function",
+  "evidence_subject": "Remove now useless build_wheels function",
+  "author": "St\u00e9phane Bidoul (ACSONE)",
+  "date": "2019-12-29T18:10:42+01:00",
+  "impl_files": [
+    "src/pip/_internal/commands/install.py"
+  ],
+  "test_files": [
+    "tests/unit/test_command_install.py"
+  ],
+  "diff_lines": 151
+}

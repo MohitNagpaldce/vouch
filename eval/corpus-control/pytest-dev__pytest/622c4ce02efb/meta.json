@@ -1,0 +1,17 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "622c4ce02efb543027932d3d39c8db8b7fefe337",
+  "kind": "control_good",
+  "subject": "mark/expression: support compiling once and reusing for multiple evaluations",
+  "evidence_subject": "mark/expression: support compiling once and reusing for multiple evaluations",
+  "author": "Ran Benita",
+  "date": "2020-05-11T11:20:43+03:00",
+  "impl_files": [
+    "src/_pytest/mark/expression.py",
+    "src/_pytest/mark/legacy.py"
+  ],
+  "test_files": [
+    "testing/test_mark_expression.py"
+  ],
+  "diff_lines": 202
+}

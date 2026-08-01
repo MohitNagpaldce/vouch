@@ -1,0 +1,60 @@
+diff --git a/tornado/gen.py b/tornado/gen.py
+index a1e89dcb..84a2da68 100644
+--- a/tornado/gen.py
++++ b/tornado/gen.py
+@@ -702,6 +702,8 @@ class MultiYieldPoint(YieldPoint):
+             children = children.values()
+         self.children = []
+         for i in children:
++            if not isinstance(i, YieldPoint):
++                i = convert_yielded(i)
+             if is_future(i):
+                 i = YieldFuture(i)
+             self.children.append(i)
+diff --git a/tornado/test/gen_test.py b/tornado/test/gen_test.py
+index 744dc404..1b118f94 100644
+--- a/tornado/test/gen_test.py
++++ b/tornado/test/gen_test.py
+@@ -732,7 +732,7 @@ class GenCoroutineTest(AsyncTestCase):
+ 
+     @skipBefore35
+     @gen_test
+-    def test_async_await_mixed_multi(self):
++    def test_async_await_mixed_multi_native_future(self):
+         namespace = exec_test(globals(), locals(), """
+         async def f1():
+             await gen.Task(self.io_loop.add_callback)
+@@ -748,6 +748,25 @@ class GenCoroutineTest(AsyncTestCase):
+         self.assertEqual(results, [42, 43])
+         self.finished = True
+ 
++    @skipBefore35
++    @gen_test
++    def test_async_await_mixed_multi_native_yieldpoint(self):
++        namespace = exec_test(globals(), locals(), """
++        async def f1():
++            await gen.Task(self.io_loop.add_callback)
++            return 42
++        """)
++
++        @gen.coroutine
++        def f2():
++            yield gen.Task(self.io_loop.add_callback)
++            raise gen.Return(43)
++
++        f2(callback=(yield gen.Callback('cb')))
++        results = yield [namespace['f1'](), gen.Wait('cb')]
++        self.assertEqual(results, [42, 43])
++        self.finished = True
++
+     @gen_test
+     def test_sync_return_no_value(self):
+         @gen.coroutine
+@@ -1036,6 +1055,7 @@ class GenYieldExceptionHandler(RequestHandler):
+             self.finish('ok')
+ 
+ 
++# "Undecorated" here refers to the absence of @asynchronous.
+ class UndecoratedCoroutinesHandler(RequestHandler):
+     @gen.coroutine
+     def prepare(self):

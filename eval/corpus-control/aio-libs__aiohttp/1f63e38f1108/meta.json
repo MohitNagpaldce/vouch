@@ -1,0 +1,16 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "1f63e38f1108cd07d6861e2c4a8f96ef3e18f3cb",
+  "kind": "control_good",
+  "subject": "Drop redundant check",
+  "evidence_subject": "Drop redundant check",
+  "author": "Andrew Svetlov",
+  "date": "2014-10-23T10:59:12-07:00",
+  "impl_files": [
+    "aiohttp/web.py"
+  ],
+  "test_files": [
+    "tests/test_web_response.py"
+  ],
+  "diff_lines": 139
+}

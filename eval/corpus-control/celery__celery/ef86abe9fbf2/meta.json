@@ -1,0 +1,18 @@
+{
+  "repo": "celery/celery",
+  "sha": "ef86abe9fbf23f4a78f36f918b587f3ad853b262",
+  "kind": "control_good",
+  "subject": "Refactor Agent",
+  "evidence_subject": "Refactor Agent",
+  "author": "Ask Solem",
+  "date": "2012-10-01T17:18:08+01:00",
+  "impl_files": [
+    "celery/app/control.py",
+    "celery/app/defaults.py",
+    "celery/worker/actors.py",
+    "celery/worker/consumer.py",
+    "celery/worker/control.py"
+  ],
+  "test_files": [],
+  "diff_lines": 392
+}

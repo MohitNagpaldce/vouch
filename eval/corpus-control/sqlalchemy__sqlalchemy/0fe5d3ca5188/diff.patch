@@ -1,0 +1,38 @@
+diff --git a/doc/build/changelog/unreleased_14/10782.rst b/doc/build/changelog/unreleased_14/10782.rst
+new file mode 100644
+index 000000000..d7b219a36
+--- /dev/null
++++ b/doc/build/changelog/unreleased_14/10782.rst
+@@ -0,0 +1,15 @@
++.. change::
++    :tags: bug, orm
++    :tickets: 10782
++    :versions: 2.0.24, 1.4.51
++
++    Improved a fix first implemented for :ticket:`3208` released in version
++    0.9.8, where the registry of classes used internally by declarative could
++    be subject to a race condition in the case where individual mapped classes
++    are being garbage collected at the same time while new mapped classes are
++    being constructed, as can happen in some test suite configurations or
++    dynamic class creation environments.   In addition to the weakref check
++    already added, the list of items being iterated is also copied first to
++    avoid "list changed while iterating" errors.  Pull request courtesy Yilei
++    Yang.
++
+diff --git a/lib/sqlalchemy/orm/clsregistry.py b/lib/sqlalchemy/orm/clsregistry.py
+index 4f4dab895..bb062c5c9 100644
+--- a/lib/sqlalchemy/orm/clsregistry.py
++++ b/lib/sqlalchemy/orm/clsregistry.py
+@@ -239,10 +239,10 @@ class _MultipleClassMarker(ClsRegistryToken):
+     def add_item(self, item: Type[Any]) -> None:
+         # protect against class registration race condition against
+         # asynchronous garbage collection calling _remove_item,
+-        # [ticket:3208]
++        # [ticket:3208] and [ticket:10782]
+         modules = {
+             cls.__module__
+-            for cls in [ref() for ref in self.contents]
++            for cls in [ref() for ref in list(self.contents)]
+             if cls is not None
+         }
+         if item.__module__ in modules:

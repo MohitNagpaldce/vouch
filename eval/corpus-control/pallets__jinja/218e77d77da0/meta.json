@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "218e77d77da08f045672a2e2abb521ba5c73d2a1",
+  "kind": "control_good",
+  "subject": "Fix typo in setup.py",
+  "evidence_subject": "Fix typo in setup.py",
+  "author": "Adrian",
+  "date": "2019-10-04T20:46:10+02:00",
+  "impl_files": [
+    "setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 11
+}

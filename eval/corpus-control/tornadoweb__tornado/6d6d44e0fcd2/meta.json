@@ -1,0 +1,14 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "6d6d44e0fcd2e37299e0ee1f2eec1b6f9be8d7fc",
+  "kind": "control_good",
+  "subject": "httpserver: remove unused no_keep_alive attribute",
+  "evidence_subject": "httpserver: remove unused no_keep_alive attribute",
+  "author": "Pierce Lopez",
+  "date": "2017-06-05T13:22:39-04:00",
+  "impl_files": [
+    "tornado/httpserver.py"
+  ],
+  "test_files": [],
+  "diff_lines": 12
+}

@@ -1,0 +1,13 @@
+diff --git a/asynchttp/client.py b/asynchttp/client.py
+index 7e6c9e26..483dd7ee 100644
+--- a/asynchttp/client.py
++++ b/asynchttp/client.py
+@@ -92,8 +92,6 @@ def request(method, url, *,
+ 
+         try:
+             resp = yield from conn
+-        except tulip.CancelledError:
+-            raise tulip.TimeoutError from None
+         except tulip.TimeoutError:
+             raise tulip.TimeoutError from None
+ 

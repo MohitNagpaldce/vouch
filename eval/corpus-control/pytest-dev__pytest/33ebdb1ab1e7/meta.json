@@ -1,0 +1,15 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "33ebdb1ab1e795a4943eda4f8f6c08c2acf166dd",
+  "kind": "control_good",
+  "subject": "fix #6881: add parametrize_long_str_id_strategy ini option",
+  "evidence_subject": "fix #6881: add parametrize_long_str_id_strategy ini option",
+  "author": "Ronny Pfannschmidt",
+  "date": "2025-04-11T21:25:24+02:00",
+  "impl_files": [
+    "src/_pytest/python.py",
+    "testing/python/metafunc.py"
+  ],
+  "test_files": [],
+  "diff_lines": 449
+}

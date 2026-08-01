@@ -1,0 +1,220 @@
+diff --git a/django/db/models/fields/related.py b/django/db/models/fields/related.py
+index c7bfadb672..5357670d4f 100644
+--- a/django/db/models/fields/related.py
++++ b/django/db/models/fields/related.py
+@@ -290,8 +290,13 @@ class RelatedField(Field):
+ 
+         if not cls._meta.abstract:
+             if self.remote_field.related_name:
+-                related_name = force_text(self.remote_field.related_name) % {
++                related_name = self.remote_field.related_name
++            else:
++                related_name = self.opts.default_related_name
++            if related_name:
++                related_name = force_text(related_name) % {
+                     'class': cls.__name__.lower(),
++                    'model_name': cls._meta.model_name.lower(),
+                     'app_label': cls._meta.app_label.lower()
+                 }
+                 self.remote_field.related_name = related_name
+diff --git a/django/db/models/fields/reverse_related.py b/django/db/models/fields/reverse_related.py
+index 304e688d5a..0d2ed35c69 100644
+--- a/django/db/models/fields/reverse_related.py
++++ b/django/db/models/fields/reverse_related.py
+@@ -187,11 +187,6 @@ class ForeignObjectRel(object):
+                 return None
+         if self.related_name:
+             return self.related_name
+-        if opts.default_related_name:
+-            return opts.default_related_name % {
+-                'model_name': opts.model_name.lower(),
+-                'app_label': opts.app_label.lower(),
+-            }
+         return opts.model_name + ('_set' if self.multiple else '')
+ 
+     def get_cache_name(self):
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index fb3529c2be..2f98ab895a 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -7,6 +7,7 @@ databases). The abstraction barrier only works one way: this module has to know
+ all about the internals of models in order to get the information it needs.
+ """
+ import copy
++import warnings
+ from collections import Counter, Iterator, Mapping, OrderedDict
+ from itertools import chain, count, product
+ from string import ascii_uppercase
+@@ -30,6 +31,7 @@ from django.db.models.sql.where import (
+     AND, OR, ExtraWhere, NothingNode, WhereNode,
+ )
+ from django.utils import six
++from django.utils.deprecation import RemovedInDjango20Warning
+ from django.utils.encoding import force_text
+ from django.utils.tree import Node
+ 
+@@ -1288,6 +1290,19 @@ class Query(object):
+             except FieldDoesNotExist:
+                 if name in self.annotation_select:
+                     field = self.annotation_select[name].output_field
++                elif pos == 0:
++                    for rel in opts.related_objects:
++                        if (name == rel.related_model._meta.model_name and
++                                rel.related_name == rel.related_model._meta.default_related_name):
++                            related_name = rel.related_name
++                            field = opts.get_field(related_name)
++                            warnings.warn(
++                                "Query lookup '%s' is deprecated in favor of "
++                                "Meta.default_related_name '%s'."
++                                % (name, related_name),
++                                RemovedInDjango20Warning, 2
++                            )
++                            break
+ 
+             if field is not None:
+                 # Fields that contain one-to-many relations with a generic
+diff --git a/docs/internals/deprecation.txt b/docs/internals/deprecation.txt
+index 6e593c787d..81e3600bce 100644
+--- a/docs/internals/deprecation.txt
++++ b/docs/internals/deprecation.txt
+@@ -138,6 +138,9 @@ details on these changes.
+ * Support for the ``django.core.files.storage.Storage.accessed_time()``,
+   ``created_time()``, and ``modified_time()`` methods will be removed.
+ 
++* Support for query lookups using the model name when
++  ``Meta.default_related_name`` is set will be removed.
++
+ .. _deprecation-removed-in-1.10:
+ 
+ 1.10
+diff --git a/docs/ref/models/fields.txt b/docs/ref/models/fields.txt
+index de493dda67..6b972660a2 100644
+--- a/docs/ref/models/fields.txt
++++ b/docs/ref/models/fields.txt
+@@ -1333,8 +1333,9 @@ The possible values for :attr:`~ForeignKey.on_delete` are found in
+ 
+ .. attribute:: ForeignKey.related_query_name
+ 
+-    The name to use for the reverse filter name from the target model.
+-    Defaults to the value of :attr:`related_name` if it is set, otherwise it
++    The name to use for the reverse filter name from the target model. It
++    defaults to the value of :attr:`related_name` or
++    :attr:`~django.db.models.Options.default_related_name` if set, otherwise it
+     defaults to the name of the model::
+ 
+         # Declare the ForeignKey with related_query_name
+diff --git a/docs/ref/models/options.txt b/docs/ref/models/options.txt
+index 65fa8acfea..8fbf4b219e 100644
+--- a/docs/ref/models/options.txt
++++ b/docs/ref/models/options.txt
+@@ -103,6 +103,8 @@ Django quotes column and table names behind the scenes.
+     The name that will be used by default for the relation from a related object
+     back to this one. The default is ``<model_name>_set``.
+ 
++    This option also sets :attr:`~ForeignKey.related_query_name`.
++
+     As the reverse name for a field should be unique, be careful if you intend
+     to subclass your model. To work around name collisions, part of the name
+     should contain ``'%(app_label)s'`` and ``'%(model_name)s'``, which are
+@@ -110,6 +112,30 @@ Django quotes column and table names behind the scenes.
+     and the name of the model, both lowercased. See the paragraph on
+     :ref:`related names for abstract models <abstract-related-name>`.
+ 
++    .. deprecated:: 1.10
++
++        This attribute now affects ``related_query_name``. The old query lookup
++        name is deprecated::
++
++            from django.db import models
++
++            class Foo(models.Model):
++                pass
++
++            class Bar(models.Model):
++                foo = models.ForeignKey(Foo)
++
++                class Meta:
++                    default_related_name = 'bars'
++
++        ::
++
++            >>> bar = Bar.objects.get(pk=1)
++            >>> # Using model name "bar" as lookup string is deprecated.
++            >>> Foo.object.get(bar=bar)
++            >>> # You should use default_related_name "bars".
++            >>> Foo.object.get(bars=bar)
++
+ ``get_latest_by``
+ -----------------
+ 
+diff --git a/docs/releases/1.10.txt b/docs/releases/1.10.txt
+index 277e9d379a..29700f4393 100644
+--- a/docs/releases/1.10.txt
++++ b/docs/releases/1.10.txt
+@@ -704,6 +704,34 @@ longer than the 4000 byte limit of ``NVARCHAR2``, you should use ``TextField``
+ field (e.g. annotating the model with an aggregation or using ``distinct()``)
+ you'll need to change them (to defer the field).
+ 
++Using a model name as a query lookup when ``default_related_name`` is set
++-------------------------------------------------------------------------
++
++Assume the following models::
++
++    from django.db import models
++
++    class Foo(models.Model):
++        pass
++
++    class Bar(models.Model):
++        foo = models.ForeignKey(Foo)
++
++        class Meta:
++            default_related_name = 'bars'
++
++In older versions, :attr:`~django.db.models.Options.default_related_name`
++couldn't be used as a query lookup. This is fixed and support for the old
++lookup name is deprecated. For example, since ``default_related_name`` is set
++in model ``Bar``, instead of using the model name ``bar`` as the lookup::
++
++    >>> bar = Bar.objects.get(pk=1)
++    >>> Foo.object.get(bar=bar)
++
++use the default_related_name ``bars``::
++
++    >>> Foo.object.get(bars=bar)
++
+ Miscellaneous
+ -------------
+ 
+diff --git a/tests/model_options/test_default_related_name.py b/tests/model_options/test_default_related_name.py
+index ddfc659dda..695a3b856b 100644
+--- a/tests/model_options/test_default_related_name.py
++++ b/tests/model_options/test_default_related_name.py
+@@ -1,4 +1,7 @@
++import warnings
++
+ from django.test import TestCase
++from django.utils.deprecation import RemovedInDjango20Warning
+ 
+ from .models.default_related_name import Author, Book, Editor
+ 
+@@ -18,6 +21,19 @@ class DefaultRelatedNameTests(TestCase):
+     def test_default_related_name(self):
+         self.assertEqual(list(self.author.books.all()), [self.book])
+ 
++    def test_default_related_name_in_queryset_lookup(self):
++        self.assertEqual(Author.objects.get(books=self.book), self.author)
++
++    def test_show_deprecated_message_when_model_name_in_queryset_lookup(self):
++        msg = "Query lookup 'book' is deprecated in favor of Meta.default_related_name 'books'."
++        with warnings.catch_warnings(record=True) as warns:
++            warnings.simplefilter('once')
++            Author.objects.get(book=self.book)
++        self.assertEqual(len(warns), 1)
++        warning = warns.pop()
++        self.assertEqual(warning.category, RemovedInDjango20Warning)
++        self.assertEqual(str(warning.message), msg)
++
+     def test_related_name_overrides_default_related_name(self):
+         self.assertEqual(list(self.editor.edited_books.all()), [self.book])
+ 

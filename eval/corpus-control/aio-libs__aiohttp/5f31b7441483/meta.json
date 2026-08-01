@@ -1,0 +1,14 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "5f31b744148363093619e8d720e3b5872d8b9f6d",
+  "kind": "control_good",
+  "subject": "Drop redundant assertion",
+  "evidence_subject": "Drop redundant assertion",
+  "author": "Andrew Svetlov",
+  "date": "2016-11-27T21:15:06+02:00",
+  "impl_files": [
+    "aiohttp/protocol.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

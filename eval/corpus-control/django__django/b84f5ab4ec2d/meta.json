@@ -1,0 +1,18 @@
+{
+  "repo": "django/django",
+  "sha": "b84f5ab4ec2d1edbe9a7effa9f75a3caa189bace",
+  "kind": "control_good",
+  "subject": "Fixed #26230 -- Made default_related_name affect related_query_name.",
+  "evidence_subject": "Fixed #26230 -- Made default_related_name affect related_query_name.",
+  "author": "chenesan",
+  "date": "2016-02-24T15:10:09+08:00",
+  "impl_files": [
+    "django/db/models/fields/related.py",
+    "django/db/models/fields/reverse_related.py",
+    "django/db/models/sql/query.py"
+  ],
+  "test_files": [
+    "tests/model_options/test_default_related_name.py"
+  ],
+  "diff_lines": 220
+}

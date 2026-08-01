@@ -1,0 +1,17 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "cdd25d91ae617b2820c2638768447310f873cc08",
+  "kind": "control_good",
+  "subject": "Bump mypy from 0.940 to 0.981 (#6977)",
+  "evidence_subject": "Bump mypy from 0.940 to 0.981 (#6977)",
+  "author": "dependabot[bot]",
+  "date": "2022-10-30T17:00:42Z",
+  "impl_files": [
+    "aiohttp/connector.py",
+    "aiohttp/web_runner.py",
+    "examples/client_ws.py",
+    "examples/fake_server.py"
+  ],
+  "test_files": [],
+  "diff_lines": 170
+}

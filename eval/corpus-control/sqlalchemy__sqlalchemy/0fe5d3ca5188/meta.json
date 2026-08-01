@@ -1,0 +1,14 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "0fe5d3ca51884b85b4059ed05b53f02172325e70",
+  "kind": "control_good",
+  "subject": "Use a copy of `self.contents` in this list comprehension.",
+  "evidence_subject": "Use a copy of `self.contents` in this list comprehension.",
+  "author": "Yilei Yang",
+  "date": "2023-12-21T02:47:03-05:00",
+  "impl_files": [
+    "lib/sqlalchemy/orm/clsregistry.py"
+  ],
+  "test_files": [],
+  "diff_lines": 38
+}

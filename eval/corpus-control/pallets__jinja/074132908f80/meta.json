@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/jinja",
+  "sha": "074132908f80e3a6321d304795bef577d898504c",
+  "kind": "control_good",
+  "subject": "Update djangojinja2.py",
+  "evidence_subject": "Update djangojinja2.py",
+  "author": "topher86",
+  "date": "2014-08-28T13:37:41-04:00",
+  "impl_files": [
+    "ext/djangojinja2.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

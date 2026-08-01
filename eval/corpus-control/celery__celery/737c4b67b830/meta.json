@@ -1,0 +1,14 @@
+{
+  "repo": "celery/celery",
+  "sha": "737c4b67b830eec82a9501c18d69e50f5c72a8fb",
+  "kind": "control_good",
+  "subject": "Avoid gc.collect",
+  "evidence_subject": "Avoid gc.collect",
+  "author": "Ask Solem",
+  "date": "2013-08-16T13:17:48+01:00",
+  "impl_files": [
+    "celery/worker/__init__.py"
+  ],
+  "test_files": [],
+  "diff_lines": 15
+}

@@ -1,0 +1,14 @@
+diff --git a/setup.py b/setup.py
+index 3f82314d..bb4f8230 100644
+--- a/setup.py
++++ b/setup.py
+@@ -172,6 +172,9 @@ setup(
+     author="Facebook",
+     author_email="python-tornado@googlegroups.com",
+     url="http://www.tornadoweb.org/",
++    project_urls={
++        "Source": "https://github.com/tornadoweb/tornado",
++    },
+     license="http://www.apache.org/licenses/LICENSE-2.0",
+     description=(
+         "Tornado is a Python web framework and asynchronous networking library,"

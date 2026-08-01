@@ -1,0 +1,16 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "b05061dcd27516da907ce62964263fd91f006ade",
+  "kind": "control_good",
+  "subject": "Change deprecation type of --result-log to PytestDeprecationWarning",
+  "evidence_subject": "Change deprecation type of --result-log to PytestDeprecationWarning",
+  "author": "Bruno Oliveira",
+  "date": "2018-11-22T21:14:53-02:00",
+  "impl_files": [
+    "src/_pytest/deprecated.py"
+  ],
+  "test_files": [
+    "testing/deprecated_test.py"
+  ],
+  "diff_lines": 78
+}

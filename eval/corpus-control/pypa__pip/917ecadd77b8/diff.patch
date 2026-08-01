@@ -1,0 +1,118 @@
+diff --git a/src/pip/_internal/resolution/resolvelib/factory.py b/src/pip/_internal/resolution/resolvelib/factory.py
+index 506a560d6..3181d5753 100644
+--- a/src/pip/_internal/resolution/resolvelib/factory.py
++++ b/src/pip/_internal/resolution/resolvelib/factory.py
+@@ -404,8 +404,24 @@ class Factory:
+         )
+         return UnsupportedPythonVersion(message)
+ 
+-    def get_installation_error(self, e):
+-        # type: (ResolutionImpossible) -> InstallationError
++    def _report_single_requirement_conflict(self, req, parent):
++        # type: (Requirement, Candidate) -> DistributionNotFound
++        if parent is None:
++            req_disp = str(req)
++        else:
++            req_disp = f"{req} (from {parent.name})"
++        logger.critical(
++            "Could not find a version that satisfies the requirement %s",
++            req_disp,
++        )
++        return DistributionNotFound(f"No matching distribution found for {req}")
++
++    def get_installation_error(
++        self,
++        e,  # type: ResolutionImpossible
++        constraints,  # type: Dict[str, Constraint]
++    ):
++        # type: (...) -> InstallationError
+ 
+         assert e.causes, "Installation error reported with no cause"
+ 
+@@ -425,15 +441,8 @@ class Factory:
+         # satisfied. We just report that case.
+         if len(e.causes) == 1:
+             req, parent = e.causes[0]
+-            if parent is None:
+-                req_disp = str(req)
+-            else:
+-                req_disp = f"{req} (from {parent.name})"
+-            logger.critical(
+-                "Could not find a version that satisfies the requirement %s",
+-                req_disp,
+-            )
+-            return DistributionNotFound(f"No matching distribution found for {req}")
++            if req.name not in constraints:
++                return self._report_single_requirement_conflict(req, parent)
+ 
+         # OK, we now have a list of requirements that can't all be
+         # satisfied at once.
+@@ -475,13 +484,20 @@ class Factory:
+         )
+         logger.critical(msg)
+         msg = "\nThe conflict is caused by:"
++
++        relevant_constraints = set()
+         for req, parent in e.causes:
++            if req.name in constraints:
++                relevant_constraints.add(req.name)
+             msg = msg + "\n    "
+             if parent:
+                 msg = msg + "{} {} depends on ".format(parent.name, parent.version)
+             else:
+                 msg = msg + "The user requested "
+             msg = msg + req.format_for_error()
++        for key in relevant_constraints:
++            spec = constraints[key].specifier
++            msg += f"\n    The user requested (constraint) {key}{spec}"
+ 
+         msg = (
+             msg
+diff --git a/src/pip/_internal/resolution/resolvelib/resolver.py b/src/pip/_internal/resolution/resolvelib/resolver.py
+index 8828155a2..247b1ddfc 100644
+--- a/src/pip/_internal/resolution/resolvelib/resolver.py
++++ b/src/pip/_internal/resolution/resolvelib/resolver.py
+@@ -122,7 +122,7 @@ class Resolver(BaseResolver):
+             )
+ 
+         except ResolutionImpossible as e:
+-            error = self.factory.get_installation_error(e)
++            error = self.factory.get_installation_error(e, constraints)
+             six.raise_from(error, e)
+ 
+         req_set = RequirementSet(check_supported_wheels=check_supported_wheels)
+diff --git a/tests/functional/test_install_reqs.py b/tests/functional/test_install_reqs.py
+index 9e6e5580a..d559e94be 100644
+--- a/tests/functional/test_install_reqs.py
++++ b/tests/functional/test_install_reqs.py
+@@ -357,7 +357,7 @@ def test_constraints_local_editable_install_causes_error(
+         assert 'Could not satisfy constraints' in result.stderr, str(result)
+     else:
+         # Because singlemodule only has 0.0.1 available.
+-        assert 'No matching distribution found' in result.stderr, str(result)
++        assert 'Cannot install singlemodule 0.0.1' in result.stderr, str(result)
+ 
+ 
+ @pytest.mark.network
+@@ -386,7 +386,7 @@ def test_constraints_local_install_causes_error(
+         assert 'Could not satisfy constraints' in result.stderr, str(result)
+     else:
+         # Because singlemodule only has 0.0.1 available.
+-        assert 'No matching distribution found' in result.stderr, str(result)
++        assert 'Cannot install singlemodule 0.0.1' in result.stderr, str(result)
+ 
+ 
+ def test_constraints_constrain_to_local_editable(
+diff --git a/tests/functional/test_new_resolver.py b/tests/functional/test_new_resolver.py
+index 4d2acbb23..16f9f4f42 100644
+--- a/tests/functional/test_new_resolver.py
++++ b/tests/functional/test_new_resolver.py
+@@ -687,7 +687,7 @@ def test_new_resolver_constraint_on_dependency(script):
+ @pytest.mark.parametrize(
+     "constraint_version, expect_error, message",
+     [
+-        ("1.0", True, "ERROR: No matching distribution found for foo 2.0"),
++        ("1.0", True, "Cannot install foo 2.0"),
+         ("2.0", False, "Successfully installed foo-2.0"),
+     ],
+ )

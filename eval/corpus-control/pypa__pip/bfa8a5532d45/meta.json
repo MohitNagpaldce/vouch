@@ -1,0 +1,17 @@
+{
+  "repo": "pypa/pip",
+  "sha": "bfa8a5532d45815d2229ba2e2a920fde6bffc800",
+  "kind": "control_good",
+  "subject": "clean up duplicated code",
+  "evidence_subject": "clean up duplicated code",
+  "author": "Danny McClanahan",
+  "date": "2023-08-03T05:50:37-04:00",
+  "impl_files": [
+    "src/pip/_internal/operations/prepare.py",
+    "src/pip/_internal/req/req_install.py"
+  ],
+  "test_files": [
+    "tests/conftest.py"
+  ],
+  "diff_lines": 262
+}

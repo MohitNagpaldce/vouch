@@ -1,0 +1,16 @@
+{
+  "repo": "sqlalchemy/sqlalchemy",
+  "sha": "fb647e5219a87cf15c026711ba0943ba3a080316",
+  "kind": "control_good",
+  "subject": "Clarify order_by(False)",
+  "evidence_subject": "Clarify order_by(False)",
+  "author": "Mike Bayer",
+  "date": "2016-07-29T18:50:18-04:00",
+  "impl_files": [
+    "lib/sqlalchemy/orm/query.py"
+  ],
+  "test_files": [
+    "test/orm/test_query.py"
+  ],
+  "diff_lines": 133
+}

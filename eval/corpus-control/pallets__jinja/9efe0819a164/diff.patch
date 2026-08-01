@@ -1,0 +1,39 @@
+diff --git a/jinja2/runtime.py b/jinja2/runtime.py
+index 815b589..2ed3ac6 100644
+--- a/jinja2/runtime.py
++++ b/jinja2/runtime.py
+@@ -403,10 +403,11 @@ class Undefined(object):
+         raise self._undefined_exception(hint)
+ 
+     __add__ = __radd__ = __mul__ = __rmul__ = __div__ = __rdiv__ = \
+-    __realdiv__ = __rrealdiv__ = __floordiv__ = __rfloordiv__ = \
++    __truediv__ = __rtruediv__ = __floordiv__ = __rfloordiv__ = \
+     __mod__ = __rmod__ = __pos__ = __neg__ = __call__ = \
+     __getattr__ = __getitem__ = __lt__ = __le__ = __gt__ = __ge__ = \
+-    __int__ = __float__ = __complex__ = _fail_with_undefined_error
++    __int__ = __float__ = __complex__ = __pow__ = __rpow__ = \
++        _fail_with_undefined_error
+ 
+     def __str__(self):
+         return unicode(self).encode('utf-8')
+diff --git a/jinja2/sandbox.py b/jinja2/sandbox.py
+index e9ab1d9..7b28273 100644
+--- a/jinja2/sandbox.py
++++ b/jinja2/sandbox.py
+@@ -212,14 +212,14 @@ class SandboxedEnvironment(Environment):
+             value = getattr(obj, attribute)
+         except AttributeError:
+             try:
+-                return obj[argument]
++                return obj[attribute]
+             except (TypeError, LookupError):
+                 pass
+         else:
+             if self.is_safe_attribute(obj, attribute, value):
+                 return value
+             return self.unsafe_undefined(obj, attribute)
+-        return self.undefined(obj=obj, name=argument)
++        return self.undefined(obj=obj, name=attribute)
+ 
+     def unsafe_undefined(self, obj, attribute):
+         """Return an undefined object for unsafe attributes."""

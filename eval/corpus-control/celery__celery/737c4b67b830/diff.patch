@@ -1,0 +1,15 @@
+diff --git a/celery/worker/__init__.py b/celery/worker/__init__.py
+index 54fdaadde..fa5c73837 100644
+--- a/celery/worker/__init__.py
++++ b/celery/worker/__init__.py
+@@ -131,10 +131,6 @@ class Pool(bootsteps.StartStopComponent):
+                 tref = trefs.pop(job)
+                 tref.cancel()
+                 del(tref)
+-                # Will not be reclaimed quickly enough on some platforms,
+-                # so the memory is growing and still not released back to the
+-                # OS.
+-                gc.collect()
+             except (KeyError, AttributeError):
+                 pass  # out of scope
+ 

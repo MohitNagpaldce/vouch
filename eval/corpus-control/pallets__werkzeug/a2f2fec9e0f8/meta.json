@@ -1,0 +1,16 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "a2f2fec9e0f81d93fa69c3312ee59bff6f29eb79",
+  "kind": "control_good",
+  "subject": "http: check length validity before calling ds.ContentRange",
+  "evidence_subject": "http: check length validity before calling ds.ContentRange",
+  "author": "Riccardo Schirone",
+  "date": "2022-10-12T13:30:24+02:00",
+  "impl_files": [
+    "src/werkzeug/http.py"
+  ],
+  "test_files": [
+    "tests/test_http.py"
+  ],
+  "diff_lines": 41
+}

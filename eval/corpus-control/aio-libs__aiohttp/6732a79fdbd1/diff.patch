@@ -1,0 +1,138 @@
+diff --git a/aiohttp/_http_parser.pyx b/aiohttp/_http_parser.pyx
+index 54490d0d..38246bb5 100644
+--- a/aiohttp/_http_parser.pyx
++++ b/aiohttp/_http_parser.pyx
+@@ -46,6 +46,7 @@ cdef class HttpParser:
+         size_t _max_headers
+         bint _response_with_body
+ 
++        bint    _started
+         object  _url
+         str     _path
+         str     _reason
+@@ -235,6 +236,10 @@ cdef class HttpParser:
+                 raise PayloadEncodingError(desc.decode('latin-1'))
+             else:
+                 self._payload.feed_eof()
++        elif self._started:
++            self._on_headers_complete()
++            if self._messages:
++                return self._messages[-1][0]
+ 
+     def feed_data(self, data):
+         cdef:
+@@ -305,6 +310,7 @@ cdef class HttpResponseParserC(HttpParser):
+ cdef int cb_on_message_begin(cparser.http_parser* parser) except -1:
+     cdef HttpParser pyparser = <HttpParser>parser.data
+ 
++    pyparser._started = True
+     pyparser._headers = []
+     pyparser._raw_headers = []
+     return 0
+@@ -414,6 +420,7 @@ cdef int cb_on_body(cparser.http_parser* parser,
+ cdef int cb_on_message_complete(cparser.http_parser* parser) except -1:
+     cdef HttpParser pyparser = <HttpParser>parser.data
+     try:
++        pyparser._started = False
+         pyparser._on_message_complete()
+     except BaseException as exc:
+         pyparser._last_error = exc
+diff --git a/aiohttp/client_exceptions.py b/aiohttp/client_exceptions.py
+index dab42ee9..76d1e552 100644
+--- a/aiohttp/client_exceptions.py
++++ b/aiohttp/client_exceptions.py
+@@ -83,6 +83,9 @@ class ServerConnectionError(ClientConnectionError):
+ class ServerDisconnectedError(ServerConnectionError):
+     """Server disconnected."""
+ 
++    def __init__(self, message=None):
++        self.message = message
++
+ 
+ class ServerTimeoutError(ServerConnectionError, TimeoutError):
+     """Server timeout error."""
+diff --git a/aiohttp/client_proto.py b/aiohttp/client_proto.py
+index 7e5e0729..0f875def 100644
+--- a/aiohttp/client_proto.py
++++ b/aiohttp/client_proto.py
+@@ -68,8 +68,9 @@ class ResponseHandler(DataQueue, asyncio.streams.FlowControlMixin):
+                 pass
+ 
+         try:
+-            self._parser.feed_eof()
++            uncompleted = self._parser.feed_eof()
+         except Exception as e:
++            uncompleted = None
+             if self._payload is not None:
+                 self._payload.set_exception(
+                     ClientPayloadError('Response payload is not completed'))
+@@ -78,7 +79,7 @@ class ResponseHandler(DataQueue, asyncio.streams.FlowControlMixin):
+             if isinstance(exc, OSError):
+                 exc = ClientOSError(*exc.args)
+             if exc is None:
+-                exc = ServerDisconnectedError()
++                exc = ServerDisconnectedError(uncompleted)
+             DataQueue.set_exception(self, exc)
+ 
+         self.transport = self.writer = None
+diff --git a/aiohttp/http_parser.py b/aiohttp/http_parser.py
+index 5c7000c4..319f562d 100644
+--- a/aiohttp/http_parser.py
++++ b/aiohttp/http_parser.py
+@@ -82,6 +82,18 @@ class HttpParser:
+         if self._payload_parser is not None:
+             self._payload_parser.feed_eof()
+             self._payload_parser = None
++        else:
++            # try to extract partial message
++            if self._tail:
++                self._lines.append(self._tail)
++
++            if self._lines:
++                if self._lines[-1] != '\r\n':
++                    self._lines.append('')
++                try:
++                    return self.parse_message(self._lines)
++                except:
++                    return None
+ 
+     def feed_data(self, data,
+                   SEP=b'\r\n', EMPTY=b'',
+diff --git a/tests/test_client_proto.py b/tests/test_client_proto.py
+index c5a56998..82586423 100644
+--- a/tests/test_client_proto.py
++++ b/tests/test_client_proto.py
+@@ -3,7 +3,8 @@ from unittest import mock
+ 
+ from yarl import URL
+ 
+-from aiohttp.client_exceptions import ClientOSError, ClientResponseError
++from aiohttp.client_exceptions import (ClientOSError, ClientResponseError,
++                                       ServerDisconnectedError)
+ from aiohttp.client_proto import ResponseHandler
+ from aiohttp.client_reqrep import ClientResponse
+ 
+@@ -43,6 +44,23 @@ def test_client_proto_bad_message(loop):
+     assert isinstance(proto.exception(), ClientResponseError)
+ 
+ 
++@asyncio.coroutine
++def test_uncompleted_message(loop):
++    proto = ResponseHandler(loop=loop)
++    transport = mock.Mock()
++    proto.connection_made(transport)
++    proto.set_response_params(read_until_eof=True)
++
++    proto.data_received(b'HTTP/1.1 301 Moved Permanently\r\n'
++                        b'Location: http://python.org/')
++    proto.connection_lost(None)
++
++    exc = proto.exception()
++    assert isinstance(exc, ServerDisconnectedError)
++    assert exc.message.code == 301
++    assert dict(exc.message.headers) == {'Location': 'http://python.org/'}
++
++
+ @asyncio.coroutine
+ def test_client_protocol_readuntil_eof(loop):
+     proto = ResponseHandler(loop=loop)

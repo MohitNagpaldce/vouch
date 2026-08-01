@@ -1,0 +1,14 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "1e02797d153522b5495e16d1d28b01aedf8d48f3",
+  "kind": "control_good",
+  "subject": "Improve pytest.raises docs (#11578)",
+  "evidence_subject": "Improve pytest.raises docs (#11578)",
+  "author": "Bruno Oliveira",
+  "date": "2023-11-04T07:24:57-03:00",
+  "impl_files": [
+    "src/_pytest/python_api.py"
+  ],
+  "test_files": [],
+  "diff_lines": 219
+}

@@ -1,0 +1,87 @@
+diff --git a/doc/build/changelog/unreleased_14/7799.rst b/doc/build/changelog/unreleased_14/7799.rst
+index 00254738e..8d88d23bc 100644
+--- a/doc/build/changelog/unreleased_14/7799.rst
++++ b/doc/build/changelog/unreleased_14/7799.rst
+@@ -2,7 +2,7 @@
+     :tags: bug, orm
+     :tickets: 7799
+ 
+-    Fixed issue where the :func:`_orm.polymorphic_selectin` loader option would
++    Fixed issue where the :func:`_orm.selectin_polymorphic` loader option would
+     not work with joined inheritance mappers that don't have a fixed
+     "polymorphic_on" column.   Additionally added test support for a wider
+     variety of usage patterns with this construct.
+\ No newline at end of file
+diff --git a/doc/build/changelog/unreleased_14/7812.rst b/doc/build/changelog/unreleased_14/7812.rst
+index 7e28428ac..00c7d3834 100644
+--- a/doc/build/changelog/unreleased_14/7812.rst
++++ b/doc/build/changelog/unreleased_14/7812.rst
+@@ -2,6 +2,7 @@
+     :tags: bug, mssql, regression
+     :tickets: 7812
+ 
+-    Fixed regression caused by :ticket:`7160` where FK reflection on a very
+-    old database (compatibility level 80: SQL Server 2000) causes an
+-    "Ambiguous column name" error. Patch courtesy of @Lin-Your.
++    Fixed regression caused by :ticket:`7160` where FK reflection in
++    conjunction with a low compatibility level setting (compatibility level 80:
++    SQL Server 2000) causes an "Ambiguous column name" error. Patch courtesy
++    @Lin-Your.
+diff --git a/doc/build/changelog/unreleased_14/7860.rst b/doc/build/changelog/unreleased_14/7860.rst
+index cb6bcc59f..40ecf38fd 100644
+--- a/doc/build/changelog/unreleased_14/7860.rst
++++ b/doc/build/changelog/unreleased_14/7860.rst
+@@ -2,10 +2,10 @@
+     :tags: usecase, schema
+     :tickets: 7860
+ 
+-    Added support so that the :paramref:`.Table.tometadata.referred_schema_fn`
++    Added support so that the :paramref:`.Table.to_metadata.referred_schema_fn`
+     callable passed to :meth:`.Table.to_metadata` may return the value
+-    :data:`.BLANK_SCHEMA` to indicate that the referenced foreign key should be
+-    reset to None. The :data.`RETAIN_SCHEMA` symbol may also be returned from
++    :attr:`.BLANK_SCHEMA` to indicate that the referenced foreign key should be
++    reset to None. The :attr:`RETAIN_SCHEMA` symbol may also be returned from
+     this function to indicate "no change", which will behave the same as
+     ``None`` currently does which also indicates no change.
+ 
+diff --git a/doc/build/core/metadata.rst b/doc/build/core/metadata.rst
+index 60f3f8d16..a9d43e182 100644
+--- a/doc/build/core/metadata.rst
++++ b/doc/build/core/metadata.rst
+@@ -572,6 +572,14 @@ Column, Table, MetaData API
+ 
+     .. versionadded:: 1.0.14
+ 
++.. attribute:: sqlalchemy.schema.RETAIN_SCHEMA
++
++    Symbol indicating that a :class:`_schema.Table`, :class:`.Sequence`
++    or in some cases a :class:`_schema.ForeignKey` object, in situations
++    where the object is being copied for a :meth:`.MetaData.to_metadata`
++    operation, should retain the schema name that it already has.
++
++
+ 
+ .. autoclass:: Column
+     :members:
+diff --git a/lib/sqlalchemy/sql/schema.py b/lib/sqlalchemy/sql/schema.py
+index 5045f33ac..b39579179 100644
+--- a/lib/sqlalchemy/sql/schema.py
++++ b/lib/sqlalchemy/sql/schema.py
+@@ -87,7 +87,15 @@ _T = TypeVar("_T", bound="Any")
+ _ServerDefaultType = Union["FetchedValue", str, TextClause, ColumnElement]
+ _TAB = TypeVar("_TAB", bound="Table")
+ 
+-RETAIN_SCHEMA = util.symbol("retain_schema")
++RETAIN_SCHEMA = util.symbol(
++    "retain_schema"
++    """Symbol indicating that a :class:`_schema.Table`, :class:`.Sequence`
++    or in some cases a :class:`_schema.ForeignKey` object, in situations
++    where the object is being copied for a :meth:`.MetaData.to_metadata`
++    operation, should retain the schema name that it already has.
++
++    """
++)
+ 
+ BLANK_SCHEMA = util.symbol(
+     "blank_schema",

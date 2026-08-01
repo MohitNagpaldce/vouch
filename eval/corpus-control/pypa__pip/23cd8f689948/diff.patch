@@ -1,0 +1,70 @@
+diff --git a/news/3763.bugfix b/news/3763.bugfix
+new file mode 100644
+index 000000000..18741c232
+--- /dev/null
++++ b/news/3763.bugfix
+@@ -0,0 +1 @@
++Keep install options in requirements.txt from leaking.
+diff --git a/src/pip/_internal/req/req_install.py b/src/pip/_internal/req/req_install.py
+index 889fe1d39..8d4f9ef46 100644
+--- a/src/pip/_internal/req/req_install.py
++++ b/src/pip/_internal/req/req_install.py
+@@ -771,11 +771,13 @@ class InstallRequirement(object):
+         # Options specified in requirements file override those
+         # specified on the command line, since the last option given
+         # to setup.py is the one that is used.
+-        global_options += self.options.get('global_options', [])
+-        install_options += self.options.get('install_options', [])
++        global_options = list(global_options) + \
++            self.options.get('global_options', [])
++        install_options = list(install_options) + \
++            self.options.get('install_options', [])
+ 
+         if self.isolated:
+-            global_options = list(global_options) + ["--no-user-cfg"]
++            global_options = global_options + ["--no-user-cfg"]
+ 
+         with TempDirectory(kind="record") as temp_dir:
+             record_filename = os.path.join(temp_dir.path, 'install-record.txt')
+diff --git a/tests/functional/test_install_reqs.py b/tests/functional/test_install_reqs.py
+index b867f8fc4..003b37fb8 100644
+--- a/tests/functional/test_install_reqs.py
++++ b/tests/functional/test_install_reqs.py
+@@ -513,3 +513,37 @@ def test_install_unsupported_wheel_file(script, data):
+     assert ("simple.dist-0.1-py1-none-invalid.whl is not a supported " +
+             "wheel on this platform" in result.stderr)
+     assert len(result.files_created) == 0
++
++
++def test_install_options_local_to_package(script, data, virtualenv):
++    """Make sure --install-options does not leak across packages.
++
++    A requirements.txt file can have per-package --install-options; these
++    should be isolated to just the package instead of leaking to subsequent
++    packages.  This needs to be a functional test because the bug was around
++    cross-contamination at install time.
++    """
++    home_simple = script.scratch_path.join("for-simple")
++    test_simple = script.scratch.join("for-simple")
++    home_simple.mkdir()
++    reqs_file = script.scratch_path.join("reqs.txt")
++    reqs_file.write(
++          textwrap.dedent("""
++              simple --install-option='--home=%s'
++              INITools
++              """ % home_simple))
++    result = script.pip(
++            'install',
++            '--no-index', '-f', data.find_links,
++            '-r', reqs_file,
++            expect_error=True,
++    )
++
++    simple = test_simple / 'lib' / 'python' / 'simple'
++    bad = test_simple / 'lib' / 'python' / 'initools'
++    good = script.site_packages / 'initools'
++    assert simple in result.files_created
++    assert result.files_created[simple].dir
++    assert bad not in result.files_created
++    assert good in result.files_created
++    assert result.files_created[good].dir

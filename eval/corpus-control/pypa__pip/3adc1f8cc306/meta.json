@@ -1,0 +1,14 @@
+{
+  "repo": "pypa/pip",
+  "sha": "3adc1f8cc306d622dd4329c4c4a24574eb7b5d31",
+  "kind": "control_good",
+  "subject": "Ignore --no-binary when installing build-system",
+  "evidence_subject": "Ignore --no-binary when installing build-system",
+  "author": "Thomas Kluyver",
+  "date": "2017-04-26T13:47:46+01:00",
+  "impl_files": [
+    "pip/wheel.py"
+  ],
+  "test_files": [],
+  "diff_lines": 26
+}

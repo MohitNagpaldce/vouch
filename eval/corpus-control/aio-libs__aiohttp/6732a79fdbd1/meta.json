@@ -1,0 +1,18 @@
+{
+  "repo": "aio-libs/aiohttp",
+  "sha": "6732a79fdbd146458f54621a16f0a241c174a788",
+  "kind": "control_good",
+  "subject": "attach partial message to ServerDisconnectedError exception",
+  "evidence_subject": "attach partial message to ServerDisconnectedError exception",
+  "author": "Nikolay Kim",
+  "date": "2017-03-20T21:03:02-07:00",
+  "impl_files": [
+    "aiohttp/client_exceptions.py",
+    "aiohttp/client_proto.py",
+    "aiohttp/http_parser.py"
+  ],
+  "test_files": [
+    "tests/test_client_proto.py"
+  ],
+  "diff_lines": 138
+}

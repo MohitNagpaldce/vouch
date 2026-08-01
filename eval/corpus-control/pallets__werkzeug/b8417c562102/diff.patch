@@ -1,0 +1,29 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index fdf54780..3843d0fe 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -1,5 +1,11 @@
+ .. currentmodule:: werkzeug
+ 
++Version 0.15.2
++--------------
++
++Unreleased
++
++
+ Version 0.15.1
+ --------------
+ 
+diff --git a/src/werkzeug/__init__.py b/src/werkzeug/__init__.py
+index f824e38c..b639dd8c 100644
+--- a/src/werkzeug/__init__.py
++++ b/src/werkzeug/__init__.py
+@@ -17,7 +17,7 @@
+ import sys
+ from types import ModuleType
+ 
+-__version__ = "0.15.1"
++__version__ = "0.15.2.dev0"
+ 
+ # This import magic raises concerns quite often which is why the implementation
+ # and motivation is explained here in detail now.

@@ -1,0 +1,16 @@
+{
+  "repo": "pypa/pip",
+  "sha": "4c5d712057b81a949ec290c582285dfb3b3d259a",
+  "kind": "control_good",
+  "subject": "Change RevOptions to accept a VersionControl subclass.",
+  "evidence_subject": "Change RevOptions to accept a VersionControl subclass.",
+  "author": "Chris Jerdonek",
+  "date": "2019-03-16T01:32:36-07:00",
+  "impl_files": [
+    "src/pip/_internal/vcs/__init__.py"
+  ],
+  "test_files": [
+    "tests/unit/test_vcs.py"
+  ],
+  "diff_lines": 203
+}

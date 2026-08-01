@@ -1,0 +1,17 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "dbab79218ffcd124dbfbd1fa06245582ca9c11db",
+  "kind": "control_good",
+  "subject": "Fix a memory leak and test timeout in websockets.",
+  "evidence_subject": "Fix a memory leak and test timeout in websockets.",
+  "author": "Ben Darnell",
+  "date": "2014-08-04T23:46:03-04:00",
+  "impl_files": [
+    "tornado/http1connection.py",
+    "tornado/testing.py"
+  ],
+  "test_files": [
+    "tornado/test/websocket_test.py"
+  ],
+  "diff_lines": 72
+}

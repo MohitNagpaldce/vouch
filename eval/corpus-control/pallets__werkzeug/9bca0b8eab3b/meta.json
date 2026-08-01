@@ -1,0 +1,18 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "9bca0b8eab3bdca5cd67a9a736988ac94eb7fa4f",
+  "kind": "control_good",
+  "subject": "error on dupcliate rules",
+  "evidence_subject": "error on dupcliate rules",
+  "author": "pgjones",
+  "date": "2025-04-18T16:57:42+01:00",
+  "impl_files": [
+    "src/werkzeug/routing/exceptions.py",
+    "src/werkzeug/routing/matcher.py",
+    "src/werkzeug/routing/rules.py"
+  ],
+  "test_files": [
+    "tests/test_routing.py"
+  ],
+  "diff_lines": 241
+}

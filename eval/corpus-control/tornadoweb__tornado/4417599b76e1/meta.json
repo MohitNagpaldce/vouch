@@ -1,0 +1,14 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "4417599b76e1ddc0342d2491a3e02a67442ceddf",
+  "kind": "control_good",
+  "subject": "add GitHub URL for PyPi",
+  "evidence_subject": "add GitHub URL for PyPi",
+  "author": "Andrii Oriekhov",
+  "date": "2022-02-28T16:22:33+02:00",
+  "impl_files": [
+    "setup.py"
+  ],
+  "test_files": [],
+  "diff_lines": 14
+}

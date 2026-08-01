@@ -1,0 +1,20 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "54c6b2d411dcf03cb558076784190274bb2348f4",
+  "kind": "control_good",
+  "subject": "netutil: Add type annotations",
+  "evidence_subject": "netutil: Add type annotations",
+  "author": "Ben Darnell",
+  "date": "2018-08-11T19:35:25-04:00",
+  "impl_files": [
+    "tornado/concurrent.py",
+    "tornado/gen.py",
+    "tornado/netutil.py",
+    "tornado/testing.py",
+    "tornado/util.py"
+  ],
+  "test_files": [
+    "tornado/test/netutil_test.py"
+  ],
+  "diff_lines": 453
+}

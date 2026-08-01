@@ -1,0 +1,117 @@
+diff --git a/examples/i18nurls/application.py b/examples/i18nurls/application.py
+index 47d7db9b..77ef50f2 100644
+--- a/examples/i18nurls/application.py
++++ b/examples/i18nurls/application.py
+@@ -79,7 +79,7 @@ class Application:
+             req.matched_url = (endpoint, args)
+             if endpoint == "#language_select":
+                 lng = req.accept_languages.best
+-                lng = lng and lng.split("-")[0].lower() or "en"
++                lng = lng.split("-")[0].lower() if lng else "en"
+                 index_url = urls.build("index", {"lang_code": lng})
+                 resp = Response("Moved to %s" % index_url, status=302)
+                 resp.headers["Location"] = index_url
+diff --git a/examples/plnt/sync.py b/examples/plnt/sync.py
+index d5b753cd..09afa9ec 100644
+--- a/examples/plnt/sync.py
++++ b/examples/plnt/sync.py
+@@ -55,7 +55,7 @@ def sync():
+                 title = entry.get("title")
+             url = entry.get("link") or blog.blog_url
+             text = (
+-                "content" in entry and entry.content[0] or entry.get("summary_detail")
++                entry.content[0] if "content" in entry else entry.get("summary_detail")
+             )
+ 
+             if not title or not text:
+diff --git a/examples/simplewiki/actions.py b/examples/simplewiki/actions.py
+index c8eb8002..c5997e4d 100644
+--- a/examples/simplewiki/actions.py
++++ b/examples/simplewiki/actions.py
+@@ -175,7 +175,7 @@ def on_revert(request, page_name):
+                 page = old_revision.page
+                 if request.method == "POST":
+                     change_note = request.form.get("change_note", "")
+-                    change_note = "revert" + (change_note and ": " + change_note or "")
++                    change_note = "revert" + (": " + change_note if change_note else "")
+                     session.add(Revision(page, old_revision.text, change_note))
+                     session.commit()
+                     return redirect(href(page_name))
+diff --git a/src/werkzeug/datastructures.py b/src/werkzeug/datastructures.py
+index aceade94..1a401be4 100644
+--- a/src/werkzeug/datastructures.py
++++ b/src/werkzeug/datastructures.py
+@@ -2351,7 +2351,11 @@ class ETags(Container, Iterable):
+     """
+ 
+     def __init__(self, strong_etags=None, weak_etags=None, star_tag=False):
+-        self._strong = frozenset(not star_tag and strong_etags or ())
++        if not star_tag and strong_etags:
++            self._strong = frozenset(strong_etags)
++        else:
++            self._strong = frozenset()
++
+         self._weak = frozenset(weak_etags or ())
+         self.star_tag = star_tag
+ 
+diff --git a/src/werkzeug/routing.py b/src/werkzeug/routing.py
+index cdd5dcad..073229e3 100644
+--- a/src/werkzeug/routing.py
++++ b/src/werkzeug/routing.py
+@@ -1120,7 +1120,7 @@ class Rule(RuleFactory):
+         return "<{} {}{} -> {}>".format(
+             self.__class__.__name__,
+             repr(("".join(tmp)).lstrip("|")),
+-            self.methods is not None and " (%s)" % ", ".join(self.methods) or "",
++            " (%s)" % ", ".join(self.methods) if self.methods is not None else "",
+             self.endpoint,
+         )
+ 
+@@ -1839,7 +1839,7 @@ class MapAdapter:
+         require_redirect = False
+ 
+         path = "{}|{}".format(
+-            self.map.host_matching and self.server_name or self.subdomain,
++            self.server_name if self.map.host_matching else self.subdomain,
+             path_info and "/%s" % path_info.lstrip("/"),
+         )
+ 
+diff --git a/src/werkzeug/security.py b/src/werkzeug/security.py
+index 57173849..5ae197d4 100644
+--- a/src/werkzeug/security.py
++++ b/src/werkzeug/security.py
+@@ -131,7 +131,7 @@ def _hash_internal(method, salt, password):
+         if len(args) not in (1, 2):
+             raise ValueError("Invalid number of arguments for PBKDF2")
+         method = args.pop(0)
+-        iterations = args and int(args[0] or 0) or DEFAULT_PBKDF2_ITERATIONS
++        iterations = int(args[0] or 0) if args else DEFAULT_PBKDF2_ITERATIONS
+         is_pbkdf2 = True
+         actual_method = "pbkdf2:%s:%d" % (method, iterations)
+     else:
+diff --git a/src/werkzeug/serving.py b/src/werkzeug/serving.py
+index 8f0bf146..2f3856d2 100644
+--- a/src/werkzeug/serving.py
++++ b/src/werkzeug/serving.py
+@@ -351,7 +351,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
+         """Send the response header and log the response code."""
+         self.log_request(code)
+         if message is None:
+-            message = code in self.responses and self.responses[code][0] or ""
++            message = self.responses[code][0] if code in self.responses else ""
+         if self.request_version != "HTTP/0.9":
+             hdr = "%s %d %s\r\n" % (self.protocol_version, code, message)
+             self.wfile.write(hdr.encode("ascii"))
+diff --git a/src/werkzeug/urls.py b/src/werkzeug/urls.py
+index 10bad94d..a5bca45a 100644
+--- a/src/werkzeug/urls.py
++++ b/src/werkzeug/urls.py
+@@ -1087,7 +1087,7 @@ class Href:
+                 raise TypeError("keyword arguments and query-dicts can't be combined")
+             query, path = path[-1], path[:-1]
+         elif query:
+-            query = {k.endswith("_") and k[:-1] or k: v for k, v in query.items()}
++            query = {k[:-1] if k.endswith("_") else k: v for k, v in query.items()}
+         path = "/".join(
+             [
+                 _to_str(url_quote(x, self.charset), "ascii")

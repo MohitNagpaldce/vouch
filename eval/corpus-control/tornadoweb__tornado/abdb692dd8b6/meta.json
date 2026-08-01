@@ -1,0 +1,16 @@
+{
+  "repo": "tornadoweb/tornado",
+  "sha": "abdb692dd8b6fa8873df47486b747b2fd921526d",
+  "kind": "control_good",
+  "subject": "Allow mixes of native coroutines and YieldPoints in gen.multi.",
+  "evidence_subject": "Allow mixes of native coroutines and YieldPoints in gen.multi.",
+  "author": "Ben Darnell",
+  "date": "2015-10-03T20:19:41-04:00",
+  "impl_files": [
+    "tornado/gen.py"
+  ],
+  "test_files": [
+    "tornado/test/gen_test.py"
+  ],
+  "diff_lines": 60
+}

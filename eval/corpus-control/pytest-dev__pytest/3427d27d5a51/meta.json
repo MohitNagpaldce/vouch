@@ -1,0 +1,16 @@
+{
+  "repo": "pytest-dev/pytest",
+  "sha": "3427d27d5a517a265502feba359df4f7c46ed611",
+  "kind": "control_good",
+  "subject": "Try to get docstring from module node",
+  "evidence_subject": "Try to get docstring from module node",
+  "author": "Sviatoslav Abakumov",
+  "date": "2017-10-25T10:54:43+03:00",
+  "impl_files": [
+    "_pytest/assertion/rewrite.py"
+  ],
+  "test_files": [
+    "testing/test_assertrewrite.py"
+  ],
+  "diff_lines": 100
+}

@@ -1,0 +1,151 @@
+diff --git a/src/pip/_internal/commands/install.py b/src/pip/_internal/commands/install.py
+index 2cbdf3a64..221d3caf9 100644
+--- a/src/pip/_internal/commands/install.py
++++ b/src/pip/_internal/commands/install.py
+@@ -52,7 +52,7 @@ if MYPY_CHECK_RUNNING:
+ 
+     from pip._internal.models.format_control import FormatControl
+     from pip._internal.req.req_install import InstallRequirement
+-    from pip._internal.wheel_builder import BinaryAllowedPredicate, BuildResult
++    from pip._internal.wheel_builder import BinaryAllowedPredicate
+ 
+ 
+ logger = logging.getLogger(__name__)
+@@ -70,51 +70,6 @@ def is_wheel_installed():
+     return True
+ 
+ 
+-def build_wheels(
+-    builder,              # type: WheelBuilder
+-    pep517_requirements,  # type: List[InstallRequirement]
+-    legacy_requirements,  # type: List[InstallRequirement]
+-    wheel_cache,           # type: WheelCache
+-    build_options,         # type: List[str]
+-    global_options,        # type: List[str]
+-    check_binary_allowed,  # type: BinaryAllowedPredicate
+-):
+-    # type: (...) -> BuildResult
+-    """
+-    Build wheels for requirements, depending on whether wheel is installed.
+-    """
+-    # We don't build wheels for legacy requirements if wheel is not installed.
+-    should_build_legacy = is_wheel_installed()
+-
+-    # Always build PEP 517 requirements
+-    pep517_build_successes, pep517_build_failures = builder.build(
+-        pep517_requirements,
+-        should_unpack=True,
+-        wheel_cache=wheel_cache,
+-        build_options=build_options,
+-        global_options=global_options,
+-        check_binary_allowed=check_binary_allowed,
+-    )
+-
+-    if should_build_legacy:
+-        # We don't care about failures building legacy
+-        # requirements, as we'll fall through to a direct
+-        # install for those.
+-        legacy_build_successes, legacy_build_failures = builder.build(
+-            legacy_requirements,
+-            should_unpack=True,
+-            wheel_cache=wheel_cache,
+-            build_options=build_options,
+-            global_options=global_options,
+-            check_binary_allowed=check_binary_allowed,
+-        )
+-
+-    return (
+-        pep517_build_successes + legacy_build_successes,
+-        pep517_build_failures + legacy_build_failures,
+-    )
+-
+-
+ def get_check_binary_allowed(format_control):
+     # type: (FormatControl) -> BinaryAllowedPredicate
+     def check_binary_allowed(req):
+diff --git a/tests/unit/test_command_install.py b/tests/unit/test_command_install.py
+index 36b3ca73f..aee03b77a 100644
+--- a/tests/unit/test_command_install.py
++++ b/tests/unit/test_command_install.py
+@@ -1,11 +1,10 @@
+ import errno
+ 
+ import pytest
+-from mock import Mock, patch
++from mock import patch
+ from pip._vendor.packaging.requirements import Requirement
+ 
+ from pip._internal.commands.install import (
+-    build_wheels,
+     create_env_error_message,
+     decide_user_install,
+     warn_deprecated_install_options,
+@@ -14,68 +13,6 @@ from pip._internal.req.req_install import InstallRequirement
+ from pip._internal.req.req_set import RequirementSet
+ 
+ 
+-class TestWheelCache:
+-
+-    def check_build_wheels(
+-        self,
+-        pep517_requirements,
+-        legacy_requirements,
+-    ):
+-        """
+-        Return: (mock_calls, return_value).
+-        """
+-        built_reqs = []
+-
+-        def build(reqs, **kwargs):
+-            # Fail the first requirement.
+-            built_reqs.append(reqs)
+-            return ([], [reqs[0]])
+-
+-        builder = Mock()
+-        builder.build.side_effect = build
+-
+-        build_failures = build_wheels(
+-            builder=builder,
+-            pep517_requirements=pep517_requirements,
+-            legacy_requirements=legacy_requirements,
+-            wheel_cache=Mock(cache_dir=None),
+-            build_options=[],
+-            global_options=[],
+-            check_binary_allowed=None,
+-        )
+-
+-        return (built_reqs, build_failures)
+-
+-    @patch('pip._internal.commands.install.is_wheel_installed')
+-    def test_build_wheels__wheel_installed(self, is_wheel_installed):
+-        is_wheel_installed.return_value = True
+-
+-        built_reqs, build_failures = self.check_build_wheels(
+-            pep517_requirements=['a', 'b'],
+-            legacy_requirements=['c', 'd'],
+-        )
+-
+-        # Legacy requirements were built.
+-        assert built_reqs == [['a', 'b'], ['c', 'd']]
+-
+-        # Legacy build failures are not included in the return value.
+-        assert build_failures == ['a']
+-
+-    @patch('pip._internal.commands.install.is_wheel_installed')
+-    def test_build_wheels__wheel_not_installed(self, is_wheel_installed):
+-        is_wheel_installed.return_value = False
+-
+-        built_reqs, build_failures = self.check_build_wheels(
+-            pep517_requirements=['a', 'b'],
+-            legacy_requirements=['c', 'd'],
+-        )
+-
+-        # Legacy requirements were not built.
+-        assert built_reqs == [['a', 'b']]
+-
+-        assert build_failures == ['a']
+-
+-
+ class TestDecideUserInstall:
+     @patch('site.ENABLE_USER_SITE', True)
+     @patch('pip._internal.commands.install.site_packages_writable')

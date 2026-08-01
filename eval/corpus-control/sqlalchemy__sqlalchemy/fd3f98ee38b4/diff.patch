@@ -1,0 +1,95 @@
+diff --git a/doc/build/orm/session_basics.rst b/doc/build/orm/session_basics.rst
+index 40c81f31c..fb148f6f2 100644
+--- a/doc/build/orm/session_basics.rst
++++ b/doc/build/orm/session_basics.rst
+@@ -891,6 +891,7 @@ further discussion.
+ 
+   :ref:`session_autobegin`
+ 
++.. _session_closing:
+ 
+ Closing
+ -------
+diff --git a/lib/sqlalchemy/ext/asyncio/session.py b/lib/sqlalchemy/ext/asyncio/session.py
+index 8d19819b0..343465f37 100644
+--- a/lib/sqlalchemy/ext/asyncio/session.py
++++ b/lib/sqlalchemy/ext/asyncio/session.py
+@@ -304,7 +304,33 @@ class AsyncSession:
+         return await greenlet_spawn(self.sync_session.commit)
+ 
+     async def close(self):
+-        """Close this :class:`_asyncio.AsyncSession`."""
++        """Close out the transactional resources and ORM objects used by this
++        :class:`_asyncio.AsyncSession`.
++
++        This expunges all ORM objects associated with this
++        :class:`_asyncio.AsyncSession`, ends any transaction in progress and
++        :term:`releases` any :class:`_asyncio.AsyncConnection` objects which
++        this :class:`_asyncio.AsyncSession` itself has checked out from
++        associated :class:`_asyncio.AsyncEngine` objects. The operation then
++        leaves the :class:`_asyncio.AsyncSession` in a state which it may be
++        used again.
++
++        .. tip::
++
++            The :meth:`_asyncio.AsyncSession.close` method **does not prevent
++            the Session from being used again**. The
++            :class:`_asyncio.AsyncSession` itself does not actually have a
++            distinct "closed" state; it merely means the
++            :class:`_asyncio.AsyncSession` will release all database
++            connections and ORM objects.
++
++
++        .. seealso::
++
++            :ref:`session_closing` - detail on the semantics of
++            :meth:`_asyncio.AsyncSession.close`
++
++        """
+         return await greenlet_spawn(self.sync_session.close)
+ 
+     @classmethod
+diff --git a/lib/sqlalchemy/orm/session.py b/lib/sqlalchemy/orm/session.py
+index e4a9b9046..ec11e7adf 100644
+--- a/lib/sqlalchemy/orm/session.py
++++ b/lib/sqlalchemy/orm/session.py
+@@ -1713,19 +1713,34 @@ class Session(_SessionClassMethods):
+         ).scalar()
+ 
+     def close(self):
+-        """Close this Session.
++        """Close out the transactional resources and ORM objects used by this
++        :class:`_orm.Session`.
++
++        This expunges all ORM objects associated with this
++        :class:`_orm.Session`, ends any transaction in progress and
++        :term:`releases` any :class:`_engine.Connection` objects which this
++        :class:`_orm.Session` itself has checked out from associated
++        :class:`_engine.Engine` objects. The operation then leaves the
++        :class:`_orm.Session` in a state which it may be used again.
+ 
+-        This clears all items and ends any transaction in progress.
++        .. tip::
+ 
+-        If this Session was created with ``autocommit=False``, a new
+-        transaction will be begun when the :class:`.Session` is next asked
+-        to procure a database connection.
++            The :meth:`_orm.Session.close` method **does not prevent the
++            Session from being used again**.   The :class:`_orm.Session` itself
++            does not actually have a distinct "closed" state; it merely means
++            the :class:`_orm.Session` will release all database connections
++            and ORM objects.
+ 
+         .. versionchanged:: 1.4  The :meth:`.Session.close` method does not
+            immediately create a new :class:`.SessionTransaction` object;
+            instead, the new :class:`.SessionTransaction` is created only if
+            the :class:`.Session` is used again for a database operation.
+ 
++        .. seealso::
++
++            :ref:`session_closing` - detail on the semantics of
++            :meth:`_orm.Session.close`
++
+         """
+         self._close_impl(invalidate=False)
+ 

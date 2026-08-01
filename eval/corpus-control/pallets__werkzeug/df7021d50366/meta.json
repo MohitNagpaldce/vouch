@@ -1,0 +1,14 @@
+{
+  "repo": "pallets/werkzeug",
+  "sha": "df7021d50366aeb8fc41c49872a7708d25190c86",
+  "kind": "control_good",
+  "subject": "Use conditional expression in BaseResponse.__repr__.",
+  "evidence_subject": "Use conditional expression in BaseResponse.__repr__.",
+  "author": "Berker Peksag",
+  "date": "2015-02-08T13:02:41+02:00",
+  "impl_files": [
+    "werkzeug/wrappers.py"
+  ],
+  "test_files": [],
+  "diff_lines": 13
+}

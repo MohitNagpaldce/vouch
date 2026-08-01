@@ -1,0 +1,41 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index fd9935b2..e90bedcc 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -7,6 +7,8 @@ Unreleased
+ 
+ -   Type signature for ``get_json`` specifies that return type is not optional when
+     ``silent=False``. :issue:`2508`
++-   ``parse_content_range_header`` returns ``None`` for a value like ``bytes */-1``
++    where the length is invalid, instead of raising an ``AssertionError``. :issue:`2531`
+ 
+ 
+ Version 2.2.2
+diff --git a/src/werkzeug/http.py b/src/werkzeug/http.py
+index 97776855..93d9536e 100644
+--- a/src/werkzeug/http.py
++++ b/src/werkzeug/http.py
+@@ -818,6 +818,9 @@ def parse_content_range_header(
+             return None
+ 
+     if rng == "*":
++        if not is_byte_range_valid(None, None, length):
++            return None
++
+         return ds.ContentRange(units, None, None, length, on_update=on_update)
+     elif "-" not in rng:
+         return None
+diff --git a/tests/test_http.py b/tests/test_http.py
+index 3760dc12..0f94a38c 100644
+--- a/tests/test_http.py
++++ b/tests/test_http.py
+@@ -619,6 +619,9 @@ class TestRange:
+         rv = http.parse_content_range_header("bytes 0-98/*asdfsa")
+         assert rv is None
+ 
++        rv = http.parse_content_range_header("bytes */-1")
++        assert rv is None
++
+         rv = http.parse_content_range_header("bytes 0-99/100")
+         assert rv.to_header() == "bytes 0-99/100"
+         rv.start = None
