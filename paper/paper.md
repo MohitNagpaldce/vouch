@@ -25,10 +25,14 @@ in-toto-style attestation recording which model authored a diff and which
 verification evidence it survived. We evaluate the first four verifiers on a
 mined corpus of 55 ground-truth bad changes (merged-then-reverted and
 regression-introducing commits from eight major Python projects) and a
-39-commit presumed-good control arm. Three findings stand out: (1) **45% of
-known-bad changes shipped without touching a single test file**, so a gate
-demanding executable test evidence would have flagged nearly half of real
-regressions at zero model cost; (2) where the full gate was runnable it blocked
+39-commit presumed-good control arm. Three findings stand out: (1) 45% of
+known-bad changes shipped without touching a single test file — but so did 64%
+of known-good ones, so the obvious cheap gate ("require test changes") does
+not discriminate at all; the discriminative form of the signal is
+execution-level — *no test executes the changed lines* — which is exactly what
+diff-scoped mutation coverage measures, and our own initially-promising
+headline failing its control arm is a working demonstration of why every gate
+signal must be evaluated against one; (2) where the full gate was runnable it blocked
 the bad change — in the strongest case, mutation testing found 11/11 injected
 faults undetected because no test executed any changed line, and the tautology
 probe proved the accompanying test passed *without* the change; (3) adversarial
@@ -243,13 +247,24 @@ runnability is data, not noise.
 
 ### 5.3 Results
 
-**45% of known-bad changes shipped with no test changes (25/55).** Nearly half
-of the changes real maintainers merged and later reverted touched no test file
-at all. This number is a diff property — immune to environment decay — and
-implies that a gate merely requiring executable test evidence for changed code
-would have flagged 45% of real bad merges at zero model cost. We accordingly
-promote "changed implementation lines have no executing test" from a mutation
-side-effect to a first-class cheap signal.
+**45% of known-bad changes shipped with no test changes (25/55) — a signal
+that dies against its control.** Nearly half of the changes real maintainers
+merged and later reverted touched no test file. The obvious inference — "a
+gate requiring test changes would have flagged 45% of real bad merges for
+free" — is wrong: **64% of the presumed-good control commits (25/39) also
+shipped without test changes**, so in these projects the naive gate
+discriminates worse than chance (J ≈ −0.19). Merging without test changes is
+simply how these projects operate, for good and bad changes alike. Two
+lessons. First, methodological: every candidate gate signal must be evaluated
+against a control arm — this one looked like a headline until it met its
+control (and Section 6's review measurements were designed with controls from
+the start for the same reason). Second, substantive: the discriminative form
+of "test evidence" is not *did the diff touch a test file* but *does any test
+execute the changed implementation lines* — file-level presence is a poor
+proxy (the `shlex.quote` sample below touched a test file yet had 11/11
+changed-line mutants uncovered). That execution-level signal is exactly what
+diff-scoped mutation coverage measures at merge time, in the merge-time
+environment, where era decay is not a factor.
 
 **Where the full gate ran, it blocked the bad change.**
 `pallets/click@e798f64` ("Use shlex.quote for quoting shell arguments," merged
@@ -361,9 +376,10 @@ Build-pass-coverage acceptance — the current industrial standard — measures 
 authoring model's self-agreement, not independent evidence. We built the gate
 that measures the latter: six verifier classes anchored in sources the
 authoring model does not control, composed by policy, attested portably. The
-first controlled measurements say the cheap signals are shockingly informative
-(45% of real bad merges shipped with no test evidence at all), the execution-
-grounded verifiers block real bad changes with ground-truth observations, and
+first controlled measurements are a study in why controls matter: the obvious
+cheap signal (no test changes in the diff) describes 45% of real bad merges
+*and* 64% of good ones, dying against its control arm; the execution-grounded
+verifiers block real bad changes with ground-truth observations; and
 the fashionable one — adversarial LLM review — discriminates weakly in every
 family we measured, yet composes well: the cross-family union reaches 89%
 sensitivity at no extra false-alarm cost, while cross-family *agreement* fails

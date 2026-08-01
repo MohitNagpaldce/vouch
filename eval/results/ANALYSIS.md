@@ -124,6 +124,18 @@ out of 42 runnable (a `subprocess`-adjacent change) at 8.8% FPR. Precise,
 nearly blind to logic regressions — exactly the heterogeneity that motivates
 composing verifier classes rather than picking one.
 
+## Run 4 — test-evidence baseline: run 1's headline dies against its control (2026-08-01)
+
+The naive gate "diff must touch a test file": flags 25/55 bad (45% sensitivity)
+but also 25/39 good (64% FPR) — worse than chance (J ≈ −0.19). Merging without
+test changes is just how these projects work, for good and bad changes alike.
+Run 1's "a cheap gate would have caught 45%" framing is hereby retracted; the
+paper now presents this as a worked example of why every gate signal needs a
+control arm. The discriminative form of the signal is execution-level (no test
+executes the changed lines — cf. the shlex.quote sample: test file touched,
+11/11 changed-line mutants uncovered), i.e., diff-scoped mutation coverage at
+merge time.
+
 ## Implications for the evaluation design
 
 1. Add an era-matched environment builder (pyenv + dated pip constraints) —
