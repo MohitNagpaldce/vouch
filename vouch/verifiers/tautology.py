@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ..models import Finding, RunContext, Severity, Verdict, VerifierResult
-from ..util import run_git, run_pytest, temp_worktree
+from ..util import run_git, run_pytest, work_dir
 from .base import Verifier, register
 
 
@@ -27,7 +27,7 @@ class TautologyVerifier(Verifier):
             result.note = "tests-only diff; nothing to compare against base"
             return result
 
-        with temp_worktree(ctx.repo, ctx.diff.head_ref) as wt:
+        with work_dir(ctx) as wt:
             targets = [f.path for f in test_files if (wt / f.path).exists()]
             if not targets:
                 result.verdict = Verdict.SKIP
@@ -48,7 +48,11 @@ class TautologyVerifier(Verifier):
                 else:
                     run_git(wt, "checkout", ctx.diff.merge_base, "--", fd.path)
 
-            code, out = run_pytest(wt, ctx.python, targets=targets)
+            try:
+                code, out = run_pytest(wt, ctx.python, targets=targets)
+            finally:
+                # restore HEAD state (matters in in_place mode, harmless otherwise)
+                run_git(wt, "checkout", ctx.diff.head_ref, "--", ".", check=False)
 
         if code == 0:
             for fd in test_files:

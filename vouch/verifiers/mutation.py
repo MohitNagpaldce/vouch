@@ -5,7 +5,7 @@ import time
 from ..coverage_map import COV_ENV, COV_EXTRA, build_map, cov_available, tests_for_line
 from ..models import Finding, RunContext, Severity, Verdict, VerifierResult
 from ..mutants import collect_sites, make_mutant
-from ..util import run_pytest, temp_worktree
+from ..util import run_pytest, work_dir
 from .base import Verifier, register
 
 _DEFAULT_MAX_MUTANTS = 30
@@ -35,7 +35,7 @@ class MutationVerifier(Verifier):
         max_mutants = int(ctx.config.get("max_mutants", _DEFAULT_MAX_MUTANTS))
         min_score = float(ctx.tier_config.get("min_mutation_score", _DEFAULT_MIN_SCORE))
 
-        with temp_worktree(ctx.repo, ctx.diff.head_ref) as wt:
+        with work_dir(ctx) as wt:
             scoped = cov_available(ctx.python)
             t0 = time.monotonic()
             code, out = run_pytest(

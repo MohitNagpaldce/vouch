@@ -96,3 +96,8 @@ class RunContext:
     tier_config: dict
     python: str = sys.executable
     config: dict = field(default_factory=dict)
+    # Run test-touching verifiers directly in `repo` instead of a disposable
+    # worktree. Only safe when `repo` is itself throwaway (e.g. a harness
+    # worktree); needed when the target package is pip-installed -e from
+    # `repo`, so mutated files are actually the ones imported.
+    in_place: bool = False

@@ -9,3 +9,5 @@ build/
 eval/corpus/
 eval/.clones/
 .coverage
+eval/results/*.log
+eval/results/replay-test.json

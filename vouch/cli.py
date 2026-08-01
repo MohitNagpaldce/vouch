@@ -54,7 +54,10 @@ def check(args: argparse.Namespace) -> int:
         provenance=provenance,
         tier_name=tier.name,
         tier_config=tier.config,
+        in_place=args.in_place,
     )
+    if args.python:
+        ctx.python = args.python
 
     if not provenance.is_ai and not args.all_code:
         print(
@@ -133,6 +136,12 @@ def main(argv: list[str] | None = None) -> None:
                          help="treat the diff as AI-authored even without provenance markers")
     p_check.add_argument("--all-code", action="store_true",
                          help="verify regardless of AI provenance")
+    p_check.add_argument("--python", default="",
+                         help="interpreter used to run the target repo's tests "
+                              "(default: the one running vouch)")
+    p_check.add_argument("--in-place", action="store_true",
+                         help="run test-touching verifiers directly in --repo instead of a "
+                              "disposable worktree; ONLY safe if --repo is itself throwaway")
     p_check.set_defaults(func=check)
 
     p_init = sub.add_parser("init", help="write a default vouch.toml policy")

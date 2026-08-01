@@ -19,6 +19,17 @@ def run_git(repo: Path, *args: str, check: bool = True) -> str:
 
 
 @contextmanager
+def work_dir(ctx):
+    """The directory a test-touching verifier should operate in: the repo
+    itself when ctx.in_place (harness mode), else a disposable worktree."""
+    if ctx.in_place:
+        yield ctx.repo
+    else:
+        with temp_worktree(ctx.repo, ctx.diff.head_ref) as wt:
+            yield wt
+
+
+@contextmanager
 def temp_worktree(repo: Path, ref: str = "HEAD"):
     """Check out `ref` in a disposable worktree so verifiers never touch the
     user's working tree."""
