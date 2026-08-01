@@ -284,34 +284,48 @@ Reviewer: Gemini (`gemini-flash-latest` for 24 bad samples,
 quotas forced the split, and the reviewer model is recorded per sample in the
 VBOM). One adversarial review per diff, structured JSON findings.
 
-**Results.**
+**Results.** Two reviewer families ran both arms (GPT-5.1; Gemini flash/
+flash-lite, reviewer model recorded per sample), plus a Bandit SAST baseline
+restricted to findings on changed lines:
 
-| arm | flagged | rate |
-|---|---|---|
-| known-bad (n=55) | 44 | **80% sensitivity** |
-| presumed-good control (n=39) | 21 | **54% false-positive rate** |
+| detector | sensitivity (bad, n=55) | FPR (good, n=39) | Youden J |
+|---|---|---|---|
+| Bandit (SAST, changed lines) | 2.4% (1/42 ran) | 8.8% (3/34 ran) | ≈0 |
+| GPT-5.1 review | 51% (28/55) | 31% (12/39) | 0.20 |
+| Gemini review | 80% (44/55) | 54% (21/39) | 0.27 |
+| **union (either flags)** | **89% (49/55)** | **54% (21/39)** | **0.35** |
+| intersection (both flag) | 42% (23/55) | 31% (12/39) | 0.11 |
 
-The model-consistent subset agrees (lite: 81% TPR / 54% FPR; Youden's J ≈
-0.27), and counting only block-severity findings barely moves it (46% of good
-commits still blocked). The reviewer blocked, among other innocuous changes, a
-shebang addition and a comment update.
+Counting only block-severity findings barely moves the single-reviewer
+numbers (46% of good commits still blocked by Gemini, which blocked, among
+other innocuous changes, a shebang addition and a comment update).
 
-**Reading.** An LLM prompted to attack a diff attacks nearly everything. The
-~27-point discrimination gap is real, so review carries signal — but at 54%
-FPR it cannot gate: deployed as a blocker it would be disabled within days.
-This quantifies the design argument of Section 3: execution-grounded verifiers
-(mutation, tautology) produce ground-truth observations and must anchor the
-gate; model review is a noisy witness to be composed, calibrated, and
-cross-checked — not trusted alone.
+**Reading.** An LLM prompted to attack a diff attacks much of everything; the
+families differ only in operating point (GPT conservative, Gemini aggressive),
+and neither discriminates well alone. The cross-family *structure* is the
+useful result. The two families' false positives are nested — GPT's 12 flagged
+controls are a subset of Gemini's 21 — while their true positives are
+complementary (Gemini-only 21, GPT-only 5, agreement 23). Hence: (1) the
+**union dominates the best single reviewer** — nine points more sensitivity at
+identical FPR — so cross-family composition is free sensitivity; (2)
+**requiring agreement does not fix false alarms** — intersection FPR equals
+conservative-GPT alone, because both families attack the same
+innocuous-but-unusual good diffs, plausibly an artifact of the shared
+adversarial prompt framing. Detection blindness is family-specific; false-alarm
+behavior is shared. Calibration should target the prompt; ensembling should
+target the union. SAST is the mirror image of review — near-zero false alarms,
+near-blind to real regressions — completing the heterogeneity argument: no
+single detector class gates AI code; composition does, with execution-grounded
+verifiers (mutation, tautology) anchoring the gate on ground truth.
 
-**Caveats.** One reviewer family so far; survival-based "good" labels are noisy
-(some flagged controls may harbor latent defects); finding-level validity (does
-the review text describe the *actual* defect that caused the revert?) is not
-yet judged.
+**Caveats.** Survival-based "good" labels are noisy (some flagged controls may
+harbor latent defects); finding-level validity (does the review text describe
+the *actual* defect that caused the revert?) is not yet judged; the Gemini arm
+mixes two model sizes (recorded per sample; the size-consistent subsets agree
+within two points).
 
-⏳ *Pending: GPT-family arm (cross-family agreement and correlated-blindness
-measurement); severity-calibrated prompting for a full ROC curve; SAST
-(Semgrep/Bandit) and coverage-gate baselines on the same corpus.*
+⏳ *Pending: severity-calibrated prompting for a full ROC curve; coverage-gate
+baseline; finding-level validity judgment.*
 
 ## 7. Limitations and threats to validity
 

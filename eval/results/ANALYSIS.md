@@ -89,6 +89,41 @@ noisy — some flagged controls may contain genuine latent defects; finding-leve
 validity (does the review text describe a *real* defect in the reverted change?)
 is not yet judged, only diff-level flagging.
 
+## Run 3 — GPT arm, cross-family ensemble, SAST baseline (2026-08-01)
+
+Raw data: `review-gpt.json`, `review-gpt-control.json` (GPT-5.1, zero errors,
+paid tier), `sast.json`, `sast-control.json` (Bandit 1.9.4 on changed lines).
+
+| detector | sensitivity (n=55 bad) | FPR (n=39 good) | Youden J |
+|---|---|---|---|
+| Bandit (SAST, changed lines) | 2.4% (1/42 ran) | 8.8% (3/34 ran) | ~0 |
+| GPT-5.1 adversarial review | 51% (28/55) | 31% (12/39) | 0.20 |
+| Gemini flash adversarial review | 80% (44/55) | 54% (21/39) | 0.27 |
+| **Union (either family flags)** | **89% (49/55)** | **54% (21/39)** | **0.35** |
+| Intersection (both must flag) | 42% (23/55) | 31% (12/39) | 0.11 |
+
+**Cross-family structure — the day's most useful finding.** The two families'
+*false positives are nested*: GPT's 12 flagged controls are a subset of
+Gemini's 21, so the union's FPR equals Gemini's alone. Their *true positives
+are complementary*: on the bad arm, Gemini-only caught 21 samples and GPT-only
+caught 5 (agreement on only 23). Consequences:
+
+1. **Union dominates the best single reviewer**: +9 points sensitivity (89% vs
+   80%) at identical FPR. Cross-family review composition is free sensitivity.
+2. **Requiring agreement does NOT fix false positives**: intersection FPR (31%)
+   is no better than conservative-GPT alone, because the families' FP sets
+   overlap heavily — both attack the same innocuous-but-unusual good diffs.
+   "Two reviewers must agree" is NOT the fix vendors might assume.
+3. Detection blindness is family-specific (weakly correlated errors on bad
+   diffs); false-alarm behavior is shared (strongly correlated on good diffs) —
+   likely an artifact of the shared adversarial prompt framing. Calibration
+   work should target the prompt, not the ensemble.
+
+**SAST is the mirror image of LLM review.** Bandit flagged 1 real regression
+out of 42 runnable (a `subprocess`-adjacent change) at 8.8% FPR. Precise,
+nearly blind to logic regressions — exactly the heterogeneity that motivates
+composing verifier classes rather than picking one.
+
 ## Implications for the evaluation design
 
 1. Add an era-matched environment builder (pyenv + dated pip constraints) —
