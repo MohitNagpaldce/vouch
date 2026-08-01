@@ -218,6 +218,7 @@ class ReviewVerifier(Verifier):
 
         result.metrics = {
             "reviewer": provider.family,
+            "reviewer_model": getattr(provider, "model", ""),
             "independent_of_author": provider.family not in author_families,
             "findings": len(result.findings),
         }
