@@ -28,7 +28,8 @@ import time
 from pathlib import Path
 
 VOUCH = shutil.which("vouch") or str(Path(sys.executable).with_name("vouch"))
-VERIFIERS = "deps,mutation,tautology"
+DEFAULT_VERIFIERS = "deps,mutation,tautology"
+TEST_VERIFIERS = {"mutation", "tautology"}  # need a per-sample environment
 ENV_SETUP_TIMEOUT = 300
 VOUCH_TIMEOUT = 900
 
@@ -68,7 +69,7 @@ def build_env(wt: Path) -> tuple[str, str]:
     return py, ""
 
 
-def replay_sample(meta: dict, clone: Path, scratch: Path) -> dict:
+def replay_sample(meta: dict, clone: Path, scratch: Path, verifiers: str) -> dict:
     record = {
         "repo": meta["repo"],
         "sha": meta["sha"],
@@ -103,12 +104,16 @@ def replay_sample(meta: dict, clone: Path, scratch: Path) -> dict:
         else:
             base = f"{sha}^"
 
-        py, env_err = build_env(wt)
-        record["env"] = "ok" if not env_err else env_err
+        if TEST_VERIFIERS & set(verifiers.split(",")):
+            py, env_err = build_env(wt)
+            record["env"] = "ok" if not env_err else env_err
+        else:
+            py, env_err = "", ""
+            record["env"] = "not needed"
         vbom_path = scratch / "vbom.json"
         cmd = [
             VOUCH, "check", "--repo", str(wt), "--base", base, "--all-code",
-            "--in-place", "--verifiers", VERIFIERS, "--vbom", str(vbom_path),
+            "--in-place", "--verifiers", verifiers, "--vbom", str(vbom_path),
         ]
         if py:
             cmd += ["--python", py]
@@ -136,7 +141,7 @@ def replay_sample(meta: dict, clone: Path, scratch: Path) -> dict:
         shutil.rmtree(wt, ignore_errors=True)
 
 
-def summarize(records: list[dict]) -> dict:
+def summarize(records: list[dict], verifiers: str) -> dict:
     def flagged(v):
         return v and v["verdict"] in ("block", "warn")
 
@@ -151,7 +156,7 @@ def summarize(records: list[dict]) -> dict:
         ),
         "per_verifier": {},
     }
-    for name in VERIFIERS.split(","):
+    for name in verifiers.split(","):
         runs = [r["verifiers"].get(name) for r in ok]
         runs = [v for v in runs if v]
         summary["per_verifier"][name] = {
@@ -170,6 +175,9 @@ def main() -> None:
     ap.add_argument("--out", default="eval/results/replay.json")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--sample", default="", help="replay one sample: <owner__repo>/<sha12>")
+    ap.add_argument("--verifiers", default=DEFAULT_VERIFIERS)
+    ap.add_argument("--sleep", type=float, default=0.0,
+                    help="pause between samples (rate-limit courtesy for API verifiers)")
     args = ap.parse_args()
 
     corpus = Path(args.corpus)
@@ -188,10 +196,12 @@ def main() -> None:
             continue
         scratch = Path(tempfile.mkdtemp(prefix="vouch-replay-"))
         try:
-            rec = replay_sample(meta, clone, scratch)
+            rec = replay_sample(meta, clone, scratch, args.verifiers)
         finally:
             shutil.rmtree(scratch, ignore_errors=True)
         records.append(rec)
+        if args.sleep:
+            time.sleep(args.sleep)
         verdicts = {k: v["verdict"] for k, v in rec["verifiers"].items()}
         print(
             f"[{i}/{len(metas)}] {meta['repo']}@{meta['sha'][:12]} "
@@ -200,7 +210,7 @@ def main() -> None:
 
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    result = {"summary": summarize(records), "records": records}
+    result = {"summary": summarize(records, args.verifiers), "records": records}
     out.write_text(json.dumps(result, indent=2) + "\n")
     print("\nsummary:", json.dumps(result["summary"], indent=2))
 

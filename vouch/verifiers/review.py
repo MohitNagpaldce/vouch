@@ -28,8 +28,8 @@ class Provider:
 class AnthropicProvider(Provider):
     family = "anthropic/claude"
 
-    def __init__(self, model: str = "claude-sonnet-5"):
-        self.model = model
+    def __init__(self, model: str | None = None):
+        self.model = model or os.environ.get("VOUCH_ANTHROPIC_MODEL", "claude-sonnet-5")
         self.key = os.environ.get("ANTHROPIC_API_KEY", "")
 
     def available(self) -> bool:
@@ -61,8 +61,8 @@ class AnthropicProvider(Provider):
 class OpenAIProvider(Provider):
     family = "openai/gpt"
 
-    def __init__(self, model: str = "gpt-5.2"):
-        self.model = model
+    def __init__(self, model: str | None = None):
+        self.model = model or os.environ.get("VOUCH_OPENAI_MODEL", "gpt-5.1")
         self.key = os.environ.get("OPENAI_API_KEY", "")
 
     def available(self) -> bool:
@@ -91,7 +91,41 @@ class OpenAIProvider(Provider):
         return data["choices"][0]["message"]["content"]
 
 
-PROVIDERS: list[Provider] = [AnthropicProvider(), OpenAIProvider()]
+class GeminiProvider(Provider):
+    family = "google/gemini"
+
+    def __init__(self, model: str | None = None):
+        self.model = model or os.environ.get("VOUCH_GEMINI_MODEL", "gemini-pro-latest")
+        self.key = os.environ.get("GEMINI_API_KEY", "") or os.environ.get("GOOGLE_API_KEY", "")
+
+    def available(self) -> bool:
+        return bool(self.key)
+
+    def review(self, diff_text: str) -> str:
+        body = json.dumps(
+            {
+                "system_instruction": {"parts": [{"text": _SYSTEM}]},
+                "contents": [
+                    {"role": "user", "parts": [{"text": f"Review this diff:\n\n{diff_text}"}]}
+                ],
+            }
+        ).encode()
+        url = (
+            "https://generativelanguage.googleapis.com/v1beta/models/"
+            f"{self.model}:generateContent"
+        )
+        req = urllib.request.Request(
+            url,
+            data=body,
+            headers={"x-goog-api-key": self.key, "content-type": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            data = json.loads(resp.read())
+        parts = data["candidates"][0]["content"].get("parts", [])
+        return "".join(p.get("text", "") for p in parts)
+
+
+PROVIDERS: list[Provider] = [AnthropicProvider(), OpenAIProvider(), GeminiProvider()]
 
 
 def _parse_findings(text: str) -> list[dict]:
@@ -122,10 +156,8 @@ class ReviewVerifier(Verifier):
 
         author_families = set(ctx.provenance.models)
         independent = [p for p in available if p.family not in author_families]
-        if independent:
-            provider = independent[0]
-        else:
-            provider = available[0]
+        same_family = [p for p in available if p.family in author_families]
+        if not independent:
             result.findings.append(
                 Finding(
                     verifier=self.name,
@@ -137,7 +169,22 @@ class ReviewVerifier(Verifier):
             )
 
         diff_text = ctx.diff.raw[:_MAX_DIFF_CHARS]
-        raw = provider.review(diff_text)
+        raw = ""
+        provider = None
+        errors: list[str] = []
+        for candidate in independent + same_family:
+            try:
+                raw = candidate.review(diff_text)
+                provider = candidate
+                break
+            except Exception as exc:  # provider down/unfunded → try the next one
+                errors.append(f"{candidate.family}: {exc}")
+        if provider is None:
+            result.verdict = Verdict.ERROR
+            result.note = "all review providers failed: " + "; ".join(errors)
+            return result
+        if errors:
+            result.note = "provider fallback: " + "; ".join(errors)
         for item in _parse_findings(raw):
             sev = Severity.BLOCK if item.get("severity") == "block" else Severity.WARN
             result.findings.append(
