@@ -315,6 +315,12 @@ restricted to findings on changed lines:
 | **union (either flags)** | **89% (49/55)** | **54% (21/39)** | **0.35** |
 | intersection (both flag) | 42% (23/55) | 31% (12/39) | 0.11 |
 
+![Figure 1: Review discrimination. The calibrated GPT-5.1 ROC (AUC 0.65) with
+every adversarial-framing detector plotted as an operating point: both
+adversarial arms sit essentially on the calibrated curve, the cross-family
+union sits above it, and the intersection adds nothing over
+conservative-GPT.](figures/roc.png)
+
 Counting only block-severity findings barely moves the single-reviewer
 numbers (46% of good commits still blocked by Gemini, which blocked, among
 other innocuous changes, a shebang addition and a comment update).
@@ -355,7 +361,12 @@ defects, **22 (61%) were scored below the best-J gating threshold**: in the
 starkest case the reviewer explicitly described a pydantic revert's defective
 conditional logic in its findings, then rated the change 5/100. The binding
 failure of LLM code review is **calibration, not detection**: the model
-articulates the true defect and underweights it. This has two design
+articulates the true defect and underweights it (Figure 2).
+
+![Figure 2: Perception without conviction. Reviewer defect-likelihood scores
+for control commits, bad diffs whose findings missed the actual defect, and
+bad diffs whose findings identified it — 22 of 36 correctly-perceived defects
+score below the best-J gating threshold.](figures/conviction.png) This has two design
 consequences. Gate logic should weigh finding *content* — a concrete
 behavioral-change finding on a critical path — rather than scalar risk alone,
 since thresholding discards the model's own correct perceptions. And it
