@@ -1,3 +1,18 @@
+Metadata-Version: 2.4
+Name: vouch-gate
+Version: 0.1.0
+Summary: A verification gate for AI-generated code: mutation adequacy, tautology probes, cross-model review, dependency reality checks, and signed verification attestations (VBOM).
+Author-email: Mohit Nagpal <mht.nagpal@gmail.com>
+License: Apache-2.0
+Project-URL: Homepage, https://github.com/MohitNagpaldce/vouch
+Keywords: ai,code-review,mutation-testing,verification,llm,ci
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Quality Assurance
+Classifier: Topic :: Software Development :: Testing
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+
 # Vouch — a verification gate for AI-generated code
 
 *Working name; alternatives: `attest`, `warrant`, `vet`.*
@@ -55,45 +70,6 @@ verifiers + human gate; docs/tests-only → fast path), required independence
   tracks are lower-bar and give a second peer-reviewed publication for the same
   artifact); extended version to EMSE or TOSEM.
 
-## Quickstart
-
-```bash
-pip install -e .          # Python ≥ 3.11; pytest needed in the target repo's env
-cd your-repo
-vouch check --base main   # gates the current branch's diff
-vouch check --base main --vbom vbom.json   # also emit the attestation
-vouch init                # write a customizable vouch.toml policy
-```
-
-Vouch verifies diffs with detected AI provenance (`Co-Authored-By:` trailers for
-Claude/Copilot/Cursor/etc.); use `--assume-ai` or `--all-code` otherwise.
-
-Example — an AI-authored diff with weak tests and a hallucinated import:
-
-```text
-vouch 0.1.0 · tier: default · provenance: anthropic/claude
-diff: 83386b889315..HEAD · 3 file(s) changed
-
-  ✗ deps       BLOCK  (0.24s)  new_imports_checked=1
-      BLOCK [report.py:1] import `superfancy_pricing_utils_x9`: package does not
-      exist on PyPI (likely hallucinated — and a squattable name)
-  ✗ mutation   BLOCK  (0.62s)  mutants=3 killed=0 survived=3 mutation_score=0.0
-      WARN [calc.py:2] surviving mutant: `>` → `>=` — no test failed
-      BLOCK mutation score 0% below required 50%
-  ✗ tautology  BLOCK  (0.31s)  test_files=1
-      BLOCK [test_calc.py] tautological tests: every test also passes against the
-      PRE-change implementation — the tests do not verify the change
-
-verdict: BLOCK
-```
-
-Exit code is non-zero on BLOCK, so it drops straight into CI or a pre-commit /
-agent hook.
-
 ## Status
 
-v0.1 — working verifiers: `deps`, `mutation`, `tautology`, `review` (cross-model,
-needs `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`). Python targets only for now.
-Known limitations: equivalent mutants can inflate survivor counts; mutation runs
-the full test suite per mutant (coverage-map scoping planned); VBOM is unsigned
-(sigstore planned). Related-work analysis in [docs/related-work.md](docs/related-work.md).
+Early research phase. Related-work analysis in [docs/related-work.md](docs/related-work.md).

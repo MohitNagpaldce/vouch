@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vouch-gate"
+version = "0.1.0"
+description = "A verification gate for AI-generated code: mutation adequacy, tautology probes, cross-model review, dependency reality checks, and signed verification attestations (VBOM)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Mohit Nagpal", email = "mht.nagpal@gmail.com" }]
+keywords = ["ai", "code-review", "mutation-testing", "verification", "llm", "ci"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+]
+
+[project.scripts]
+vouch = "vouch.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/MohitNagpaldce/vouch"
+
+[tool.setuptools.packages.find]
+include = ["vouch*"]
