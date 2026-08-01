@@ -1,0 +1,1605 @@
+{
+  "summary": {
+    "samples": 55,
+    "replayed_ok": 55,
+    "env_ok": 0,
+    "flagged_any": 19,
+    "per_verifier": {
+      "deps": {
+        "ran": 55,
+        "flagged": 1,
+        "skip": 0,
+        "error": 0
+      },
+      "review": {
+        "ran": 24,
+        "flagged": 19,
+        "skip": 0,
+        "error": 31
+      }
+    }
+  },
+  "records": [
+    {
+      "repo": "encode/httpx",
+      "sha": "4cbf13ece2e584b45b935df0a0c670e1863c4569",
+      "kind": "merged_then_reverted",
+      "subject": "Raise `TypeError` on invalid query params. (#2523)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 0
+          }
+        }
+      },
+      "overall": "pass",
+      "seconds": 23.7,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "71cbde8ba4cab32dd96ccb91e9db20216587fae9",
+      "kind": "merged_then_reverted",
+      "subject": "Use Python 3.8 asyncio.Stream where possible (#369)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 1
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 14.9,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "939f3ce7ce43d11f3a9829dabaa292b3a906b56d",
+      "kind": "merged_then_reverted",
+      "subject": "Add content-length header for empty bytestream (#866)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 0
+          }
+        }
+      },
+      "overall": "pass",
+      "seconds": 15.5,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "fastapi/fastapi",
+      "sha": "508f9ce9547972dc4feb997f53ce332716afee88",
+      "kind": "regression_fix",
+      "subject": ":bug: Fix regression, Swagger UI with deep linking (#350)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "warn",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "warn",
+      "seconds": 16.8,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "fastapi/fastapi",
+      "sha": "88d4f2cb1814392f54011b2bbd3fe55c5f2a3278",
+      "kind": "regression_fix",
+      "subject": "\ud83d\udc1b Fix form field regression (#12194)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 1
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 14.5,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "6c4a77ba24854dab793a8ff72110a0a24c403c9f",
+      "kind": "merged_then_reverted",
+      "subject": "Use `default=True` as a sentinel for non-boolean flags",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 0
+          }
+        }
+      },
+      "overall": "pass",
+      "seconds": 14.0,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "8bc912710774c7b4c84f5d4effd0c764f3e2bbb9",
+      "kind": "merged_then_reverted",
+      "subject": "Revert \"Merge Stable into master\"",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 3,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 3
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 24.4,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "8e768e7ba68088766ee3e982f9ce8e6792674372",
+      "kind": "regression_fix",
+      "subject": "Fixed a regression on non windows systems",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 6.3,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "93c6966eb3a575c2b600434d1cc9f4b3aee505ac",
+      "kind": "regression_fix",
+      "subject": "testing/CliRunner: Fix regression related to EOF introduced in 262bdf0",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 13.2,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "b625654063f03936c65f33d1f5025376f57f4a06",
+      "kind": "regression_fix",
+      "subject": "Fixed a regression for echo_via_pager on 3.x.  This fixes #185",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 10.6,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "e74508119a1e8ba59bf96a45fa1a149cd292a79d",
+      "kind": "regression_fix",
+      "subject": "progressbar: fix regression with hidden bars",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "warn",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "warn",
+      "seconds": 11.8,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "e798f64ffde20c549e2e0df5834e4194c74adb0a",
+      "kind": "merged_then_reverted",
+      "subject": "Use shlex.quote for quoting shell arguments",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 1
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 4,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 4
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 19.0,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "1d4448abe335741c61b3c8c5f99e1607a13f7e3d",
+      "kind": "merged_then_reverted",
+      "subject": "Handle BaseExceptions (#2222)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 0
+          }
+        }
+      },
+      "overall": "pass",
+      "seconds": 27.2,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "2aa26fff04a98f2435e8e3015e92ef6108d3b485",
+      "kind": "merged_then_reverted",
+      "subject": "Revert \"Merge pull request #859 from wvh/register_error_handler\"",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 4.5,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "a22d143f96ee3c7d14887e871b34a84683835a3f",
+      "kind": "merged_then_reverted",
+      "subject": "Add `python_requires` metadata for PyPI",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 0
+          }
+        }
+      },
+      "overall": "pass",
+      "seconds": 2.3,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/black",
+      "sha": "00e7e12a3a412ea386806d5d4eeaed345e912940",
+      "kind": "regression_fix",
+      "subject": "Regression fix: leave R prefixes capitalization alone (#2285)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 22.3,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "psf/black",
+      "sha": "455de7703ea2c4144f8c1bb2c352974ac9b2403f",
+      "kind": "regression_fix",
+      "subject": "Fix another f-string regression (#4339)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 10.8,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "psf/black",
+      "sha": "6dca5278a3159cb35e8b9076bf81eacd35c1f0a7",
+      "kind": "regression_fix",
+      "subject": "Fix regression: unexpected parentheses around non-mathematical powers",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 10.5,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "psf/black",
+      "sha": "7d032fa848c8910007a0a41c1ba61d70d2846f48",
+      "kind": "merged_then_reverted",
+      "subject": "Use lowercase hex numbers fixes #1692 (#1775)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 2,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 2
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 38.1,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "086e19d8e175cccb630ee3589affdd2f38075ecd",
+      "kind": "merged_then_reverted",
+      "subject": "Clarify the contract of Response#ok, and avoid exceptions in it",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 15.3,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "178ff62b934c30278114028f654e42374206c291",
+      "kind": "merged_then_reverted",
+      "subject": "Lukasa is lazy",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 12.4,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "19cff44ec1b8eeec99459b504a681aa440f6344c",
+      "kind": "merged_then_reverted",
+      "subject": "fix response with utf8 bom",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 8.3,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "26ed7c2e1dce4271f3a3b111a167a6dcca3acddf",
+      "kind": "merged_then_reverted",
+      "subject": "fix failing test \"test_prepare_unicode_url\"",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "2da7fe08586aeaff614c017a9a834a22c937384a",
+      "kind": "merged_then_reverted",
+      "subject": "Use urllib for chunked requests",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "34af72c87d79bd8852e8564c050dd7711c6a08d6",
+      "kind": "merged_then_reverted",
+      "subject": "Restrict URL preparation to HTTP/HTTPS",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "warn",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "warn",
+      "seconds": 29.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "35d5ac6e8f5f4357f945b8c4890388207f7f1c00",
+      "kind": "merged_then_reverted",
+      "subject": "Use utf-8 as the default encoding",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "4b66260cb7c88a41a971d2458d75efd556f2e00e",
+      "kind": "merged_then_reverted",
+      "subject": "New helper method `set_http_proxy` in `Session` to set proxies in a more user friendly way",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "4dd3d1a1a2534f2996a368ebe26114bf974e15f9",
+      "kind": "regression_fix",
+      "subject": "Fix #785 & add regression test.",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "537def4a4fb284a216f56f3bae308d28ccc67b1f",
+      "kind": "regression_fix",
+      "subject": "fix regression with cookiejar.iteritems()",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "544d08d0f61c35358cf13b4a6b677e4e51dbbe7e",
+      "kind": "merged_then_reverted",
+      "subject": "If Content-Length is already set, don't override",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.3,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "62a23bfbdecf54e13e571237df5a175e53d539cb",
+      "kind": "merged_then_reverted",
+      "subject": "Auto-detect CA Cert path instead of requiring users to hack setup.py",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.3,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "730c0e2e2bef77968a86962f9d5f2bebba4d19ec",
+      "kind": "merged_then_reverted",
+      "subject": "Initial stop-the-bleeding fix",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.3,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "796d3225ddf08a9ebaa429209b9d077c3a8f99b8",
+      "kind": "merged_then_reverted",
+      "subject": "[kennethreitz/requests#1208] adding a max_retries argument",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "840540b6b1f07ef87faab73392c03fbef0dcc9fe",
+      "kind": "merged_then_reverted",
+      "subject": "Proxy urls should have explicit schemes.",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "91766548d10cd5ebf46aba376f9e000263285875",
+      "kind": "merged_then_reverted",
+      "subject": "Revert \"Make safe_mode play nice with timeout (fixes #312)\"",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.3,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "9217a2523d7d4fafeebb259884276fc349a376b1",
+      "kind": "merged_then_reverted",
+      "subject": "Call auth callable before encoding body data",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "9a20afd6b5140da4b9f187a3c0c6ea7010baeee9",
+      "kind": "merged_then_reverted",
+      "subject": "Refactor default params",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "a9470fe31f0c9590dafeac4b53f91fbf11fd6677",
+      "kind": "regression_fix",
+      "subject": "Fix regression in API caused by commit 85400d8d6751071ef78f042d1efa72bdcf76cc0e   - The added optional parameter changes API and should default to None",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "block",
+          "findings": 1,
+          "note": "",
+          "metrics": {
+            "reviewer": "google/gemini",
+            "independent_of_author": true,
+            "findings": 1
+          }
+        }
+      },
+      "overall": "block",
+      "seconds": 5.3,
+      "env": "not needed",
+      "exit_code": 1
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "bd100472443dcf4189630f6b1ed3ec0a61259dd8",
+      "kind": "merged_then_reverted",
+      "subject": "#4965 fix: Accessing response.content twice removes forgets read error.",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "c19650b00f0c169cdf6372a093425830e11a8771",
+      "kind": "merged_then_reverted",
+      "subject": "Fix SSL3 error on Ubuntu 12.04",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "ca0aea640d0cce01c126220b74362c9014cabbd6",
+      "kind": "merged_then_reverted",
+      "subject": "Fix for the issue https://github.com/kennethreitz/requests/issues/1280",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "cfd6e25749dd17c6b511043a6720b672f74029ed",
+      "kind": "merged_then_reverted",
+      "subject": "fix failing test \"test_prepare_unicode_url\"",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "d232948188f922c137dd709b53f77c49d1442c84",
+      "kind": "merged_then_reverted",
+      "subject": "Cache the value of the `Response.text` property",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.3,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "fbe48fbb7c5b96cde3a16453311e45f723516afd",
+      "kind": "merged_then_reverted",
+      "subject": "Add trusted domains",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "fc8fa1aa265bb14d59c68eb68a179bce17953967",
+      "kind": "regression_fix",
+      "subject": "Fix regression from #2844 regarding binary bodies.",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "0b7a570afd5473d738e2c820520686aac9a63199",
+      "kind": "regression_fix",
+      "subject": "Fixes a regression where Enum fields would not propagate keyword arguments to the schema (#2109)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "24515489250de5d63c487e608f2f8d184b427498",
+      "kind": "merged_then_reverted",
+      "subject": "feat: allow accessing attributes as strings (#5501)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "4520e61f38b69fd5f93e6f06b433c574777012a5",
+      "kind": "merged_then_reverted",
+      "subject": "parens",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "6e0c5c336ca9d63952eb0bf3705ca9ea93f73d38",
+      "kind": "merged_then_reverted",
+      "subject": "fix coverage",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "8898b8fee91c5a9dd99f4eb0c05f6950c2f684e0",
+      "kind": "regression_fix",
+      "subject": "Fix regression in core schema generation for indirect definition references (#8702)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.5,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "8ff235ae86344b4963444466785d97a3e6cb8108",
+      "kind": "regression_fix",
+      "subject": "Fix failure to load `SecretStr` from JSON (regression in v2.4) (#7729)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.5,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "b42fae081ce095769f60cf18d4657ba9b14a97b5",
+      "kind": "merged_then_reverted",
+      "subject": "Add nested json encoding (#3941)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "e34ff9255f281eaccac10d0436c082626d9146c3",
+      "kind": "merged_then_reverted",
+      "subject": "Fix `AnyUrl.build` doesn't do percent encoding (#3061) (#4224)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.4,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "e690f0878e7ccae4bc50c84e022e94b9b59f6dcf",
+      "kind": "merged_then_reverted",
+      "subject": "add `configs` to validate_arguments (#1378)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.3,
+      "env": "not needed",
+      "exit_code": 0
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "faee3301eb2c0d4157150a2f4cde2b4edb32ac8e",
+      "kind": "regression_fix",
+      "subject": "Fix regression in handling of nested dataclasses in `get_flat_models_from_field` (#3819)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "findings": 0,
+          "note": "",
+          "metrics": {
+            "new_imports_checked": 0
+          }
+        },
+        "review": {
+          "verdict": "error",
+          "findings": 0,
+          "note": "all review providers failed: google/gemini: HTTP Error 429: Too Many Requests",
+          "metrics": {}
+        }
+      },
+      "overall": "error",
+      "seconds": 0.5,
+      "env": "not needed",
+      "exit_code": 0
+    }
+  ]
+}

@@ -178,6 +178,9 @@ def main() -> None:
     ap.add_argument("--verifiers", default=DEFAULT_VERIFIERS)
     ap.add_argument("--sleep", type=float, default=0.0,
                     help="pause between samples (rate-limit courtesy for API verifiers)")
+    ap.add_argument("--resume", action="store_true",
+                    help="merge with existing --out file, re-running only samples whose "
+                         "verifiers errored or are missing")
     args = ap.parse_args()
 
     corpus = Path(args.corpus)
@@ -188,8 +191,23 @@ def main() -> None:
         metas = metas[: args.limit]
 
     records = []
+    done: dict[str, dict] = {}
+    if args.resume and Path(args.out).exists():
+        prior = json.loads(Path(args.out).read_text())["records"]
+        for r in prior:
+            complete = (
+                r["status"] == "ok"
+                and r["verifiers"]
+                and all(v["verdict"] != "error" for v in r["verifiers"].values())
+            )
+            if complete:
+                done[r["sha"]] = r
+        records.extend(done.values())
+        print(f"resume: keeping {len(done)} completed samples")
     for i, meta_path in enumerate(metas, 1):
         meta = json.loads(meta_path.read_text())
+        if meta["sha"] in done:
+            continue
         clone = Path(args.clones) / meta["repo"].replace("/", "__")
         if not clone.exists():
             print(f"[{i}/{len(metas)}] {meta_path.parent.name} SKIP no clone")

@@ -128,6 +128,24 @@ class GeminiProvider(Provider):
 
 PROVIDERS: list[Provider] = [AnthropicProvider(), OpenAIProvider(), GeminiProvider()]
 
+_RETRIES = 3
+
+
+def _with_backoff(provider: Provider, diff_text: str) -> str:
+    """Retry rate-limit (429) errors with growing sleeps; raise anything else."""
+    import time
+
+    delay = 15.0
+    for attempt in range(_RETRIES):
+        try:
+            return provider.review(diff_text)
+        except urllib.error.HTTPError as exc:
+            if exc.code != 429 or attempt == _RETRIES - 1:
+                raise
+            time.sleep(delay)
+            delay *= 2
+    raise RuntimeError("unreachable")
+
 
 def _parse_findings(text: str) -> list[dict]:
     m = re.search(r"\[.*\]", text, re.DOTALL)
@@ -175,7 +193,7 @@ class ReviewVerifier(Verifier):
         errors: list[str] = []
         for candidate in independent + same_family:
             try:
-                raw = candidate.review(diff_text)
+                raw = _with_backoff(candidate, diff_text)
                 provider = candidate
                 break
             except Exception as exc:  # provider down/unfunded → try the next one
