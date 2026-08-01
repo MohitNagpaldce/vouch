@@ -337,14 +337,40 @@ near-blind to real regressions — completing the heterogeneity argument: no
 single detector class gates AI code; composition does, with execution-grounded
 verifiers (mutation, tautology) anchoring the gate on ground truth.
 
-**Caveats.** Survival-based "good" labels are noisy (some flagged controls may
-harbor latent defects); finding-level validity (does the review text describe
-the *actual* defect that caused the revert?) is not yet judged; the Gemini arm
-mixes two model sizes (recorded per sample; the size-consistent subsets agree
-within two points).
+### 6.1 Calibration and finding validity: perception without conviction
 
-⏳ *Pending: severity-calibrated prompting for a full ROC curve; coverage-gate
-baseline; finding-level validity judgment.*
+Re-running GPT-5.1 with a calibrated prompt ("0–100 likelihood this change
+introduces a defect") instead of the adversarial framing yields the full
+curve: **AUC 0.647**, with operating points from 69%/48% (threshold ≥20) to
+27%/6% (≥40, best J ≈ 0.21). The adversarial framing's point (51%/31%,
+J 0.20) sits on the same curve: **prompt framing selects the operating point
+but adds no discrimination** — LLM review carries a fixed, modest signal on
+this corpus, and no point on its curve gates alone.
+
+Finding-level validity explains where that signal goes. On the 42 bad diffs
+where the calibrated reviewer produced findings, an LLM judge rated **36 (86%)
+as describing the actual defect** behind the revert or regression — review's
+problem is not hallucinated criticism. But of those 36 correctly-perceived
+defects, **22 (61%) were scored below the best-J gating threshold**: in the
+starkest case the reviewer explicitly described a pydantic revert's defective
+conditional logic in its findings, then rated the change 5/100. The binding
+failure of LLM code review is **calibration, not detection**: the model
+articulates the true defect and underweights it. This has two design
+consequences. Gate logic should weigh finding *content* — a concrete
+behavioral-change finding on a critical path — rather than scalar risk alone,
+since thresholding discards the model's own correct perceptions. And it
+reframes the union result above: cross-family union works because it harvests
+correct perceptions that each family individually underweights.
+
+**Caveats.** Survival-based "good" labels are noisy; the validity judge shares
+a family with the reviewer (self-agreement inflation risk) and ground truth is
+subject-line-granular; the Gemini arm mixes two model sizes (recorded per
+sample; size-consistent subsets agree within two points); the calibrated
+control ran on 48 of the eventual 111 controls.
+
+⏳ *Pending: full-corpus (300/111) rerun of the review arms; AI-authored
+re-implementation arm; era-matched environments for the execution-grounded
+verifiers.*
 
 ## 7. Limitations and threats to validity
 

@@ -1,0 +1,861 @@
+{
+  "model": "gpt-5.1",
+  "n": 48,
+  "ok": 48,
+  "records": [
+    {
+      "repo": "encode/httpx",
+      "sha": "0eed6a37340ba9d073da69574409be0d817ecae7",
+      "kind": "control_good",
+      "subject": "Drop `.next()`/`.anext()` in favour of `response.next_request` (#1339)",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "httpx/_models.py",
+          "line": 1180,
+          "message": "Removal of Response.next()/Response.anext() and NotRedirectResponse exception is a public API break. Any external code using these methods or catching this exception will now fail at runtime (AttributeError / NameError). This appears intentional but is a backward-incompatible change; ensure it is properly versioned and documented as such."
+        }
+      ]
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "19b863af408123783d5f9916e71688b32ba558c8",
+      "kind": "control_good",
+      "subject": "Header refinements (#1248)",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "httpx/_client.py",
+          "line": 80,
+          "message": "Client-level default headers are now injected via the `headers` setter, and `_merge_headers` always wraps `self.headers` in a new `Headers` and updates with per-request headers. This changes behavior: request-level headers can no longer remove client defaults (only override them), and `headers=None` now still yields the client defaults rather than preserving `None`. Confirm this is a deliberate API change and documented, as it may break code that relied on omitting certain auto-headers."
+        },
+        {
+          "file": "httpx/_client.py",
+          "line": 169,
+          "message": "`client_headers.update(headers)` will raise if `headers` is `None` or non-mapping/iterable in ways previously tolerated. Previously, `_headers = Headers(headers)` would pass `None` through to `Headers` constructor behavior. Check that all call sites pass a proper header structure (or guard `headers` before update)."
+        },
+        {
+          "file": "httpx/_models.py",
+          "line": 618,
+          "message": "Default protocol headers (`User-Agent`, `Accept`, `Accept-Encoding`, `Connection`) have been moved from the Request layer to the Client layer. Bare `httpx.Request` objects now only auto-add `Host` and `Content-Length`. This is a visible behavior change for users constructing and sending `Request` instances directly without a Client, and for code/tests expecting old defaults."
+        },
+        {
+          "file": "httpx/_models.py",
+          "line": 577,
+          "message": "The change to `URL.username`/`password` now uses `self.userinfo` instead of `self._uri_reference.userinfo or \"\"`. If `userinfo` can ever be `None` or otherwise differ from the underlying reference, this may change behavior or raise. Verify that `URL.userinfo` is always a string (or empty) and compatible with `.partition(\":\")`."
+        }
+      ]
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "1c9b852783f065db1b495b587c1c986246355198",
+      "kind": "control_good",
+      "subject": "Improve type hinting for `HTTPError.request` (#886)",
+      "status": "ok",
+      "likelihood": 65,
+      "findings": [
+        {
+          "file": "httpx/_exceptions.py",
+          "line": 16,
+          "message": "The new `HTTPError.request` property uses `assert self._request is not None` and the comment says it is populated by the client, but there are code paths where the client will not set `_request` (e.g. errors raised outside Client/AsyncClient, or if `HTTPError` is instantiated directly without a request/response). Previously `request` was Optional and safely None; now existing user code that accesses `exc.request` may hit an AssertionError, changing behavior and potentially breaking backwards compatibility."
+        },
+        {
+          "file": "httpx/_client.py",
+          "line": 683,
+          "message": "Client now checks and sets `exc._request` instead of `exc.request`. This assumes all relevant exception types have an `_request` attribute. Any subclass or third-party exception previously relying on the public `request` attribute but not defining `_request` could break with AttributeError or fail to have the request attached."
+        },
+        {
+          "file": "httpx/_exceptions.py",
+          "line": 14,
+          "message": "The order of initialization changed: `super().__init__(*args)` is now called before setting `_request` and `response`. If any subclass logic in Exception initialization or user code depends on `request`/`response` being available during instantiation, this is a subtle behavior change."
+        }
+      ]
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "9673a3555c39dfc7b91b0da19cf0a28e357692bc",
+      "kind": "control_good",
+      "subject": "Drop async_generator requirement (#2228)",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "setup.py",
+          "line": 61,
+          "message": "Removed conditional dependency on 'async_generator' for Python < 3.7. If this project still supports Python 3.6 or earlier and any async code relies on async_generator backports, this may break installs or runtime behavior on those versions. Verify supported Python versions and that stdlib async features are sufficient before removing."
+        }
+      ]
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "a0282569d5f74bb6ef7a8f5e88ac37257acbe6f2",
+      "kind": "control_good",
+      "subject": "Make HTTPError importable from the top-level (#421)",
+      "status": "ok",
+      "likelihood": 10,
+      "findings": []
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "abe0799d70b5c31341d28a23c7ff0d796a792854",
+      "kind": "control_good",
+      "subject": "Refactor netrc handling (#558)",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "httpx/utils.py",
+          "line": 103,
+          "message": "When NETRC env var is unset or empty, it is included as an empty string in self.netrc_files; Path(\"\").expanduser() will resolve to the current working directory and be treated as a candidate netrc file, which is a behavior change from the previous implementation that skipped empty paths. This could cause unexpected parsing attempts or errors if CWD is a file or contains unexpected contents."
+        },
+        {
+          "file": "httpx/client.py",
+          "line": 159,
+          "message": "Client now constructs NetRCInfo() once per Client instance instead of using a module-level lru_cache(1). This is likely fine, but it is a behavioral change in caching semantics and may have minor performance implications or subtle differences if NETRC-related environment or files change during process lifetime."
+        }
+      ]
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "e1afbfa7b45d1ce717a7d9588c6c8114ee0a091b",
+      "kind": "control_good",
+      "subject": "Wrap network errors in HTTPX-specific exceptions (#707)",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "httpx/utils.py",
+          "line": 364,
+          "message": "as_network_error currently only maps the explicitly listed exception classes; this is intentional but subtly changes behavior by wrapping previously surfaced OSError/trio.BrokenResourceError as NetworkError. Callers/tests that relied on the concrete exception types may now break or need adjustments."
+        },
+        {
+          "file": "httpx/backends/asyncio.py",
+          "line": 126,
+          "message": "Wrapping asyncio.wait_for(read) and stream_writer operations with as_network_error(OSError) changes the public error surface from raw OSError to NetworkError. This is likely desired, but any code catching OSError at higher levels may no longer function as before."
+        },
+        {
+          "file": "httpx/backends/trio.py",
+          "line": 30,
+          "message": "Similar to asyncio backend, network-related BrokenResourceError/OSError are now converted into NetworkError. This could affect compatibility with existing user code or tests that expect the original Trio exceptions."
+        }
+      ]
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "e95111ac07d31817ff9189379dc052c5d867bfe5",
+      "kind": "control_good",
+      "subject": "Add OpenConnection base class (#616)",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "httpx/dispatch/connection.py",
+          "line": 123,
+          "message": "New assert isinstance(self.open_connection, HTTP11Connection) in tunnel_start_tls assumes HTTP/1.1 connection is always selected before tunneling. If a future change allowed HTTP/2 before tunnels or left open_connection unset, this would raise AssertionError instead of a more graceful error. Probably acceptable given current logic, but it is a behavior change from the prior implicit reliance on h11_connection being set."
+        },
+        {
+          "file": "httpx/dispatch/connection.py",
+          "line": 166,
+          "message": "is_http2, is_closed, and is_connection_dropped now assert self.open_connection is not None. Previously, code paths that queried these before connect() would see both h11_connection and h2_connection as None; behavior would effectively be False / error at call site. Now this becomes an AssertionError, which is a slightly different failure mode. Ensure no callers rely on checking these properties prior to send/connect."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "03e2fee8a99f08976aef0d38cb3fa372a94c928a",
+      "kind": "control_good",
+      "subject": "mark cli messages for translation",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "src/click/core.py",
+          "line": 1280,
+          "message": "Translated deprecation message uses .format(self=self) but the string only contains {self.name!r}. This relies on translators preserving the {self.name!r} placeholder and may be brittle or confusing; consider formatting before translation or using a clearer placeholder name."
+        },
+        {
+          "file": "src/click/exceptions.py",
+          "line": 30,
+          "message": "ClickException.show changed from f\"Error: {self.format_message()}\" to _(\"Error: {self.format_message()}\").format(self=self). If translators alter or remove {self.format_message()} the error text could break; safer to translate a template like \"Error: {message}\" and insert format_message() after."
+        },
+        {
+          "file": "src/click/exceptions.py",
+          "line": 154,
+          "message": "MissingParameter.__str__ now returns _(\"missing parameter: {param_name}\").format(param_name=param_name). If translators change the placeholder name or braces, this could raise KeyError at runtime; using numbered or simpler placeholders may be safer."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "06d030811da54f0c336a59c85818fe26313e1dda",
+      "kind": "control_good",
+      "subject": "enable colored output on Jupyter notebooks on UNIX",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "click/_compat.py",
+          "line": 574,
+          "message": "_is_jupyter_kernel_output may return None on Windows, but is only called from should_strip_ansi when WIN is False due to the xfail test and intended behavior. If should_strip_ansi is ever used on Windows with a Jupyter-like stream, this will silently ignore the special-casing and behave as before. This is more of an intentional TODO/limitation than a defect, but worth noting."
+        },
+        {
+          "file": "click/_compat.py",
+          "line": 580,
+          "message": "The unwrapping loop assumes that `_FixupStream` and `_NonClosingTextIOWrapper` always have a `_stream` attribute; if either wrapper ever changes or a different wrapper subclass is passed, this could raise AttributeError. Current codebase likely ensures this invariant, but it is a potential fragility."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "34723d12b1e5abe1459813ce0596535da53b55d8",
+      "kind": "control_good",
+      "subject": "Fix _pipepager()/_tempfilepage() to work with multi-call binaries",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": [
+        {
+          "file": "src/click/_termui_impl.py",
+          "line": 435,
+          "message": "Switching from Path(...).resolve() to .absolute() intentionally preserves symlinks (to support busybox-style multi-call binaries) but may reintroduce issues that resolve() avoided, such as paths containing '..' or being relative under some environments. If any downstream logic assumes the resolved real path (e.g., for security checks or comparisons), this could change behavior. Review callers that depend on cmd_path for anything beyond name extraction."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "54102a439da9da4a2c84cd893b12020865b9afd3",
+      "kind": "control_good",
+      "subject": "show_default uses default_map",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "src/click/core.py",
+          "line": 2358,
+          "message": "Using `ctx.lookup_default(self.name) or self.default` will treat any falsey mapped default (e.g. 0, '', False, empty list) as if it were not provided, falling back to `self.default`. This may be incorrect if a user intentionally sets such a value via `default_map`."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "61cf523ec891b1d34962fd000de94836cd6015e4",
+      "kind": "control_good",
+      "subject": "Bump version to 4.1-dev",
+      "status": "ok",
+      "likelihood": 5,
+      "findings": []
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "a3277513d7340d8a0e29076fe2769a8837f756ae",
+      "kind": "control_good",
+      "subject": "remove old upgrading notes",
+      "status": "ok",
+      "likelihood": 3,
+      "findings": []
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "cb37854c9b43d9fd3c99a3a830f4580517c1b32e",
+      "kind": "control_good",
+      "subject": "use importlib.metadata for version_option",
+      "status": "ok",
+      "likelihood": 55,
+      "findings": [
+        {
+          "file": "src/click/decorators.py",
+          "line": 259,
+          "message": "When `version` is None and `prog_name` is not provided, the previous behavior tried to infer version from the distribution that exposed the calling module as a console script. The new behavior uses `importlib.metadata.version(prog)` where `prog` is the command name (ctx.find_root().info_name), which may not match the installed distribution name, causing RuntimeError(\"Could not determine version\") in cases that previously worked."
+        },
+        {
+          "file": "src/click/decorators.py",
+          "line": 273,
+          "message": "If `importlib.metadata` and `importlib_metadata` backport are both unavailable (e.g., very old Python or constrained env), `get_version` remains None and the code falls through to raising RuntimeError. Previously, absence of pkg_resources (setuptools) in such environments might have been more common/expected; this is a behavior change and may surprise users relying on `version=None` with no importlib metadata installed."
+        },
+        {
+          "file": "src/click/decorators.py",
+          "line": 273,
+          "message": "The removal of the `sys._getframe` / `module` logic means the automatic version resolution is no longer based on the calling module but solely on the Click program name. This is an intentional design change per CHANGES entry but is a compatibility break that can regress existing apps that relied on the old resolution heuristic."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "d5cddb9e1c433a5fd65739d98d8415dd62d276f7",
+      "kind": "control_good",
+      "subject": "Escape Sequences with r'' (#807)",
+      "status": "ok",
+      "likelihood": 2,
+      "findings": []
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "3e9f4e254b5757d80218c0d8077bd44465365489",
+      "kind": "control_good",
+      "subject": "Updated a comment that was misleading with recent flask sqlalchemy installations",
+      "status": "ok",
+      "likelihood": 1,
+      "findings": []
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "532347d6adf1da64259f1af91860d5fa27bac9f1",
+      "kind": "control_good",
+      "subject": "phased out shared data middleware in flask for send_file",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "flask/app.py",
+          "line": 268,
+          "message": "Static file path is normalized with posixpath and checked only for '../' prefix. On Windows or other platforms, backslash-based traversal such as '..\\\\secret' may bypass this check since posixpath.normpath will not collapse backslashes. Consider normalizing and validating against both '/' and os.path.sep, or using werkzeug.security.safe_join."
+        },
+        {
+          "file": "flask/app.py",
+          "line": 272,
+          "message": "Static file path is constructed via os.path.join(self.root_path, 'static', filename). Combined with the limited traversal check, this may allow access to files outside the static directory on platforms where '\\\\' is a path separator. A safer approach is to join and then verify that the resulting path is still under the intended static directory, or to rely on Werkzeug's safe_join / send_from_directory."
+        },
+        {
+          "file": "flask/helpers.py",
+          "line": 253,
+          "message": "send_file now treats absolute paths specially (no root_path join). This is likely intentional, but it is a behavioral change: previously even absolute-like paths stored in file.name would be joined with current_app.root_path. Callers that relied on implicit prefixing of such paths may see different resolution or break if they start being interpreted as true absolute paths."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "633449a36c959d25577799eb3da76005a803d5cd",
+      "kind": "control_good",
+      "subject": "fix error message",
+      "status": "ok",
+      "likelihood": 8,
+      "findings": []
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "6fca662c841797a2006999c699a6738b20af1d4e",
+      "kind": "control_good",
+      "subject": "Fix the 108th issue.",
+      "status": "ok",
+      "likelihood": 65,
+      "findings": [
+        {
+          "file": "flask/module.py",
+          "line": 35,
+          "message": "Passing subdomain=module.subdomain to add_url_rule assumes all Module instances define a .subdomain attribute; existing code or extensions may create modules without this attribute, causing AttributeError at registration time."
+        },
+        {
+          "file": "flask/module.py",
+          "line": 35,
+          "message": "Changing the static route to be bound to a specific subdomain may break existing applications that relied on static files being available on the main/default domain; this is a behavioral change with regression risk."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "a293b99b219c13ea94b33a2470a545e07c73b804",
+      "kind": "control_good",
+      "subject": "Fixed the last changeset.",
+      "status": "ok",
+      "likelihood": 25,
+      "findings": [
+        {
+          "file": "flask/helpers.py",
+          "line": 670,
+          "message": "Behavioral change: previously compared loader.__module__ / loader.__name__, now compares loader.__class__.__module__ / loader.__class__.__name__. This is likely correct for standard importlib loaders (instances), but if any custom loader sets __module__/__name__ on the instance differently from its class, behavior will change. Low risk in typical environments but could affect edge cases or monkey-patched loaders."
+        }
+      ]
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "c0f42a0978d804237d7bd540f81dcdbc1643ea7f",
+      "kind": "control_good",
+      "subject": "Added shebang to the test run file",
+      "status": "ok",
+      "likelihood": 5,
+      "findings": []
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "daf1510a4bda652ac2cfca03ec5567b03ddf8bf1",
+      "kind": "control_good",
+      "subject": "use template_filter without parens",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": [
+        {
+          "file": "src/flask/sansio/app.py",
+          "line": 694,
+          "message": "Return type annotation for template_test is incorrect: it declares `... | T_template_filter` instead of `... | T_template_test`. This is a typing-only issue but may affect type checkers and IDEs."
+        },
+        {
+          "file": "src/flask/sansio/app.py",
+          "line": 731,
+          "message": "Return type annotation for template_global is incorrect: it declares `... | T_template_filter` instead of `... | T_template_global`."
+        },
+        {
+          "file": "src/flask/sansio/blueprints.py",
+          "line": 478,
+          "message": "Return type annotation for app_template_test is incorrect: it declares `... | T_template_filter` instead of `... | T_template_test`."
+        },
+        {
+          "file": "src/flask/sansio/blueprints.py",
+          "line": 516,
+          "message": "Return type annotation for app_template_global is incorrect: it declares `... | T_template_filter` instead of `... | T_template_global`."
+        }
+      ]
+    },
+    {
+      "repo": "psf/black",
+      "sha": "226cbf0226ee3bc26972357ba54c36409e9a84ae",
+      "kind": "control_good",
+      "subject": "Fix unsafe cast in linegen.py w/ await yield handling (#3533)",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": [
+        {
+          "file": "src/black/linegen.py",
+          "line": 1229,
+          "message": "Behavioral change: previously assumed node.children[1].children[1] was always a Node (cast), now guarded with isinstance(bracket_contents, Node). This will skip visibility adjustments for non-Node bracket contents; likely intentional to avoid crashes (e.g., `await (yield)`), but worth confirming no formatting regression is expected where bracket_contents is a Leaf."
+        }
+      ]
+    },
+    {
+      "repo": "psf/black",
+      "sha": "436e12f2904e68acb57a059b1c44f1e0321e2d3f",
+      "kind": "control_good",
+      "subject": "Add script to ease migration to black (#3038)",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": [
+        {
+          "file": "scripts/migrate-black.py",
+          "line": 18,
+          "message": "Log message typo: 'feature brach' should be 'feature branch'. Not functional but user-facing."
+        },
+        {
+          "file": "scripts/migrate-black.py",
+          "line": 38,
+          "message": "Using \"%s~1..HEAD\" % merge_base may be off-by-one relative to intended range. If merge_base is the common ancestor, merge_base~1 may not exist (e.g., when ancestor is the initial commit) and will raise an error. Consider using f\"{merge_base}..HEAD\" or explicitly handling root commits."
+        },
+        {
+          "file": "scripts/migrate-black.py",
+          "line": 49,
+          "message": "Creating and committing on per-commit branches assumes a clean working tree and that the provided black_command exits successfully. Failures from black_command or uncommitted local changes are not checked/handled, which can leave the repo in an unexpected state."
+        },
+        {
+          "file": "scripts/migrate-black.py",
+          "line": 58,
+          "message": "Capability detection for git-apply options is done inside the loop for every commit pair. This is inefficient but not strictly a defect; could be moved outside the loop."
+        },
+        {
+          "file": "scripts/migrate-black.py",
+          "line": 73,
+          "message": "git-apply invocation always passes \"-3\" (3-way merge) and \"--intent-to-add\". In some repositories or for certain diffs, this may fail or behave unexpectedly; failures are not checked (return code from git_apply is ignored)."
+        },
+        {
+          "file": "scripts/migrate-black.py",
+          "line": 82,
+          "message": "Branches named f\"{commit}-black\" are deleted unconditionally at the end. If these branches pre-existed or if earlier steps failed mid-way, this could delete user branches or leave partially created branches. No safety checks or rollback."
+        }
+      ]
+    },
+    {
+      "repo": "psf/black",
+      "sha": "6c3f8181854160f3db354f6f6ef3315ef05db8e7",
+      "kind": "control_good",
+      "subject": "Fix bug where black tries to split string on escaped space (#1799)",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": [
+        {
+          "file": "src/black/__init__.py",
+          "line": 3935,
+          "message": "Escaped-space detection counts preceding backslashes and treats an odd count as escaped. This is logically sound for standard Python string contents, but relies on `string[i]` actually being a backslash character in the formatted code; if upstream callers sometimes pass already-unescaped or otherwise transformed strings, behavior could differ from intent. Worth ensuring `string` here is always the raw source segment."
+        },
+        {
+          "file": "tests/data/long_strings__regression.py",
+          "line": 803,
+          "message": "The RE_TWO_BACKSLASHES test case uses a split raw string literal (r\"...\" r\" ...\"). The inserted space in the second literal (`r\" \")`) ensures a literal space in the regex, matching the input version. This looks intentional but is subtle; if the space placement changes in future edits the test semantics may unintentionally change."
+        }
+      ]
+    },
+    {
+      "repo": "psf/black",
+      "sha": "92f20d7f8493f9d0f27531f68b776fb435d53d2e",
+      "kind": "control_good",
+      "subject": "Removed adding a space into empty docstrings. (#2249)",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": [
+        {
+          "file": "src/black/linegen.py",
+          "line": 242,
+          "message": "The new behavior depends on `docstring_started_empty = not docstring`. This treats any non-empty whitespace-only docstring as 'non-empty' and will still insert a space in such cases. That appears intentional given the updated tests (which rename functions to *whitespace* vs *empty*), but it is a subtle semantic change: only truly empty docstrings (no characters between quotes) will avoid the space, while whitespace-only docstrings retain previous spacing behavior."
+        }
+      ]
+    },
+    {
+      "repo": "psf/black",
+      "sha": "a4b5c085a30f32fddce46ed50f3378ef32c43d5d",
+      "kind": "control_good",
+      "subject": "Move should_explode handling to bracket_split_build_line",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "black.py",
+          "line": 2191,
+          "message": "New check `if not matching_bracket: raise CannotSplit(\"No brackets found\")` changes behavior: previously function would proceed even if no opening bracket was found (likely resulting in a different failure mode or behavior). This may be correct but is a semantic change that could affect edge cases where `left_hand_split` was previously called without brackets."
+        },
+        {
+          "file": "black.py",
+          "line": 2239,
+          "message": "Responsibility for setting `body.should_explode` moved from `right_hand_split` to `bracket_split_build_line` (via `is_body` branch). This changes when and how `should_explode` is computed (now common to left/right splits). Risk: `should_explode` is now also applied to left-hand splits; callers that relied on previous behavior might see changed formatting."
+        },
+        {
+          "file": "black.py",
+          "line": 2316,
+          "message": "Signature of `bracket_split_build_line` now requires `opening_bracket: Leaf`. All existing call sites in this file were updated, but there is a risk of missed call sites in other modules/tests (if the function is imported/used elsewhere) causing runtime errors or type mismatches."
+        },
+        {
+          "file": "black.py",
+          "line": 2339,
+          "message": "`should_explode(result, opening_bracket)` is now called with `result` that may be empty (for example, if `body_leaves` is empty). If `should_explode` assumes non-empty lines or relies on particular invariants (e.g., presence of `opening_bracket` in `result`), this could raise exceptions or change behavior. Worth verifying `should_explode`\u2019s preconditions."
+        }
+      ]
+    },
+    {
+      "repo": "psf/black",
+      "sha": "be35b1ed2d1f9453090bb29ac24abe997815ff70",
+      "kind": "control_good",
+      "subject": "Declare support for Python 3.8 (#1069)",
+      "status": "ok",
+      "likelihood": 3,
+      "findings": []
+    },
+    {
+      "repo": "psf/black",
+      "sha": "cae7ae3a4d32dc51e0752d4a4e885a7792a0286d",
+      "kind": "control_good",
+      "subject": "Soft comparison of --required-version (#2832)",
+      "status": "ok",
+      "likelihood": 10,
+      "findings": []
+    },
+    {
+      "repo": "psf/black",
+      "sha": "de806405d2934b629d67e2a6317ad7e826765a20",
+      "kind": "control_good",
+      "subject": "Add parentheses around tuple unpack assignment (#832)",
+      "status": "ok",
+      "likelihood": 30,
+      "findings": [
+        {
+          "file": "black.py",
+          "line": 2729,
+          "message": "New logic sets check_lpar=True when first child is a Node of type syms.testlist_star_expr (tuple unpacking). This is somewhat ad\u2011hoc and may affect all contexts where such a node appears first, not just assignments; verify this is safe for other syntactic forms (e.g., in comprehensions or other expressions)."
+        },
+        {
+          "file": "black.py",
+          "line": 2765,
+          "message": "Prefix handling was changed so that the original prefix is attached to the new atom Node instead of the inner child. While likely correct for common cases, this may subtly change formatting/spacing in other uses of normalize_invisible_parens; consider adding tests for comments/whitespace before the affected expression to ensure behavior remains stable."
+        },
+        {
+          "file": "tests/data/tupleassign.py",
+          "line": 1,
+          "message": "The test covers a single long tuple assignment. Edge cases like starred targets, line comments between targets, or existing parentheses around the LHS/RHS are not covered; additional tests could catch regressions from the new logic in normalize_invisible_parens."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "1dbaddd75e04365a822cf4bcf05f332a5f845ed6",
+      "kind": "control_good",
+      "subject": "for RFC-7616 add SHA-256 and SHA-512",
+      "status": "ok",
+      "likelihood": 20,
+      "findings": [
+        {
+          "file": "requests/auth.py",
+          "line": 153,
+          "message": "Support for 'SHA-256' and 'SHA-512' digest algorithms is added, but there is no evident handling for variants like 'SHA-256-sess' or 'SHA-512-sess', which are defined in RFC 7616. If the rest of HTTPDigestAuth is still tailored to RFC2617-style algorithms, this may lead to incorrect behavior for servers using -sess variants or stricter RFC7616 semantics."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "28b706da83fed39a04c05c84b032fbdf35a542e2",
+      "kind": "control_good",
+      "subject": "v1.0.4",
+      "status": "ok",
+      "likelihood": 1,
+      "findings": []
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "672e66ba5fa94f6d55638067f9476cc1da396650",
+      "kind": "control_good",
+      "subject": "compat",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "requests/compat.py",
+          "line": 69,
+          "message": "Solaris detection string is almost certainly incorrect: `('solar==' in str(sys.platform).lower())`. CPython typically reports Solaris as strings containing 'sunos' or 'solaris'; 'solar==' looks like a typo and will never match, defeating the purpose of this flag."
+        }
+      ]
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "7b68c124d549853a1045cbeb5a16461799279780",
+      "kind": "control_good",
+      "subject": "Sphinx throws an error if you don't escape ** in **kwargs",
+      "status": "ok",
+      "likelihood": 2,
+      "findings": []
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "820dfb0495ef379f140ad3c78c30e0a16c7e9fa8",
+      "kind": "control_good",
+      "subject": "Making the code more PEP8 compliant",
+      "status": "ok",
+      "likelihood": 2,
+      "findings": []
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "8339b60fd5bbe0ef9dae1764b3964f515364a54f",
+      "kind": "control_good",
+      "subject": "Made more better",
+      "status": "ok",
+      "likelihood": 5,
+      "findings": []
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "b79dea97fd0d24bc1dbe52366565361c08675512",
+      "kind": "control_good",
+      "subject": "v0.8.1",
+      "status": "ok",
+      "likelihood": 3,
+      "findings": []
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "f40bd0f7074ccda6be66c77f39442770d7669af0",
+      "kind": "control_good",
+      "subject": "Docs: Fix links to `timeouts` section by using :ref: instead of",
+      "status": "ok",
+      "likelihood": 5,
+      "findings": []
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "bfa8a5532d45815d2229ba2e2a920fde6bffc800",
+      "kind": "control_good",
+      "subject": "clean up duplicated code",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "src/pip/_internal/operations/prepare.py",
+          "line": 332,
+          "message": "Previous inline unpack + early is_installable_dir() guard has been refactored into InstallRequirement.ensure_pristine_source_checkout(). Behavior now depends on req.source_dir being set before this call and _archive_source being populated for sdists. Any call paths where source_dir is None or not yet created could hit the assert or skip the PreviousBuildDirError previously raised here."
+        },
+        {
+          "file": "src/pip/_internal/operations/prepare.py",
+          "line": 470,
+          "message": "Previously, sdists were unpacked immediately in _complete_partial_requirements and _prepare_linked_requirement() received a source_dir_exists_already flag to avoid recreating the directory. Now unpack is deferred and _ensure_link_req_src_dir() is always called. If that helper does not tolerate an existing populated directory (or assumes emptiness), this may cause regressions or redundant work."
+        },
+        {
+          "file": "src/pip/_internal/req/req_install.py",
+          "line": 652,
+          "message": "needs_unpacked_archive() asserts self._archive_source is None. If the same InstallRequirement instance is reused across multiple batch-download attempts or error-retry paths, this could assert unexpectedly compared to previous behavior that simply re-unpacked."
+        },
+        {
+          "file": "src/pip/_internal/req/req_install.py",
+          "line": 658,
+          "message": "ensure_pristine_source_checkout() first unpacks _archive_source and only falls back to PreviousBuildDirError if _archive_source is None. That means a pre-existing build directory is now overwritten when an archive is present, whereas previously PreviousBuildDirError was raised before any unpack. This is a (possibly intentional) behavior change that may surprise callers relying on the safety check; worth confirming with tests around failed-then-retry install scenarios."
+        },
+        {
+          "file": "tests/conftest.py",
+          "line": 938,
+          "message": "Switch to textwrap.dedent on f-strings changes leading whitespace and newlines around {pkg_links}. If any tests compare the generated HTML byte-for-byte (including indentation/leading spaces), they may fail. Functionality is likely fine but formatting-sensitive tests should be checked."
+        }
+      ]
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "0bf363472ed23c42674bc41528fd482a7b73f8d8",
+      "kind": "control_good",
+      "subject": "Use config_invocation_dir for startdirs",
+      "status": "ok",
+      "likelihood": 28,
+      "findings": [
+        {
+          "file": "src/_pytest/main.py",
+          "line": 437,
+          "message": "Behavior change: Session.startdir now uses config.invocation_dir instead of py.path.local(). If invocation_dir is not a py.path.local instance or differs from the previous cwd semantics (e.g., tests that modify cwd or rely on startdir being the process cwd at Session construction), this may alter collection paths or relative path handling."
+        },
+        {
+          "file": "src/_pytest/terminal.py",
+          "line": 239,
+          "message": "Behavior change: TerminalReporter.startdir now uses config.invocation_dir instead of py.path.local(). Any plugins or code assuming startdir reflects the current working directory at reporter construction, or that it is always a fresh py.path.local() of cwd, may see changed behavior."
+        }
+      ]
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "1e02797d153522b5495e16d1d28b01aedf8d48f3",
+      "kind": "control_good",
+      "subject": "Improve pytest.raises docs (#11578)",
+      "status": "ok",
+      "likelihood": 5,
+      "findings": []
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "33ebdb1ab1e795a4943eda4f8f6c08c2acf166dd",
+      "kind": "control_good",
+      "subject": "fix #6881: add parametrize_long_str_id_strategy ini option",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": [
+        {
+          "file": "src/_pytest/python.py",
+          "line": 1035,
+          "message": "Type narrowing uses `isinstance(val, str | bytes)`, which is only valid syntax on Python 3.10+. If pytest still supports 3.8/3.9, this will be a syntax error; use `isinstance(val, (str, bytes))` instead."
+        },
+        {
+          "file": "testing/python/metafunc.py",
+          "line": 47,
+          "message": "_IdMakerConfig.getini returns `object`, while `_LONG_STR_STRATEGIES` is `frozenset[LongStrIdStrategy]` (str literals). This is fine at runtime but relies on ini values being strings; if a non-str value is ever passed through (e.g. from a misconfigured test), the `in _LONG_STR_STRATEGIES` check will fail. Low risk, but worth keeping in mind."
+        }
+      ]
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "3427d27d5a517a265502feba359df4f7c46ed611",
+      "kind": "control_good",
+      "subject": "Try to get docstring from module node",
+      "status": "ok",
+      "likelihood": 22,
+      "findings": [
+        {
+          "file": "_pytest/assertion/rewrite.py",
+          "line": 595,
+          "message": "Behavior change: previously only a literal first-statement docstring disabled rewriting; now any module with a non-None `mod.docstring` (including those set by loaders or tools) will short-circuit and skip assertion rewriting if it contains PYTEST_DONT_REWRITE. This is intentional but slightly broadens the disabling surface; worth being aware of for environments that manipulate `mod.docstring`."
+        },
+        {
+          "file": "_pytest/assertion/rewrite.py",
+          "line": 596,
+          "message": "The switch from `expect_docstring = True` to `expect_docstring = doc is None` relies on `mod.docstring` semantics matching prior AST-based detection. In unusual cases (e.g. ASTs constructed or mutated manually), this might diverge, but normal parsed modules should behave the same or more consistently."
+        },
+        {
+          "file": "testing/test_assertrewrite.py",
+          "line": 65,
+          "message": "Tests now branch on `sys.version_info < (3, 7)` and delete the docstring node for older versions to normalize expectations with 3.7+. This is reasonable but depends on subtle AST differences across Python versions; if the actual cutoff version behavior differs (e.g., 3.7+ keeping/removing the docstring differently than assumed), tests could mis-represent intended behavior."
+        }
+      ]
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "622c4ce02efb543027932d3d39c8db8b7fefe337",
+      "kind": "control_good",
+      "subject": "mark/expression: support compiling once and reusing for multiple evaluations",
+      "status": "ok",
+      "likelihood": 35,
+      "findings": [
+        {
+          "file": "src/_pytest/mark/expression.py",
+          "line": 149,
+          "message": "MatcherAdapter.__iter__ and __len__ raise NotImplementedError. While eval() with a mapping typically only needs __getitem__, some tooling or future changes expecting a full Mapping may hit these and crash. Consider implementing minimal but safe behavior (e.g. empty iterator/0 length) or not advertising Mapping if incomplete."
+        },
+        {
+          "file": "src/_pytest/mark/expression.py",
+          "line": 137,
+          "message": "Expression.__slots__ only contains 'code', but no __getstate__/__setstate__ or other compatibility helpers. If Expression instances are ever pickled or copied in ways relying on dynamic attributes (as older code might), this could introduce subtle regressions. Worth confirming that Expression is not expected to be picklable or extended."
+        },
+        {
+          "file": "src/_pytest/mark/expression.py",
+          "line": 156,
+          "message": "Classmethod 'compile' uses 'self' as the first parameter instead of 'cls'. This is only a naming issue and does not affect behavior, but is confusing and could lead to misuse when subclassing Expression."
+        },
+        {
+          "file": "src/_pytest/mark/expression.py",
+          "line": 172,
+          "message": "Using eval() over a restricted AST and empty __builtins__ is mostly safe, but still increases surface area vs the previous pure-Python boolean evaluation. If the parser ever lets through unexpected AST nodes, that could be exploited. Tests should cover that only Name/BoolOp/UnaryOp/NameConstant are produced."
+        },
+        {
+          "file": "testing/test_mark_expression.py",
+          "line": 8,
+          "message": "The public function 'evaluate' was removed from _pytest.mark.expression and is now only recreated in tests. Third-party code importing evaluate will now break. This is a public API compatibility risk; confirm that 'evaluate' was not part of the supported public API or consider providing a compatibility shim that wraps Expression.compile(...).evaluate(...)."
+        }
+      ]
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "b05061dcd27516da907ce62964263fd91f006ade",
+      "kind": "control_good",
+      "subject": "Change deprecation type of --result-log to PytestDeprecationWarning",
+      "status": "ok",
+      "likelihood": 10,
+      "findings": [
+        {
+          "file": "doc/en/deprecations.rst",
+          "line": 303,
+          "message": "Text says the feature will be removed in pytest 4.0, but the code/deprecation warning now state removal in pytest 5.0. This is a user-visible inconsistency that can cause confusion."
+        }
+      ]
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "d8d88ede6550a9533b7a0371f76fb12e65b22c83",
+      "kind": "control_good",
+      "subject": "refine and unify initial capturing - now works also if the logging module is already used from an early-loaded conftest.py file (prior to option parsing)",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": [
+        {
+          "file": "_pytest/capture.py",
+          "line": 65,
+          "message": "Behavior of capture method selection before option parsing changed: previously defaulted to FD capture when os.dup exists; now respects '-s' and '--capture=no' and allows forcing sys capture via '--capture=sys'. This is likely intentional but may subtly change behavior for some invocations that relied on early sys vs fd capture."
+        },
+        {
+          "file": "_pytest/config.py",
+          "line": 270,
+          "message": "Initial conftest capture switched from a direct StdCapture[FD] instance to using CaptureManager with resumecapture/suspendcapture. If other early plugins or code assume that the capture plugin is not yet registered or that capture is not active during _setinitialconftest, they might behave differently, though added tests reduce this risk."
+        }
+      ]
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "ee51fa58812e23ab3b26a2d11e8706d5d9b7cd67",
+      "kind": "control_good",
+      "subject": "add api to iterate over all marerks of a node",
+      "status": "ok",
+      "likelihood": 18,
+      "findings": [
+        {
+          "file": "_pytest/nodes.py",
+          "line": 199,
+          "message": "iter_markers returns chain.from_iterable(x._markers for x in reversed(self.listchain())). This yields NodeMarkers instances, not marker objects; likely intention was to iterate over individual marks, e.g. chain.from_iterable(x._markers.own_markers for x in reversed(self.listchain())) or similar."
+        },
+        {
+          "file": "_pytest/mark/structures.py",
+          "line": 402,
+          "message": "NodeMarkers.__iter__ now delegates to iter(self.own_markers). Any existing code that relied on the previous non-iterability of NodeMarkers (e.g. attribute-only use) should be fine, but this change risks subtly altering behavior where NodeMarkers objects might accidentally be treated as sequences."
+        },
+        {
+          "file": "doc/en/mark.rst",
+          "line": 30,
+          "message": "Sphinx directive '..warning::' in get_marker docstring is misspelled; the correct directive is '.. warning::'. This will break warning rendering in built docs."
+        }
+      ]
+    }
+  ]
+}

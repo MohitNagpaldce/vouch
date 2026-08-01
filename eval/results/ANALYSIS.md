@@ -136,6 +136,41 @@ executes the changed lines — cf. the shlex.quote sample: test file touched,
 11/11 changed-line mutants uncovered), i.e., diff-scoped mutation coverage at
 merge time.
 
+## Run 5 — calibrated ROC + finding validity: perception without conviction (2026-08-01)
+
+Raw data: `calib.json` (55 bad), `calib-control.json` (48 controls at run time),
+`validity.json`. Calibrated prompt: "0–100 likelihood this change introduces a
+defect," GPT-5.1, JSON findings captured.
+
+**ROC.** AUC = **0.647** (bad mean 31 vs control mean 20). Operating points:
+≥20 → 69%/48%; ≥40 → 27%/6% (best J ≈ 0.21). Compare the adversarial framing
+(GPT 51%/31%, J 0.20): the two prompts sit on the same discrimination curve.
+**Prompt framing selects the operating point; it does not add signal.** LLM
+review carries a fixed, modest ~0.65 AUC of discrimination on this corpus, and
+no point on the curve gates alone.
+
+**Finding validity.** Of 55 bad diffs, the calibrated reviewer produced
+findings on 42; an LLM judge (same family — caveat) rated **36/42 (86%) as
+describing the actual defect** that caused the revert/regression, 6 incidental.
+Review's problem is NOT hallucinated criticism: when it speaks on a bad diff,
+it mostly names the real problem.
+
+**The headline: perception without conviction.** Of the 36 correctly-perceived
+defects, **22 (61%) received likelihood < 40** — below the best-J gating
+threshold. Example: on a pydantic revert, the reviewer explicitly described
+the defective conditional logic in its findings and then scored the change 5/100.
+The binding failure of LLM code review is **calibration, not detection**: the
+model routinely articulates the true defect and underweights it. Implications:
+(a) score-based gating discards the model's own correct perceptions — gate
+logic should weigh *finding content* (e.g., any concrete behavioral-change
+finding on a critical path), not just scalar risk; (b) this reframes the
+cross-family union result (run 3): union works because it harvests perceptions
+that each family individually underweights.
+
+**Caveats.** Judge family = reviewer family (self-agreement inflation risk);
+ground truth is subject-line granularity; single corpus/language; control n=48
+(run raced the control-corpus expansion; rerun over all 111 planned).
+
 ## Implications for the evaluation design
 
 1. Add an era-matched environment builder (pyenv + dated pip constraints) —

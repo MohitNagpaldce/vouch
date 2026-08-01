@@ -1,0 +1,390 @@
+{
+  "judge_model": "gpt-5.1",
+  "caveat": "judge family may equal reviewer family; ground truth is subject-line only",
+  "no_findings": 13,
+  "judged": 42,
+  "counts": {
+    "identifies": 36,
+    "incidental": 6
+  },
+  "records": [
+    {
+      "repo": "encode/httpx",
+      "sha": "4cbf13ece2e584b45b935df0a0c670e1863c4569",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the new TypeError-raising behavior as a potentially unacceptable backward-incompatible change, matching the later full revert of the change for raising TypeError on invalid query params."
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "71cbde8ba4cab32dd96ccb91e9db20216587fae9",
+      "kind": "merged_then_reverted",
+      "likelihood": 75,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The findings correctly point out incorrect use of asyncio.Stream/asyncio.connect and behavioral mismatches in StreamCompat/TCPStream.close(), which align with the later full revert of the \"Use Python 3.8 asyncio.Stream where possible\" change."
+    },
+    {
+      "repo": "fastapi/fastapi",
+      "sha": "88d4f2cb1814392f54011b2bbd3fe55c5f2a3278",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly flags the behavioral change in how form fields are keyed (name vs alias) and its compatibility impact, which matches the later regression fix for form field handling."
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "8bc912710774c7b4c84f5d4effd0c764f3e2bbb9",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 6,
+      "verdict": "incidental",
+      "reason": "The ground truth indicates a broad merge/revert of multiple changes rather than a specific defect, so none of the reviewer\u2019s concrete issues can be confirmed as matching the actual reason for the revert."
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "8e768e7ba68088766ee3e982f9ce8e6792674372",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer only comments on argument compatibility and regression likelihood in general, without identifying any non-Windows specific behavior that later proved to be the actual regression."
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "93c6966eb3a575c2b600434d1cc9f4b3aee505ac",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes a behavioral change in how EOFError is raised in visible_input/hidden_input as a targeted EOF handling fix and a potential behavior change, which aligns with the later-reported EOF-related regression."
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "b625654063f03936c65f33d1f5025376f57f4a06",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags regressions in echo_via_pager\u2019s handling of text vs bytes and encoding, which matches the later commit fixing the echo_via_pager regression."
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "e798f64ffde20c549e2e0df5834e4194c74adb0a",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly warn that using shlex_quote with shell=True changes behavior and can break existing multi-word EDITOR commands and Windows usage, matching the later full revert of shlex.quote-based quoting."
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "1d4448abe335741c61b3c8c5f99e1607a13f7e3d",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the new bare `except:` that handles all BaseException subclasses, which matches the later revert of the change to 'Handle BaseExceptions'."
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "2aa26fff04a98f2435e8e3015e92ef6108d3b485",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly flags the removal of Blueprint.register_error_handler as a breaking API change, and the later revert of that change indicates that this specific removal was indeed the problematic defect."
+    },
+    {
+      "repo": "psf/black",
+      "sha": "00e7e12a3a412ea386806d5d4eeaed345e912940",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The second finding explicitly notes behavior changes around get_string_prefix() lowercasing prefixes, matching the later regression fix about preserving R prefix capitalization."
+    },
+    {
+      "repo": "psf/black",
+      "sha": "6dca5278a3159cb35e8b9076bf81eacd35c1f0a7",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The second finding explicitly notes that tightening the condition to only treat true exponentiation (`DOUBLESTAR`) changes behavior for edge cases, which aligns with the later regression fix about unexpected parentheses around non-mathematical powers."
+    },
+    {
+      "repo": "psf/black",
+      "sha": "7d032fa848c8910007a0a41c1ba61d70d2846f48",
+      "kind": "merged_then_reverted",
+      "likelihood": 12,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer only notes a general risk of behavior changes and obscure edge cases from refactoring, while the actual defect stemmed from the specific behavior change to always use lowercase hex, which they treat as intended rather than problematic."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "086e19d8e175cccb630ee3589affdd2f38075ecd",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings explicitly flag the behavioral change and potential breakage in user code caused by decoupling Response.ok from raise_for_status, which matches the reverted change to clarify Response.ok\u2019s contract and avoid exceptions."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "178ff62b934c30278114028f654e42374206c291",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The review correctly flags the behavioral change in exception re-raising semantics, which is plausibly the subtle defect that led to the later need to revert the change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "19cff44ec1b8eeec99459b504a681aa440f6344c",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings directly critique the new UTF-8 BOM handling logic and its behavior changes, matching the later full revert of the UTF-8 BOM fix."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "26ed7c2e1dce4271f3a3b111a167a6dcca3acddf",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a potential semantic change around hooks=None, but the revert message ties the bad change to a failing unicode URL preparation test, which is a different, more specific issue."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "2da7fe08586aeaff614c017a9a834a22c937384a",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly flag behavior changes and risks introduced by delegating chunked requests to urllib3, matching the reverted change 'Use urllib for chunked requests.'"
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "34af72c87d79bd8852e8564c050dd7711c6a08d6",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The review explicitly highlights the broader behavior change from a stricter HTTP/HTTPS check affecting custom schemes, which aligns with the later decision to revert the entire URL restriction change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "35d5ac6e8f5f4357f945b8c4890388207f7f1c00",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the new unconditional 'utf-8' fallback as a behavioral change that may break existing decoding semantics, which matches the later revert of the change to use utf-8 as the default encoding."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "4b66260cb7c88a41a971d2458d75efd556f2e00e",
+      "kind": "merged_then_reverted",
+      "likelihood": 15,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer highlights that the new helper\u2019s positional argument order is confusing and may break or mislead users, which is a plausible reason for the later full revert of the helper method."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "537def4a4fb284a216f56f3bae308d28ccc67b1f",
+      "kind": "regression_fix",
+      "likelihood": 55,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly points out use and behavior changes around iteritems/iterator-style cookiejar methods that are nonstandard on Python 3, matching the later fix for a regression with cookiejar.iteritems()."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "544d08d0f61c35358cf13b4a6b677e4e51dbbe7e",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly calls out the behavioral change around skipping recalculation of an existing Content-Length and the risk of sending incorrect values, which matches the later decision to revert the change about handling pre-set Content-Length headers."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "62a23bfbdecf54e13e571237df5a175e53d539cb",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding directly flags the new auto-detection call in setup.py as broken (NameError due to missing import), which matches the reverted change about auto-detecting the CA cert path."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "730c0e2e2bef77968a86962f9d5f2bebba4d19ec",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer only notes performance/behavior changes from unconditional r.content reads, while the revert message suggests a broader or different regression than the specific performance concern identified."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "796d3225ddf08a9ebaa429209b9d077c3a8f99b8",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 6,
+      "verdict": "identifies",
+      "reason": "The findings explicitly call out the new max_retries argument and its behavioral and signature changes as breaking and incompatible, which directly matches the later full revert of the max_retries-argument change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "840540b6b1f07ef87faab73392c03fbef0dcc9fe",
+      "kind": "merged_then_reverted",
+      "likelihood": 75,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly call out the new requirement for explicit proxy URL schemes and the resulting backward-incompatible behavior, which matches the later reversion of the change titled 'Proxy urls should have explicit schemes.'"
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "91766548d10cd5ebf46aba376f9e000263285875",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly connects the changed initialization of `r` and removal of the timeout test to potential regressions in safe_mode/timeout behavior, which matches the later revert of the safe_mode timeout change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "9217a2523d7d4fafeebb259884276fc349a376b1",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings explicitly highlight behavior changes in how and when the request body is encoded and how Content-Type is inferred, which matches the reverted change about calling auth before encoding body data."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "9a20afd6b5140da4b9f187a3c0c6ea7010baeee9",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags changed default parameter values (`stream` and `verify`) as a behavioral change, matching the later reversion described as reverting changes to params."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "bd100472443dcf4189630f6b1ed3ec0a61259dd8",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "Multiple findings explicitly discuss the new _error field and changed iter_content/content exception behavior, which directly relate to the regression about remembering read errors that led to the revert."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "c19650b00f0c169cdf6372a093425830e11a8771",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings explicitly critique the forced use of SSLv3 and its behavioral/security consequences, matching the later decision to revert the SSL3-related change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "ca0aea640d0cce01c126220b74362c9014cabbd6",
+      "kind": "merged_then_reverted",
+      "likelihood": 85,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The reviewer flags that adding and misusing the new `return_response` parameter changes the `Session.request` API contract and likely breaks callers, which aligns with the later full revert of the attempted fix as a bad change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "d232948188f922c137dd709b53f77c49d1442c84",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings directly describe behavioral and semantic problems introduced by caching Response.text, which aligns with the later full revert of the text caching change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "fbe48fbb7c5b96cde3a16453311e45f723516afd",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings directly flag the introduction and use of the new trusted_domains attribute and its initialization semantics, which aligns with the later full revert of the 'Add trusted domains' change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "fc8fa1aa265bb14d59c68eb68a179bce17953967",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly discusses altered handling of binary/text request bodies and ties it to the new binary PUT behavior, which matches the later regression fix for binary bodies."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "24515489250de5d63c487e608f2f8d184b427498",
+      "kind": "merged_then_reverted",
+      "likelihood": 45,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly describe behavioral and API problems arising from adding __getitem__ for string-based attribute access, which matches the later reversion of the feature allowing accessing attributes as strings."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "6e0c5c336ca9d63952eb0bf3705ca9ea93f73d38",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a potential behavioral change around IndexError handling, but the revert message ('fix coverage') suggests the actual issue was related to test/coverage concerns rather than this specific exception handling behavior."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "8898b8fee91c5a9dd99f4eb0c05f6950c2f684e0",
+      "kind": "regression_fix",
+      "likelihood": 5,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly discusses the corrected conditional logic for schema reference handling, which plausibly matches the later-identified regression in core schema generation for indirect definition references."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "b42fae081ce095769f60cf18d4657ba9b14a97b5",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly calls out the behavioral change in nested JSON encoding that could regress edge cases, matching the later full revert of the nested json encoding feature."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "e34ff9255f281eaccac10d0436c082626d9146c3",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings describe incorrect handling of query strings during percent-encoding, which plausibly motivated the later full revert of the URL percent-encoding change."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "e690f0878e7ccae4bc50c84e022e94b9b59f6dcf",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings directly discuss the new validate_arguments configuration parameters and their semantic/behavioral risks, matching the later full revert of the added configs feature as the underlying defect."
+    }
+  ]
+}
