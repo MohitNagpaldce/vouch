@@ -171,6 +171,47 @@ that each family individually underweights.
 ground truth is subject-line granularity; single corpus/language; control n=48
 (run raced the control-corpus expansion; rerun over all 111 planned).
 
+## Run 6 — AI-authored arm: self-verification measured directly (2026-08-01)
+
+Raw data: `ai-arm.json`. 30 corpus changes distilled into standalone specs
+(GPT); GPT-5.1 and Gemini (flash-lite) each independently authored module +
+own pytest suite; full gate (deps, mutation, tautology) in fresh repos,
+today's environment — no era decay, genuine AI provenance.
+
+| | GPT-5.1 | Gemini |
+|---|---|---|
+| generated + gated | 30/30 | 29/30 |
+| **own tests FAIL on own code** | **11 (37%)** | **10 (34%)** |
+| clean gate pass | 3 (10%) | 4 (14%) |
+| mutation blocks (score < 0.5) | 4 | 4 |
+| mutation score, runnable (n=19 each): mean / median / min | 0.69 / 0.71 / 0.00 | 0.63 / 0.68 / 0.00 |
+| scores < 0.7 | 7/19 | 10/19 |
+| uncovered mutants (changed lines no test executes) | 28 | 26 |
+| tautology blocks | 0 | 1 |
+
+Headlines:
+1. **More than a third of one-shot AI-authored changes ship with test suites
+   that fail on their own implementation.** The crudest possible
+   self-verification failure — and both families do it at the same rate.
+   (Agent loops that iterate-until-green would mask this specific failure but
+   not the adequacy ones below.)
+2. **Only 10–14% of AI-authored diffs pass the gate cleanly.** Under the
+   default policy tier, ~86–90% of AI PRs would come back to the agent with
+   concrete, actionable evidence (surviving mutants, uncovered lines, failing
+   tests).
+3. **When AI tests do run, they are mediocre by mutation adequacy**: mean
+   ~0.63–0.69, one in five suites below 0.5, and dozens of changed lines with
+   no executing test at all — coverage theater, measured. Family differences
+   are small: this is a property of one-shot LLM test generation, not of a
+   vendor.
+4. Tautological tests were rare in this arm (0–1) — the dominant failure is
+   inadequate coverage/assertions, not tests that pass everywhere.
+
+Caveats: one-shot generation without an execute-repair loop (deliberate: it
+isolates the model's unaided testing judgment; production agents iterate);
+standalone-module setting (no cross-file complexity); spec distillation by one
+family (shared upstream bias); n=30 tasks.
+
 ## Implications for the evaluation design
 
 1. Add an era-matched environment builder (pyenv + dated pip constraints) —

@@ -383,7 +383,44 @@ control ran on 48 of the eventual 111 controls.
 re-implementation arm; era-matched environments for the execution-grounded
 verifiers.*
 
-## 7. Limitations and threats to validity
+## 7. Evaluation III: the gate on genuinely AI-authored code
+
+The corpora above are human-authored; the self-verification thesis deserves a
+direct measurement. We distilled 30 corpus changes into standalone,
+stdlib-only specs (via GPT-5.1) and had two model families — GPT-5.1 and
+Gemini — each independently author the module *and its own pytest suite*, the
+one-shot self-verification setting. Each AI-authored diff (with genuine
+provenance trailers) then ran through the gate in a fresh repository in
+today's environment, eliminating the era-decay confound entirely.
+
+| | GPT-5.1 | Gemini |
+|---|---|---|
+| own tests fail on own implementation | **37%** (11/30) | **34%** (10/29) |
+| clean gate pass | 10% | 14% |
+| mutation score of runnable suites (mean / median) | 0.69 / 0.71 | 0.63 / 0.68 |
+| suites below 0.5 mutation score | 3/19 | 4/19 |
+| changed lines with no executing test (uncovered mutants) | 28 | 26 |
+| tautology blocks | 0 | 1 |
+
+Three observations. First, **over a third of one-shot AI-authored changes ship
+with test suites that fail on their own implementation** — the crudest
+self-verification failure, at nearly identical rates across families. (Agents
+that iterate until green mask this failure specifically, but not the adequacy
+failures below.) Second, among suites that run, **mutation adequacy is
+mediocre and family-independent** — mean 0.63–0.69, one in five below 0.5,
+plus dozens of changed lines no test executes: coverage theater, measured
+directly on AI code. Third, only 10–14% of AI-authored diffs pass the gate
+cleanly — meaning a Vouch-style gate returns concrete, actionable evidence
+(surviving mutants, uncovered lines, red tests) on roughly nine of ten AI PRs
+rather than a rubber stamp. Tautological tests were rare here (0–1), locating
+the dominant AI testing failure in *adequacy*, not tautology.
+
+Caveats: one-shot generation deliberately isolates the model's unaided testing
+judgment (production agents iterate-and-repair); the standalone-module setting
+removes cross-file complexity; spec distillation by a single family is a
+shared upstream bias; n=30 tasks per family.
+
+## 8. Limitations and threats to validity
 
 **Equivalent mutants.** Mutation scores undercount test quality when injected
 faults are semantically null; our own demo surfaced one (`>` → `>=` at a
@@ -407,7 +444,7 @@ language-agnostic, the mutation and coverage machinery is not yet.
 attribution, not a guarantee. Gates can run `--all-code` where provenance is
 unreliable.
 
-## 8. Conclusion
+## 9. Conclusion
 
 Build-pass-coverage acceptance — the current industrial standard — measures the
 authoring model's self-agreement, not independent evidence. We built the gate

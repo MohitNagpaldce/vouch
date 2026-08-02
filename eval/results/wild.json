@@ -1,0 +1,3605 @@
+{
+  "records": [
+    {
+      "family": "anthropic/claude",
+      "repo": "DDD-Enterprises/dopemux-mvp",
+      "sha": "6645da6cfeb99c30b91a3c01cfd70e17bdbc94bf",
+      "date": "2026-06-06T23:18:42.000-07:00",
+      "subject": "fix(proof-validation): use language:python so pre-commit manages jsonschema dep",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "Luquas95/Live-M",
+      "sha": "360f611b0277ef03b0d94011c1e2616badda9779",
+      "date": "2026-06-18T21:40:44.000+02:00",
+      "subject": "Update Python badge label to language-python format",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "forge-it/agent-skills",
+      "sha": "f46233d09775279c11bf186413a962c800b0e7f2",
+      "date": "2026-07-03T09:35:46.000+03:00",
+      "subject": "chore: add single-language python plan-review prompts",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "Satyam12singh/repolens",
+      "sha": "50dbd2f8a009cd1fa55281741dc0fb2f1147ccfc",
+      "date": "2026-06-14T01:26:12.000+05:30",
+      "subject": "Fix Homebrew formula: add Language::Python::Virtualenv include",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "SynthiaResearch/synthia-action",
+      "sha": "2ab1657a85443b53fccfd0886eb4526a80414784",
+      "date": "2026-07-14T14:34:33.000-07:00",
+      "subject": "v1.2.0: Python agent support (language: python) + warn-only advisory mode",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "foXerw/lang-rehab",
+      "sha": "69317372210514025b300fe6d7498f71bc979677",
+      "date": "2026-08-02T11:16:04.000+08:00",
+      "subject": "feat(python): infrastructure \u2014 track.toml, first lesson, build_cmd optional",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 1
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "error"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "posalex/homebrew-tap",
+      "sha": "3d48217eb33fa01ca9229f7ba4bb0c8a79b6cbae",
+      "date": "2026-04-15T20:56:52.000+02:00",
+      "subject": "Fix formula: include Language::Python::Virtualenv",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "Kiryuryu/mathlearnlab",
+      "sha": "5b5bf38d4619c500c9378a066a8efc6971fc4547",
+      "date": "2026-07-10T18:21:19.000+08:00",
+      "subject": "Fix: add language-python class to code blocks for pyodide detection",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "block",
+          "metrics": {},
+          "note": ""
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "linhmtran168/nvim_configs",
+      "sha": "2cbc283b4a9c99c016319ae337e2cbb3ee7fc6f8",
+      "date": "2026-05-08T13:13:18.000+07:00",
+      "subject": "feat(lang): add scripting languages (python, ruby, typescript)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "Lanthanum89/Portfolio",
+      "sha": "ec09a93195dc34fe8fde4d801c91730675696d57",
+      "date": "2026-07-16T13:16:10.000Z",
+      "subject": "Fix Darts Calculator language: Python, not HTML",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "fey/password-checker",
+      "sha": "8dd652220d0aeec9c145ab3e6e10980a08bab7b9",
+      "date": "2026-06-25T17:11:33.000+05:00",
+      "subject": "Add password generator reference solutions per language (python, js, java, go, php)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 1
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "block",
+          "metrics": {},
+          "note": ""
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "aallan/vera-bench",
+      "sha": "040539a0e9ba3c291498fe5583707b59ef623d41",
+      "date": "2026-03-30T09:06:13.000+01:00",
+      "subject": "Add --language python example to README Quick start",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "aegro/homebrew-tap",
+      "sha": "da0fb3c0fcfa36ba1cbd54a3f125003b4872f5a1",
+      "date": "2026-03-26T17:08:58.000-03:00",
+      "subject": "fix: restore Language::Python::Virtualenv include",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "Chris-Lehnen-ICT-CONSULTING/Definitie-app-zakelijk",
+      "sha": "c7344df85a85f46f7d2f270259be1b409af9d700",
+      "date": "2026-02-18T13:15:27.000+01:00",
+      "subject": "fix: resolve PyYAML missing in validate-juridische-synoniemen hook (#138)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "ureca-corp/fastapi-domain-monitor",
+      "sha": "e08568620aaa0db161f5244430203d5e0a4010cb",
+      "date": "2026-03-06T17:46:11.000+09:00",
+      "subject": "fix: add Language::Python::Virtualenv mixin to formula",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "sofa-buffers/arena",
+      "sha": "1ebd9e808e718ff14f1f8643e7e1aafd686f8bbc",
+      "date": "2026-07-03T14:12:22.000Z",
+      "subject": "docs: move Python 'why it's slowest' note to languages/python/README.md",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "PatrickMockridge/Copernicus",
+      "sha": "5dc7354d3a5d69a376989ce3441a30260810c062",
+      "date": "2026-04-08T13:26:54.000+01:00",
+      "subject": "Use set_language(\"python\") for Python syntax highlighting",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "haoziwlh/autoplaylist",
+      "sha": "05457960c334fe1edab776fa747bcddcee6e1663",
+      "date": "2026-04-06T15:40:23.000+08:00",
+      "subject": "Fix Homebrew Formula: add Language::Python::Virtualenv include",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "sachinsinha0607/aiagentic-comp",
+      "sha": "8edbe684ba8f5ff20c2a4a6d5403412949fb847b",
+      "date": "2026-02-18T00:40:28.000+05:30",
+      "subject": "Session 9: Fix language-yaml tag to language-python on handoff code slide",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "DocSunset/sygaldreye",
+      "sha": "2acb8fd863105971380e229ee69dee52594df2b2",
+      "date": "2026-07-04T10:58:48.000-04:00",
+      "subject": "docs: ADR-019 one core many hosts \u2014 machinery language + Python/JS interop",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "parthalon025/claude-onboarding-kit",
+      "sha": "a8be98c3574b4ac9b92c1401aedee87b9cf3aeed",
+      "date": "2026-02-27T21:41:03.000-06:00",
+      "subject": "fix: replace scope tag placeholders with language defaults",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "codeflash-ai/codeflash",
+      "sha": "1f914c58e377f325ab48d09bdb639f3ef609e90d",
+      "date": "2026-03-02T05:44:02.000Z",
+      "subject": "docs: update architecture.md with new Python optimizer files",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "codeflash-ai/codeflash",
+      "sha": "ea14b2f5484a772f17b088970af5a92661dd9291",
+      "date": "2026-02-16T15:59:22.000-05:00",
+      "subject": "Update codeflash/languages/python/context/code_context_extractor.py",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "error"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "defl/hokku_epaper",
+      "sha": "31f52d7654f6c7e2fcddaf2b7204628fde04163c",
+      "date": "2026-05-26T21:24:00.000-05:00",
+      "subject": "chore: fix pre-commit hooks and apply ruff format",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 4); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "diff's own tests fail at HEAD (exit 4)"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "error"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "brainupgrade-in/aiagentic-comp",
+      "sha": "8edbe684ba8f5ff20c2a4a6d5403412949fb847b",
+      "date": "2026-02-18T00:40:28.000+05:30",
+      "subject": "Session 9: Fix language-yaml tag to language-python on handoff code slide",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "KRRT7/codeflash",
+      "sha": "1f914c58e377f325ab48d09bdb639f3ef609e90d",
+      "date": "2026-03-02T05:44:02.000Z",
+      "subject": "docs: update architecture.md with new Python optimizer files",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "KRRT7/codeflash",
+      "sha": "ea14b2f5484a772f17b088970af5a92661dd9291",
+      "date": "2026-02-16T15:59:22.000-05:00",
+      "subject": "Update codeflash/languages/python/context/code_context_extractor.py",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "error"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "fullsend-ai/fullsend",
+      "sha": "ee6bc30deb742dd0de68bf033da938c7a8109e97",
+      "date": "2026-05-08T17:46:30.000-04:00",
+      "subject": "fix: use language: python to let pre-commit manage pyyaml dep",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "emerleite/d1cli",
+      "sha": "092e9ae43f4701d01529565c7408329e77a5d39f",
+      "date": "2026-04-27T08:59:27.000-03:00",
+      "subject": "Fix Homebrew formula: add Language::Python::Virtualenv include",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "gesellix/Bose-SoundTouch",
+      "sha": "6dc0f0d59658f584dcbfdc12b5e2eea316ff8edb",
+      "date": "2026-05-24T15:56:37.000+02:00",
+      "subject": "ci: restore python to CodeQL matrix",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "ascerra-fullsend-rehearsal/fullsend",
+      "sha": "ee6bc30deb742dd0de68bf033da938c7a8109e97",
+      "date": "2026-05-08T17:46:30.000-04:00",
+      "subject": "fix: use language: python to let pre-commit manage pyyaml dep",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "asdrubalivan/remote-venezuela-hiring",
+      "sha": "345e6e29498a56f2ecfac5fccbbab972de7280dd",
+      "date": "2026-05-16T13:09:27.000-04:00",
+      "subject": "fix: resolve pytest path dynamically in pre-push hook",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "goondocks-co/homebrew-oak",
+      "sha": "4be2d1f6eb094d020a1301d89fb8ed8262dd3d90",
+      "date": "2026-02-10T16:15:55.000-05:00",
+      "subject": "Fix formula: add Language::Python::Virtualenv include",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "block",
+          "metrics": {},
+          "note": ""
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "rafaelssenna/Professor-de-LOGICA",
+      "sha": "1aacd73346701b6795acf99670d06d7b0ed69a12",
+      "date": "2026-02-16T16:11:48.000-03:00",
+      "subject": "Fix: Separa progresso entre Python e JavaScript no banco de dados",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "alexander-e-bauer/r_machine_learning",
+      "sha": "fa29d9c45b97aab4b7439e74eda9d29c9241d6ad",
+      "date": "2026-06-23T18:20:29.000-04:00",
+      "subject": "fix(terrain): three-way parity now compares grids cross-language (Python==frontend over served point",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "tests-only diff; nothing to compare against base"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "habit-hooks/homebrew-tap",
+      "sha": "1770ab7f868f57eb99a3b6f595453e921bafda14",
+      "date": "2026-07-03T16:29:18.000+02:00",
+      "subject": "Add habit-hooks 1.0.0 formula",
+      "status": "no vbom: Error: git merge-base 1770ab7f868f57eb99a3b6f595453e921bafda14^ HEAD failed: fatal: Not a valid object name 1770ab7f868f57eb99a3b6f595453e921bafda14^\n",
+      "verifiers": {},
+      "env": "editable install failed"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "floriansumi-bot/the-construct",
+      "sha": "c9a322ec8e34c392f34165266b6e210254596635",
+      "date": "2026-06-11T14:13:22.000+02:00",
+      "subject": "THE CONSTRUCT: polyglot in-browser code trainer",
+      "status": "no vbom: Error: git merge-base c9a322ec8e34c392f34165266b6e210254596635^ HEAD failed: fatal: Not a valid object name c9a322ec8e34c392f34165266b6e210254596635^\n",
+      "verifiers": {},
+      "env": "editable install failed"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "podonos/podonos-pysdk",
+      "sha": "c83837943806838896b1788ad96ce368bef5cee2",
+      "date": "2026-03-23T18:25:17.000+09:00",
+      "subject": "Release v0.35.0: RANKING, Indonesian language, Python 3.8/3.9 drop (#294)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "diff's own tests fail at HEAD (exit 1)"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "error"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "joshiosimoe/BankSystem",
+      "sha": "8f24fa9a521e5fea4e8f77e7ccde028a7e4262a3",
+      "date": "2026-03-08T03:20:57.000-05:00",
+      "subject": "Initial project setup",
+      "status": "no vbom: Error: git merge-base 8f24fa9a521e5fea4e8f77e7ccde028a7e4262a3^ HEAD failed: fatal: Not a valid object name 8f24fa9a521e5fea4e8f77e7ccde028a7e4262a3^\n",
+      "verifiers": {},
+      "env": "editable install failed"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "nchatti/orka-app-xp",
+      "sha": "ee2c2b5e7333c5f79df129e18314724da69f5339",
+      "date": "2026-05-19T08:16:47.000+02:00",
+      "subject": "[Spec Kit] Add clarifications to ping-pong CLI spec",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "yurujie0/dify-cli",
+      "sha": "352114c3aa327bc81b60118c23c3769b4e60bb6f",
+      "date": "2026-07-07T15:17:09.000+08:00",
+      "subject": "fix: auto-normalize code_language='python' to 'python3'",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "warn",
+          "metrics": {
+            "mutants": 3,
+            "killed": 2,
+            "survived": 1,
+            "uncovered": 0,
+            "mutation_score": 0.667,
+            "min_required": 0.5,
+            "baseline_test_s": 0.62,
+            "cov_scoped": true
+          },
+          "note": ""
+        },
+        "tautology": {
+          "verdict": "pass",
+          "metrics": {
+            "test_files": 1,
+            "old_impl_exit_code": 1
+          },
+          "note": ""
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "warn"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "anvilfilbert/Auto-Crypto-Tradingjournal",
+      "sha": "ea69c398c25d3ca4c0d2a7b94141f798857327de",
+      "date": "2026-05-06T20:05:08.000+02:00",
+      "subject": "Fix CodeQL: correct category and remove spurious env var",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "MattCordell/ToTallman",
+      "sha": "a93b41992879ee90a1cb7f8515ebb49690beb345",
+      "date": "2026-06-22T13:36:21.000+10:00",
+      "subject": "feat: Python implementation (issue #24)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "block",
+          "metrics": {
+            "new_imports_checked": 2
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "diff's own tests fail at HEAD (exit 2)"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "Jebel-Quant/rhiza-education",
+      "sha": "dd964efa588d8398876b36274d6f086598ff42bd",
+      "date": "2026-07-25T22:20:39.000+04:00",
+      "subject": "chore(pyproject): declare explicit Python version classifiers",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "pravinswd/pravinswd.github.io",
+      "sha": "3e3ef537110eedc7d9af3051f0ceb4eff9277219",
+      "date": "2026-07-06T23:58:03.000+05:30",
+      "subject": "Add full subject list to teaching page",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "dongzhaohe321418-lab/materials-simulation-handbook",
+      "sha": "77fb7d132f2b433b3ff82f0a010d849c74321ba6",
+      "date": "2026-05-12T20:23:01.000+01:00",
+      "subject": "Fix Pyodide selector for pymdownx.highlight DOM structure",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "Zireaelst/Hermes-Casper",
+      "sha": "c517909d04a1f8a0599723403a99cc042270edda",
+      "date": "2026-07-05T14:07:53.000+03:00",
+      "subject": "docs: record ADR-003..006 gating decisions",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "tomryan-work/vm-setup",
+      "sha": "807eae747e5a557ab20777a6b8e702227f4e027d",
+      "date": "2026-06-12T12:12:40.000-04:00",
+      "subject": "Initial VM setup documentation",
+      "status": "no vbom: Error: git merge-base 807eae747e5a557ab20777a6b8e702227f4e027d^ HEAD failed: fatal: Not a valid object name 807eae747e5a557ab20777a6b8e702227f4e027d^\n",
+      "verifiers": {},
+      "env": "editable install failed"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "diana-uk/senior-interview-mentor",
+      "sha": "76d8180866e1ab91ccc635810d3da00176f8f1d6",
+      "date": "2026-04-07T11:02:29.000+03:00",
+      "subject": "SIM-205 feat: systemPrompt additional coverage \u2014 37 new tests (memory context hintStyle/detailLevel ",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "fsZhuangB/lizhi-skills",
+      "sha": "1a9b596640c7d17f0716b1259ced2b82057007eb",
+      "date": "2026-03-23T14:45:07.000+08:00",
+      "subject": "Remove Node.js dependencies, simplify project structure",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "brandon-arrendondo/knots-pre-commit",
+      "sha": "27acff0895d4df176f4180e4ed5a4c62a44f69f8",
+      "date": "2026-06-26T20:45:17.000-04:00",
+      "subject": "Add pure-Python shim + language: python pre-commit hooks",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "asdrubalivan/remote-venezuela-hiring",
+      "sha": "7868f9a50be7fa64d08b302ad615afedd030a3c2",
+      "date": "2026-05-16T13:08:05.000-04:00",
+      "subject": "fix: make pytest pre-push hook work from git worktrees",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "OlympusLedgerOrg/Olympus",
+      "sha": "d8f586f2e3b0191fff15493bd9d9a0a4f0074117",
+      "date": "2026-05-28T11:19:16.000-04:00",
+      "subject": "ci(codeql): add python language to advanced matrix (#1083)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "Jebel-Quant/rhiza",
+      "sha": "cfe9b6f4fa4d556416c8c2770c35696dc662ea91",
+      "date": "2026-07-25T23:10:49.000+04:00",
+      "subject": "chore(pyproject): declare explicit Python version classifiers (#1434)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "haoziwlh/autoplaylist",
+      "sha": "f82f106d9817f9c9059884c7db4bbfd174d2d8cc",
+      "date": "2026-04-06T15:43:27.000+08:00",
+      "subject": "Fix Formula: use raw venv+pip instead of Language::Python::Virtualenv",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "tschm/cs",
+      "sha": "31212dc5931bd02db73fc55930b5cd895d2d9e9e",
+      "date": "2026-07-25T22:21:28.000+04:00",
+      "subject": "chore(pyproject): declare explicit Python version classifiers",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "markrichardson/dummyrepo",
+      "sha": "dbcc8f1952002eb305deab4beeb33538f1c92669",
+      "date": "2026-07-25T22:21:20.000+04:00",
+      "subject": "chore(pyproject): declare explicit Python version classifiers",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "ProjectNOVACo/code-security-api",
+      "sha": "99d01b13c9ffdec9e7b88e26a2a9f32e693bfea0",
+      "date": "2026-03-28T17:06:18.000-07:00",
+      "subject": "Support language parameter in scan endpoint",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "aradar46/reuse-before-generate",
+      "sha": "84ed655d9684774c65251bf8991d6f143f0fde40",
+      "date": "2026-07-22T19:01:09.000+02:00",
+      "subject": "Remove PyPI name-guessing; Python discovery is the language:python lane",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "anthropic/claude",
+      "repo": "ralatsdc/dotfiles",
+      "sha": "f9f6d62efa5dbfd1a83a8360700d42ba266d9b31",
+      "date": "2026-03-09T18:24:44.000-04:00",
+      "subject": "Trim to active languages: Python, JS, Rust, Java, R, MATLAB, YAML",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "anthropic/claude"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "drorkremer/homebrew-m365-mcp",
+      "sha": "99ab581567aeb284b7add14b605aa534920658c8",
+      "date": "2026-04-27T15:59:36.000+03:00",
+      "subject": "fix: add Language::Python::Virtualenv include + use venv.pip_install",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "drorkremer/homebrew-m365-mcp",
+      "sha": "e9bdf37887bf6b4ba33c96d4245d1139fc32afa1",
+      "date": "2026-04-27T16:02:47.000+03:00",
+      "subject": "fix: use raw venv instead of Language::Python::Virtualenv (not available in taps)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "metno/py-mmd-tools",
+      "sha": "e841baa4c1b76bf805e4a927790388f272c21078",
+      "date": "2026-06-23T12:55:41.000+02:00",
+      "subject": "Add Python 3.13 support (#364)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "rob-mckenna/foundry-langgraph-hosted-agent-sample",
+      "sha": "8ed6842f8893a319a87c7c50610eba23dc9b6b4d",
+      "date": "2026-06-13T17:17:58.000-04:00",
+      "subject": "feat: add Foundry Hosted Agent service with code deploy",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "dzungttfci/ms_agent-governance-toolkit",
+      "sha": "3fb27f868587cefe8e197661a55e8dc29dadc187",
+      "date": "2026-05-09T14:05:50.000-07:00",
+      "subject": "docs(contributing): add development environment setup section (#1848)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "baoqger/agt-fork",
+      "sha": "3fb27f868587cefe8e197661a55e8dc29dadc187",
+      "date": "2026-05-09T14:05:50.000-07:00",
+      "subject": "docs(contributing): add development environment setup section (#1848)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "microsoft/agent-governance-toolkit",
+      "sha": "3fb27f868587cefe8e197661a55e8dc29dadc187",
+      "date": "2026-05-09T14:05:50.000-07:00",
+      "subject": "docs(contributing): add development environment setup section (#1848)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "abdusamaraie/codememo.app",
+      "sha": "0b5768a5df924673c63baa632c85a7911ef95856",
+      "date": "2026-03-29T14:25:13.000-04:00",
+      "subject": "fix(web): use actual language param instead of hardcoded 'python'",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "rido-min/botas",
+      "sha": "75595778e79924b6dd70c4d0ff1da3631e609bab",
+      "date": "2026-04-14T08:13:54.000-07:00",
+      "subject": "docs: update Python install docs for PyPI publication (#153)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "leo477/book-club-be",
+      "sha": "9a11c0c29643a7158b1ac948cc5d887a8aaf5e13",
+      "date": "2026-04-14T11:19:45.000Z",
+      "subject": "ci: add CodeQL security analysis workflow",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "YashNarK/notes",
+      "sha": "f99655183f8e817d5f35c6e2a8899556e415d540",
+      "date": "2026-05-20T21:16:29.000+05:30",
+      "subject": "Add remaining workspace files: notebooks, VS Code settings, Python.md source",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "dzungttfci/ms_agent-governance-toolkit",
+      "sha": "6611205ff5ae3b0ddd5c4e8f97f21c0fee76cd07",
+      "date": "2026-05-07T18:00:55.000-07:00",
+      "subject": "fix: remove unused imports in citadel_exporter.py (#1808)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "error"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "softwaresalt/agent-engram",
+      "sha": "6c4c5df3750893891c28f474695cd854fed5fd3a",
+      "date": "2026-07-26T20:45:57.000-07:00",
+      "subject": "feat(096-F): route Python bare calls into canonical staging",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "torumakabe/dotfiles",
+      "sha": "03e3650390ea1f4b7541b0e3a12f19d255b3a687",
+      "date": "2026-03-17T09:27:37.000+09:00",
+      "subject": "refactor: remove Java env-dump pattern from copilot-guard (#29)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "benbp/azsdk-spec-timeline-staging",
+      "sha": "20324808ebdb8bf942c00671c6a74f249df38ac1",
+      "date": "2026-04-16T19:48:20.000-04:00",
+      "subject": "Add NetApp service timeline sample",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "Treit/ComplexityRipper",
+      "sha": "dcb5bc51a36dbefb5d0d4c5161ad371b90a21ea0",
+      "date": "2026-03-23T12:24:35.000-07:00",
+      "subject": "Add Project column to function tables",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "dzungttfci/ms_agent-governance-toolkit",
+      "sha": "e83165d6b5d5e706d1bcb00815dfc35f29e1f95c",
+      "date": "2026-05-11T12:56:25.000-07:00",
+      "subject": "fix: remove duplicate 05_ notebook (#2079)",
+      "status": "no vbom: vouch: no changes between e83165d6b5d5e706d1bcb00815dfc35f29e1f95c^ and HEAD \u2014 nothing to verify\n",
+      "verifiers": {},
+      "env": "editable install failed"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "microsoft/prompty",
+      "sha": "8fc07d81d9b3b6ffda00f6bf31e191f59897252f",
+      "date": "2026-04-13T16:14:09.000-07:00",
+      "subject": "Add Context Compaction section to agent extensions docs",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "microsoft/agent-governance-toolkit",
+      "sha": "6611205ff5ae3b0ddd5c4e8f97f21c0fee76cd07",
+      "date": "2026-05-07T18:00:55.000-07:00",
+      "subject": "fix: remove unused imports in citadel_exporter.py (#1808)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "error"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "jsburckhardt/soft-factory",
+      "sha": "a5ed210865b3a50fd662c4581e7f7a524549defc",
+      "date": "2026-04-25T05:47:52.000Z",
+      "subject": "feat: add configure-verification step to bootstrap agent",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "baoqger/agt-fork",
+      "sha": "6611205ff5ae3b0ddd5c4e8f97f21c0fee76cd07",
+      "date": "2026-05-07T18:00:55.000-07:00",
+      "subject": "fix: remove unused imports in citadel_exporter.py (#1808)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "error"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "benbp/azsdk-spec-timeline",
+      "sha": "20324808ebdb8bf942c00671c6a74f249df38ac1",
+      "date": "2026-04-16T19:48:20.000-04:00",
+      "subject": "Add NetApp service timeline sample",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "softwaresalt/agent-engram",
+      "sha": "59b4c048579ffd09c2196a206637f8902c5fea71",
+      "date": "2026-07-26T01:34:46.000-07:00",
+      "subject": "feat(096-F): T3 populate Python module-qualified canonical_path",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "microsoft/agent-governance-toolkit",
+      "sha": "e83165d6b5d5e706d1bcb00815dfc35f29e1f95c",
+      "date": "2026-05-11T12:56:25.000-07:00",
+      "subject": "fix: remove duplicate 05_ notebook (#2079)",
+      "status": "no vbom: vouch: no changes between e83165d6b5d5e706d1bcb00815dfc35f29e1f95c^ and HEAD \u2014 nothing to verify\n",
+      "verifiers": {},
+      "env": "editable install failed"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "baoqger/agt-fork",
+      "sha": "e83165d6b5d5e706d1bcb00815dfc35f29e1f95c",
+      "date": "2026-05-11T12:56:25.000-07:00",
+      "subject": "fix: remove duplicate 05_ notebook (#2079)",
+      "status": "no vbom: vouch: no changes between e83165d6b5d5e706d1bcb00815dfc35f29e1f95c^ and HEAD \u2014 nothing to verify\n",
+      "verifiers": {},
+      "env": "editable install failed"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "bponghneng/rouge",
+      "sha": "77335f9b458d4b6b0c447e747aeab0b82d1901d6",
+      "date": "2026-03-15T13:11:03.000+07:00",
+      "subject": "refactor(prompts): rewrite code-quality template for multi-repo tool discovery",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "peteroden/gitlab-copilot-agent",
+      "sha": "14089644f9c79a01f5046b1ffb6426a96dc47ce8",
+      "date": "2026-03-12T16:34:40.000-04:00",
+      "subject": "ci(codeql): add workflow file to replace default setup (#275)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "YashNarK/notes",
+      "sha": "a6423a134dbcf241cd86181d28acf0a1a4c015cc",
+      "date": "2026-05-20T16:18:31.000+05:30",
+      "subject": "Add Python.ipynb interactive notebook + link in README",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "PetiRu/Barbarossa",
+      "sha": "6e5362ad75b1d6088a6b94c530f30106e1998a01",
+      "date": "2026-07-22T06:15:12.000-04:00",
+      "subject": "Add complete BARBAROSSA security toolkit",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 8
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "block",
+          "metrics": {
+            "mutants": 303,
+            "killed": 43,
+            "survived": 260,
+            "uncovered": 240,
+            "mutation_score": 0.142,
+            "min_required": 0.7,
+            "baseline_test_s": 0.36,
+            "cov_scoped": true
+          },
+          "note": "sampled 30 of 53 mutation sites"
+        },
+        "tautology": {
+          "verdict": "pass",
+          "metrics": {
+            "test_files": 5,
+            "old_impl_exit_code": 1
+          },
+          "note": ""
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "dzungttfci/ms_agent-governance-toolkit",
+      "sha": "9df6ea1c78f8759ab7ec8a822bc3ec8ef0565c99",
+      "date": "2026-05-11T13:14:53.000-07:00",
+      "subject": "fix: add local governance simulation to Citadel notebook (#2083)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "switchcompany/forge-core",
+      "sha": "1d5e81fce49050b9b073fa7ceaf9dac02333cb71",
+      "date": "2026-05-27T18:05:37.000+05:30",
+      "subject": "feat: TestPilot Core \u2014 AI backend test generation agent",
+      "status": "no vbom: Error: git merge-base 1d5e81fce49050b9b073fa7ceaf9dac02333cb71^ HEAD failed: fatal: Not a valid object name 1d5e81fce49050b9b073fa7ceaf9dac02333cb71^\n",
+      "verifiers": {},
+      "env": "editable install failed"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "abdusamaraie/codememo.app",
+      "sha": "1b77992ef73122c902aaf5633074d1020500821d",
+      "date": "2026-03-29T13:21:58.000-04:00",
+      "subject": "feat(content): add verified seed data for Python & JavaScript quiz content",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "Reedboot/Triage-Saurus",
+      "sha": "090b9676fb802c6cfd6bd990acc8c4dcaea558e4",
+      "date": "2026-05-27T00:15:43.000+01:00",
+      "subject": "fix: fix opengrep rule validation errors in cloud_client_detection.yml (#22)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "dzungttfci/ms_agent-governance-toolkit",
+      "sha": "e2a70e28270f0e9ee2fad9d6406eea99323c06c0",
+      "date": "2026-05-11T12:52:07.000-07:00",
+      "subject": "docs: add Foundry hosted agent + AGT governance notebook for Citadel lab (#2076)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "dzungttfci/ms_agent-governance-toolkit",
+      "sha": "791b4c7cb190880b393c08a8c5f2677d1954a434",
+      "date": "2026-05-05T17:42:04.000-07:00",
+      "subject": "test: add integrity CLI round-trip and tamper detection tests (#1756)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "block",
+          "metrics": {
+            "new_imports_checked": 2
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "tests-only diff; nothing to compare against base"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "microsoft/agent-governance-toolkit",
+      "sha": "9df6ea1c78f8759ab7ec8a822bc3ec8ef0565c99",
+      "date": "2026-05-11T13:14:53.000-07:00",
+      "subject": "fix: add local governance simulation to Citadel notebook (#2083)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "baoqger/agt-fork",
+      "sha": "9df6ea1c78f8759ab7ec8a822bc3ec8ef0565c99",
+      "date": "2026-05-11T13:14:53.000-07:00",
+      "subject": "fix: add local governance simulation to Citadel notebook (#2083)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "equinor/osdu-python-models",
+      "sha": "e2d331eb687872c1e37ab392a85d3fa801f65e09",
+      "date": "2026-06-24T14:01:54.000+02:00",
+      "subject": "Expand Python version coverage to 3.10\u20133.14 (#9)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "Labubu-Matcha-Latte-Gang/bitsxLaMarato_frontend_2025",
+      "sha": "a84ab2ae88609ab25c3cf0fc136bf0cd8f86d41f",
+      "date": "2026-04-04T22:59:30.000+02:00",
+      "subject": "refine: tech grid with no padding and brief descriptions",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "microsoft/agent-governance-toolkit",
+      "sha": "e2a70e28270f0e9ee2fad9d6406eea99323c06c0",
+      "date": "2026-05-11T12:52:07.000-07:00",
+      "subject": "docs: add Foundry hosted agent + AGT governance notebook for Citadel lab (#2076)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "dzungttfci/ms_agent-governance-toolkit",
+      "sha": "a2c7c21e42d8e851eb44f3c272c9ce113be6346e",
+      "date": "2026-05-29T11:50:57.000-07:00",
+      "subject": "fix: clean package consolidation, bump all languages to v4.0.0 (#2671)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "microsoft/agent-governance-toolkit",
+      "sha": "791b4c7cb190880b393c08a8c5f2677d1954a434",
+      "date": "2026-05-05T17:42:04.000-07:00",
+      "subject": "test: add integrity CLI round-trip and tamper detection tests (#1756)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "block",
+          "metrics": {
+            "new_imports_checked": 2
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "tests-only diff; nothing to compare against base"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "softwaresalt/agent-engram",
+      "sha": "88facd45055ce2b396c5b7977a5dc4a112f6d799",
+      "date": "2026-07-20T17:24:24.000-07:00",
+      "subject": "test(094.001-T): add failing Python bare-call unit harness (RED)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "baoqger/agt-fork",
+      "sha": "e2a70e28270f0e9ee2fad9d6406eea99323c06c0",
+      "date": "2026-05-11T12:52:07.000-07:00",
+      "subject": "docs: add Foundry hosted agent + AGT governance notebook for Citadel lab (#2076)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "Aftermath-Technologies-Ltd/ironroot",
+      "sha": "f102d78389d0cd9099067b7fa8e4e54b732917ba",
+      "date": "2026-05-11T20:53:18.000-06:00",
+      "subject": "Strip UI/marketing surface; add @ironroot/core TS package",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "tests-only diff; nothing to compare against base"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "baoqger/agt-fork",
+      "sha": "791b4c7cb190880b393c08a8c5f2677d1954a434",
+      "date": "2026-05-05T17:42:04.000-07:00",
+      "subject": "test: add integrity CLI round-trip and tamper detection tests (#1756)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "block",
+          "metrics": {
+            "new_imports_checked": 2
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "tests-only diff; nothing to compare against base"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "cecwxf/wtt-web",
+      "sha": "8bf98f0b08032a7e07c35069d39e319212106d91",
+      "date": "2026-03-12T14:06:14.000+08:00",
+      "subject": "fix: rewrite outline as language-aware with proper C/C++ support",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "OanaTudu/automated-tutorials",
+      "sha": "de11a32dbfa770939da03108815727d0e83d8828",
+      "date": "2026-04-17T10:13:38.000-07:00",
+      "subject": "fix: code rendering + trim audio silence in slide video",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "block",
+          "metrics": {
+            "mutants": 30,
+            "killed": 0,
+            "survived": 30,
+            "uncovered": 30,
+            "mutation_score": 0.0,
+            "min_required": 0.5,
+            "baseline_test_s": 12.96,
+            "cov_scoped": true
+          },
+          "note": "sampled 30 of 47 mutation sites"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "rido-min/botas",
+      "sha": "cf3f99c749b7ba71d8dee7ff7aa1602b017f2f1f",
+      "date": "2026-04-14T09:43:49.000-07:00",
+      "subject": "fix: replace nbgv hatch plugin with version file for PyPI compatibility (#155)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "error"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "dzungttfci/ms_agent-governance-toolkit",
+      "sha": "b52fbbeb218b3fced19b12101686d2446f7bcc8a",
+      "date": "2026-05-07T17:19:19.000-07:00",
+      "subject": "feat: Agent Shield integration - 5-stage guardrails engine for AGT (#1805)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "block",
+          "metrics": {
+            "new_imports_checked": 3
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "diff's own tests fail at HEAD (exit 2)"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "microsoft/agent-governance-toolkit",
+      "sha": "a2c7c21e42d8e851eb44f3c272c9ce113be6346e",
+      "date": "2026-05-29T11:50:57.000-07:00",
+      "subject": "fix: clean package consolidation, bump all languages to v4.0.0 (#2671)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "p-raj/standup-to-comics",
+      "sha": "8d24e62a405c00a2dfed8a0317a959f90e00419e",
+      "date": "2026-04-17T16:51:05.000+05:30",
+      "subject": "feat: add mlx-whisper transcription plugin",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 1
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "block",
+          "metrics": {},
+          "note": ""
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "baoqger/agt-fork",
+      "sha": "a2c7c21e42d8e851eb44f3c272c9ce113be6346e",
+      "date": "2026-05-29T11:50:57.000-07:00",
+      "subject": "fix: clean package consolidation, bump all languages to v4.0.0 (#2671)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "YashNarK/notes",
+      "sha": "b81b34aad99f69eb8a76f5be5939277a8a3c3c67",
+      "date": "2026-05-20T16:01:31.000+05:30",
+      "subject": "Add data engineering entry point and README section",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "microsoft/agent-governance-toolkit",
+      "sha": "b52fbbeb218b3fced19b12101686d2446f7bcc8a",
+      "date": "2026-05-07T17:19:19.000-07:00",
+      "subject": "feat: Agent Shield integration - 5-stage guardrails engine for AGT (#1805)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "block",
+          "metrics": {
+            "new_imports_checked": 3
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "diff's own tests fail at HEAD (exit 2)"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "baoqger/agt-fork",
+      "sha": "b52fbbeb218b3fced19b12101686d2446f7bcc8a",
+      "date": "2026-05-07T17:19:19.000-07:00",
+      "subject": "feat: Agent Shield integration - 5-stage guardrails engine for AGT (#1805)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "block",
+          "metrics": {
+            "new_imports_checked": 3
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "test suite fails at HEAD (exit 1); fix tests before gating"
+        },
+        "tautology": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "diff's own tests fail at HEAD (exit 2)"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "block"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "tamirdresher/squad-polyglot-benchmark",
+      "sha": "77db47955d257ea47dc3b8b2593098bfa460afea",
+      "date": "2026-06-24T18:19:31.000+03:00",
+      "subject": "feat: Add full reproduction pipeline and exercise sources",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 3
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "block",
+          "metrics": {},
+          "note": ""
+        },
+        "tautology": {
+          "verdict": "error",
+          "metrics": {},
+          "note": "diff's own tests fail at HEAD (exit 5)"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "block"
+    }
+  ]
+}

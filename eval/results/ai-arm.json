@@ -1,0 +1,1881 @@
+{
+  "n": 30,
+  "records": [
+    {
+      "repo": "aio-libs/aiohttp",
+      "sha": "18279443d4081a02585739d52c5822340068a13f",
+      "subject": "Stop including an empty changelog draft in Sphinx",
+      "spec": "Write a small helper module that determines whether a documentation build should include a draft changelog section based on configuration flags and current content. The core behavior is: if 'include_empty' is false, then an empty draft (no pending changelog fragments) must not be included; if 'include_empty' is true, the draft is always included even when there are no fragments. The function should accept: a list of changelog fragment strings, a boolean flag indicating include_empty, and return either the concatenated draft text or an empty string/None to mean 'do not include a draft'. Ensure that 'empty' means no non-whitespace content across all fragments.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "4ac7e55161553503817dfbd01ccc5f263d163e69",
+      "subject": "check the python requirements for the gaiohttp server",
+      "spec": "Create a small worker module that imports a base worker implementation from the same package and enforces a minimum Python version requirement at import time. If the running Python interpreter is older than a specified version (e.g., 3.3.0), the module must raise a RuntimeError with a clear message, before any worker logic can be used. The module should expose a single public worker class name in __all__, and should import the base worker using a relative import (from . import base) instead of a fully qualified package name. The version check must run as soon as the module is imported, so that simply importing the module on an unsupported Python version fails immediately.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 0
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 6,
+                "killed": 5,
+                "survived": 1,
+                "uncovered": 0,
+                "mutation_score": 0.833,
+                "min_required": 0.5,
+                "baseline_test_s": 0.19,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "block",
+          "verifiers": {
+            "deps": {
+              "verdict": "block",
+              "metrics": {
+                "new_imports_checked": 3
+              }
+            },
+            "mutation": {
+              "verdict": "block",
+              "metrics": {
+                "mutants": 4,
+                "killed": 0,
+                "survived": 4,
+                "uncovered": 4,
+                "mutation_score": 0.0,
+                "min_required": 0.5,
+                "baseline_test_s": 0.18,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "block",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "0316198dc2511e34028b37a67607c067151e7c91",
+      "subject": "Improve docs about acks_on_failure_or_timeout (#9577)",
+      "spec": "Create a small task configuration helper that models two independent behaviors: (1) how many times a task can retry, and (2) when a task message is acknowledged by a worker. For retries, support a per-call override of `max_retries`, where `None` means 'use the task class default', and document that to get infinite retries you must set the task class's `max_retries` attribute to `None` (not just pass `None` at call time). For acknowledgements, simulate two boolean settings: `acks_late` and `acks_on_failure_or_timeout`, with the rule that `acks_on_failure_or_timeout` only has any effect if `acks_late` is enabled; otherwise, the message is always acknowledged before execution regardless of `acks_on_failure_or_timeout`. Provide a small API that, given these settings and an execution outcome (success/failure/timeout), decides whether to acknowledge the message before or after execution, and whether the task should be retried or considered exhausted.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "ba68cd734a0d1b240121c8be48e58d95e93b47ad",
+      "subject": "Backport #7406 to 5.2 (#7431)",
+      "spec": "Implement a small utility around Python entry points that yields extension class paths. The function should iterate over all entry points in a given namespace (using importlib.metadata.entry_points), and for each entry point yield a pair (name, class_path). The class_path must be taken directly from the entry point's 'value' attribute (e.g. 'some.module:ClassName') instead of reconstructing it from 'module' and 'attr' fields, to avoid mismatches when the packaging metadata uses more complex or non-standard forms. Include a small helper that, given such a pair, can split the class_path into (module_name, object_path). Do not depend on any external packages beyond the standard library; if importlib.metadata is unavailable, fall back to importlib_metadata if present, or raise a clear ImportError.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "pass",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 2
+              }
+            },
+            "mutation": {
+              "verdict": "pass",
+              "metrics": {
+                "mutants": 6,
+                "killed": 6,
+                "survived": 0,
+                "uncovered": 0,
+                "mutation_score": 1.0,
+                "min_required": 0.5,
+                "baseline_test_s": 0.21,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 2
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 2,
+                "killed": 1,
+                "survived": 1,
+                "uncovered": 0,
+                "mutation_score": 0.5,
+                "min_required": 0.5,
+                "baseline_test_s": 0.17,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "django/django",
+      "sha": "3cd3bebe8921e14b911b36b2a1cbceef8fb6294e",
+      "subject": "Fixed #30300 -- Allowed migrations to be loaded from directories without __init__.py file.",
+      "spec": "Implement a simple migration loader that scans a given directory path for migration files and classifies an app as 'migrated' or 'unmigrated'. A migration directory may or may not be a Python package (i.e., it may be missing an __init__.py file); both cases must be treated as valid sources of migrations. Consider as migration files only regular files in that directory whose names match a simple rule (e.g., not starting with '_' or '~' and ending with '.py'). If no such migration files are found, the app should be considered 'unmigrated' unless a flag ignore_no_migrations is set, in which case it should be considered 'migrated'. Provide a way to query the list of discovered migration names and which app labels are migrated or unmigrated.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 22,
+                "killed": 16,
+                "survived": 6,
+                "uncovered": 5,
+                "mutation_score": 0.727,
+                "min_required": 0.5,
+                "baseline_test_s": 0.22,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 8,
+                "killed": 6,
+                "survived": 2,
+                "uncovered": 1,
+                "mutation_score": 0.75,
+                "min_required": 0.5,
+                "baseline_test_s": 0.18,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "django/django",
+      "sha": "8d6e1afe0be0570253a508f43e2ef89ae640984e",
+      "subject": "Fixed #23650 -- Prevented migrate from calling checks 3 times",
+      "spec": "Implement a simple command runner that can optionally perform a system check before executing a main command, and that may optionally perform an extra preparatory sub-command (e.g., a 'flush') when a flag is enabled. The system check must be called at most once per overall run, even if both the main command and the preparatory sub-command would normally trigger checks. Model this with a BaseCommand class exposing a check() method and a run() method, and a higher-level migrate() function that may call an internal 'flush' command when test_flush=True. The subtle requirement is that with test_flush=True, migrate() must not cause check() to be executed more than once overall.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 11,
+                "killed": 7,
+                "survived": 4,
+                "uncovered": 4,
+                "mutation_score": 0.636,
+                "min_required": 0.5,
+                "baseline_test_s": 0.34,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "block",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "block",
+              "metrics": {
+                "mutants": 7,
+                "killed": 0,
+                "survived": 7,
+                "uncovered": 2,
+                "mutation_score": 0.0,
+                "min_required": 0.5,
+                "baseline_test_s": 0.19,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "django/django",
+      "sha": "c5ebfda00226e3695cadbc13ea9ce4c5951d3ed0",
+      "subject": "Fixed #27001 -- Fixed a query count regression in ModelChoiceField with RadioSelect.",
+      "spec": "Implement a small form/choice rendering helper that simulates a lazily-evaluated iterable of choice-input widgets. The iterable wraps an underlying `choices` iterable that may be expensive to iterate (e.g., would represent DB queries), and each access must not cause repeated iteration over `choices`. Originally, `__getitem__` directly converted `choices` to a list on each call, increasing the effective number of underlying iterations; instead, define `__iter__` to yield input objects and make `__getitem__` index into the iterated results so that `choices` is only iterated once per full traversal. The subtle condition is that iterating with a `for` loop over the renderer (which calls `__iter__`) must be efficient and must not repeatedly realize `choices` or re-trigger expensive work, while `__getitem__` should still behave like normal indexing and propagate `IndexError`.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 30,
+                "killed": 21,
+                "survived": 9,
+                "uncovered": 0,
+                "mutation_score": 0.7,
+                "min_required": 0.5,
+                "baseline_test_s": 0.21,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 10,
+                "killed": 7,
+                "survived": 3,
+                "uncovered": 0,
+                "mutation_score": 0.7,
+                "min_required": 0.5,
+                "baseline_test_s": 0.19,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "django/django",
+      "sha": "fa3cf006b2912708e8c0b294cea91933cf35781f",
+      "subject": "Fixed #23078 -- Regression in update_contenttypes() interactivity.",
+      "spec": "Implement a function that, given a list of existing items and a list of current valid items, detects which existing items are now stale and either deletes them or leaves them, depending on an `interactive` flag. In interactive mode (the default), the function must print a list of stale items, prompt the user on stdin with a yes/no question, and on a yes response actually remove those items and print that they were deleted. In non-interactive mode, the function must not delete anything, must still report that stale items remain, and must not prompt for input. Ensure that the behavior depends only on the `interactive` argument, not on any leftover values in `**kwargs` or similar indirect sources.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 7,
+                "killed": 5,
+                "survived": 2,
+                "uncovered": 1,
+                "mutation_score": 0.714,
+                "min_required": 0.5,
+                "baseline_test_s": 0.2,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 0
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 5,
+                "killed": 4,
+                "survived": 1,
+                "uncovered": 1,
+                "mutation_score": 0.8,
+                "min_required": 0.5,
+                "baseline_test_s": 0.2,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "e918504b0aee19f3a7e353b236a48610011e6755",
+      "subject": "Fix GraphQL integration swallowing responses (#2286)",
+      "spec": "Implement a small HTTP response wrapper that allows you to non-destructively inspect and parse the response body while keeping the original response API intact. The wrapper should take an existing response-like object (with .read() and .fp attributes that behave like a file) and a function that consumes the body (e.g., to parse JSON) by calling .read(). After the function runs, code using the wrapped response must still be able to call .read() again and get the full original body, and code that directly uses the .fp file-like attribute must also see the same data. The subtle requirement is that you must buffer the body once, then replace both .read and .fp so that downstream code (e.g., a JSON parser that reads from .fp) sees a fresh, reusable in-memory stream instead of an already-consumed one.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 0
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "sha": "2357c92d87d96d519c8470776e76180e71663d0b",
+      "subject": "Refactor handling of tick and ticklabel visiblity in Axis.clear()",
+      "spec": "Implement a small Axis-like configuration helper that manages two dictionaries of tick parameters: one for major ticks and one for minor ticks. Each dict can hold arbitrary key/value pairs, but the keys 'tick1On', 'tick2On', 'label1On', and 'label2On' are treated as visibility flags. Provide methods to (1) set arbitrary parameters, (2) reset major or minor tick parameters back to defaults (which must at least ensure a 'gridOn' key is set based on a provided config), and (3) clear the whole axis, which should reset both major and minor tick parameters while preserving whatever visibility flags were set before the clear. The key subtlety: resetting for a clear must not discard existing visibility settings on ticks and labels, but other keys must be removed.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "block",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "block",
+              "metrics": {
+                "mutants": 11,
+                "killed": 3,
+                "survived": 8,
+                "uncovered": 6,
+                "mutation_score": 0.273,
+                "min_required": 0.5,
+                "baseline_test_s": 0.21,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 8,
+                "killed": 4,
+                "survived": 4,
+                "uncovered": 2,
+                "mutation_score": 0.5,
+                "min_required": 0.5,
+                "baseline_test_s": 0.18,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "numpy/numpy",
+      "sha": "a53b45f66255ee378a29d3a255a1de52fb1af522",
+      "subject": "STY: Apply ruff/refurb rule FURB113",
+      "spec": "Write a small Python module that provides utility functions for efficiently extending lists from existing data. One function should take a base name string and three lists of C-like identifiers, and return a list of three C declaration strings; implement it in a way that adds all three lines to the result in one operation (e.g., a single extend with a tuple) instead of multiple appends. Another function should, given a mapping from type-code categories to strings, build and return a list of type specifiers, ensuring that several extra specifiers (including both plain strings and nested list structures) are added via a single extend call rather than multiple appends. A third function should simulate building a sequence of Gaussian samples from intermediate values: it repeatedly computes a scale factor and must add two new values to the output list per iteration using a single extend call, then truncate to the requested length before returning.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "pass",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 0
+              }
+            },
+            "mutation": {
+              "verdict": "pass",
+              "metrics": {
+                "mutants": 2,
+                "killed": 2,
+                "survived": 0,
+                "uncovered": 0,
+                "mutation_score": 1.0,
+                "min_required": 0.5,
+                "baseline_test_s": 0.18,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "pallets/jinja",
+      "sha": "7b32f8f8d1c2970a83ce8565a6e0d581a4187ded",
+      "subject": "Fixed a Python 3 regression.",
+      "spec": "Implement a small logging wrapper class factory around a given base class that proxies selected special methods and logs whenever those methods are used. The factory should accept a logger function (callable taking a single message string) and a base class. It must create and return a new class that subclasses the base and overrides truthiness and iteration, calling the base implementation first, then invoking the logger. The class must work correctly on both Python 2 and Python 3: on Python 2, override __nonzero__ and __unicode__; on Python 3, override __bool__; in both cases, make sure truthiness behaves like the base class but still triggers logging, and that __bool__ is correctly aliased to __nonzero__ on Python 3 when needed.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "block",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 0
+              }
+            },
+            "mutation": {
+              "verdict": "block",
+              "metrics": {
+                "mutants": 3,
+                "killed": 1,
+                "survived": 2,
+                "uncovered": 0,
+                "mutation_score": 0.333,
+                "min_required": 0.5,
+                "baseline_test_s": 0.19,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "eb7b4255d69c935103e044b32b3a046c288d96e6",
+      "subject": "Add support for non-ascii filenames when uploading files using multipart/form-data (#1175)",
+      "spec": "Implement a small multipart/form-data header parser that extracts the field name and original filename from a single Content-Disposition header line. It must correctly parse both standard 'filename=' parameters and RFC 2231-style 'filename*=' parameters. The logic should prefer the standard 'filename' parameter when present, but otherwise fall back to 'filename*'. You do not need to implement full RFC 2231 decoding; just treat the value of 'filename*' as a raw string, but ensure it's returned even if it contains non-ASCII characters. The parser should ignore case of parameter names and gracefully handle missing parameters.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "3140ef1522d4cb93b5774c9cb97a58e92afefdfd",
+      "subject": "BUG: fix regression in Styler.export/use (#40334)",
+      "spec": "Implement a simple styling pipeline object that stores a list of deferred styling operations and a context dictionary produced when those operations are computed. The object should support chaining of operations (e.g., via methods that just record a callable and its arguments), a compute() method that executes all recorded operations in order and populates the context, and an export()/use() pair where export() returns a serializable description of the current pipeline and use() applies that description to another instance. Crucially, compute() must *not* clear the recorded operations so that export() after compute() still reflects all operations, but compute() must clear the internal context so that repeated compute() calls do not accumulate duplicate context/state from previous runs. Also provide a clear() method that resets both the context and the queued operations to an empty state.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "pass",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "skip",
+              "metrics": {
+                "mutants": 0,
+                "killed": 0,
+                "survived": 0,
+                "uncovered": 0,
+                "mutation_score": 1.0,
+                "min_required": 0.5,
+                "baseline_test_s": 0.18,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "88bcd2d1e066958b8bd7210e81771538cc3bdd4c",
+      "subject": "Fix regression for setitem not aligning rhs with boolean indexer (#39944)",
+      "spec": "Implement a minimal 2D table class that supports integer row indices, named columns, and boolean-mask-based assignment. The class should allow selecting rows with a boolean list/array mask and assigning either:\n1) a scalar, or\n2) another table of the same shape as the selected rows.\nWhen assigning a table using a boolean mask, the right-hand-side table must be *aligned to the selected rows* by their original row order, not simply written positionally. In particular, if the RHS table is produced by reindexing/reordering those selected rows (e.g. sorted by a column) and then assigned back using the same boolean mask, the overall table must remain unchanged. Implement enough of indexing/assignment to demonstrate this behavior and handle mismatched dimensions with a clear error.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 19,
+                "killed": 17,
+                "survived": 2,
+                "uncovered": 0,
+                "mutation_score": 0.895,
+                "min_required": 0.5,
+                "baseline_test_s": 0.2,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 11,
+                "killed": 10,
+                "survived": 1,
+                "uncovered": 1,
+                "mutation_score": 0.909,
+                "min_required": 0.5,
+                "baseline_test_s": 0.2,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "d2f376bc99cf1bad9308fbe0dcdf78df071bc55c",
+      "subject": "REGR: Fix regression RecursionError when replacing numeric scalar with None (#48234)",
+      "spec": "Implement a minimal 1D numeric container with a replace method that supports replacing specific values, including NaN, and can change its storage type. The container initially stores only numeric values (ints/floats) in a list and tracks its dtype as either 'numeric' or 'object'. Implement `replace(to_replace, value)` so that it returns a new container where all occurrences of `to_replace` are replaced by `value`, treating NaN as equal only to NaN. If `value` is None and the current dtype is numeric, the container must first be converted to 'object' dtype (i.e., allow arbitrary Python objects) before performing the replacement, avoiding any recursion or re-entry issues in the implementation. Also support a dict form `replace(mapping_dict)` that replaces each key with its corresponding value, with the same rule that any replacement to None on a numeric container first forces it to 'object' dtype.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "pass",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "pass",
+              "metrics": {
+                "mutants": 22,
+                "killed": 22,
+                "survived": 0,
+                "uncovered": 0,
+                "mutation_score": 1.0,
+                "min_required": 0.5,
+                "baseline_test_s": 0.35,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 0
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "34af72c87d79bd8852e8564c050dd7711c6a08d6",
+      "subject": "Restrict URL preparation to HTTP/HTTPS",
+      "spec": "Implement a function that \"prepares\" a URL string for HTTP requests. The function should strip leading whitespace and then either return the URL unchanged or raise an error for clearly invalid HTTP(S) URLs. Crucially, URL processing (such as parsing or validation) must only be applied to true HTTP or HTTPS URLs, i.e., strings whose lowercase form starts with 'http://' or 'https://'. Any other scheme that contains a colon (e.g., 'mailto:', 'data:', 'http+unix://') must be passed through unchanged without attempting HTTP(S)-style parsing or validation. Demonstrate behavior with tests that ensure passthrough for non-HTTP(S) schemes and error raising for malformed HTTP(S) URLs.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 8,
+                "killed": 5,
+                "survived": 3,
+                "uncovered": 0,
+                "mutation_score": 0.625,
+                "min_required": 0.5,
+                "baseline_test_s": 0.23,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "cfd6e25749dd17c6b511043a6720b672f74029ed",
+      "subject": "fix failing test \"test_prepare_unicode_url\"",
+      "spec": "Implement a small request-preparation helper class that stores event hooks. The class should have a method `register_hook(event, func_or_list)` that records hooks per event name, and a method `prepare_hooks(hooks)` that takes a mapping from event names to hook(s) and registers them. The subtle requirement: `prepare_hooks` must safely handle being passed `None` (doing nothing, not raising), but when given a dict-like object, it should iterate its keys and register each corresponding hook. Include basic behavior to retrieve the registered hooks to verify they were stored correctly.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "pass",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "pass",
+              "metrics": {
+                "mutants": 2,
+                "killed": 2,
+                "survived": 0,
+                "uncovered": 0,
+                "mutation_score": 1.0,
+                "min_required": 0.5,
+                "baseline_test_s": 0.36,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "pass",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "pass",
+              "metrics": {
+                "mutants": 2,
+                "killed": 2,
+                "survived": 0,
+                "uncovered": 0,
+                "mutation_score": 1.0,
+                "min_required": 0.5,
+                "baseline_test_s": 0.27,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "1471897b84b43c467c753b5edebe636f835afc6a",
+      "subject": "Improve check for svn version string",
+      "spec": "Write a function that, given the full stdout text from running `svn --version`, extracts the Subversion version as a 3-tuple of integers `(major, minor, patch)` or `(major, minor)` if there is no patch component. The version line has the form `svn, version X.Y.Z (rNNN...)` or `svn, version X.Y (rNNN...)`, but the output may contain arbitrary warning or informational lines *before* or *after* this line, and there may even be multiple `svn, version ...` lines; you must use only the first matching line that contains the version prefix anywhere in the line (not necessarily on the first line of the output). If the matched version string contains non-numeric characters in the numeric segments (e.g. `1.9.7a1`), return an empty tuple to signal an unparseable version. If no suitable `svn, version` line is found, also return an empty tuple.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 11,
+                "killed": 10,
+                "survived": 1,
+                "uncovered": 0,
+                "mutation_score": 0.909,
+                "min_required": 0.5,
+                "baseline_test_s": 0.24,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "generation error: Invalid control character at: line 1 column 20 (char 19)"
+        }
+      }
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "e8b57e2e45967696559c1a4b197820edff4aa9c1",
+      "subject": "Fixed small regression introduced in 3a470ce67a51.",
+      "spec": "Implement a small uninstall helper that checks whether a distribution can be uninstalled from the current environment and logs an explanatory message if not. The helper should reject uninstalling if the distribution is not installed in the current environment prefix (sys.prefix) and log a message of the form \"Not uninstalling <project_name> at <normalized_path>, outside environment <sys.prefix>\". The subtlety is that the logged path must be a normalized filesystem path derived from the distribution's actual location, not from a potentially stale or separately stored location attribute. Include a simple path normalization utility that resolves things like redundant separators and up-level references.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 4,
+                "killed": 3,
+                "survived": 1,
+                "uncovered": 1,
+                "mutation_score": 0.75,
+                "min_required": 0.5,
+                "baseline_test_s": 0.22,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 12,
+                "killed": 7,
+                "survived": 5,
+                "uncovered": 3,
+                "mutation_score": 0.583,
+                "min_required": 0.5,
+                "baseline_test_s": 0.23,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "710446420c0bb98f0761724ec865a894820bb610",
+      "subject": "Adjust enum reprs for Python 3.10",
+      "spec": "Implement two small utilities that demonstrate how the string representation of Enum values differs across Python versions, and use that difference in behavior in tests. First, write a function `make_enum_id(enum_members)` that takes a sequence of Enum members and returns an identifier string based on joining their human-readable names with dashes; the expected output should change depending on whether Python is <3.10 (use 'EnumClass.member' for each) or >=3.10 (use just 'member'). Second, implement a `RunResult` class with attributes `ret`, `stdout_lines`, `stderr_lines`, and `duration`, where `ret` may be either an integer or an Enum member from an `ExitCode` Enum; its `__repr__` must include either the raw Enum name (e.g. 'TESTS_FAILED') on Python >=3.10 or the qualified name (e.g. 'ExitCode.TESTS_FAILED') on older versions, while for integer codes it should show the numeric value.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 0
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "python-pillow/Pillow",
+      "sha": "4f9b2dbe69a8bcd37f1e8759864883acb4449bce",
+      "subject": "Fix pypy 2.4 regression, #952",
+      "spec": "Implement a small file wrapper class around a binary file-like object that sometimes needs to duplicate the underlying OS file descriptor using os.dup. The wrapper should provide a method open_duplicate_fd() that (a) checks whether the underlying object has fileno(), (b) if so, flushes the file object before duplicating its OS-level file descriptor with os.dup, and (c) returns the duplicated integer fd or None if duplication is not possible (e.g., fileno raises an IOError). The key subtlety is that flush() must be called on the file object *before* calling os.dup(fileno()) to avoid inconsistencies or errors on some runtimes that buffer writes aggressively. Include a simple read() passthrough method so the wrapper is usable like a normal file object.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 9,
+                "killed": 5,
+                "survived": 4,
+                "uncovered": 1,
+                "mutation_score": 0.556,
+                "min_required": 0.5,
+                "baseline_test_s": 0.22,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 2,
+                "killed": 1,
+                "survived": 1,
+                "uncovered": 1,
+                "mutation_score": 0.5,
+                "min_required": 0.5,
+                "baseline_test_s": 0.42,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "1bd9c1df19f54087156927ef533230b80495903f",
+      "subject": "FIX GridSearchCV regression in 1.5 with parameter grid with heterogeneous parameter values (#29078)",
+      "spec": "Implement a small grid-search utility that runs over all combinations of parameters and records the tried parameter values in a results dictionary. For each parameter key, you must build a 1D numpy-like array (you may use Python lists) for all candidates and decide its dtype using numpy.result_type on all non-None values. When numpy.result_type raises either TypeError or ValueError for a parameter (e.g. because values are heterogeneous like None, dicts, lists, and strings), you must fall back to treating that parameter as dtype=object and preserve all raw values. Include a test function that builds a meta-estimator with four parameters whose values cause both TypeError and ValueError in result_type, runs the grid-search, and checks that all corresponding result arrays are treated as object-typed and contain the original values.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "block",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "block",
+              "metrics": {
+                "mutants": 5,
+                "killed": 0,
+                "survived": 5,
+                "uncovered": 0,
+                "mutation_score": 0.0,
+                "min_required": 0.5,
+                "baseline_test_s": 0.3,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "74e23aab06d2456401470c020034142e766b10b4",
+      "subject": "DOC Fix wording in plot quantile regression example. (#26425)",
+      "spec": "Write a small text-utility module that takes a block of Python source code as a string and returns a corrected version where specific wording mistakes in comments are fixed. In particular, it must replace the phrase 'very view data points' with 'very few data points' when it appears in a comment, and change the phrase 'evaluation but looking at the test error obtained by' to 'evaluation by looking at the test error obtained by'. The function must not alter any non-matching text, code, or comment structure beyond these exact phrase substitutions.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 0
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "pass",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "pass",
+              "metrics": {
+                "mutants": 1,
+                "killed": 1,
+                "survived": 0,
+                "uncovered": 0,
+                "mutation_score": 1.0,
+                "min_required": 0.5,
+                "baseline_test_s": 0.25,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "bef9d1803d1f243e4d3f9e845fac356a4fc555a8",
+      "subject": "Fix `LinearRegression`'s numerical stability on rank deficient data by setting the `cond` parameter in the call to `scipy.linalg.lstsq` (#30040)",
+      "spec": "Implement a small linear regression module that solves least-squares problems using an SVD-based solver with a configurable numerical conditioning cutoff. The solver should compute coefficients and return the effective rank and singular values of the design matrix. For dense input, define the cutoff for small singular values as `cond = max(X.shape) * eps`, where `eps` is machine epsilon for the data type, and ignore (treat as zero) any singular values smaller than `s_max * cond` when forming the pseudo-inverse. Demonstrate via tests that, on rank-deficient data, fitting with repeated samples versus fitting once with proportional sample weights produces numerically equivalent coefficients and intercept, and that this equivalence can fail if the `cond` cutoff is not applied.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 2
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 22,
+                "killed": 15,
+                "survived": 7,
+                "uncovered": 3,
+                "mutation_score": 0.682,
+                "min_required": 0.5,
+                "baseline_test_s": 2.24,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "fc9d7befe1093b33d0e2084233c8323e7dde8915",
+      "subject": "FIX use random_state in LogisticRegression",
+      "spec": "Implement a minimal logistic regression trainer with a liblinear-like solver that supports an optional `random_state` affecting only the dual optimization path. The training function should accept input data, labels, a boolean `dual` flag, stopping criteria, and `random_state` that can be an int, a random.Random instance, or None. When `dual=True`, the algorithm must perform some randomized operation (e.g., shuffling the sample order during coordinate descent) using a reproducible RNG derived from `random_state`, so that runs with the same `random_state` and data produce identical coefficients, and runs with different seeds typically produce different coefficients. When `dual=False`, `random_state` must be accepted but have no effect on the result. Include a small wrapper class `LogisticRegression` with a `.fit(X, y)` method delegating to this function and storing `coef_`.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "block",
+          "verifiers": {
+            "deps": {
+              "verdict": "block",
+              "metrics": {
+                "new_imports_checked": 2
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 30,
+                "killed": 15,
+                "survived": 15,
+                "uncovered": 1,
+                "mutation_score": 0.5,
+                "min_required": 0.5,
+                "baseline_test_s": 0.22,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "0c4f0f891654a378913c060da38829e81327097a",
+      "subject": "- Fixed a regression from 0.7 where the contextmanager feature of :meth:`.Session.begin_nested` would fail to correctly roll back the transaction when a flush error occurred, instead raising its own exception while leaving the session still pending a rollback.  [ticket:2718]",
+      "spec": "Implement a minimal transaction/context manager system that models nested transactions with three states: ACTIVE, COMMITTED, and DEACTIVE (rolled back). Provide a `Session` that can open a nested transaction with `begin_nested()` as a context manager. If an error occurs inside the context (simulated by a user exception), the nested transaction should roll back and mark itself DEACTIVE, but exiting the context must not raise a *new* error just because the transaction is DEACTIVE, and it must leave the session in a usable state for creating another nested transaction. An internal `_assert_active` helper should enforce that in DEACTIVE state, normal operations raise, except when called from context manager exit, which should be allowed via a `deactive_ok` flag.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "block",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "block",
+              "metrics": {
+                "mutants": 22,
+                "killed": 9,
+                "survived": 13,
+                "uncovered": 9,
+                "mutation_score": 0.409,
+                "min_required": 0.5,
+                "baseline_test_s": 0.21,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 16,
+                "killed": 9,
+                "survived": 7,
+                "uncovered": 6,
+                "mutation_score": 0.562,
+                "min_required": 0.5,
+                "baseline_test_s": 0.23,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "50d283af1a254ef981ac9a2466399b4828de0117",
+      "subject": "Fix regression when reflecting tables in MSSQL",
+      "spec": "Implement a small SQL Server schema reflection helper that inspects a connection to determine if NVARCHAR(MAX) is supported and then reflects column metadata including computed column definitions in a compatible way. The helper should first probe the server by executing a test query that selects a NVARCHAR(MAX) literal and treat any database error as lack of support, falling back to NVARCHAR(4000) casts when reading computed column definitions. It should also build the fully qualified table name for computed columns using simple string concatenation of schema and table name (rather than SQL CONCAT, which may not exist on older servers) and use this to construct a join to a simulated computed-columns metadata source. Expose functions that, given a DB-API connection and a table identifier (optionally with schema), return a list of column descriptors including name, type, default, and the computed definition string (or None).",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 7,
+                "killed": 5,
+                "survived": 2,
+                "uncovered": 0,
+                "mutation_score": 0.714,
+                "min_required": 0.5,
+                "baseline_test_s": 0.32,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "b6428219c663e0eb0bf44817391d7a8fc1c60d43",
+      "subject": "- Fixed a regression in association proxy caused by :ticket:`2810` which caused a user-provided \"getter\" to no longer receive values of ``None`` when fetching scalar values from a target that is non-present.  The check for None introduced by this change is now moved into the default getter, so a user-provided getter will also again receive values of None. re: #2810",
+      "spec": "Implement a small AssociationProxy-like helper for scalar attributes. The helper wraps access from a 'parent' object to a 'target' object and then to a named attribute on that target, optionally using a user-provided getter and setter. For scalar access, when the target object is missing (i.e., is None), the proxy must still call the user-provided getter with None rather than short-circuiting, so the getter can decide how to handle the missing target. However, when no custom getter is provided, the default getter should itself return None when the target is None. Include a minimal demonstration where a mock-like getter records that it was called with None when the target is absent, and with the child object when present, while the default behavior simply returns None for a missing target.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 6,
+                "killed": 5,
+                "survived": 1,
+                "uncovered": 0,
+                "mutation_score": 0.833,
+                "min_required": 0.5,
+                "baseline_test_s": 0.83,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "warn",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "warn",
+              "metrics": {
+                "mutants": 8,
+                "killed": 6,
+                "survived": 2,
+                "uncovered": 0,
+                "mutation_score": 0.75,
+                "min_required": 0.5,
+                "baseline_test_s": 0.37,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "f49c367ef712d080e630ba722f96903922d7de7b",
+      "subject": "- fix a regression from ref #3178, where dialects that don't actually support sane multi rowcount (e.g. pyodbc) would fail on multirow update.  add a test that mocks this breakage into plain dialects",
+      "spec": "Implement a small update engine that applies batched UPDATE operations to an in-memory table while checking the reported affected-row counts, emulating a database dialect that may or may not support reliable rowcount reporting for multi-row statements. The engine receives a list of per-row parameter dictionaries to update, a dialect object exposing `supports_sane_rowcount` and `supports_sane_multi_rowcount`, and a Result-like object whose `rowcount` may behave incorrectly (e.g., return -1) when more than one parameter set is used. If version checking is enabled, the engine must fall back to issuing single-row updates when multi-row rowcount is not reliable; otherwise it may use a multi-row update. After executing, it must raise an error if the total reported affected rows does not match the number of records, but only when rowcount reporting is considered reliable for that case, carefully handling the subtle case where `supports_sane_rowcount` is True but `supports_sane_multi_rowcount` is False. Include tests demonstrating: (1) a single-row update with a broken multi-row rowcount still raising on stale data, and (2) a multi-row update with broken multi-row rowcount proceeding without error when one of several rows is missing.",
+      "families": {
+        "openai/gpt": {
+          "status": "ok",
+          "overall": "error",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "error",
+              "metrics": {}
+            },
+            "tautology": {
+              "verdict": "error",
+              "metrics": {}
+            }
+          }
+        },
+        "google/gemini": {
+          "status": "ok",
+          "overall": "block",
+          "verifiers": {
+            "deps": {
+              "verdict": "pass",
+              "metrics": {
+                "new_imports_checked": 1
+              }
+            },
+            "mutation": {
+              "verdict": "block",
+              "metrics": {
+                "mutants": 24,
+                "killed": 8,
+                "survived": 16,
+                "uncovered": 2,
+                "mutation_score": 0.333,
+                "min_required": 0.5,
+                "baseline_test_s": 0.25,
+                "cov_scoped": true
+              }
+            },
+            "tautology": {
+              "verdict": "pass",
+              "metrics": {
+                "test_files": 1,
+                "old_impl_exit_code": 2
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
