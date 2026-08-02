@@ -1,0 +1,212 @@
+[
+  {
+    "family": "anthropic/claude",
+    "repo": "DDD-Enterprises/dopemux-mvp",
+    "sha": "6645da6cfeb99c30b91a3c01cfd70e17bdbc94bf",
+    "date": "2026-06-06T23:18:42.000-07:00",
+    "subject": "fix(proof-validation): use language:python so pre-commit manages jsonschema dep"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "Luquas95/Live-M",
+    "sha": "360f611b0277ef03b0d94011c1e2616badda9779",
+    "date": "2026-06-18T21:40:44.000+02:00",
+    "subject": "Update Python badge label to language-python format"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "forge-it/agent-skills",
+    "sha": "f46233d09775279c11bf186413a962c800b0e7f2",
+    "date": "2026-07-03T09:35:46.000+03:00",
+    "subject": "chore: add single-language python plan-review prompts"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "Satyam12singh/repolens",
+    "sha": "50dbd2f8a009cd1fa55281741dc0fb2f1147ccfc",
+    "date": "2026-06-14T01:26:12.000+05:30",
+    "subject": "Fix Homebrew formula: add Language::Python::Virtualenv include"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "SynthiaResearch/synthia-action",
+    "sha": "2ab1657a85443b53fccfd0886eb4526a80414784",
+    "date": "2026-07-14T14:34:33.000-07:00",
+    "subject": "v1.2.0: Python agent support (language: python) + warn-only advisory mode"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "foXerw/lang-rehab",
+    "sha": "69317372210514025b300fe6d7498f71bc979677",
+    "date": "2026-08-02T11:16:04.000+08:00",
+    "subject": "feat(python): infrastructure \u2014 track.toml, first lesson, build_cmd optional"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "posalex/homebrew-tap",
+    "sha": "3d48217eb33fa01ca9229f7ba4bb0c8a79b6cbae",
+    "date": "2026-04-15T20:56:52.000+02:00",
+    "subject": "Fix formula: include Language::Python::Virtualenv"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "Kiryuryu/mathlearnlab",
+    "sha": "5b5bf38d4619c500c9378a066a8efc6971fc4547",
+    "date": "2026-07-10T18:21:19.000+08:00",
+    "subject": "Fix: add language-python class to code blocks for pyodide detection"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "linhmtran168/nvim_configs",
+    "sha": "2cbc283b4a9c99c016319ae337e2cbb3ee7fc6f8",
+    "date": "2026-05-08T13:13:18.000+07:00",
+    "subject": "feat(lang): add scripting languages (python, ruby, typescript)"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "Lanthanum89/Portfolio",
+    "sha": "ec09a93195dc34fe8fde4d801c91730675696d57",
+    "date": "2026-07-16T13:16:10.000Z",
+    "subject": "Fix Darts Calculator language: Python, not HTML"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "fey/password-checker",
+    "sha": "8dd652220d0aeec9c145ab3e6e10980a08bab7b9",
+    "date": "2026-06-25T17:11:33.000+05:00",
+    "subject": "Add password generator reference solutions per language (python, js, java, go, php)"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "aallan/vera-bench",
+    "sha": "040539a0e9ba3c291498fe5583707b59ef623d41",
+    "date": "2026-03-30T09:06:13.000+01:00",
+    "subject": "Add --language python example to README Quick start"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "aegro/homebrew-tap",
+    "sha": "da0fb3c0fcfa36ba1cbd54a3f125003b4872f5a1",
+    "date": "2026-03-26T17:08:58.000-03:00",
+    "subject": "fix: restore Language::Python::Virtualenv include"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "Chris-Lehnen-ICT-CONSULTING/Definitie-app-zakelijk",
+    "sha": "c7344df85a85f46f7d2f270259be1b409af9d700",
+    "date": "2026-02-18T13:15:27.000+01:00",
+    "subject": "fix: resolve PyYAML missing in validate-juridische-synoniemen hook (#138)"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "ureca-corp/fastapi-domain-monitor",
+    "sha": "e08568620aaa0db161f5244430203d5e0a4010cb",
+    "date": "2026-03-06T17:46:11.000+09:00",
+    "subject": "fix: add Language::Python::Virtualenv mixin to formula"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "sofa-buffers/arena",
+    "sha": "1ebd9e808e718ff14f1f8643e7e1aafd686f8bbc",
+    "date": "2026-07-03T14:12:22.000Z",
+    "subject": "docs: move Python 'why it's slowest' note to languages/python/README.md"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "PatrickMockridge/Copernicus",
+    "sha": "5dc7354d3a5d69a376989ce3441a30260810c062",
+    "date": "2026-04-08T13:26:54.000+01:00",
+    "subject": "Use set_language(\"python\") for Python syntax highlighting"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "haoziwlh/autoplaylist",
+    "sha": "05457960c334fe1edab776fa747bcddcee6e1663",
+    "date": "2026-04-06T15:40:23.000+08:00",
+    "subject": "Fix Homebrew Formula: add Language::Python::Virtualenv include"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "sachinsinha0607/aiagentic-comp",
+    "sha": "8edbe684ba8f5ff20c2a4a6d5403412949fb847b",
+    "date": "2026-02-18T00:40:28.000+05:30",
+    "subject": "Session 9: Fix language-yaml tag to language-python on handoff code slide"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "DocSunset/sygaldreye",
+    "sha": "2acb8fd863105971380e229ee69dee52594df2b2",
+    "date": "2026-07-04T10:58:48.000-04:00",
+    "subject": "docs: ADR-019 one core many hosts \u2014 machinery language + Python/JS interop"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "parthalon025/claude-onboarding-kit",
+    "sha": "a8be98c3574b4ac9b92c1401aedee87b9cf3aeed",
+    "date": "2026-02-27T21:41:03.000-06:00",
+    "subject": "fix: replace scope tag placeholders with language defaults"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "codeflash-ai/codeflash",
+    "sha": "1f914c58e377f325ab48d09bdb639f3ef609e90d",
+    "date": "2026-03-02T05:44:02.000Z",
+    "subject": "docs: update architecture.md with new Python optimizer files"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "codeflash-ai/codeflash",
+    "sha": "ea14b2f5484a772f17b088970af5a92661dd9291",
+    "date": "2026-02-16T15:59:22.000-05:00",
+    "subject": "Update codeflash/languages/python/context/code_context_extractor.py"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "defl/hokku_epaper",
+    "sha": "31f52d7654f6c7e2fcddaf2b7204628fde04163c",
+    "date": "2026-05-26T21:24:00.000-05:00",
+    "subject": "chore: fix pre-commit hooks and apply ruff format"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "brainupgrade-in/aiagentic-comp",
+    "sha": "8edbe684ba8f5ff20c2a4a6d5403412949fb847b",
+    "date": "2026-02-18T00:40:28.000+05:30",
+    "subject": "Session 9: Fix language-yaml tag to language-python on handoff code slide"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "KRRT7/codeflash",
+    "sha": "1f914c58e377f325ab48d09bdb639f3ef609e90d",
+    "date": "2026-03-02T05:44:02.000Z",
+    "subject": "docs: update architecture.md with new Python optimizer files"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "KRRT7/codeflash",
+    "sha": "ea14b2f5484a772f17b088970af5a92661dd9291",
+    "date": "2026-02-16T15:59:22.000-05:00",
+    "subject": "Update codeflash/languages/python/context/code_context_extractor.py"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "fullsend-ai/fullsend",
+    "sha": "ee6bc30deb742dd0de68bf033da938c7a8109e97",
+    "date": "2026-05-08T17:46:30.000-04:00",
+    "subject": "fix: use language: python to let pre-commit manage pyyaml dep"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "emerleite/d1cli",
+    "sha": "092e9ae43f4701d01529565c7408329e77a5d39f",
+    "date": "2026-04-27T08:59:27.000-03:00",
+    "subject": "Fix Homebrew formula: add Language::Python::Virtualenv include"
+  },
+  {
+    "family": "anthropic/claude",
+    "repo": "gesellix/Bose-SoundTouch",
+    "sha": "6dc0f0d59658f584dcbfdc12b5e2eea316ff8edb",
+    "date": "2026-05-24T15:56:37.000+02:00",
+    "subject": "ci: restore python to CodeQL matrix"
+  }
+]
