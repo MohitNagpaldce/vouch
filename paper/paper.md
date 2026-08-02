@@ -420,6 +420,21 @@ judgment (production agents iterate-and-repair); the standalone-module setting
 removes cross-file complexity; spec distillation by a single family is a
 shared upstream bias; n=30 tasks per family.
 
+### 7.1 AI-authored commits in the wild
+
+To ground the setting, we gated 112 real merged commits bearing AI co-author
+trailers (Claude, Copilot) found via GitHub commit search in Python-labeled
+repositories. Two findings. First, the trailer-visible population skews
+overwhelmingly toward low-stakes personal repositories — 75% not
+pip-installable, 81% touching no Python implementation line — plausibly
+because organizations squash or strip trailers; wild studies built on trailer
+search inherit this bias. Second, executable verification evidence is almost
+absent: 87.5% of these commits touched no test file, and among the 21 that
+changed implementation lines, only 8 had a runnable suite and only 3 yielded a
+measurable mutation score (0.67, 0.14, 0.00). We present this as motivation —
+the evidence vacuum a verification gate must fill — not as a detector
+measurement; the adequacy sample is far too small to support more.
+
 ## 8. Limitations and threats to validity
 
 **Equivalent mutants.** Mutation scores undercount test quality when injected

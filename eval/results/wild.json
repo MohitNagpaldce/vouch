@@ -3600,6 +3600,102 @@
         "openai/gpt"
       ],
       "overall": "block"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "tugrulates/notes",
+      "sha": "c45ce982efedc42136b0c48cacf3f5a828302a01",
+      "date": "2026-03-20T13:05:00.000+01:00",
+      "subject": "Add support for Python 3.14 (#211)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "ok",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "armstrongl/nd",
+      "sha": "2d64c98558a1f45cf205af6f262df51cf5267eed",
+      "date": "2026-04-02T13:36:39.000-05:00",
+      "subject": "ci: adopt pre-commit framework for Markdown linting",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
+    },
+    {
+      "family": "openai/copilot",
+      "repo": "jeffhandley/dotnet-skills",
+      "sha": "6e7adc5e32b0357eae262cbe8924ead1241ab085",
+      "date": "2026-05-13T11:16:45.000+02:00",
+      "subject": "Add extension files for Python, TypeScript, and PowerShell (#617)",
+      "status": "ok",
+      "verifiers": {
+        "deps": {
+          "verdict": "pass",
+          "metrics": {
+            "new_imports_checked": 0
+          },
+          "note": ""
+        },
+        "mutation": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "no changed Python implementation lines to mutate"
+        },
+        "tautology": {
+          "verdict": "skip",
+          "metrics": {},
+          "note": "diff adds/changes no test files"
+        }
+      },
+      "env": "editable install failed",
+      "provenance": [
+        "openai/gpt"
+      ],
+      "overall": "pass"
     }
   ]
 }

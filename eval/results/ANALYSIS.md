@@ -212,6 +212,37 @@ isolates the model's unaided testing judgment; production agents iterate);
 standalone-module setting (no cross-file complexity); spec distillation by one
 family (shared upstream bias); n=30 tasks.
 
+## Run 7 — wild AI-co-authored commits (2026-08-01)
+
+Raw data: `wild-commits.json` (120 commits via GitHub commit search for
+Co-authored-by Claude/Copilot trailers, `language:python`, non-merge,
+non-fork), `wild.json` (112 gated successfully in their real repos).
+
+**What the wild population looks like (finding #1).** Trailer-marked AI
+commits skew heavily toward small personal repositories (dotfiles, notes,
+homebrew taps, course projects): 75% of repos are not pip-installable
+(editable install fails), and **81% of gated commits (91/112) changed no
+Python implementation line at all** (docs/config/scripts in Python-labeled
+repos). Sampling AI authorship via trailers largely captures hobby activity —
+plausibly because organizations strip or squash trailers. Any "state of AI
+code in the wild" claim built on trailer search inherits this bias; we report
+it as a population finding, not a nuisance.
+
+**Verification evidence in the wild (finding #2).** Among gated commits:
+- **87.5% (98/112) touched no test file** (descriptive; run 4 showed this
+  doesn't separate good from bad, but it does describe evidence *absence*).
+- Of the 21 commits that changed Python impl lines, only 8 had a test suite
+  the gate could execute; only 3 yielded measurable mutation scores:
+  **0.67, 0.14, 0.00** (one Claude, two Copilot).
+- Hallucinated/new-dependency flags on 7/112.
+
+Bottom line for the paper: in the wild, executable verification evidence for
+AI-authored changes is *almost nonexistent* — not because tests are weak, but
+because they are absent, and because the AI-visible population is dominated by
+low-stakes repos. Framed as motivation (the evidence vacuum a gate must fill)
+rather than as a detector measurement. n for adequacy claims is 3 — report the
+distributional facts, claim nothing beyond them.
+
 ## Implications for the evaluation design
 
 1. Add an era-matched environment builder (pyenv + dated pip constraints) —
