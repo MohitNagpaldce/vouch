@@ -11,3 +11,4 @@ eval/.clones/
 .coverage
 eval/results/*.log
 eval/results/replay-test.json
+eval/.wild-clones/
