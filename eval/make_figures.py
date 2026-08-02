@@ -42,8 +42,8 @@ def likelihoods(path: str) -> list[int]:
 
 
 def fig1_roc() -> None:
-    bad = likelihoods("eval/results/calib.json")
-    good = likelihoods("eval/results/calib-control.json")
+    bad = likelihoods("eval/results/calib-full.json")
+    good = likelihoods("eval/results/calib-full-control.json")
     ts = sorted({*bad, *good, 0, 101})
     pts = sorted(
         ((sum(x >= t for x in good) / len(good), sum(x >= t for x in bad) / len(bad))
@@ -54,7 +54,7 @@ def fig1_roc() -> None:
     fig, ax = plt.subplots(figsize=(4.2, 3.6))
     ax.plot([0, 1], [0, 1], color="#c3c2b7", lw=0.8, ls="--", zorder=1)
     ax.plot(*zip(*pts), color=BLUE, lw=2, zorder=2,
-            label=f"calibrated GPT-5.1 (AUC {auc:.2f})")
+            label=f"calibrated GPT-5.1, 664/428 (AUC {auc:.2f})")
 
     # adversarial-framing operating points (measured, Section 6)
     ops = [
@@ -68,7 +68,7 @@ def fig1_roc() -> None:
         ax.scatter([fpr], [tpr], s=42, color=color, marker=marker, zorder=3,
                    edgecolors="#fcfcfb", linewidths=1.2)
     offsets = {"Bandit SAST": (6, -2), "GPT-5.1 adversarial": (7, -3),
-               "Gemini adversarial": (7, -8), "union (either flags)": (-4, 9),
+               "Gemini adversarial": (7, -8), "union (either flags)": (-8, -3),
                "intersection (both)": (7, -3)}
     for name, fpr, tpr, color, _ in ops:
         dx, dy = offsets[name]
@@ -80,7 +80,7 @@ def fig1_roc() -> None:
     ax.set_ylabel("sensitivity (known-bad changes)")
     ax.set_xlim(-0.02, 1.02)
     ax.set_ylim(-0.02, 1.02)
-    ax.legend(loc="lower right", fontsize=7.5, frameon=False)
+    ax.legend(loc="upper left", fontsize=7.5, frameon=False)
     ax.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
     fig.savefig(FIG / "roc.pdf")

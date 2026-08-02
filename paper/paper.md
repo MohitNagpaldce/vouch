@@ -22,10 +22,12 @@ adversarial review with enforced author/reviewer independence, dependency
 reality checks, contract conformance, and property probes — behind a
 risk-tiered policy, and emits a **Verification Bill of Materials (VBOM)**: an
 in-toto-style attestation recording which model authored a diff and which
-verification evidence it survived. We evaluate the first four verifiers on a
-mined corpus of 55 ground-truth bad changes (merged-then-reverted and
-regression-introducing commits from eight major Python projects) and a
-39-commit presumed-good control arm. Three findings stand out: (1) 45% of
+verification evidence it survived. We evaluate against a reproducible mined
+corpus of 664 ground-truth bad changes (merged-then-reverted and
+regression-introducing commits from 29 Python projects) with a 428-commit
+presumed-good control arm, on genuinely AI-authored implementations of 30
+distilled tasks, and on 112 wild AI-co-authored commits. Four findings stand
+out: (1) 45% of
 known-bad changes shipped without touching a single test file — but so did 64%
 of known-good ones, so the obvious cheap gate ("require test changes") does
 not discriminate at all; the discriminative form of the signal is
@@ -42,9 +44,14 @@ sensitivity at 54% false-positive rate; GPT-5.1: 51% at 31%) but exhibits a
 striking cross-family structure — false positives are nested across families
 while true positives are complementary — so the two-family union gains nine
 points of sensitivity for free (89%) while requiring cross-family agreement
-fails to reduce false alarms, informing both why execution-grounded verifiers
-must anchor the gate and how review should be ensembled within it. Vouch is
-available as a CLI, GitHub Action, and coding-agent hook.
+fails to reduce false alarms; at full-corpus scale, calibrated review's
+discrimination falls to AUC 0.586 (CI 0.551–0.624), below its own pilot
+estimate — pilot-sized review evaluations overestimate; and (4) on genuinely
+AI-authored code, over a third of one-shot changes ship with test suites that
+fail on their own implementation, only 10–14% pass the gate cleanly, and
+mutation adequacy of AI-written tests is mediocre at near-identical rates
+across model families — the self-verification threat measured directly. Vouch
+is available as a CLI, GitHub Action, and coding-agent hook.
 
 **Keywords:** AI-generated code, mutation testing, test adequacy, code review
 agents, software supply chain, attestation
@@ -315,10 +322,11 @@ restricted to findings on changed lines:
 | **union (either flags)** | **89% (49/55)** | **54% (21/39)** | **0.35** |
 | intersection (both flag) | 42% (23/55) | 31% (12/39) | 0.11 |
 
-![Figure 1: Review discrimination. The calibrated GPT-5.1 ROC (AUC 0.65) with
-every adversarial-framing detector plotted as an operating point: both
-adversarial arms sit essentially on the calibrated curve, the cross-family
-union sits above it, and the intersection adds nothing over
+![Figure 1: Review discrimination. The calibrated GPT-5.1 ROC on the full
+corpus (664 bad / 428 control diffs, AUC 0.59) with the adversarial-framing
+detectors plotted as operating points (measured on the 55/39 pilot subset):
+the adversarial arms sit essentially on the curve, the cross-family union
+above it, and the intersection adds nothing over
 conservative-GPT.](figures/roc.png)
 
 Counting only block-severity findings barely moves the single-reviewer
@@ -347,11 +355,18 @@ verifiers (mutation, tautology) anchoring the gate on ground truth.
 
 Re-running GPT-5.1 with a calibrated prompt ("0–100 likelihood this change
 introduces a defect") instead of the adversarial framing yields the full
-curve: **AUC 0.647**, with operating points from 69%/48% (threshold ≥20) to
-27%/6% (≥40, best J ≈ 0.21). The adversarial framing's point (51%/31%,
-J 0.20) sits on the same curve: **prompt framing selects the operating point
-but adds no discrimination** — LLM review carries a fixed, modest signal on
-this corpus, and no point on its curve gates alone.
+curve. On the pilot corpus (55/48) AUC is 0.647; scaling to the full corpus —
+664 bad and 428 control diffs across 29 projects — drops it to **AUC 0.586
+(95% bootstrap CI 0.551–0.624)**, with best Youden J of only 0.15 across all
+thresholds. Two conclusions. First, the adversarial framing's operating point
+(51%/31%, J 0.20 on the pilot subset) sits essentially on the calibrated
+curve: **prompt framing selects the operating point but adds no
+discrimination**. Second, the pilot estimate lies outside the full-corpus
+confidence interval: small evaluations over a handful of famous repositories
+*overestimate* review discrimination — a caution that applies a fortiori to
+anecdotal vendor claims. At scale, LLM review of real regression-vs-good
+diffs is barely better than chance at practical operating points, and no
+point on its curve gates alone.
 
 Finding-level validity explains where that signal goes. On the 42 bad diffs
 where the calibrated reviewer produced findings, an LLM judge rated **36 (86%)

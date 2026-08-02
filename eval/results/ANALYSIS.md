@@ -243,6 +243,30 @@ low-stakes repos. Framed as motivation (the evidence vacuum a gate must fill)
 rather than as a detector measurement. n for adequacy claims is 3 — report the
 distributional facts, claim nothing beyond them.
 
+## Run 8 — full-corpus calibrated ROC: review is even weaker at scale (2026-08-02)
+
+Raw data: `calib-full.json` (664 bad, 664/664 ok), `calib-full-control.json`
+(428 controls). GPT-5.1 calibrated prompt, identical to run 5.
+
+**AUC = 0.586 (95% bootstrap CI 0.551–0.624)** — down from 0.647 on the
+55/48 pilot, and the pilot estimate lies *outside* the full-corpus CI. Best
+J across thresholds is now 0.15 (at ≥10: 87%/72%); at ≥40 it is 17%/13%.
+The pilot corpus (8 famous repos, small) was an easier distribution than the
+29-repo scaled corpus. Conclusions:
+
+1. LLM review's discrimination on real regression-vs-good diffs is marginal at
+   scale — barely above chance at practical operating points. The paper's
+   "cannot gate alone" claim gets *stronger* with n.
+2. Honest-scaling behavior is itself a finding: pilot-sized review evaluations
+   (ours included; vendor anecdotes doubly so) overestimate discrimination.
+3. Perception-without-conviction (run 5) remains the mechanism story on the
+   pilot subset; re-judging validity at full scale is future work (needs
+   ~600 more judge calls).
+
+Paper updated: Fig 1 curve now drawn from the full corpus (adversarial
+operating points remain measured on the pilot subset, noted in caption);
+abstract and 6.1 carry the scaled numbers.
+
 ## Implications for the evaluation design
 
 1. Add an era-matched environment builder (pyenv + dated pip constraints) —
