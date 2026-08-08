@@ -38,7 +38,7 @@ point. Yet its errors are structured: across two model families false
 positives are nested while true positives are complementary, so a union
 ensemble gains nine points of sensitivity for free while requiring agreement
 reduces no false alarms. Third, review's failure is calibration rather than
-perception — 86% of its findings on bad diffs name the actual defect, but 61%
+perception — 77% of its findings on bad diffs name the actual defect, yet 69%
 of those score below any usable gating threshold. Together these results
 argue that AI code needs gates anchored in execution-grounded evidence, with
 model review composed in rather than trusted. Vouch ships as a CLI, GitHub
@@ -359,20 +359,27 @@ anecdotal vendor claims. At scale, LLM review of real regression-vs-good
 diffs is barely better than chance at practical operating points, and no
 point on its curve gates alone.
 
-Finding-level validity explains where that signal goes. On the 42 bad diffs
-where the calibrated reviewer produced findings, an LLM judge rated **36 (86%)
-as describing the actual defect** behind the revert or regression — review's
-problem is not hallucinated criticism. But of those 36 correctly-perceived
-defects, **22 (61%) were scored below the best-J gating threshold**: in the
-starkest case the reviewer explicitly described a pydantic revert's defective
-conditional logic in its findings, then rated the change 5/100. The binding
-failure of LLM code review is **calibration, not detection**: the model
-articulates the true defect and underweights it (Figure 2).
+Finding-level validity explains where that signal goes. Across all 432 bad
+diffs on which the calibrated reviewer produced findings, an LLM judge rated
+**332 (77%, 95% CI 73–80%) as describing the actual defect** behind the revert
+or regression — review's problem is not hallucinated criticism. But of those
+332 correctly-named defects, **230 (69%) scored below the best-J gating
+threshold** and half scored below 30: in the starkest case the reviewer
+explicitly described a pydantic revert's defective conditional logic in its
+findings, then rated the change 5/100. The binding failure of LLM code review
+is **calibration, not detection**: the model articulates the true defect and
+underweights it (Figure 2). Notably this pattern strengthened with scale — the
+55-sample pilot showed 86% validity with 61% underweighted — even as the
+scalar-score ROC weakened, which is exactly what one expects if the
+information lives in the findings and the loss happens in the scoring.
 
-![Figure 2: Perception without conviction. Reviewer defect-likelihood scores
-for control commits, bad diffs whose findings missed the actual defect, and
-bad diffs whose findings identified it — 22 of 36 correctly-perceived defects
-score below the best-J gating threshold.](figures/conviction.png) This has two design
+![Figure 2: Perception without conviction. Calibrated reviewer
+defect-likelihood scores across all 664 bad and 428 control diffs, with bad
+diffs split by whether the reviewer's own findings named the defect that
+actually caused the revert. The right column is the paper's central
+observation: 230 of 332 correctly-named defects (69%) score below any usable
+gating threshold, indistinguishable from controls by score
+alone.](figures/conviction.png) This has two design
 consequences. Gate logic should weigh finding *content* — a concrete
 behavioral-change finding on a critical path — rather than scalar risk alone,
 since thresholding discards the model's own correct perceptions. And it

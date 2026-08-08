@@ -105,13 +105,13 @@ def fig2_conviction() -> None:
     import random
     rng = random.Random(7)
 
-    fig, ax = plt.subplots(figsize=(4.2, 3.2))
+    fig, ax = plt.subplots(figsize=(5.4, 3.4))
     cols = [
-        ("control\n(good, n=%d)" % len(good), good, GRAY, "o"),
-        ("bad, no findings\n(n=%d)" % len(groups["silent"]), groups["silent"], GRAY, "o"),
-        ("bad, findings\nincidental (n=%d)" % len(groups["incidental"]),
+        ("control\ngood\nn=%d" % len(good), good, GRAY, "o"),
+        ("bad\nno findings\nn=%d" % len(groups["silent"]), groups["silent"], GRAY, "o"),
+        ("bad\nincidental\nn=%d" % len(groups["incidental"]),
          groups["incidental"], ORANGE, "o"),
-        ("bad, findings name\nthe defect (n=%d)" % len(groups["identifies"]),
+        ("bad\nnames defect\nn=%d" % len(groups["identifies"]),
          groups["identifies"], BLUE, "o"),
     ]
     for i, (label, vals, color, marker) in enumerate(cols):
@@ -120,13 +120,13 @@ def fig2_conviction() -> None:
                    edgecolors="none", zorder=3)
 
     ax.axhline(40, color="#d03b3b", lw=1.2, ls="--", zorder=2)
-    ax.set_xlim(-0.6, 2.45)
-    ax.annotate("best-J gating\nthreshold (40)", (-0.55, 43), fontsize=7.5,
+    ax.set_xlim(-0.55, 3.5)
+    ax.annotate("best-J gating threshold (40)", (-0.5, 42), fontsize=7.5,
                 color="#d03b3b", ha="left", va="bottom")
     below = sum(v < 40 for v in groups["identifies"])
     ax.annotate(
-        f"{below}/{len(groups['identifies'])} correctly-perceived\ndefects scored below the threshold",
-        (0.62, 88), fontsize=7.5, ha="center", color="#0b0b0b",
+        f"{below}/{len(groups['identifies'])} ({below/len(groups['identifies']):.0%}) of correctly-named defects\nscore below the threshold →",
+        (2.95, 110), fontsize=7.5, ha="right", va="top", color="#0b0b0b",
     )
 
     ax.set_xticks(range(len(cols)))

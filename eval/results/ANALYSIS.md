@@ -267,6 +267,27 @@ Paper updated: Fig 1 curve now drawn from the full corpus (adversarial
 operating points remain measured on the pilot subset, noted in caption);
 abstract and 6.1 carry the scaled numbers.
 
+## Run 9 — full-scale validity: perception-without-conviction holds at 10x (2026-08-02)
+
+Raw data: `validity-full.json`. All 432 bad diffs with findings judged
+(232 of the 664 drew no findings at all).
+
+| | pilot (n=42) | full (n=432) |
+|---|---|---|
+| findings name the actual defect | 86% | **77%** (95% CI 73–80%) |
+| of those, scored < 40 (best-J threshold) | 61% | **69%** (230/332) |
+| of those, scored < 30 | — | 51% |
+
+The effect **strengthened** with scale even as the scalar-score ROC weakened
+(AUC 0.647 → 0.586). That combination is the mechanism claim's strongest
+evidence: the discriminating information is present in the reviewer's own
+finding text and is lost in the scalar score. Gate design consequence stands
+and sharpens — act on finding content, not on model-reported risk.
+
+Figure 2 regenerated at full scale with four honest groups (control / bad with
+no findings / bad with incidental findings / bad whose findings name the
+defect), replacing the pilot's conflated two-group split.
+
 ## Implications for the evaluation design
 
 1. Add an era-matched environment builder (pyenv + dated pip constraints) —
