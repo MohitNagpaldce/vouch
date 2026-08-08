@@ -1,0 +1,3900 @@
+{
+  "judge_model": "gpt-5.1",
+  "caveat": "judge family may equal reviewer family; ground truth is subject-line only",
+  "no_findings": 232,
+  "judged": 432,
+  "counts": {
+    "identifies": 332,
+    "incidental": 100
+  },
+  "records": [
+    {
+      "repo": "aio-libs/aiohttp",
+      "sha": "201838603a2982909c09c33922d9d847e251cca6",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The review comment explicitly discusses the new tilde-expansion behavior and its risks, which matches the later fix for a regression in expanding ~/path/to for static file serving."
+    },
+    {
+      "repo": "aio-libs/aiohttp",
+      "sha": "2e40d9515c5e42327912f4d6cb29d48baed9afa1",
+      "kind": "regression_fix",
+      "likelihood": 40,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly flags the semantic change in the `time` parameter from absolute timestamp to elapsed duration, which directly relates to the regression about printing absolute time instead of request elapsed time mentioned in the ground truth."
+    },
+    {
+      "repo": "aio-libs/aiohttp",
+      "sha": "566f3467bff9356efd257cbe817658676eb335f5",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first two findings explicitly discuss behavioral changes around connection upgrades and potential regressions in upgraded-connection handling, matching the later fix for a regression with connection upgrade."
+    },
+    {
+      "repo": "aio-libs/aiohttp",
+      "sha": "84d870cdc45af0d12afa4f5a9dc5dfc2687e6568",
+      "kind": "regression_fix",
+      "likelihood": 45,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings explicitly describe the same regression later fixed, namely that absolute request_start is now passed and elapsed time is recomputed, breaking the expected elapsed-time semantics used by access loggers."
+    },
+    {
+      "repo": "aio-libs/aiohttp",
+      "sha": "e00555d15f0827f267298ff4cd8b61b787a38c04",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly discusses making StreamResponse hashable and its implications, which aligns with the regression later fixed by restoring response hashability."
+    },
+    {
+      "repo": "aio-libs/aiohttp",
+      "sha": "e5c7bfec0906ee11ed2a969c1764ac6a568ab774",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings discuss API design and test coupling around PATH_SEP, while the actual regression was about incorrect regexp escaping in Python 3.7, a different concern from the reviewer\u2019s noted risks."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "265e58f9e82f64e003015fb25823f5a983be8c27",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings directly discuss the semantics and behavior change of wsgi.input_terminated, which is exactly what the reverted commit was about."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "404a7120234e2b1119f4e8a3662c542e4d8700c8",
+      "kind": "merged_then_reverted",
+      "likelihood": 98,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the removal of the Python 2-specific branch and potential breakage of Python 2 compatibility, which aligns with the later revert of the change removing Python 2 compatibility."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "4ac7e55161553503817dfbd01ccc5f263d163e69",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the new Python-version check and its impact on older runtimes, which matches the later reversion of the change that added this requirements check."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "634ccba7c3f9f72f7aedbe4690c18ebdbdf8b2e1",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly calls out the new unconditional os.setgroups([]) supplemental group dropping behavior as problematic, matching the later revert of the change that dropped supplemental groups when lowering privileges."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "9419d660960869438c1a19838e09b63e6dbfbac6",
+      "kind": "merged_then_reverted",
+      "likelihood": 85,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first finding points out a concrete naming bug in the SunOS branch that could break functionality, which is a plausible reason the refactor had to be fully reverted."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "a4f286769858ecfef14080f815adce26c260b2a9",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer discusses subtle fd and closerange behavior, but the ground truth only indicates the overall stdin refactoring was reverted without specifying these particular issues as the cause."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "aa22115cfc9c2b76c818ce231089b01c690052b6",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 7,
+      "verdict": "identifies",
+      "reason": "Multiple findings explicitly note that setting client.settimeout(...) changes socket semantics and can cause unintended client disconnects/timeouts, matching the later full revert of the client-socket timeout change."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "af7f158d224c9925e3315ee216c07adc09c64b61",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly analyzes the new `reuse_port`-based condition that was later fully reverted, indicating they are discussing the same behavioral change that proved problematic."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "b5aab16bf590cacff1825410d9cfaea925de5b24",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly describes the change in configuration load order and its potential behavioral impact, matching the later reversion citing a switch in config load order as the problem."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "bb71bc841f7422333324b95c988ba0677779304d",
+      "kind": "merged_then_reverted",
+      "likelihood": 75,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer flags the unexpected version rollback to 17.6, which matches the later revert message explicitly stating that 17.6 was incorrect."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "c9d01c801967596f66636cfc0c47660339d32631",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the semantic change from using the full peer_addr tuple to only peer_addr[0], which aligns with the later revert titled 'Revert \"get address from tuple\"' indicating that this change to address handling was the actual defect."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "c9fcb25f51db9ae67f9585c93924e5af8b8bb8b8",
+      "kind": "merged_then_reverted",
+      "likelihood": 85,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings point out concrete functional bugs and behavior changes introduced by the GUNICORN_INHERIT_FDS support, which is the feature explicitly reverted in the ground truth commit."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "da637dfd13b520fc190b86967dfecc06bf97a2b4",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The finding about changing the worker\u2019s parent-check from `self.ppid != os.getppid()` to `is_process_running(self.ppid)` plausibly describes the bug that led to reverting the supposed fix for issue #348, since it changes the core worker-lifecycle behavior that the fix likely targeted."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "e69e8020539989d1b5d4846f5329843c6150767d",
+      "kind": "merged_then_reverted",
+      "likelihood": 95,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "Several findings explicitly warn that the new getsockname/SockAddr-based family detection is not portable and may regress cross-platform behavior, matching the later full revert of the cross-platform fix."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "eab1256052d7446359fb6f65279f9bebd18fafd4",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly notes that the new test\u2019s expectations are not backed by any implementation change, which matches the later decision to revert the change that only added tests and docs."
+    },
+    {
+      "repo": "benoitc/gunicorn",
+      "sha": "fd6c712dd432f6cbbadd53bb59e7c5ce7b07e0cb",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly questions the correctness of changing gevent WSGIServer shutdown from kill() to close(), which aligns with the later full revert of the attempted 'fix gevent graceful timeout' behavior."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "0fa4db8889325fd774f7e89ebb219a87fc1d8cfb",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly point out that the change likely breaks Sentinel+TLS support, which matches the later revert of the commit that was meant to support Redis Sentinel with SSL."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "11150f6c5ba77adbfa39af3f1c0650dc00b05659",
+      "kind": "regression_fix",
+      "likelihood": 70,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly points out incorrect use of a different variable (`daemon` vs the actual context), which aligns with the regression that `context` was not always defined and thus mishandled unless detach was true."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "18a0963ed36f87b8fb884ad27cfc2b7f1ca9f53c",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding highlights a potential TypeError risk introduced by the new SSL/Sentinel logic in redis backend configuration, which plausibly relates to why the Sentinel-with-SSL support was later reverted."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "1901ea8594185c015d1518d89f3b90180275c0b9",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly predicts that changing iteration from entry_args.args to entry_args would break callers still passing an entry-like object, which would surface as an AttributeError and matches the later regression fix."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "1c363876147325a196c474e757e355c451a0cdff",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the changed EagerResult constructor and new name argument as a backward-incompatible change that could break existing callers, which aligns with the later reversion of the change that added name handling for eager tasks."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "22adf673e9f6e920ddf559b57bd18baf186b692e",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly notes a behavioral regression in how heartbeat values are interpreted, which directly aligns with the later reversion of the change to how broker heartbeat configuration is applied."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "31e8fb24a096fa8a769c1dc090824d1fbe7a0855",
+      "kind": "regression_fix",
+      "likelihood": 55,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly points out that the new error handler assumes the task key exists in the route map, which would break routing for queues (a regression later described as routes with queue name values not working)."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "3c1632f66e0d4ff17f5b85ac7fda5ba15c2406c1",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The reviewer\u2019s findings concern documentation grammar and typos, while the actual defect leading to revert was about deprecating Redis as a broker, a separate functional/behavioral issue."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "4d101943c80792d1e898b240c8111837b079c34e",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly critique the global SIGTERM handler change in BaseTask, which matches the reverted change that added SIGTERM handling to tasks."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "51b28461d0d8b2fdf7db8a7cd2368ba11222bb6d",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s concerns about adding and serializing the new `children` column directly relate to the reverted change whose purpose was to store children in the database backend."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "8d02dbb686ddcd7e01bfe606e0758e74b0b07e39",
+      "kind": "merged_then_reverted",
+      "likelihood": 85,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the behavioral risk of flipping the default for `acks_on_failure_or_timeout`, which is exactly the change that was later reverted."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "94296014ddbf7a1e5c891f6840c0e01d3c942837",
+      "kind": "regression_fix",
+      "likelihood": 85,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s comments about removing the mutex lock and changing the get()/timeout behavior under rate limits directly relate to potential performance and timing regressions, which aligns with the later fix for a rate limit performance regression."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "9a23efd6d20faecf27c711ece68b0b4602075da0",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer flags a behavioral change in return value semantics, while the actual regression was that get_pickleable_exception failed to handle generic Exception instances at all, which is a different issue."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "9e457c0394689acdeb7f856488d3f2a9d0f4723b",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s findings about incorrect exception-type handling and behavior/API changes around serialized exceptions plausibly correspond to the regression that led to reverting the change about respecting exception types with serializers."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "a9dc166a847e5546537754c236105771af009150",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly points out that removing the SIGTERM handler changes and breaks the intended graceful SIGTERM handling behavior, which is exactly why the change was later reverted."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "b89ed2f338a5810ee785c3fd20c0fe057d3d4612",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer notes potential semantic and performance impacts but does not identify any concrete regression matching the unspecified issue later fixed by the follow-up commit."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "ccf65f80d75accbbdec7b1cf99c3d9475eef3e5a",
+      "kind": "merged_then_reverted",
+      "likelihood": 80,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly describe the problematic behavioral change of deserializing the JSON string before storing it in the CouchDB document, which is exactly what the reverted commit did."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "d9b39790d526085b83770ee4de15fb0da14ee2e6",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly calls out the behavioral impact of defaulting queues to exclusive, which matches the later full revert of the change to use exclusive queues for compatibility."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "dfc9b2e12f46ec5c7111ca569b594f0364a1cff1",
+      "kind": "merged_then_reverted",
+      "likelihood": 22,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings raise concrete issues with the Azure Block Blob backend addition (notably _parse_url behavior and CI setup for azurite), which plausibly contributed to the overall decision to revert that backend."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "f79894e0a2c7156fd0ca5e8e3b652b6a46a7e8e7",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings correctly flag that adding a SIGTERM handler in Task.__call__ changes and overrides global signal behavior and can prevent normal termination, which matches the later reverts of the SIGTERM handling change."
+    },
+    {
+      "repo": "celery/celery",
+      "sha": "f7f5bcfceca692d0e78c742a7c09c424f53d915b",
+      "kind": "merged_then_reverted",
+      "likelihood": 22,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s second finding points out a clear runtime error in the new TTL/auto\u2011expiry logic for DynamoDB, which directly relates to the reverted feature 'Add auto expiry for DynamoDB backend (#5805)' and plausibly describes the defect that led to the revert."
+    },
+    {
+      "repo": "django/django",
+      "sha": "125b63ca745bace1e098ed3c7362d59136f68a8b",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly warns that the tightened hostname/domain pattern could cause previously-linkified domains to fail, matching the later-identified regression in urlize for multipart domain names."
+    },
+    {
+      "repo": "django/django",
+      "sha": "145f6c3ed6e8856078e2d04ff2567e9fb4a17930",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly flags that loosening the JSON content-type regex may incorrectly classify malformed content types as JSON, which matches the later fix described as correcting a regression in JSON content-type detection."
+    },
+    {
+      "repo": "django/django",
+      "sha": "157d7f1f1de4705daddebb77f21bd7097a74513d",
+      "kind": "merged_then_reverted",
+      "likelihood": 32,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly highlights a behavioral API change to MigrationLoader.migrations_module that risks breaking existing callers, which is a plausible cause for the feature having to be reverted."
+    },
+    {
+      "repo": "django/django",
+      "sha": "1ec1633cb294d8ce2a65ece6b56c258483596fba",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding directly addresses the behavioral risk introduced by adding BaseAuthConfig and changing auth app configuration, which matches the later need to revert the BaseAuthConfig-based change."
+    },
+    {
+      "repo": "django/django",
+      "sha": "20eb51ce0ddcb8d5fdc772fc2839fefef5b28c2a",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the unconditional tuple(objs) materialization as a new behavioral and performance regression, which plausibly matches the later commit\u2019s description of fixing a small regression introduced by this change."
+    },
+    {
+      "repo": "django/django",
+      "sha": "312fc1af7b8a028611b45ee272652d59ea7bd85a",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The finding about always using the *_r (thread-safe) GEOS function variants and losing the non-thread-safe fallback directly corresponds to the later reversion of the change that removed handling of thread-non-safe GEOS functions."
+    },
+    {
+      "repo": "django/django",
+      "sha": "3187c89d6f8c60ca7e78093d5b37e0709e71cea9",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the changed behavior of FlatValuesListIterable.__iter__ affecting values_list(..., flat=True) with annotate(), which matches the later regression fix described in the ground truth."
+    },
+    {
+      "repo": "django/django",
+      "sha": "32ef48aa562e6aaee9983f5d0f1c60f02fd555fb",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly points out that the error message reports the wrong part of a nested lookup as invalid, which matches the later fix for a regression in related field nested lookup errors."
+    },
+    {
+      "repo": "django/django",
+      "sha": "359be4460e89e325fb2969b1f231c9507d1c116b",
+      "kind": "regression_fix",
+      "likelihood": 90,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings correctly point out that wrapping parameter lists in an extra list layer alters the structure consumed by chain.from_iterable, which would change the shape/count of bound SQL parameters and plausibly cause the reported SQL compiler regression on Oracle."
+    },
+    {
+      "repo": "django/django",
+      "sha": "38eacbde62cd83ffaa64db7719c2c643f69551e0",
+      "kind": "regression_fix",
+      "likelihood": 40,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first two findings specifically warn that the new six.PY2-conditional traceback iteration logic could behave incorrectly on Python 2, matching the later commit that fixed a debug view regression on Python 2."
+    },
+    {
+      "repo": "django/django",
+      "sha": "3cd3bebe8921e14b911b36b2a1cbceef8fb6294e",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings explicitly describe the behavioral change of treating directories without __init__.py as migration packages, which is the same change that was later reverted."
+    },
+    {
+      "repo": "django/django",
+      "sha": "4cffa9a1ffb37d4de7e99a851a9ed87b3c02d229",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags that switching to python3 shebangs can break environments lacking a python3 executable, which matches the later full reversion of the python3 shebang change."
+    },
+    {
+      "repo": "django/django",
+      "sha": "5acf203db2e9562dbe4073bf85d5043ef3121ea9",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly concerns changing the app label used in the auth admin URL, which is exactly what caused the regression in the password change view for custom user models later fixed in the referenced commit."
+    },
+    {
+      "repo": "django/django",
+      "sha": "627c7eb7bf81fe4faac552475fa13f449dc8dd33",
+      "kind": "regression_fix",
+      "likelihood": 30,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly warns that changing QuerySet.iterator() to return an iterable wrapped in iter() could break code expecting an actual iterator, which matches the later regression fix that QuerySet.iterator() must return an iterator."
+    },
+    {
+      "repo": "django/django",
+      "sha": "64e75c47ef8dd3c61b85798c7bb34e48c52ccc96",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings correctly focus on the changed comparison logic for unique_together/index_together options and its behavioral impact, which plausibly caused the infinite migration regression later fixed."
+    },
+    {
+      "repo": "django/django",
+      "sha": "66757fee7e921ad4c35e0b3f80c25e026100b31c",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings about dict_merge\u2019s handling of non-dict values and behavior changes when overriding dict-type settings directly correspond to the reverted feature of allowing overriding part of a dictionary-type setting."
+    },
+    {
+      "repo": "django/django",
+      "sha": "6d302f6396b7531eaa22dc5b544d233334e6fc92",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 6,
+      "verdict": "incidental",
+      "reason": "The findings discuss API changes, caching behavior, and test brittleness, while the actual regression was a pyinotify performance issue that none of the comments clearly identify."
+    },
+    {
+      "repo": "django/django",
+      "sha": "71ebcb85b931f43865df5b322b2cf06d3da23f69",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings directly highlight that the new default-value check can execute user code and mis-handle custom field clean() behavior during system checks, matching the later full revert of the invalid-default-value field check feature."
+    },
+    {
+      "repo": "django/django",
+      "sha": "72f769f494822981db6df9524b92a2d86f8e69fe",
+      "kind": "merged_then_reverted",
+      "likelihood": 23,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first finding points out changed behavior in how falsey non-boolean values are rendered and when the empty_value_display is used, which directly relates to the reverted feature about configuring the admin\u2019s empty change list value."
+    },
+    {
+      "repo": "django/django",
+      "sha": "737d24923ac69bb8b89af1bb2f3f4c4c744349e8",
+      "kind": "merged_then_reverted",
+      "likelihood": 24,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The finding about using the default connection in a helper that ignores multi-database setups plausibly matches the reverted change\u2019s issue of incorrectly handling post_migrate behavior during unapply operations, leading to wrong behavior in some DB configurations."
+    },
+    {
+      "repo": "django/django",
+      "sha": "8b1acc0440418ac8f45ba48e2dfcf5126c83341b",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes potential metadata and schema side effects from changing Value(str) to CharField(max_length=len(value)), while the actual defect was a crash when adding GeneratedField with string Value(), a more specific runtime error not clearly identified in the review comment."
+    },
+    {
+      "repo": "django/django",
+      "sha": "95993a89ce6ca5f5e26b1c22b65c57dcb8c005e9",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the tightened expiry comparison and its backward-incompatible change from the previous N+1 day behavior, which matches the later reversion of the fix about tokens being valid one day longer than configured."
+    },
+    {
+      "repo": "django/django",
+      "sha": "9cd5201abd24ba2632753029ee1957947cdc32f5",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly notes a behavior change affecting which virtual fields (including GenericForeignKey/GenericRelation) are added to _name_map and how they\u2019re looked up, which aligns with the later regression fix involving generic foreign keys in the admin list view."
+    },
+    {
+      "repo": "django/django",
+      "sha": "9d1987d7679165ad3a7c2b713a8a488cc1421905",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The second finding explicitly notes the behavioral change to ModelAdmin.formfield_overrides on choice fields, which matches the regression later reverted in the referenced commit."
+    },
+    {
+      "repo": "django/django",
+      "sha": "9f1dbe29c0dbae57ff7950f3f64a0d083177cca8",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes that raising an error on an empty sql_flush result changes flush semantics and breaks valid use cases, matching the later need to revert the crash-prevention change around flushing before migrations."
+    },
+    {
+      "repo": "django/django",
+      "sha": "a4737bf6ae36a5f1cb29f2232f6deeff084fabff",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly warns about processing apps with no models_module and possible breakage, which matches the reverted change about allowing apps without models modules to have migrations."
+    },
+    {
+      "repo": "django/django",
+      "sha": "a52a531a8b34f049fba11c3ee7b010af7534bf90",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings directly describe regressions and backward-incompatible behavioral changes introduced by modifying FieldFile.open(), which aligns with the later full revert of that change."
+    },
+    {
+      "repo": "django/django",
+      "sha": "abcf28a07695a45cb5fb15b81bffc97bea5e0be3",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings describe potential issues with numeric prefix assumptions and missed migrations, but the change was reverted due to incorrectly preventing certain backwards migrations rather than crashes or edge cases in prefix handling."
+    },
+    {
+      "repo": "django/django",
+      "sha": "b43b27bcdf84e816b886d4daf83131949708cecb",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 5,
+      "verdict": "incidental",
+      "reason": "The findings question the correctness of switching destroy functions to GEOSFunc, but the later revert concerns broader lazy-initialization behavior of GIS destroy functions rather than the specific API/signature issues the reviewer raised."
+    },
+    {
+      "repo": "django/django",
+      "sha": "bfb11b95626f39e2f5e18d97d7761c6f93dcc1a9",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags a backward-compatibility risk for third-party/custom form fields relying on Field.get_limit_choices_to, which matches the later fix for a regression in custom form fields."
+    },
+    {
+      "repo": "django/django",
+      "sha": "c2bfd76ec3678cc28fb6fce6be0ae217b46bcd9e",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer comment concerns potential cross-platform test behavior with os.path.normpath in a test file, while the ground truth refers to a functional regression in UserChangeForm, a different concern than the noted testing detail."
+    },
+    {
+      "repo": "django/django",
+      "sha": "cb9c9a7b5879671053c7d2ad6e79943a8814b274",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the new migration-aware behavior changes (e.g., CommandError for migrated apps) and their impact, which aligns with the later decision to revert making the SQL management commands migration aware."
+    },
+    {
+      "repo": "django/django",
+      "sha": "cce47ff65a4dd3786c049ec14ee889e128ca7de9",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings explicitly discuss the behavioral change in how FileResponse/File-like close is monkey-patched and its altered semantics, which matches the later reversion of the change that attempted to close HttpResponse when wsgi.file_wrapper closes the file-like object."
+    },
+    {
+      "repo": "django/django",
+      "sha": "cffa55908271bfbce9069b979ab150cd806c6d59",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings point out potential behavioral and API surface changes, but there is no concrete link shown between these and the unspecified regression later fixed in 4dc4d12e."
+    },
+    {
+      "repo": "django/django",
+      "sha": "da5747f8e460ea2a2d16f124463b3975ccfc0992",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly describes the changed behavior for nonexistent GIS backend features and its potential regression impact, matching the later fix for nonexistent features on GIS backends."
+    },
+    {
+      "repo": "django/django",
+      "sha": "da79ccca1d34f427952cce4555e598a700adb8de",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly points out the behavioral and correctness change in QuerySet.get() due to limiting fetched rows, which matches the later decision to revert the change that made get() fetch a limited number of rows."
+    },
+    {
+      "repo": "django/django",
+      "sha": "e2296e7f0acf9c50868ab997ba565c1f47beb45b",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly notes a subtle behavior change in primary_key special-casing, which plausibly matches the regression in queries on a OneToOneField with to_field and primary_key=True that the later commit corrected."
+    },
+    {
+      "repo": "django/django",
+      "sha": "e291fc4757e952fd4f663d88adca416b016db13e",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding flags the reworked walk_items iterator logic as potentially introducing subtle iteration/skipping bugs, which aligns with the later regression fix in the unordered_list template filter that uses this logic."
+    },
+    {
+      "repo": "django/django",
+      "sha": "e62ea0bb9cbb54c1eef848871fe3eab2bad268dc",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes that moving subquery ordering clearing logic into only the IN lookup changes behavior for other lookup types and may cause subtle regressions, which matches the later reversion of that exact optimization."
+    },
+    {
+      "repo": "django/django",
+      "sha": "e8171daf0cd7f0e070395cb4c850c17fea32f11d",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The second finding explicitly warns that the new get_field() behavior when apps.ready is False could expose missing or incorrect fields, which matches the later regression described as a 'missing fields' issue in admin checks."
+    },
+    {
+      "repo": "django/django",
+      "sha": "ea3a71c2d09f8281d8a50ed20e40e1fb13db5cd9",
+      "kind": "merged_then_reverted",
+      "likelihood": 22,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s concern about the safeguard not triggering for some group_by iterable types plausibly corresponds to the regression that led to reverting the attempted fix for the faulty clearing of the ordering field under certain grouping conditions."
+    },
+    {
+      "repo": "django/django",
+      "sha": "ee596888e1149864e7828f5cf63c0eda395744c3",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly discusses the behavioral change around ManyToMany through models and its impact on ordering, matching the later-identified regression in QuerySet.order_by() with an M2M through model."
+    },
+    {
+      "repo": "django/django",
+      "sha": "f0d05a747f7a099e6c6bc58c42a787546d2212e7",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The reviewer treats the change as behaviorally equivalent with only low risk, while the change was fully reverted for its actual impact rather than the minor stylistic or testing concerns raised."
+    },
+    {
+      "repo": "django/django",
+      "sha": "f36151ed169813f2873e13ca9de616cfa4095321",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 10,
+      "verdict": "incidental",
+      "reason": "The reviewer notes behavioral changes around accepting and ignoring **kwargs, but the revert targeted broader incompatibilities in the forwards-compatibility/deconstructible design rather than the specific issues raised about silent argument handling or added __init__ methods."
+    },
+    {
+      "repo": "django/django",
+      "sha": "fed2877cf1307eb9c3ef36787fe96a51526db17e",
+      "kind": "regression_fix",
+      "likelihood": 15,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a potential behavior change in how get_version() is referenced, but the ground truth gives no indication that this was the actual regression fixed later, so the finding is only tangential."
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "71cbde8ba4cab32dd96ccb91e9db20216587fae9",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings highlight incorrect use of asyncio.Stream APIs and mismatched async semantics in the new compatibility layer, which plausibly correspond to the behavioral problems that led to reverting the change to use Python 3.8 asyncio.Stream."
+    },
+    {
+      "repo": "encode/httpx",
+      "sha": "939f3ce7ce43d11f3a9829dabaa292b3a906b56d",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly points out the behavioral change of always sending a Content-Length header for empty bodies, which matches the later revert of the change that added a content-length header for empty bytestreams."
+    },
+    {
+      "repo": "fastapi/fastapi",
+      "sha": "88d4f2cb1814392f54011b2bbd3fe55c5f2a3278",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The review explicitly flags the behavior change in how form field keys are resolved as a likely subtle breaking change, which aligns with the later commit fixing a form field regression."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "0d301bbeabe441632195efd6c42210e3c32bb72e",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer directly questions the new global urllib3<2.0.0 pin and its implications, which matches the later revert specifically undoing that exact pinning change."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "354d7bb0a0851d75ba211f2386a0493b6994a70b",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "Multiple findings directly question the behavioral changes in moving add_breadcrumb and session functions to Scope\u2014exactly the change that was later fully reverted\u2014so at least one plausibly points to the same defect motivating the revert."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "4acfcb278c1cc9b7036affe4c4c14beeacc8650c",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly highlight incorrect DSN path handling and potential URL/path formatting regressions, matching the later full revert of the DSN path support feature."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "738506c29ac76d0a7ebf0a26b3c992ead8923f10",
+      "kind": "regression_fix",
+      "likelihood": 30,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer flags potential behavioral/compatibility changes around version selection and metadata resolution, while the ground truth indicates a performance regression, which is a different issue."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "b7b5c03ef3263ff62ffe00d6319a4ace508a7a26",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the changed Lambda handler/module path as likely to break imports and handler resolution, which matches the later revert of the handler-name change."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "c1921a4c5df2f2c8bf66baca356c1cbe0440d350",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a potential issue with changing the tox package name, while the actual defect prompting the revert concerned a compromised transitive dependency rather than the slim package\u2019s availability or compatibility."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "c3516db643af20396ea981393431646f1a3ef123",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings directly call out the behavioral changes around when and how the LaunchDarkly client and hooks are initialized and validated, which aligns with the later full revert of the change to move LD hook registration to setup and remove the initialization check."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "c80cad1e6e17790f02b29115013014d3b4bebd3c",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding points out the changed behavior of always patching Celery beat, which is plausibly the kind of behavior regression that led to the entire Celery Beat refactor being reverted."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "d44a02f054372aaad5555cd2e6997f9e47fb7cb0",
+      "kind": "merged_then_reverted",
+      "likelihood": 80,
+      "n_findings": 6,
+      "verdict": "identifies",
+      "reason": "The findings correctly point out that the change breaks support for DSN paths and nested path handling, which matches the ground truth that the change was reverted in the context of re-adding DSN path support."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "da206237473aeb38d911d9cd86f40bd928a2a350",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 7,
+      "verdict": "incidental",
+      "reason": "The findings discuss potential issues with transaction management, exception handling, and API/slot changes, but there is no clear link to the specific regression in streaming response span handling that motivated the later full revert."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "e918504b0aee19f3a7e353b236a48610011e6755",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer\u2019s comments concern HTTPResponse.fp semantics and test robustness in the requests integration, while the actual defect prompting the revert was specific to the GraphQL integration and not described by these findings."
+    },
+    {
+      "repo": "getsentry/sentry-python",
+      "sha": "fe09fd9fe20bcf7d8bfde5c41903dd89a2be56f2",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s comments directly flag behavior changes in how the logging integration and client are retrieved/checked, which plausibly match the functional issues that led to reverting the new scopes API in LoggingIntegration."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "0b2fcf045e9434c6efbbddae07d8b79b779483a5",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the security risk of making the debug toolbar\u2019s AJAX views CSRF-exempt, which matches the later reversion of the change that made those views CSRF exempt."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "0e4b4c0c37ed73ed81aec518d6dfe694a110207f",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings highlight changed semantics of the exported `urls`/`urlpatterns` (generator vs tuple and removal of module-level `urlpatterns`), which plausibly correspond to the incompatible behavior that led to reverting the change made to account for Django\u2019s `include()` changes."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "3bbbae731f1ab98c218dfaf29aed05b69329c4c5",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer\u2019s finding is a speculative runtime concern without clear linkage to the unspecified regression later fixed, so it cannot be confidently identified as the same defect."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "4326cbbec13f44e6d8c757f1d07fd6100596bfb6",
+      "kind": "merged_then_reverted",
+      "likelihood": 60,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer notes general design/robustness concerns with the refactor, but the later full revert of the headers factoring does not specifically indicate that these mutable-default or method-order issues were the actual defect triggering the revert."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "5bd7513845a7dfb8931bedc649a4d84c34ff21d1",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding highlights the new (trace, hidden_count) tuple API that could break existing callers, directly relating to the reverted change about including the number of hidden frames in the stacktrace."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "6ce52b2532afaccca9932b7087533609fd239a9b",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a behavioral change in the default for 'wsgi.multiprocess', but the later revert refers to a general fix for mod_python compatibility, without clear indication that this specific default-change behavior was the reason for the regression."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "75df680f6e0fda6a603e64627a71e187ca117bd6",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a general behavior change risk from importing Command directly, but there is no specific link to the concrete regression later fixed in issue #420."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "7e8a4e195d4b0e3cabf0742b31e087a81712d12f",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer\u2019s comments address potential Python API and mutability issues, while the actual reversion only indicates that the overall factoring of settings data out of SettingsVarsDebugPanel was undesirable, not that these specific concerns caused the revert."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "8ac0bb54a89bfec541b83bb9af6804a37cafd1e4",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly flags that removing the guard expands processing to non-dict context layers and can cause runtime errors or incorrect behavior, which aligns with the later decision to revert the change as removing the guard was harmful."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "ba5af8f6fe7836eef0a0c85dd1e6d7418bc87f75",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s first finding explicitly calls out a behavior change in which key is removed (insertion order vs. sorted order), which is a plausible match for the regression later fixed."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "d05dcbb4aa93b1ce9d097ed8d537f06eb2491f5e",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings describe potential design and behavioral issues, but the revert only indicates that factoring out version data was problematic in some unspecified way, not clearly matching either specific concern raised."
+    },
+    {
+      "repo": "jazzband/django-debug-toolbar",
+      "sha": "edf74beb6e26ed34779dff17240d2fb4c436d451",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 4,
+      "verdict": "incidental",
+      "reason": "The findings focus on potential constructor, state, and import issues, while the revert refers more broadly to an architectural refactor (splitting data collection and panel classes) rather than the specific problems identified."
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "sha": "1363f19b43fcfe1a2283758fb2e86cd514fb69e4",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings explicitly call out that adding ax.transScale may change axline behavior on non-linear scales and risk misplacement of lines, which matches the later regression fix for axline behavior with non-linear scales."
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "sha": "157b0bed5349d0ec56c3d8bfcb12a3c1a5052cf1",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly warns that letting TeX handle newlines and changing newline/metrics behavior could regress multi-line TeX text layout, which matches the later full revert of the newline-handling change."
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "sha": "1ba67be8712222a3ade32b2a13443921fb947e07",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly describes a regression in plt.polar() behavior on subsequent calls, matching the later fix for a polar() regression on second call failure."
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "sha": "a9cff25393b340b609719e54ba16460732ebea83",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly points out that renaming have_units_and_converter to a private method removes a public API and will break external callers, matching the later revert of 'Make have_units_and_converter private'."
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "sha": "ab393269535096b4ee683674ecb63c55e3c297bc",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The reviewer repeatedly flags behavioral changes in style handling and scalar/string treatment introduced by the simplification, which is consistent with the later full revert of that simplification change."
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "sha": "b46ab89ec227e9f7d026a4f60db0ffc632791a03",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the hard requirement for ARC and the -fobjc-arc flag as potentially breaking builds on certain toolchains, which aligns with the later full revert of the ARC migration."
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "sha": "c973552b49d6d6c583a52d1ac838bc0748462666",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly warn that switching baseline detection to a DVI special with a fixed marker may break baseline detection and layout, which aligns with the later decision to revert the change that switched TeX baseline detection to use a DVI special."
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "sha": "d9169cbaff28f0e0d53209125c4f20a7c5600a1c",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a potential behavioral change in comparison semantics, but the revert message ties the rollback to issues with the added axis label test and unit-handling behavior more broadly, not specifically to comparisons with None."
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "sha": "def91868e77ecbc08ec8b82ef69f9f8f403d49a1",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the impact of changing the inheritance diagram output from SVG to PNG, which matches the reverted change about using SVG inheritance diagrams again."
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "sha": "ecfc8297cea78ee53cbdce45abb0e9721415d588",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the behavior change around accepting empty dash lists like (0, ()), which matches the later bugfix 'Fix regression with ls=(0, ())'."
+    },
+    {
+      "repo": "numpy/numpy",
+      "sha": "0f79a3a0921873c3d7a85c7b3d7cf1411b7d2143",
+      "kind": "regression_fix",
+      "likelihood": 27,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly discusses changed memcpy behavior and potential regressions for structured-array copies, matching the later bugfix about a copy performance regression for structured arrays."
+    },
+    {
+      "repo": "numpy/numpy",
+      "sha": "4ac181b2e9133bad11351c7d1b49ca42d912397f",
+      "kind": "merged_then_reverted",
+      "likelihood": 5,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s second comment directly criticizes the added as_ctypes_type examples as fragile and platform-dependent, matching the later decision to revert the commit that added those examples."
+    },
+    {
+      "repo": "numpy/numpy",
+      "sha": "6b8d55e66e532d66e1701ad039b4cda306839b3f",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly flags a semantic behavior change in how masked arrays and their masks are detected in median(), which plausibly corresponds to the bug later fixed by reverting the masked median change."
+    },
+    {
+      "repo": "numpy/numpy",
+      "sha": "8cd6f4ca00b6e0da3833fc267d50067b2ddbc069",
+      "kind": "merged_then_reverted",
+      "likelihood": 45,
+      "n_findings": 10,
+      "verdict": "identifies",
+      "reason": "Multiple findings explicitly critique the new __array_ufunc__ implementation and its argument/dispatch handling, which is the feature that was later fully reverted."
+    },
+    {
+      "repo": "numpy/numpy",
+      "sha": "9240ebacb7fab1cbafbe94c2d60d26d0cde46bca",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The reviewer comments focus on subtle behavioral and validation changes around args.module_name and -h handling, while the actual defect prompting the revert concerned improper handling of .pyf.src files, a different functional area."
+    },
+    {
+      "repo": "numpy/numpy",
+      "sha": "b8c6d09208ecb7f0d83a8b06ab9e15e720f03730",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly notes a behavior change in how reduce results are wrapped in MaskedArray versus ndarray, which is plausibly the same API/behavior regression that led to the later revert of the change."
+    },
+    {
+      "repo": "numpy/numpy",
+      "sha": "bc2b152510a7b7d4cdb65a9e78eb11ec3928f205",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s comments about doctest/formatting problems in the new docstring examples plausibly describe why the new documentation examples were reverted."
+    },
+    {
+      "repo": "numpy/numpy",
+      "sha": "db1a98bf194771a677dbc0c2e06bc47f4a9947a8",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly calls out the behavioral change from using mask=False to mask=nomask and its potential impact, which aligns with the later need to revert the 'nomask in nomask out' change."
+    },
+    {
+      "repo": "numpy/numpy",
+      "sha": "ea557b2c6c681f029cfee1ea3ddf0b6e87f2dab5",
+      "kind": "regression_fix",
+      "likelihood": 15,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly questions the correctness of changing `#cbname#_capi` to `#varname#_cb.capi` and ties it to callback C-API usage, matching the later regression fix about the `--capi-api` flag and callbacks."
+    },
+    {
+      "repo": "numpy/numpy",
+      "sha": "f1b77fae7d74e609d7c25adc814c41df3cea5679",
+      "kind": "merged_then_reverted",
+      "likelihood": 15,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a subtle behavioral dependency in a test, while the revert indicates the whole stylistic refactor (ruff/refurb rule FURB140) was undone broadly, not because of this specific concern."
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "8bc912710774c7b4c84f5d4effd0c764f3e2bbb9",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 7,
+      "verdict": "incidental",
+      "reason": "The ground truth shows a broad merge revert rather than a specific defect fix, so it does not point to any particular issue the reviewer\u2019s findings could be matched against."
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "8e768e7ba68088766ee3e982f9ce8e6792674372",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The finding discusses signature changes and possible introspection issues, while the actual regression concerned behavior on non-Windows systems, which the review comment does not specifically identify."
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "93c6966eb3a575c2b600434d1cc9f4b3aee505ac",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly flags a behavioral change in how EOFError is raised in CliRunner when input is exhausted, which aligns with the later commit\u2019s note about fixing an EOF regression introduced by this change."
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "b625654063f03936c65f33d1f5025376f57f4a06",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings directly highlight changed encoding behavior for echo_via_pager output, which plausibly matches the later regression fix related to echo_via_pager on 3.x."
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "e74508119a1e8ba59bf96a45fa1a149cd292a79d",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes a potential behavioral regression when hidden (non-TTY) progress bars now emit label output, matching the later-identified regression with hidden bars."
+    },
+    {
+      "repo": "pallets/click",
+      "sha": "e798f64ffde20c549e2e0df5834e4194c74adb0a",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The findings explicitly call out regressions caused by replacing prior quoting behavior with shlex.quote, matching the later revert of the change to use shlex.quote for shell arguments."
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "1d4448abe335741c61b3c8c5f99e1607a13f7e3d",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly calls out that using a bare except to catch BaseException may change error handling behavior, which directly relates to the reverted change 'Handle BaseExceptions (#2222)'."
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "2aa26fff04a98f2435e8e3015e92ef6108d3b485",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly notes that removing Blueprint.register_error_handler is a backward-incompatible public API break, matching the later full revert of the change that removed it."
+    },
+    {
+      "repo": "pallets/flask",
+      "sha": "a22d143f96ee3c7d14887e871b34a84683835a3f",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly warns that adding python_requires could break users on excluded Python versions, matching the later decision to revert the python_requires metadata change."
+    },
+    {
+      "repo": "pallets/jinja",
+      "sha": "33aee12a29426987805420a410e13e0470a79cbf",
+      "kind": "merged_then_reverted",
+      "likelihood": 22,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings directly critique the new include_context block-handling logic that was later reverted with the commit titled 'Revert \"Support included blocks override\"', indicating they are about the same defective change."
+    },
+    {
+      "repo": "pallets/jinja",
+      "sha": "4b6077a8c0a0f56bb8dbac37f8f9027130b4091c",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings directly critique the new PackageLoader implementation and its changed behavior and assumptions around loaders and paths, matching the later full revert of the 'PackageLoader doesn\u2019t depend on setuptools' change."
+    },
+    {
+      "repo": "pallets/jinja",
+      "sha": "7b32f8f8d1c2970a83ce8565a6e0d581a4187ded",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The findings discuss potential behavior changes and subclass edge cases but do not clearly identify a specific Python 3-only regression that the later fix refers to."
+    },
+    {
+      "repo": "pallets/jinja",
+      "sha": "d2e0e78afe7c6ae864a20c2cc29e80936cff47af",
+      "kind": "merged_then_reverted",
+      "likelihood": 22,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings directly question the new PackageLoader behavior for namespace packages and its reliance on import_module and loader._path, matching the later full revert of the namespace package support change."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "0cd2da5d5ca681b821de4afcf1da91aba454701a",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly calls out the changed startup ordering between the monitor thread and observer.run(), which matches the reverted change about starting the observer before the monitor."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "1581b8d770b1e685f54f62385528c352f629f6bf",
+      "kind": "merged_then_reverted",
+      "likelihood": 80,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings explicitly predict that the new test expecting bytes from get_machine_id would fail on macOS/CI where machine-id files don\u2019t exist, which matches the later decision to revert the added tests."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "1ed780860e828293ce0770ddeef7450c2eb550ad",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The review explicitly highlights a behavior change in IRI handling (safe characters and percent decoding) that plausibly matches the later regression described as being in IRI handling."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "3298dadc60d3506a0c49efbcb02b12d48be21039",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly flags the change from a bytes to a text regex pattern as potentially problematic with string types, matching the later regression fix related to tbtools under Python 3."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "376da38e4fd681496155423e259130e55fdeff0d",
+      "kind": "regression_fix",
+      "likelihood": 65,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes a backwards-incompatible change to error handling and raising behavior in the server, which aligns with the later commit that fixes a regression in error raising."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "461242154bbfa7bda50af60bc6f11e7bf5eea477",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly points out a Python 3 incompatibility in the debugger code (TypeError from passing a str to hashlib.md5().update), matching the later commit\u2019s fix of a Python 3 regression in the debugger."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "502b780dedd81f337c900f40b4f7fc6204af8322",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly addresses the semantic change introduced to EnvironHeaders in order to handle unicode values, which was later reverted, so it plausibly describes the same defect that motivated the revert."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "5fcc8fdc85fcabca4e5861a6d0d8d9c972f54f44",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly warns that removing the special-case conversion in _SSLContext.wrap_socket could regress other SSL-wrapping code paths, matching the later fix for another regression with SSL wrapping in a different code path."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "8157695591b26f1bbffe37852aa2f54b7de5cbc1",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly calls out a behavioral regression in routing value handling (loss of list-expansion / MultiDict semantics), which plausibly matches the later generic fix for a routing system regression."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "86f6d0bc7c410f70ac290eef018ee48a46563d4b",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a general semantic change in connection handling, but the ground truth only states a vague regression in the development server without enough detail to tie it specifically to that behavior change."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "940baabf298f8b57340651c985bb30c64c2e4ca3",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The second finding explicitly flags that address_string() may still use client_address instead of the proxied REMOTE_ADDR in some code paths, matching the later regression fix about logging the correct client IP behind a reverse proxy."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "b05387384a4d25ef2d51187fef36e4dd4c6db916",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings about performing a real Redis connection attempt at import time and making test behavior depend on Redis availability plausibly match the reason the change to disable Redis tests when no connection was available had to be reverted."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "eb7b4255d69c935103e044b32b3a046c288d96e6",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly warns about improper handling of RFC2231-encoded non-ASCII filenames, which directly matches the reverted change that attempted to add support for non-ASCII filenames in multipart/form-data."
+    },
+    {
+      "repo": "pallets/werkzeug",
+      "sha": "f88e865b3915cfea88b438683b5632554f9b9304",
+      "kind": "regression_fix",
+      "likelihood": 55,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings describe potential behavioral and compatibility issues in MapAdapter.build, but the ground truth only notes a generic regression fix from #660 without indicating it matches those specific concerns."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "009d0ad155f0a75669a333513c015436325db56f",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "Both findings explicitly describe a behavioral change and potential regression for custom/third-party Index subclasses using Index.insert, matching the later fix for a reset_index/Index.insert regression with custom Index subclasses."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "012306ee5bb7c233eb4eac8165663885b693c39f",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly flags a behavior change in dict-backed DataFrame construction involving missing-value keys, which matches the later regression fix for DataFrame construction from list of dicts with missing value as key."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "015541eabcd1eba2d79823cee872cfb90b516495",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding highlights a concrete behavioral change in DataFrame.__repr__ output semantics, which plausibly reflects the reason the __repr__ cleanup change was reverted."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "062863f8a679bb044781237d8a19c8ca7fa11c67",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags subtle near-boundary float64 overflow detection issues in cast_from_unit_vectorized, matching the later bugfix for a regression and near-bounds float overflow."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "0861da680b50accb312d9dc8f422aa65bcdaa2b8",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 6,
+      "verdict": "identifies",
+      "reason": "Findings explicitly note loss of putmask_preserve/putmask_without_repeat length-mismatch protections and behavior changes in putmask handling, matching the functionality whose removal prompted the full revert."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "088c18dc005b3c39af885b45240ca43250a151fc",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The finding discusses row-count semantics and truncation behavior for multi-bin layouts, while the actual regression fixed later concerned incorrect printing of backslashes in DataFrame.to_string, a different issue."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "0b90685f4df2024754748b992d5eaaa352e7caa5",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly describe behavior changes and risks caused by removing the special-casing in Index.equals and always dispatching to subclasses, which directly matches the later full revert of that refactor."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "13ce5fab66ac5ea60c7a4bf33a10d21c78ea653f",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The reviewer focuses on semantic/behavioral changes in index alignment and mapping flags, while the ground truth points to a pure performance regression in numeric Series indexing, not a correctness or API behavior bug."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "1b1dd36016bbf0b216d654b84d62a005fa5b48a0",
+      "kind": "regression_fix",
+      "likelihood": 15,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer noted only a harmless comment typo, while the actual regression involved masked scalar setitem behavior for Series with string dtype."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "27989a64b00639d07353bf4fef821722eb39aad5",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags potential performance regression due to unconditional consolidation in fillna(), matching the later regression fix for fillna()."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "2ae017bdb4a2a7bb51fb2492a67a96d423e4a5b9",
+      "kind": "regression_fix",
+      "likelihood": 30,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly notes that switching to Categorical(self.grouper) and _reverse_indexer() may change ordering/behavior of groupby.indices for non-base groupers, which aligns with the later bugfix about a regression in groupby.indices with unused categories."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "2f4110967c303c739abef67be63ba2206d64bbb9",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "Findings explicitly describe functional regressions in DataFrame.__setitem__ with list-like indexers introduced by the performance change that was later fully reverted."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "3140ef1522d4cb93b5774c9cb97a58e92afefdfd",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The review explicitly calls out a behavioral change in how Styler.apply() reuses and accumulates styling operations across renders, which is plausibly the same regression later fixed in the Styler export/use bugfix."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "381dd06d6d901ebc77df5908a0b3461dae244236",
+      "kind": "merged_then_reverted",
+      "likelihood": 32,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first two findings question correctness of the new MultiIndex comparison/fast-match logic that was later reverted as part of tightening _should_compare for MultiIndex, so they plausibly describe the same defect that motivated the revert."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "49778b051ea0f286628840b19f1829a3b265d063",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly calls out the behavioral change in tuple-key .loc handling for MultiIndex and warns about edge cases in MultiIndex-related tuple usages, matching the later regression about loc setitem with MultiIndex enlargement."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "4ba431f0b4e82319248663d9366c0fbfbd35ff1a",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The review comment focuses on potential behavior and dtype changes for mixed-type/non-numeric iterables, while the actual regression fixed later was a performance slowdown for isin with mismatching dtypes, a different issue."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "52925335fe6d5f1ea6c79bb03da70654d9be9668",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes this change is intended to fix boolean-list filtering and may affect behavior, which matches the later regression fix in iloc with boolean list."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "5307062326df2034a6add893f32fe5eafb5a5aea",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The findings explicitly discuss removal of the stack(sort=...) behavior and changes to sorting in DataFrame.stack, matching the later revert of a change about stack sometimes sorting the resulting index."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "5edc2cc570f565326cb9a762d3f19a19f6bab425",
+      "kind": "merged_then_reverted",
+      "likelihood": 22,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings discuss potential robustness and invariant issues, but do not clearly correspond to the concrete behavioral regression in DataFrame.stack with sort=True on unsorted MultiIndex levels that led to the revert."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "5efb570ec3de616dfeb036d0ee622275955b7888",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The findings directly question semantic and API-behavior changes in the new fast corrwith path (min_periods handling, column selection, edge cases), which plausibly correspond to the later full revert of the optimization change."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "6d0dab4c0914031517be4a3d1aff999e25cc2649",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings note style/robustness concerns and potential future breakage, but do not specifically address the performance regression in creating the resulting index that the later commit fixed."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "73e0b5eaea5b7471ee7762f7e218baba05624012",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s note about inconsistent behaviour for ndarray vs other list-likes in Series scalar assignment directly concerns the regression later fixed as a bug in scalar setitem with a length-1 array-like."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "7d545f0849b8502974d119684bef744382cb55be",
+      "kind": "regression_fix",
+      "likelihood": 40,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer focuses on validation and semantic correctness of IntervalArray construction, while the actual regression was a performance issue in IntervalIndex.get_loc rather than an integrity/behavioral bug."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "7e92ca6ae81a0260a24ba3440be556bb71d30848",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The second finding directly questions correctness of the new ArrowStringArray._from_sequence branch when given a pyarrow Array/ChunkedArray, which matches the later regression fix for using Series with arrow string arrays."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "802322533d9d602aca40f9a58cf14d428353acb6",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "Several findings explicitly question adding pyproject.toml as package data and the associated test relying on its wheel layout, which matches the later revert of adding pyproject.toml to wheels."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "82abcd9daa952d1e41de7af78b95b0cd1b916499",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The review comment concerns weakref handling in BaseBlockManager.iset, whereas the actual regression involved grouping operations over a Series, which is a different behavioral area."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "840c1425541917ae820660cd66f6b8b5f4db2387",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The findings explicitly flag behavioral and API regressions in the refactor of nanargmin/nanargmax (e.g., ExtensionArray assumptions, tie-breaking, NA handling), which directly aligns with the later full revert of that refactor."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "88bcd2d1e066958b8bd7210e81771538cc3bdd4c",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly questions alignment semantics between the RHS DataFrame and a possibly non-positionally-aligned boolean indexer, which matches the later regression fix about not aligning the RHS with the boolean indexer."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "8a4abfa587af150ac8f67d640b8e530fa0ba90f3",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer flags a concrete bug in the new test logic for the added color argument, which plausibly relates to the problematic color-argument change that was later reverted."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "8b42cee6b9df41755595bccbbb195f9737392465",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings discuss correctness/behavior changes in datetime-like inference, while the ground truth points to a performance regression in DatetimeIndex.equals, which is a different type of issue."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "90a61350b1be7a200238212bd8d118a25a4d3d95",
+      "kind": "merged_then_reverted",
+      "likelihood": 22,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The findings focus on API/attribute compatibility and warning behavior around is_all_dates, while the reverted change concerned incorrect deprecation of casting object-dtype datetime indexes in Series construction, a different regression."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "95352806d58e82b5cc1f4a7cd161a86e8ada61a0",
+      "kind": "merged_then_reverted",
+      "likelihood": 32,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings directly discuss behavior and regression risks from moving shift logic from BlockManager to DataFrame, which is exactly the change that was later reverted."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "9cb372376fc78aa66e2559de919592007b74cfaa",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 10,
+      "verdict": "identifies",
+      "reason": "Multiple findings explicitly flag risks and invariants tied to backing IntervalArray by a single combined ndarray/EA (`_combined`), which matches the reverted change \u201cback IntervalArray by a single ndarray.\u201d"
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "9d6f8fe2b5bf8ff2dcd768cc030281e382158b1f",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 8,
+      "verdict": "identifies",
+      "reason": "The findings highlight concrete behavior changes and type/placement assumptions in the DataFrame construction internals, plausibly corresponding to the regressions that caused the performance-oriented change to be fully reverted."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "9dcce6330f22f48e51fc3f8301d23b6c3e784f6a",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings highlight concrete functional and API problems in the new third\u2011party IO engine registration feature, which is the same feature that was later fully reverted."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "9de1f0b32de55ec6d892cea31449cfaf1996ccbe",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a typing inconsistency between the public signature and overload, whereas the actual reverted change concerned the behavioral semantics of the `inplace` and `copy` keywords, not the type annotation mismatch itself."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "9f54f707fa9f79ec225f715e4b802f8f91c45b52",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer comments on broadened exception handling in _ensure_data, while the actual regression concerned Series.duplicated behavior for categorical dtype with bool categories, which is a different issue."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "a063af0e6d443c4b5826eed2102a6d3c988da9a0",
+      "kind": "merged_then_reverted",
+      "likelihood": 22,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings explicitly describe behavior and semantic changes to Categorical/Series.replace that could affect edge cases beyond the tested scenario, matching the later full revert of the Series.replace with dtype='category' change."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "a37f1a45e83d7f803d7fcab7d384da28e9c1e714",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the behavioral/API change in MultiIndex reconstruction for RollingGroupby and its potential impact on users, which aligns with the later full revert of that behavior change as a regression."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "a94e85213e286befec583555c039d556f22a0faa",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings discuss potential behavioral and minor performance effects around empty iterables, but the ground truth refers specifically to a performance regression in isin for empty values, which is not clearly identified or described in the review comments."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "ad0f1bf44ed7a974ce8d009e28aebde01bc7c42c",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding questions correctness of the new _validate_datetimelike_monotonic for groupby+rolling(on=...), which plausibly relates to the bug in groupby().rolling(freq) with monotonic dates within groups that prompted the revert."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "b0ffccd489badea508d0a83431f1aea019e294b7",
+      "kind": "merged_then_reverted",
+      "likelihood": 15,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a mismatch between warning types in a test marker, while the revert indicates broader issues with the make_block deprecation itself rather than this specific test warning configuration."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "b4dcf3b535d06dd3d597e37be46a4f178fe6b542",
+      "kind": "regression_fix",
+      "likelihood": 40,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "Reviewer explicitly flags changed null-mask behavior and shape handling for boolean/integer reductions as potentially incorrect, matching the later fix for a regression in reductions on boolean/integer data."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "b69bd0755d654c0dba42042df7b2251918274327",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly describe the behavioral change from upfront dtype validation to relying on pyarrow errors in read_orc, matching the later full revert of the dtype-check removal."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "b77797cde57969b3ee14d961f4dacd5cab25cb61",
+      "kind": "merged_then_reverted",
+      "likelihood": 32,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "Several findings explicitly flag behavioral and compatibility risks around the new complex Index support, which is the same feature that was later fully reverted."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "b80691cce087005d719e4da77e741e8dc3e81e2b",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly discusses the parametrization difference between a one-dimensional tuple and a scalar label in the loc/MultiIndex test, which matches the later regression fix about handling one-dimensional tuples for MultiIndex."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "b95f65bce20976de11c8ae8ebc4abe4b6f8ac221",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the new special-casing for MultiIndex with StringDtype and warns about untested edge cases in HDF5 serialization, which directly relates to the later-identified regression in to_hdf with MultiIndex and StringDtype."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "bb9a9852265915a4688f772dd062d3fcf4159a32",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 9,
+      "verdict": "identifies",
+      "reason": "Multiple findings explicitly flag the behavioral risks of removing JoinUnit.shape and changing NA-join handling, which matches the later full revert of the JoinUnit.shape removal refactor."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "bba53fc01ac676def0f80c2c87f9683de270ae45",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags a likely bug in the ewma_table implementation and related misuse of deltas and axes, which matches the later full revert of the new `method='table'` EWM.mean feature."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "bc2e8cacf7a559cad6fc894f00cd78883a2f9b32",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding points to a mistaken use of an Index object instead of its dtype in merge logic, which plausibly causes incorrect behavior or errors in merges involving index levels, matching the regression that led to the revert."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "beec0e83c492168900c6d2747878be30db4bc5fe",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The review comments focus on potential mutability and type/behavior inconsistencies around DatetimeIndex handling, whereas the actual regression later fixed was a performance regression in read_csv datetime conversion, not the specific correctness or mutability issues raised."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "c8e23d2bbb041235c021c96e9f5f8799e45a35e6",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The reviewer focuses on potential API/logic and NameError issues in mask handling, while the actual change was reverted for performance-related reasons not specifically identified in these findings."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "d40c37192b3d38a3c9a0d248dc612ac9dd56e506",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The findings focus on potential behavioral and masking issues in the ArrowExtensionArray comparison implementation, while the later full revert of the test-enhancement commit does not specifically indicate that these particular comparison problems were the defect that prompted the revert."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "d6f646b28783686b87d1c563d7b786c0c9602ae5",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly flags the new early-return for -1 codes as changing is_monotonic* behavior for MultiIndex with NaNs, which matches the later regression fix for is_monotonic_increasing with NaN in MultiIndex."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "dfae6dbb009e0123b42fab8562befa4df0cbc1bd",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly highlights a behavior change in sort_values for RangeIndex with ignore_index=True and index resetting semantics, matching the later regression fix about sort_values not resetting the index."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "dfc4c3900a181e8a9dff724217d5a14e59ca2e4f",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly discuss behavior changes to how Timestamp origins affect resampling (especially for non-Tick frequencies), which matches the reverted change about Timestamp origin taking no effect for 'MS' frequency."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "e3b9ce811ee72c6491149b72d97a7c2c3569214a",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer focuses on potential semantic and behavioral regressions for tz-aware normalization and inferred frequency, while the ground truth indicates the actual problem was a performance regression in DatetimeIndex.normalize, not a behavioral change."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "e6f7e7b20ebb1512d6debee5e8592b0b5351ac49",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer flags that disabling numexpr for floordiv may cause performance regressions, and the later revert of the change explicitly indicates it was a performance-related misstep, matching the concern."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "ea2dc44122ca4907bb2a4ab140844a5e8865a91c",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly flags the new size-based condition on `other` and its impact on group-size handling, which matches the later bugfix about regressions when `other` is the same size as each group."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "f52d478baa4fba5e415d1b17346978b72594ca0d",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly points out the broadened equality semantics in MultiIndex.equals, which is directly related to the later bugfix about code bit-width handling in equality."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "f65f0d3edb275faf37435ba1fa2780240b105b48",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly point out behavioral and compatibility risks introduced by replacing ExtensionScalarOpsMixin/ExtensionOpsMixin with OpsMixin, which matches the later full revert of that migration."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "fbcd43bd0a9799f295d7f583715ebc9522ebf171",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly calls out a behavioral and performance-affecting change in how dtypes are compared and indices derived in _LocationIndexer._post_expansion_casting, which plausibly matches the later-identified performance regression fixed by the ground-truth commit."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "fcab848c18ed974b5e2e0ee78e81fa7e81d8c142",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly flag potential regressions from changing key typing aliases (e.g., IndexLabel, DtypeArg) to invariant TypeVar-based forms, which matches the later full revert of the invariance-adding typing change."
+    },
+    {
+      "repo": "pandas-dev/pandas",
+      "sha": "fe415f553ff28c9e1a4ffca49f89030152e66a73",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer comments concern wording and brittleness of the FutureWarning and tests, whereas the actual defect was the deprecation behavior itself, which was reverted, not these cosmetic or testing details."
+    },
+    {
+      "repo": "psf/black",
+      "sha": "00e7e12a3a412ea386806d5d4eeaed345e912940",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly called out behavioral changes and risks around string prefix normalization and capitalization, matching the later regression fix about preserving R prefix capitalization."
+    },
+    {
+      "repo": "psf/black",
+      "sha": "6dca5278a3159cb35e8b9076bf81eacd35c1f0a7",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The second finding explicitly notes that the new, stricter guard may stop adding parentheses for some power expressions and change formatting behavior, which matches the regression about unexpected parentheses around non-mathematical powers."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "086e19d8e175cccb630ee3589affdd2f38075ecd",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the behavioral/API semantic change to Response.ok that the reverted commit was about, matching the ground-truth defect leading to the revert."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "178ff62b934c30278114028f654e42374206c291",
+      "kind": "merged_then_reverted",
+      "likelihood": 80,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The ground truth only indicates a full revert of the change without specifying an exception-handling regression, so the reviewer\u2019s concern about traceback semantics cannot be confidently tied to the actual reason for the revert."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "19cff44ec1b8eeec99459b504a681aa440f6344c",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly warns that unconditionally switching UTF-8 to utf-8-sig in the core .text decoding path can cause regressions and unintended behavior, which aligns with the later need to revert the BOM-handling change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "26ed7c2e1dce4271f3a3b111a167a6dcca3acddf",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The review comment notes a possible behavior change around hooks handling, but the actual reversion was due to fixing a failing unicode URL test and does not clearly relate to hooks semantics."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "2da7fe08586aeaff614c017a9a834a22c937384a",
+      "kind": "merged_then_reverted",
+      "likelihood": 80,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings directly flag the behavioral risks and regressions from switching chunked requests to urllib3, matching the later full revert of that exact change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "34af72c87d79bd8852e8564c050dd7711c6a08d6",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly calls out the backward-incompatible behavior change from restricting URL preparation to only http/https-like schemes, which matches the later need to revert the change titled 'Restrict URL preparation to HTTP/HTTPS'."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "35d5ac6e8f5f4357f945b8c4890388207f7f1c00",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly notes the behavior change to always return 'utf-8' as the default encoding, which matches the reverted change described by the ground truth."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "4b66260cb7c88a41a971d2458d75efd556f2e00e",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the new public `set_http_proxy` method as an API surface change, which aligns with the later full revert of that new helper method."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "537def4a4fb284a216f56f3bae308d28ccc67b1f",
+      "kind": "regression_fix",
+      "likelihood": 40,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags that changing items()-related behavior and adding iteritems could be a breaking change, which aligns with the later fix for a regression in cookiejar.iteritems()."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "544d08d0f61c35358cf13b4a6b677e4e51dbbe7e",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the behavioral change around not recomputing Content-Length when already set, which matches the later full revert of the 'If Content-Length is already set..' change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "62a23bfbdecf54e13e571237df5a175e53d539cb",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the environment-dependent auto-detection of the CA bundle path in setup.py as incorrect and problematic, matching the later decision to revert the auto-detect CA cert behavior."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "730c0e2e2bef77968a86962f9d5f2bebba4d19ec",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The ground truth only shows a generic revert of an initial hotfix, while the reviewer\u2019s findings focus on performance and streaming-behavior concerns that are not clearly tied to the specific defect that motivated the revert."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "796d3225ddf08a9ebaa429209b9d077c3a8f99b8",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 7,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly flags the behavioral and API-compatibility risks introduced by adding a max_retries argument across adapters and sessions, which aligns with the later full reversion of the max_retries feature."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "840540b6b1f07ef87faab73392c03fbef0dcc9fe",
+      "kind": "merged_then_reverted",
+      "likelihood": 75,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer repeatedly flags that the new behavior requires explicit proxy schemes and breaks previously working scheme-less proxy URLs, which matches the later reversion of the change titled \u201cProxy urls should have explicit schemes.\u201d"
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "91766548d10cd5ebf46aba376f9e000263285875",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s concerns about safe_mode error handling and changed behavior around timeouts match the later need to revert the safe_mode/timeout behavior change indicated by the ground-truth revert commit."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "9217a2523d7d4fafeebb259884276fc349a376b1",
+      "kind": "merged_then_reverted",
+      "likelihood": 68,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "One finding explicitly flags that auth handling is now performed before body construction and warns this ordering change may introduce regressions, matching the later revert of calling auth before encoding body data."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "9a20afd6b5140da4b9f187a3c0c6ea7010baeee9",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer\u2019s concern about changing the default verify behavior does not match the ground truth, which indicates the real problem was with changes to params, not verify or doc formatting."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "a9470fe31f0c9590dafeac4b53f91fbf11fd6677",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The review explicitly notes that changing the function signature and making no_proxy optional with a default of None is an API change that could affect callers, matching the later commit\u2019s description of a regression in the API due to the added optional parameter."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "bd100472443dcf4189630f6b1ed3ec0a61259dd8",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings explicitly describe behavior changes in how read/streaming errors are stored and raised on response.content/iter_content, which matches the reverted change aimed at fixing but instead breaking error handling for accessing response.content twice."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "c19650b00f0c169cdf6372a093425830e11a8771",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes that forcing SSLv3 can re-enable or conflict with environments where SSLv3 is disabled, matching the later need to revert the SSLv3-related change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "ca0aea640d0cce01c126220b74362c9014cabbd6",
+      "kind": "merged_then_reverted",
+      "likelihood": 90,
+      "n_findings": 4,
+      "verdict": "incidental",
+      "reason": "The findings speculate about API consistency and style issues, but the ground truth only indicates a full revert of the feature without specifying these particular problems, so none can be confidently tied to the actual defect that prompted the revert."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "d232948188f922c137dd709b53f77c49d1442c84",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings explicitly describe the semantic regression introduced by caching Response.text, which is precisely why the change to cache Response.text was later reverted."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "fbe48fbb7c5b96cde3a16453311e45f723516afd",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings correctly flag that adding an __init__ and trusted_domains to SessionRedirectMixin can break existing subclasses and cause AttributeError when should_strip_auth accesses self.trusted_domains, which matches the later need to revert the 'Add trusted domains' change."
+    },
+    {
+      "repo": "psf/requests",
+      "sha": "fc8fa1aa265bb14d59c68eb68a179bce17953967",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly flags behavior changes around binary vs text handling for request bodies, which aligns with the later regression fix specifically about binary bodies."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "24515489250de5d63c487e608f2f8d184b427498",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the new __getitem__ attribute-access feature as a risky public API and behavioral change, matching the later full revert of that feature."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "6e0c5c336ca9d63952eb0bf3705ca9ea93f73d38",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a behavioral change in get_args return types, while the actual revert was for a generic 'fix coverage' change whose concrete defect is not clearly tied to that behavior change."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "8898b8fee91c5a9dd99f4eb0c05f6950c2f684e0",
+      "kind": "regression_fix",
+      "likelihood": 5,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes a bug fix in the conditional logic for handling 'schema_ref' and 'ref', which directly relates to core schema generation for indirect definition references mentioned in the ground truth."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "b42fae081ce095769f60cf18d4657ba9b14a97b5",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly discuss the new nested JSON encoding behavior and its cross-cutting effects, which matches the later full revert of the nested json encoding feature."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "e34ff9255f281eaccac10d0436c082626d9146c3",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes that the new path building behavior changes percent-encoding semantics and may over-encode URL components, matching the later decision to revert percent encoding in URLs."
+    },
+    {
+      "repo": "pydantic/pydantic",
+      "sha": "e690f0878e7ccae4bc50c84e022e94b9b59f6dcf",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "Multiple findings directly question the new **config_params/configs handling and its interaction with pydantic Config, which is plausibly the same issue that led to fully reverting the feature."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "01894aee7be04fb0756f4e73a462ccf5ae2c886f",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 4,
+      "verdict": "incidental",
+      "reason": "The reviewer comments note potential coverage reduction and configuration fragility, but do not clearly match a concrete defect that would necessitate fully reverting the matrix-handling change."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "0bb9c31aeab89eba17de26802e6b01c9cafeeb39",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes that changing rel_links to only follow 'homepage' and ignore 'download' alters discovery and may skip valid download locations, which matches the reverted behavior of explicitly ignoring rel='download' links."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "0c284520c6d068cb25ac89d9dbee0456c2eba23a",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly calls out the behavioral change of propagating constraint hash information into the template requirement and warns it could affect resolver behavior, which aligns with the later revert of the hash-based filtering feature."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "12202eecde9f4ac3c0109e27eb21fc63f60bbf98",
+      "kind": "regression_fix",
+      "likelihood": 70,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The ground truth only notes a generic 'Fix regression' without indicating it was related to the build environment context manager rename, so there is no concrete link between the reviewer\u2019s specific AttributeError concern and the actual regression."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "1471897b84b43c467c753b5edebe636f835afc6a",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer only notes a possibly malformed or unrealistic test case, while the actual defect prompting the revert concerned the changed svn version string detection logic itself, not the specific test input formatting."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "20f8ce289d06747c49c348919f201da0a3da6236",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the behavioral changes to build and src directory locations and their negative consequences, which matches the change that was later fully reverted as incorrect."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "23b03de81a31fcb9e5f7700f15dc465acdcbdc1a",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings explicitly describe regressions caused by replacing compat.samefile with os.path.samefile and removing the helper, which matches the later reversion of the change to use built-in os.path.samefile."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "44ef9bcd3b5b99579367b3b5c1e5630ac6a625c0",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 6,
+      "verdict": "identifies",
+      "reason": "Multiple findings explicitly discuss the new audit hook that warns on unexpected imports during install and its behavioral side effects, matching the later revert of the change titled 'Warn on unexpected imports during install.'"
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "6bbd3efc1e957db09458430dbb3ec8b40c7ebb0f",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a potential encoding behavior change, but the ground truth indicates the revert was about handling a unicode date in long_description, which is more specific than the generic UTF-8 reading concern raised."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "71f506e71ed2790126a78abc97c6c2d2feff7a02",
+      "kind": "merged_then_reverted",
+      "likelihood": 24,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first finding directly describes the new requirement for --no-use-pep517 with editable installs and pyproject.toml, which is exactly what the later revert addresses."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "7bb857aa487aef72245a17b5eaed0b3792eff17f",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly highlights a behavior change in Git revision handling that could cause a subtle regression in how rev_options are defaulted, which aligns with a later fix for a minor regression in the Git version control backend."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "84ee57d1263069aba09b47167c0aa8fe3c20d09a",
+      "kind": "merged_then_reverted",
+      "likelihood": 80,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s first finding about incorrectly replacing the entire environment for the subprocess plausibly describes a serious behavioral regression that could motivate reverting the change adding context to protected_pip.py."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "8547b52e26061f6f385400626aed3b1a74bfd441",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The findings note possible behavioral changes, but the ground truth only shows that the entire truststore upgrade was reverted without specifying a particular regression matching any of the cited issues."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "873f1e6332aa827c886266c7d858067c12521e80",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes that removing _copy_source_tree and its socket-tolerant behavior changes installation semantics and risks regressions, matching the later full revert of that removal."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "88e6e6bc5c877bfb15cce6f622dfbf9221c7b479",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the new in-place build behavior and its potential to break workflows, which matches the reverted change described as 'build in place.'"
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "8adbc216a647b6b349f1b7f1eaa9e71cd3108955",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the new VCS-specific call_subprocess implementation and its behavioral differences, matching the later full revert of \"Create call_subprocess just for vcs commands\"."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "94882fd1ed9171ea5a2f4b8904dbd8763f05ba68",
+      "kind": "merged_then_reverted",
+      "likelihood": 45,
+      "n_findings": 6,
+      "verdict": "identifies",
+      "reason": "Multiple findings explicitly flag the behavioral change from removing show_stdout and altering subprocess visibility/logging, which matches the later revert of removing show_stdout from run_command."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "9a9d7acefe2168c84ab135501284b78827ab58b2",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings directly address the new --no-check-certificate option and its disabling of SSL verification, which matches the later decision to revert the feature that allowed skipping SSL certificate verification."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "9c1a4d4c4d64d72f5eff5100bbb18c008b7408ad",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the new use of `git clean -fxd` as overly destructive and disruptive, which matches the reverted change to aggressively delete all non\u2013Git-tracked files."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "ab3ee7191ca47294f8827916180969e23f5e0381",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The findings explicitly flag the behavioral/API change from removing the on_returncode parameter from call_subprocess and its impact on callers, which matches the reason the change was reverted."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "d8d948de64ae60153fe3d00e416d32b1293d94a6",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a potential future issue with hardcoded 'master' branch names, while the revert message indicates a broader documentation/clarity concern about license sourcing, not specifically the branch-name bug."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "e8b57e2e45967696559c1a4b197820edff4aa9c1",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer\u2019s concern about a potentially confusing change in a log message does not clearly relate to a functional regression later fixed by the follow-up commit."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "f190a7c1bbd6cbd57f9926e366c75d8f0411f8b6",
+      "kind": "regression_fix",
+      "likelihood": 45,
+      "n_findings": 6,
+      "verdict": "identifies",
+      "reason": "Multiple findings (e.g., about changing default resolution semantics and moving config/env handling into get_default_values) directly concern regressions in how defaults are handled after parser instantiation, matching the ground-truth description."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "f1bc96a4a336e2b8889269aec046ac4044e4b46c",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes only a documentation typo, while the revert concerns problems with changing PipDeprecationWarning\u2019s inheritance, a different issue."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "f66c1f7639bee37d1874c8c9e663da7cdbaf49cf",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a typing inaccuracy with Dict[str, str] but the later full revert of the refactor does not specifically indicate this typing issue as the actual defect addressed."
+    },
+    {
+      "repo": "pypa/pip",
+      "sha": "f927f9ae39160bbb4252bbdb73124704aeb43cf0",
+      "kind": "merged_then_reverted",
+      "likelihood": 60,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer flags a removed sorting/return behavior as a likely behavior regression, which is consistent with the change later being reverted as part of dropping code that affected behavior."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "043fdb7c4065e5eb54f3fb5776077bb8fd651ce6",
+      "kind": "merged_then_reverted",
+      "likelihood": 85,
+      "n_findings": 7,
+      "verdict": "identifies",
+      "reason": "Multiple findings directly question the pip-list subprocess behavior and its fragility in various environments, which plausibly led to the feature\u2019s full revert rather than a narrow bugfix."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "12656124651cdd66343c5c2582bf910e5798cf07",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly connects the behavioral change around CaptureManager with capsys/capfd behavior under -s, which is exactly what the later fix addresses."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "12b9bd580198edf88a795b692cbd6a1a05fe408a",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the semantic and compatibility risks of the changed shouldstop/shouldfail behavior that was later reverted as part of the same fix."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "1c464629919e539c005fe514e172b6fee5acca52",
+      "kind": "regression_fix",
+      "likelihood": 12,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings note signature changes and potential warning/traceback impacts, but do not specifically identify a regression in deprecated_call behavior that the later fix addresses."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "28a93b9eebf49b42c68d067106408766d54624cf",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 7,
+      "verdict": "incidental",
+      "reason": "The change was reverted wholesale as a WIP without a specific defect identified, so none of the reviewer\u2019s concrete behavioral/bug concerns can be tied to the actual reason for revert."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "31dfbb46686838e515d43188369c83cd3c397648",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings directly question the new multiline logging formatter\u2019s behavior and compatibility with the standard PercentStyle and existing expectations, which aligns with the later full revert of the multiline pretty-printing implementation."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "431ec6d34ef99d80f90b330876ed6231144a3ce7",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly discuss behavior changes and API/formatting risks around handling hidden/chained tracebacks, which directly matches the reverted change about correctly handling tracebackhide for chained exceptions."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "4533a50542ebf6f45f3c46cdd9ac64325bb236c6",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the silent API/signature change in Parser.parse_known_args and its impact on callers, which matches the later fix for a regression caused by changing the parse_known_args signature."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "6c89f9261c6f5bde93bd116ef56b7ac96fc0ef21",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The findings explicitly point out that removing/altering the deprecated `fspath` constructor arguments will break existing callers and plugins at runtime, which matches the later full revert of the change to remove those `fspath` arguments."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "710446420c0bb98f0761724ec865a894820bb610",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings explicitly question and flag the new version-dependent behavior around enum string/repr for Python 3.10+, which is exactly what was later reverted in 'Adjust enum reprs for Python 3.10'."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "8a1633c3b4a75caff946c1fb5fefaa73f61e5556",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly warn that changing how tmpdir/tmp_path factories are attached to and accessed via config can break plugin and compatibility expectations, matching the reason the tmpdir indirection cleanup via config was reverted."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "900cef639710682c67a4ab88bd9e7666b14a9da2",
+      "kind": "merged_then_reverted",
+      "likelihood": 75,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings directly criticize using signal.SIGALRM/signal.alarm for the new Python 2 timeout mechanism, which is exactly the behavior that was later reverted."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "930a158a6a4d58ceb37aff97fa476215a68c915e",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer flags that the new assertion tightens the expected type of Item.reportinfo()[0] and risks breaking third\u2011party plugins, which aligns with the later full revert of the type-fix change due to problems it introduced."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "99180939febb6ca4b3ff788cf336b065046653f2",
+      "kind": "merged_then_reverted",
+      "likelihood": 28,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The third finding explicitly questions the correctness of the new dependee-fixture/stack-order logic that changes teardown ordering, which matches the reverted change about registering finalizers with all preceding fixtures in the stack."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "a98f02d4238793300f1be01f75bf0fff5609a241",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly describe the removal of deprecated py.path/legacy path hook arguments and resulting plugin breakages, which matches the later revert of \u201cRemove deprecated py.path hook arguments.\u201d"
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "aea4d1bd7a7b49fc6470a18db0222559fe8c85cc",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly links the new _preservedparent behavior to generator/yield-based tests, which matches the later regression fix for yield-based tests."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "bf3b26b3f72d46bf64a2a6c64da03f93f24b47af",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly questions the correctness of the new condition around `_previously_failed_count` and its impact on last-failed behavior, matching the later regression fix related to `--lf` handling of failures."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "ceb4f3f701e330221f13a7ee66a2199b9b5e82e6",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The review comment focuses on redundant calls to last_failed_paths() in logic related to last-failed handling, which plausibly relates to the later regression fix concerning --lf and non-selected failures that likely involved the same last-failed path logic."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "d38077106556184026137fe83d8351970f08ac89",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly describes a tmp_path cleanup behavior regression, which plausibly matches the later commit that fixed a tmp_path regression."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "d56b1af5252ceb8578d6751a6b2006e79defbb08",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly describes the behavioral and backward-incompatible change in parametrization precedence introduced by removing that special case, which matches the reason the change was reverted."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "d6f75d28364b4434217b45b261573f07569f5cd8",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The findings plausibly describe broken logging/terminal integration and behavioral changes that could motivate reverting a WIP change, so they likely align with the reasons for the revert."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "dfe54cd82f55f17f3c9e6e078325f306a046b93b",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the behavior change of forwarding unknown kwargs to RaisesContext/WarningsChecker, which matches the reverted change about letting those context-managers handle unknown keyword arguments."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "e938580257e8120dabbea789d5b7a3dd3354d0a3",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The findings explicitly criticize the new iter/TypeError handling and ValueError contract in isiterable, which aligns with the later decision to revert the iter-raises checks."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "f10ab021e21a44e2f0fa2be66660c4a6d4b7a61a",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes that moving Package and Session to use FSCollector._collectfile changes collection semantics and risks subtle behavior changes, matching the later full revert of the refactor that centralized this logic."
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "sha": "fb99b5c66ee06ad0bd3336d8599448d1d3da4f7f",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 5,
+      "verdict": "incidental",
+      "reason": "The findings focus on minor typing and annotation changes, while the actual revert concerns broader type error fixes related to the `py` dependency rather than these specific issues."
+    },
+    {
+      "repo": "python-pillow/Pillow",
+      "sha": "4f9b2dbe69a8bcd37f1e8759864883acb4449bce",
+      "kind": "regression_fix",
+      "likelihood": 30,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings speculate about behavioral and compatibility issues with generic file-like objects and side effects of flush(), while the actual defect was a specific regression affecting PyPy 2.4 (per issue #952), which is not clearly tied to those concerns."
+    },
+    {
+      "repo": "python-pillow/Pillow",
+      "sha": "6c7917d7a6031ae22e1d9eaccc2e536123ea25c2",
+      "kind": "merged_then_reverted",
+      "likelihood": 23,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly discuss mismatches and conditions around using zlib vs zlib-ng on specific macOS versions and platforms, which aligns with the later need to revert the change about reverting to zlib on older macOS versions."
+    },
+    {
+      "repo": "python-pillow/Pillow",
+      "sha": "81412212016a70eb160460e26dc552a0f8a8c153",
+      "kind": "merged_then_reverted",
+      "likelihood": 28,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding questions the correctness of the nonstandard CMake option used to relax version requirements, which aligns with the later need to revert the change that attempted to allow older CMake versions."
+    },
+    {
+      "repo": "python-pillow/Pillow",
+      "sha": "b7f94e3609b027f108b75f89bf63f07e54262d7d",
+      "kind": "merged_then_reverted",
+      "likelihood": 65,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings directly criticize the new test runner\u2019s misuse of setuptools\u2019 test_suite and test discovery behavior, matching the later need to fully revert the added test runner."
+    },
+    {
+      "repo": "python-pillow/Pillow",
+      "sha": "ba2792083844e701a8c1a5bd477594df16a47d19",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly connects the broad SciPy-import except and HAS_SCIPY handling to potential SciPy-related test issues, which aligns with the later 'regression in scipy' fix."
+    },
+    {
+      "repo": "python-pillow/Pillow",
+      "sha": "f733482c0e22afd7a38afcfe4097c70b11c1909f",
+      "kind": "regression_fix",
+      "likelihood": 60,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly points out that changing Image.resize\u2019s size handling and removing the SciPy regression test could reintroduce SciPy-related resize regressions, which matches the later fix removing a workaround for a SciPy regression and its DeprecationWarning."
+    },
+    {
+      "repo": "python-pillow/Pillow",
+      "sha": "fd77bcd5a74ff8525fcc7d3fc2df6782d34e0ef9",
+      "kind": "regression_fix",
+      "likelihood": 40,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a potential behavioral change in error handling, but the ground truth only indicates a generic rename regression without tying it specifically to error handling semantics."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "0e366004a64444c2ee7124bfc28d49d87faabae2",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly flags the changed warning condition based on `self.penalty` vs local `penalty`, which matches the later fix for a spurious LogisticRegression warning, so it plausibly identifies the actual regression."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "165818a9b3d8e9ec39d1f45ad3b124e557a3f7bf",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly flags a behavioral change from raising an error to only logging a warning and returning, which matches the later regression fix concerning incorrect behavior of the lock file update script when selecting a build."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "18396be8cb03ac9ed7fbceb9c52a2b1a206f79c4",
+      "kind": "merged_then_reverted",
+      "likelihood": 28,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings discuss edge-case behavior and test coupling around indicator features, while the later full revert indicates broader issues with the feature rather than the specific concerns raised."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "217fe948d41b405f29ffba178c35d48bf9fdbfdf",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The review comments concern documentation formatting and a subtle implementation detail about in-place mutation, while the actual regression involved warm-start behavior for LogisticRegression with the newton-cholesky solver, which is not clearly identified in the findings."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "2641baf16d9de5191316745ec46120cc8b57a666",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly concern brittle handling of the 'Y residual is constant' StopIteration path in PLSRegression, which plausibly caused the regression later fixed for constant Yk."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "3e7a7ca7fa6620afc68f2454c373c069be57dbf3",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings concern validation flow and loop clarity, while the actual regression was about incorrect handling of clusters of size 1 in silhouette_score, which they do not specifically identify."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "42659232bd42cd38846ffbf3e579f72604772b96",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes behavioral/compatibility risks around the vendored linalg implementation and its interaction with SciPy>=1.3, which aligns with the later-found ARDRegression accuracy regression with SciPy 1.3.0."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "4bc61a09eac44a86758c6a02a2b47f912a696d3b",
+      "kind": "regression_fix",
+      "likelihood": 30,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings discuss potential behavioral and API compatibility risks with column specification and helper functions, while the ground truth indicates the real issue was a performance regression in ColumnTransformer rather than a correctness or selection-semantics bug."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "4ca4f3bbcd6fb544d92886ce9690c001d8e75978",
+      "kind": "regression_fix",
+      "likelihood": 15,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The review comment notes a minor docstring inconsistency about n_iter_ reporting, while the actual regression concerned the shape of LogisticRegression outputs with the liblinear solver, a different issue."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "53933866c00f86f74e9ccd533113bbd38062ca9b",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly notes that changing fit_predict to call self._fit for full fit_params propagation can introduce behavior changes in existing pipelines, which matches the later regression fix about Pipeline.fit_predict using fit_params as in 0.17.x."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "54f483aafa9a5ac7358adafcca355c8dc2149ce1",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The findings concern stdout printing behavior, a docstring typo, and test performance, whereas the actual regression was a ZeroDivisionError in LinearRegression on sparse data, which they do not address."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "5a332e77a10a44107276843d8532ef79f239c8f3",
+      "kind": "regression_fix",
+      "likelihood": 23,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The reviewer notes coupling and future fragility in _rescale_data but does not identify the actual regression, which was a performance overhead issue later fixed by the cited commit."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "657c86f618de327352d0fe3a5f17f9485e77460a",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly points out the behavioral change caused by removing the 1D special case in _spatial_median, which is exactly the change that was later reverted."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "71fa2683def41e7b39b1f60bada4a289b71b04fd",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings directly discuss the behavioral and exception-type changes for sparse precomputed kernels, matching the reverted change that attempted to fix the error message in that exact scenario."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "7414a7c4c59d1c8695f9c96caef7a8f6874b4a86",
+      "kind": "regression_fix",
+      "likelihood": 30,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer\u2019s comments focus on behavior when sample_weight is None and on potential confusion around sqrt handling, while the actual regression concerned sparse input with intercept and non-None sample_weight, a more specific bug not clearly described in the findings."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "75f3e478d17de3636d37f2be845d0f7b209d388d",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the intentional behavioral change to return a 1D array when fit on 1D y, which aligns with the later fix about raveling predictions for 1D y."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "77279d6b3e6daf73c505ea8e77573dade849492e",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 6,
+      "verdict": "identifies",
+      "reason": "Multiple findings explicitly discuss the new, stricter sample weight invariance check and its broadened scope, which matches the reverted change about a common check for sample weight invariance with removed samples."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "77b73d63d05bc198ba89193582aee93cae1f69a4",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly discuss changed solver selection logic and new solver restrictions in Ridge, which plausibly correspond to the later commit fixing various solver issues in ridge_regression and Ridge."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "890e65289877db32c0c440cadaa2b2ef2ef7a384",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings note documentation/API inconsistencies around n_components/n_topics but do not identify a concrete functional regression that would justify fully reverting the feature-adding change."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "8a695d7d857ebc63b91ccef8315b19c2528494e5",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 6,
+      "verdict": "incidental",
+      "reason": "The findings focus on maintainability and future-compatibility issues with the monkeypatching approach, while the revert indicates the practical problem was behavior on case-insensitive filesystems, which the review does not specifically identify."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "97a15dbad3ef1ae8fd35a9ff4cb33b3a522b7341",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding directly questions the correctness of the n_classes==1 special case in warm_start multinomial logistic regression for binary data, which matches the later fix described in the ground truth."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "98aefc1fdcfc53f5c8572b02c7f0c5bcba23e351",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer notes batch management changes but explicitly finds no correctness issue, while the ground truth indicates these batch changes caused a regression in euclidean distances for float32."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "9c29816fdbee52bc6ae159b771dd473466c1b2d3",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The review comment explicitly questions boolean mask handling in _safe_indexing for DataFrame column selection, which aligns with the later fix for handling DataFrame inputs in ARDRegression when predicting standard deviation."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "a7a416f74908cf890d1dd115b53f5811cb8e7598",
+      "kind": "regression_fix",
+      "likelihood": 45,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The reviewer notes semantic/compatibility risks in the new heuristic for detecting extension arrays, while the ground truth concerns a concrete memory regression when inspecting extension arrays, which is not specifically identified in the findings."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "a9ea55fb404ba3a2411afa7a329f69eda67ca86c",
+      "kind": "regression_fix",
+      "likelihood": 65,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly calls out the semantic change from 'linear' to 'slinear' interpolation in isotonic regression and its potential to alter prediction behavior, matching the later fix that corrects the regression while retaining slinear as the intended method."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "ae9eaf83a123c033975d0f69a8217e6699951851",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first finding flags a likely incorrect interaction between absolute and chunk-relative indices in the new KNN imputation logic, matching the kind of core correctness bug that would justify fully reverting the enhancement."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "b375b7be7f046bf11f3fef1d4b459eecf1a6c020",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly warns that using np.min_scalar_type to detect problematic parameter values may fail for estimator instances, matching the later regression fix about parameter grids containing estimators as values."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "bef9d1803d1f243e4d3f9e845fac356a4fc555a8",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The second finding explicitly notes a behavioral change in `scipy.linalg.lstsq` conditioning that affects rank-deficient cases, which aligns with the later fix for numerical stability on rank-deficient data via the `cond` parameter."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "bf08cb3362e9414f7d9122d9863671c1ead18001",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes test fragility due to dictionary iteration order, whereas the actual regression concerned handling parameter grids with array-valued parameters of differing sizes in GridSearchCV, a different issue."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "c3915c099528638323f38db89bac31db4296709e",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly highlights the incorrect use of effective_n_jobs(self.n_jobs) in the warning message, which matches the later fix titled 'Fix effective_n_jobs in LogisticRegression'."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "d21b7e8b5f1e4da80ca36206503e6e52d2fbee8f",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly addresses the semantics of the `copy` argument on `_check_sample_weight` and warns about possible misuse, which aligns with the ground-truth fix that prevents `isotonic_regression` from modifying `sample_weight` in-place."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "e0b30df84edcf1c451403e90959eaafa8316598b",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings explicitly point out that the change improperly forces warm_start_coef to NumPy and breaks array API usage, which matches the later fix for LogisticRegression with array API and warm start."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "e19d8c27e563ef7b8facfe5322f2c8a9eb274439",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer warns about potential zero-variance divide-by-zero issues, while the actual regression was that coef_ incorrectly handled X and Y variances conceptually when scale=True, not a runtime error from zero std values."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "e3583daa2f196b5822f784c7e53f081668ecef6d",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a minor behavioral cap and comment/print changes, while the actual revert targeted broader k-means computation-skipping logic, indicating a different underlying defect than the issues mentioned."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "e5cc2b0e20df35a890c125fdc057668330450ebf",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly questions the correctness of using binned values to detect missing data and the required invariants of bin_mapper_.missing_values_bin_idx_, which aligns with the later full revert of the new binned-based missing-value detection behavior."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "ee85da8421a35894620e86dbd5b0013b5628812f",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a potential API conflict from multiple inheritance, while the revert broadly rolls back the entire sparsify/densify enhancement without specifically implicating that interface issue."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "fa5d7275ba4dd2627b6522e1ec4eaf0f3a2e3c05",
+      "kind": "regression_fix",
+      "likelihood": 35,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly flags a semantic change in the Lorenz curve x-axis definition that aligns with the later documentation fix for the Lorenz curve in the Tweedie regression example."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "fc7d6e698668b983cee2867b1bf3c65f1384e4cf",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly flags the behavioral change from switching to LogisticRegression(solver='saga', multi_class=...) in the example, which is plausibly the same change that later led to FutureWarnings in the logistic regression examples and had to be fixed."
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "sha": "fc9d7befe1093b33d0e2084233c8323e7dde8915",
+      "kind": "regression_fix",
+      "likelihood": 32,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first two findings explicitly note that the new random_state parameter is only used in the liblinear branch and not in other solvers, which aligns with the later fix to properly use random_state in LogisticRegression."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "1b4d14c8f635b28d5f72d37f924c4e71d71520ca",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly flags the behavioral change from using the old global scrapy.conf.settings to get_project_settings(), which matches the later full revert of that exact settings API change."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "2c68c95cadbf45e11657b00058ff29921c27bffa",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the behavioral risk of moving stats and log initialization into crawl(), matching the fact that the exact change (\u201cMove stats & log init into crawl()\u201d) was later reverted."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "479b4942bd88e72485dafda853dedfd494c57414",
+      "kind": "regression_fix",
+      "likelihood": 80,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags behavior changes around when start_requests() is called (lazy evaluation vs. eager), which matches the later fix for a regression in lazy evaluation of start requests."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "4e40377bcb2b88c893fb0a7e842401aab2cab896",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings directly question mutating the frozen settings and its safety under concurrent or repeated crawl() calls, which aligns with the later need to revert the feature that allowed multiple calls to Crawler.crawl()."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "65f69e16095799e05de79a3f8f449f7b9edb27aa",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings correctly flag that capping Twisted at <14.0.0 could unnecessarily block newer Twisted versions, matching the later revert of the limit as the actual defect."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "68ba25cb69cb70c0144c9473c1ada46051c7af5b",
+      "kind": "merged_then_reverted",
+      "likelihood": 95,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer flags a hard-coded Windows path in test configuration, while the actual reversion was for an unrelated documentation typo fix in periodic log stats, so they do not refer to the same defect."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "815af431209686018b1bc2cbb80fd946cfe93614",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the behavioral/API break caused by removing load_module_or_object, which matches the later full revert of that removal."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "92f2c9e308a5eda361229a8e74f74a21b9ff770a",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings explicitly flag the behavioral and semantic risks of switching multiple spider middlewares to process_iterable_helper, which is exactly the change that was later reverted."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "ba294351381c0dd81476603246d2cea6c31486be",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings directly describe incorrect shared default state and changed initialization semantics introduced by the 'Default values for OffsiteMiddleware' change that was later fully reverted."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "d602f13e8cd22154936ded9c9356e28fe3be4cd4",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The second finding explicitly notes a behavior change and potential regression in errback result handling, matching the later fix described in the ground truth."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "d60636d0de94c5a08c25d1d6820faed0b45506b7",
+      "kind": "regression_fix",
+      "likelihood": 30,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly flags a behavioral change in redirect request construction that could subtly alter redirect handling, matching the later fix for a redirect handling regression."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "daf86144c815d8b0a56d398fe671129c3b6c9d41",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The finding notes a general behavior change for absolute paths and URLs, but the ground truth points to a specific Win32 regression that was later fixed, and the review comment does not clearly identify that concrete bug."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "e84fb6d5cb15a36022dbb9ef27f9924383d317fc",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly addresses the added package_data={\"scrapy\": \"py.typed\"} change that was later reverted, so it plausibly points to the same problematic modification."
+    },
+    {
+      "repo": "scrapy/scrapy",
+      "sha": "ee9881d2704798c9cd61b6da503bb0694227c58c",
+      "kind": "merged_then_reverted",
+      "likelihood": 80,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly addresses the changed behavior in FilteringLinkExtractor.__new__, which is exactly what the reverted commit had modified."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "0220b58917b5a979891b5765f6ac5095e0368489",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The reviewer discusses consistency, Python 2 behavior, and a minor documentation error, but does not identify any functional problem with using monotonic time itself, which is what the later full revert indicates was the actual defect."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "0c4f0f891654a378913c060da38829e81327097a",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly focuses on the new deactive_ok flag relaxing _assert_active behavior in contextmanager __exit__, which aligns with the later regression where Session.begin_nested\u2019s contextmanager failed to roll back properly on flush errors."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "1b120563905e29f9769fd6d2ce39922d15cebf7f",
+      "kind": "regression_fix",
+      "likelihood": 23,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly flags that has_intersection will raise AttributeError when accessing i.__hash__ on unhashable objects instead of cleanly skipping them, matching the ground truth that the regression involved lazy loads failing for unhashable types due to a hash-oriented check not properly guarding on __hash__."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "2cd1a43778d4dca0846d2e50fc5934e6f5ac3738",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s concern about using bare True/False in ORM comparisons and their compatibility with newer SQLAlchemy boolean semantics matches the later regression fix, which explicitly mentions unsupported True/False symbols appearing due to the use of IS."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "389325099d4d8c0ce42a5a0d5395fbe3ead15af5",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly discusses the behavior of get_history on NEVER_SET attributes/collections and notes the added tests for passive=True, which matches the later regression fix about get_history with passive on a never-set collection failing."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "39a8e2ed375ed66c67a6fe24805ae0503f296e07",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The reviewer comment concerns potential future brittleness of using the literal string '1' in add_columns, while the actual regression was that Query.exists stopped working when only select_from was used without other entities, which is a different issue."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "50d283af1a254ef981ac9a2466399b4828de0117",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding directly questions the correctness of the new concatenation expression used when reflecting MSSQL tables, which plausibly matches the later-identified regression in table reflection behavior."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "5198b1de31029cc985102cd13569086a7056c2f1",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly notes that the new noload behavior directly mutates the dict to set None for scalar relationships because the prior API no longer writes a value, which is the same regression later described and fixed in the ground truth commit message."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "56b1f4c8845373b6680d6ab09dcefe36eaeb12fb",
+      "kind": "regression_fix",
+      "likelihood": 33,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes that _StringType\u2019s new super(__init__) call and changes to MSSQL TEXT/NCHAR/CHAR/VARCHAR/NTEXT may break or drop collation handling, matching the later fix for the regression where collation stopped working for these character types."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "5d0e84434f116460d64d3078f650d9c89004f2a9",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly flags risk in the new join rewriting behavior for nested/aliased joins, which matches the later regression description about incorrect ON-clause translation for nested joins with aliased selects."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "6c0f30db81d127920ca7a68d7a28b8ea086866b6",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The findings focus on the new reserved attribute and memoization behavior, whereas the actual regression was a change in the ordering of the MapperEvents.instrument_class event relative to class instrumentation."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "6e3625a6334c4da982d4c81637a05fa88bc540b1",
+      "kind": "merged_then_reverted",
+      "likelihood": 35,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding directly discusses the incorrect TYPE_CHECKING condition around asyncio.Runner stubs for py311/py312, which is exactly the behavior the reverted change was attempting (and failed) to correct."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "72a09d9e5c54e3ee8b3561da144d8379ce1df747",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 5,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes that removing these mapper.dispatch hooks breaks ORM extension points and user/plugin event usage, matching the later revert that indicates the removed events were in fact used."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "75be18004fac80de6aabea409c059eaaa0dd5244",
+      "kind": "regression_fix",
+      "likelihood": 45,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly discuss the new split between scalar and relationship attributes for eager_defaults and warn about misclassification leading to incorrect loading, which matches the regression where relationships were incorrectly being loaded instead of only scalar attributes."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "7f3cefeba8d63ceb15dcffa358c2ffdebee16ab1",
+      "kind": "regression_fix",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly notes the behavioral change in how the query path elements are unpacked and characterizes it as an intentional regression fix in the same dogpile_caching example later reported as regressed, so it plausibly describes the same defect."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "81eefb2f13a9c854e1dcd924550d0c36553e930a",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings discuss the correctness and assumptions of the _is_lexical_equivalent helper used for fromclause hiding, directly relating to the later bug about incorrect SELECT FROM lists in clone+replace scenarios."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "86078b8948e83e442c1bd4a7a501767ec775ec54",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the behavioral and compatibility change in the return type of create_connect_args, which matches the reason the type-signature-related change was later reverted."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "96c294da8a50d692b3f0b8e508dbbca5d9c22f1b",
+      "kind": "merged_then_reverted",
+      "likelihood": 40,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding highlights incorrect per-instance mutation of a likely shared or immutable set used for excluding unsupported type codecs, which directly relates to the reverted change\u2019s behavior of gracefully degrading unsupported types with asyncpg."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "a44641c6a946c6c958d5a80b64542b2bbc2a765f",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly warns that the new import pattern may be incompatible with some older PyMySQL versions, which matches the actual regression later described as affecting pre-ping in old PyMySQL versions."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "ab738c21aa540cebf3c2f839e177146fc4b43672",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s note on the change to using propagate=False for subclass listeners when propagate=True is set directly concerns the same regression later described as events failing to apply to existing mapped subclasses and related removal behavior."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "b6428219c663e0eb0bf44817391d7a8fc1c60d43",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "incidental",
+      "reason": "The findings describe the intended behavior change and its tests but do not point out that the implementation still regressed user-provided getters handling None, which is what the later commit actually fixed."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "b80e17c3f3e21059ba1a425d75bf3e0f9384d4d2",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the widened escaping semantics from using quote_plus, which matches the later decision to revert replacing the custom URL-encoding method with quote_plus."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "be4e3e675e7f69a2e728af2aa814524173d7a66c",
+      "kind": "merged_then_reverted",
+      "likelihood": 22,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer flags behavioral changes in how dataclass-like attributes and annotations are handled and reverted, which aligns with the later need to revert the commit that tried to make the system behave more like dataclasses when creating them."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "c7ae0daf0ed24e2697d6f948db2d9fdc5953c795",
+      "kind": "regression_fix",
+      "likelihood": 22,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer notes API shape changes and a fragile internal flag, while the actual regression was a functional failure to handle multiple undefer_group options correctly in a single query, which is not specifically identified in the findings."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "ca8fca63916897f1bbc2fa4f1ee440c6b5d9a88a",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The findings question the new, more complex path-based overlap detection and special-casing of joins for joined inheritance, which aligns with the regression later described where implicit aliasing was applied only considering the immediate left side instead of longer joined-inheritance join chains."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "d4c908ded1e9a7923312f3b335835e7e40b6690e",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "incidental",
+      "reason": "The review comment notes a change in identity handling for RowProxy.__eq__, whereas the actual regression was a TypeError from unconditionally coercing non-tuple objects with tuple() during comparisons."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "d79e1d69a6b2d0d1cc18d3d9d0283ef4a77925bc",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer\u2019s findings concern mutating quoted_name instances and a potentially failing assert, whereas the actual regression involved mishandling _anonymous_label() instances and downgrading them to plain quoted_name, a different but related quoting/labeling issue."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "d7ceb63c94e4f8ade58f9d9c9462f7acd5037cd6",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly questions changing ResultMetaData.keys to use elem[0] and its impact on external callers, which matches the regression where ResultProxy.keys began returning unadjusted internal anonymous label names."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "dd32540dabbee0678530fb1b0868d1eb41572dca",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly warns that changing exec_once semantics may break first_connect behavior under concurrency, which matches the later regression about unsynchronized first_connect leading to misconfiguration."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "de0d144a395c31eb74084177df95a4858b830f88",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes the behavioral change in _keymap initialization under the C extension and warns it may cause regressions, matching the later revert about not setting up the integer index in keymap for cexts."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "e73f735382371ac5c05a46f2a51fd10971270fe4",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The reviewer notes a broadened search behavior and potential subtle behavior changes, but the actual regression was that __declare_first__/__declare_last__ stopped being invoked on the superclass of the declarative base, which is the opposite direction and not the issue the reviewer describes."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "ee34f7276b8ce7ef4b5c746b5adf8f8c65f7c826",
+      "kind": "regression_fix",
+      "likelihood": 13,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the behavior change to `is_equal(...) is not True` and notes the risk when `__eq__` returns a truthy non-boolean sentinel, which is exactly the regression later fixed in the ground truth commit."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "f49c367ef712d080e630ba722f96903922d7de7b",
+      "kind": "regression_fix",
+      "likelihood": 40,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The first finding explicitly flags incorrect multirow behavior when different connections/dialects are involved, matching the regression where dialects without sane multi rowcount handling (e.g. pyodbc) failed on multirow update."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "f574bcf98de0d30f0a28bf82aae84098157de0f4",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly notes a semantic change in contains_mapper() for polymorphic paths that could subtly affect behavior, which aligns with the later regression involving overly loose recursion checks in self-referential eager joins with with_polymorphic and subclass joined loading."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "f9275198c304ce0603594350b1e60fe753e80673",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 4,
+      "verdict": "identifies",
+      "reason": "The findings explicitly flag that removing dialect overrides for simple ORDER BY label support and changing label resolution helpers could cause ORDER BY behavior regressions on backends like SQL Server, which matches the later fix describing mis-handled ORDER BY/GROUP BY on simple label names for those backends."
+    },
+    {
+      "repo": "sqlalchemy/sqlalchemy",
+      "sha": "fc348366f76bdb3072c69ad8e03f305de38d486c",
+      "kind": "regression_fix",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding explicitly notes the tightened condition could break cases where an Alias in _with_polymorphic_selectable on a non-polymorphic mapper still triggered aliasing, which matches the later regression about an adapter wrongly applied to an aliased, non-polymorphic selectable."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "19f850e19b4e432e0faed630b748e58069214300",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly flags that making pycurl a hard dependency in setup.py could cause installation problems, which aligns with the later full reversion of the dependency-declaration change."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "301f52b532c071a0d2fec1eb7c23f2714bb38567",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first two findings both flag behavioral and async-interface changes in the Facebook auth/graph mixin code, plausibly matching the later-identified regression in FacebookGraphMixin."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "50b28c5d7a1ccfc3cc3a5a8fc5cf664880598fc6",
+      "kind": "merged_then_reverted",
+      "likelihood": 30,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly warns that removing the optional setuptools import could break existing setuptools-based workflows, matching the later full revert of that removal."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "62363740c1cc0e137ff4344c3afc3d52e070f200",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "Both findings explicitly tie the removed atexit-based shutdown and loss of SelectorThread tracking to shutdown-time deadlocks/leaks, which matches the later need to revert the atexit hook removal."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "71494a4db76b3ae458e5757d741bdd1aac255640",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly notes that removing sphinxcontrib-asyncio could break documentation builds or features, matching the later need to revert the change that removed it."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "7b80c2f4db226d6fa3a7f3dfa59277da1d642f91",
+      "kind": "merged_then_reverted",
+      "likelihood": 45,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags behavior and compatibility risks from decoding percent-escapes in request paths, which matches the later need to revert the change that parsed percent escapes in the path component."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "859a038eb9c1af99d3871c9972f0826a1d05475d",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "Both findings directly address the changed redirect and method-handling behavior that the later revert (\u201ccheck location on _should_follow_redirect() and retain safe request when following redirects\u201d) rolled back."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "9ea5f8a277db96557ae7867375c7db4d8c5f633a",
+      "kind": "merged_then_reverted",
+      "likelihood": 80,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly notes that the new recursive call to receive_message changes the control flow and can cause problematic behavior in the message listening loop, matching the later decision to revert the change that continued listening for messages after parsing completion."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "a965b3603a276c8c5df49924c6c5e4df42db9337",
+      "kind": "regression_fix",
+      "likelihood": 25,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The review explicitly notes the behavioral change that finish() in prepare prevents the verb method from running, which is the same regression later fixed by restoring correct async-prepare behavior."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "b7e604646537984e967dd25447a8df3e221bf9ed",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer specifically flags the risk of using deepcopy on HTTPRequest and its attributes, which aligns with the later need to revert the deepcopy change."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "dda77f2ca3365bd031a0c56dd19c8ed781a0695a",
+      "kind": "merged_then_reverted",
+      "likelihood": 55,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The findings explicitly discuss the changed Location-header check and redirect semantics in _should_follow_redirect, which is exactly the behavior implicated by the later revert commit."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "e0c489fd02b042a74845a07dd09e8ce66a2780ca",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer flags a missing import for os that would cause a runtime NameError, which is consistent with the change being reverted for introducing an error."
+    },
+    {
+      "repo": "tornadoweb/tornado",
+      "sha": "e88847320f095d3d0f18e0a1d4f1462d61d34e6a",
+      "kind": "regression_fix",
+      "likelihood": 18,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first two findings explicitly discuss behavior changes in gzip handling (including Content-Length) that could break existing callers, matching the later regression fix in gzip output for StaticFileHandler."
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "019dbaeadb6318d98c78f2c874e2d49c06ebda15",
+      "kind": "merged_then_reverted",
+      "likelihood": 80,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The finding correctly flags that removing host.strip('[]') would break IPv6 handling by reintroducing brackets, which matches the later revert about not requiring square brackets for httplib."
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "09d03c9a75ba81d4469920b2d91df6d3ab4d7499",
+      "kind": "merged_then_reverted",
+      "likelihood": 80,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly flags the behavioral regression caused by removing special proxy headers, which matches the later revert of 'Stop applying special headers to proxies.'"
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "0f880d5f72312b39f269a80da0e50591cf344068",
+      "kind": "merged_then_reverted",
+      "likelihood": 20,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly notes that the new function unconditionally raising an exception could break runtime behavior, which aligns with the later revert described as having been made to 'forcefully break tests.'"
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "1922ddac389270301e40a0589127cb87262f7cad",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer\u2019s concerns about adding __del__ methods for cleanup directly address the same destructor-based connection-closing behavior that was later reverted as problematic."
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "47d5c8ed9f07c31d80f33b97a50991c89c56e220",
+      "kind": "merged_then_reverted",
+      "likelihood": 45,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The first finding directly questions correctness of handling concatenated gzip streams, which matches the later full revert of the concatenated gzip support feature."
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "697084110a5e38f5dd6b004d683413a4a27c9245",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the removal of the ipaddress marker/conditional as a potentially breaking change, which matches the later revert of the change titled 'Remove ipaddress marker.'"
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "6e43d33286672221d4a5d08ce34d30df96d5487e",
+      "kind": "merged_then_reverted",
+      "likelihood": 70,
+      "n_findings": 8,
+      "verdict": "identifies",
+      "reason": "Multiple findings correctly flag that the new load_idna behavior and its decorator introduce problematic global side effects and regressions around idna loading, matching the later decision to revert the lazy-loading change."
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "6ef3c06249b7144838b6701c6e9adfa76650ccea",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 4,
+      "verdict": "incidental",
+      "reason": "The reviewer only comments on test and certificate changes in terms of correctness/brittleness, while the ground truth shows the entire macOS-specific test fix was reverted, implying a broader or different problem than the issues noted."
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "704fcac89cb0026a290228013ccedbe8795c3f97",
+      "kind": "merged_then_reverted",
+      "likelihood": 15,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the behavioral change of always enabling IP SAN matching via the vendored ipaddress module, which matches the later decision to revert the fallback to that vendored module."
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "954ff5989246e45ef2490d04d63d43c94f6d9bc2",
+      "kind": "merged_then_reverted",
+      "likelihood": 10,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly notes that the new setup() call is intentionally unreachable and only for metadata, matching the later decision to revert the GitHub metadata workaround itself."
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "a9508d8d8ac58ed95bf06d8970382664af4e91e3",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly flags that changing find_unused_port from returning an int to being a context manager would break existing callers, matching the later need to revert the context-related change."
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "cc2d86fc13688e573721ee7a7571cb5315ef2017",
+      "kind": "merged_then_reverted",
+      "likelihood": 18,
+      "n_findings": 1,
+      "verdict": "identifies",
+      "reason": "The reviewer explicitly flags the new stripping of square brackets from hostnames as a behavioral change that could affect edge cases, matching the later decision to revert that exact behavior change."
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "d48061505e72271116c5a33b04dbca6273f2a737",
+      "kind": "merged_then_reverted",
+      "likelihood": 25,
+      "n_findings": 2,
+      "verdict": "incidental",
+      "reason": "The review comments focus on potential initialization-order and fallback-flag issues, while the actual defect prompting a full revert was the broader HTTP/2 TLS settings change, not specifically the described flag-default behavior."
+    },
+    {
+      "repo": "urllib3/urllib3",
+      "sha": "fa73693a0f44bba05ec916f19e09bc68cb1b6007",
+      "kind": "merged_then_reverted",
+      "likelihood": 92,
+      "n_findings": 3,
+      "verdict": "identifies",
+      "reason": "The reviewer correctly flags the incorrect replacement of match_hostname imports with CertificateError, which aligns with the later need to revert a cut-and-paste error in that area."
+    }
+  ]
+}

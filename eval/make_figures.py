@@ -89,16 +89,17 @@ def fig1_roc() -> None:
 
 
 def fig2_conviction() -> None:
-    calib = json.loads((ROOT / "eval/results/calib.json").read_text())
-    validity = json.loads((ROOT / "eval/results/validity.json").read_text())
+    calib = json.loads((ROOT / "eval/results/calib-full.json").read_text())
+    validity = json.loads((ROOT / "eval/results/validity-full.json").read_text())
     verdict = {r["sha"]: r["verdict"] for r in validity["records"]}
-    good = likelihoods("eval/results/calib-control.json")
+    good = likelihoods("eval/results/calib-full-control.json")
 
-    groups = {"identifies": [], "other_bad": []}
+    groups = {"identifies": [], "incidental": [], "silent": []}
     for r in calib["records"]:
         if r["status"] != "ok" or r["likelihood"] is None:
             continue
-        key = "identifies" if verdict.get(r["sha"]) == "identifies" else "other_bad"
+        v = verdict.get(r["sha"])
+        key = v if v in ("identifies", "incidental") else "silent"
         groups[key].append(r["likelihood"])
 
     import random
@@ -107,15 +108,16 @@ def fig2_conviction() -> None:
     fig, ax = plt.subplots(figsize=(4.2, 3.2))
     cols = [
         ("control\n(good, n=%d)" % len(good), good, GRAY, "o"),
-        ("bad, defect NOT\nidentified (n=%d)" % len(groups["other_bad"]),
-         groups["other_bad"], ORANGE, "o"),
-        ("bad, defect\nidentified (n=%d)" % len(groups["identifies"]),
+        ("bad, no findings\n(n=%d)" % len(groups["silent"]), groups["silent"], GRAY, "o"),
+        ("bad, findings\nincidental (n=%d)" % len(groups["incidental"]),
+         groups["incidental"], ORANGE, "o"),
+        ("bad, findings name\nthe defect (n=%d)" % len(groups["identifies"]),
          groups["identifies"], BLUE, "o"),
     ]
     for i, (label, vals, color, marker) in enumerate(cols):
-        xs = [i + rng.uniform(-0.13, 0.13) for _ in vals]
-        ax.scatter(xs, vals, s=26, color=color, marker=marker, alpha=0.85,
-                   edgecolors="#fcfcfb", linewidths=0.8, zorder=3)
+        xs = [i + rng.uniform(-0.22, 0.22) for _ in vals]
+        ax.scatter(xs, vals, s=9, color=color, marker=marker, alpha=0.5,
+                   edgecolors="none", zorder=3)
 
     ax.axhline(40, color="#d03b3b", lw=1.2, ls="--", zorder=2)
     ax.set_xlim(-0.6, 2.45)
@@ -127,10 +129,10 @@ def fig2_conviction() -> None:
         (0.62, 88), fontsize=7.5, ha="center", color="#0b0b0b",
     )
 
-    ax.set_xticks(range(3))
-    ax.set_xticklabels([c[0] for c in cols], fontsize=7.5)
+    ax.set_xticks(range(len(cols)))
+    ax.set_xticklabels([c[0] for c in cols], fontsize=7)
     ax.set_ylabel("reviewer defect likelihood (0–100)")
-    ax.set_ylim(-3, 103)
+    ax.set_ylim(-3, 118)
     ax.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
     fig.savefig(FIG / "conviction.pdf")

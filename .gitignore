@@ -12,3 +12,5 @@ eval/.clones/
 eval/results/*.log
 eval/results/replay-test.json
 eval/.wild-clones/
+paper/paper.pdf
+paper/paper.tex
