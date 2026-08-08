@@ -22,36 +22,28 @@ adversarial review with enforced author/reviewer independence, dependency
 reality checks, contract conformance, and property probes — behind a
 risk-tiered policy, and emits a **Verification Bill of Materials (VBOM)**: an
 in-toto-style attestation recording which model authored a diff and which
-verification evidence it survived. We evaluate against a reproducible mined
-corpus of 664 ground-truth bad changes (merged-then-reverted and
-regression-introducing commits from 29 Python projects) with a 428-commit
-presumed-good control arm, on genuinely AI-authored implementations of 30
-distilled tasks, and on 112 wild AI-co-authored commits. Four findings stand
-out: (1) 45% of
-known-bad changes shipped without touching a single test file — but so did 64%
-of known-good ones, so the obvious cheap gate ("require test changes") does
-not discriminate at all; the discriminative form of the signal is
-execution-level — *no test executes the changed lines* — which is exactly what
-diff-scoped mutation coverage measures, and our own initially-promising
-headline failing its control arm is a working demonstration of why every gate
-signal must be evaluated against one; (2) where the full gate was runnable it blocked
-the bad change — in the strongest case, mutation testing found 11/11 injected
-faults undetected because no test executed any changed line, and the tautology
-probe proved the accompanying test passed *without* the change; (3) adversarial
-LLM review, measured with a control arm across two model families for the
-first time to our knowledge, discriminates weakly alone (Gemini: 80%
-sensitivity at 54% false-positive rate; GPT-5.1: 51% at 31%) but exhibits a
-striking cross-family structure — false positives are nested across families
-while true positives are complementary — so the two-family union gains nine
-points of sensitivity for free (89%) while requiring cross-family agreement
-fails to reduce false alarms; at full-corpus scale, calibrated review's
-discrimination falls to AUC 0.586 (CI 0.551–0.624), below its own pilot
-estimate — pilot-sized review evaluations overestimate; and (4) on genuinely
-AI-authored code, over a third of one-shot changes ship with test suites that
-fail on their own implementation, only 10–14% pass the gate cleanly, and
-mutation adequacy of AI-written tests is mediocre at near-identical rates
-across model families — the self-verification threat measured directly. Vouch
-is available as a CLI, GitHub Action, and coding-agent hook.
+verification evidence it survived. We evaluate on a reproducible corpus of 664
+ground-truth bad changes (merged-then-reverted and regression-introducing
+commits from 29 Python projects) against a 428-commit presumed-good control
+arm, on genuinely AI-authored implementations of 30 distilled tasks, and on
+112 wild AI-co-authored commits.
+
+Three findings. First, on AI-authored code the self-verification threat is
+severe and vendor-independent: over a third of one-shot changes ship test
+suites that fail on their own implementation, only 10–14% clear the gate, and
+surviving suites average 0.63–0.69 mutation adequacy. Second, LLM review — the
+industry's favored answer — is a weak detector at scale: calibrated review
+reaches only AUC 0.586 (CI 0.551–0.624), its pilot-corpus estimate lies
+outside that interval, and adversarial framing merely relocates the operating
+point. Yet its errors are structured: across two model families false
+positives are nested while true positives are complementary, so a union
+ensemble gains nine points of sensitivity for free while requiring agreement
+reduces no false alarms. Third, review's failure is calibration rather than
+perception — 86% of its findings on bad diffs name the actual defect, but 61%
+of those score below any usable gating threshold. Together these results
+argue that AI code needs gates anchored in execution-grounded evidence, with
+model review composed in rather than trusted. Vouch ships as a CLI, GitHub
+Action, and coding-agent hook.
 
 **Keywords:** AI-generated code, mutation testing, test adequacy, code review
 agents, software supply chain, attestation
