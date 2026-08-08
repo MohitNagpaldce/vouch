@@ -14,15 +14,14 @@ AI coding assistants now author a substantial fraction of merged code, and the
 same model that writes the implementation typically also writes the tests that
 "verify" it. Industrial acceptance pipelines gate this code on the signals used
 for human code — the tests build, pass, and increase coverage — signals that are
-structurally weak when author and verifier share failure modes. We present
-**Vouch**, an open-source verification gate purpose-built for AI-authored
-changes. Vouch composes six verifier classes targeting AI-specific failure
-modes — diff-scoped mutation adequacy, tautological-test probes, cross-model
-adversarial review with enforced author/reviewer independence, dependency
-reality checks, contract conformance, and property probes — behind a
-risk-tiered policy, and emits a **Verification Bill of Materials (VBOM)**: an
-in-toto-style attestation recording which model authored a diff and which
-verification evidence it survived. We evaluate on a reproducible corpus of 664
+structurally weak when author and verifier share failure modes. We present **Vouch**, an
+open-source verification gate for AI-authored changes. Vouch composes six
+verifier classes targeting AI-specific failure modes — diff-scoped mutation
+adequacy, tautological-test probes, cross-model review with enforced
+author/reviewer independence, dependency reality checks, contract conformance,
+and property probes — behind a risk-tiered policy, and emits a **Verification
+Bill of Materials (VBOM)**: an in-toto-style attestation of which model
+authored a diff and what verification evidence it survived. We evaluate on a reproducible corpus of 664
 ground-truth bad changes (merged-then-reverted and regression-introducing
 commits from 29 Python projects) against a 428-commit presumed-good control
 arm, on genuinely AI-authored implementations of 30 distilled tasks, and on
